@@ -1,0 +1,11 @@
+<p-sidebar #sidebarRef modal="false" [(visible)]="sidebarVisible" styleClass="w-20rem">
+  <ng-template pTemplate="headless">
+    <div class="flex flex-column h-full z-0">
+      <farm-byte-sidebar-brand></farm-byte-sidebar-brand>
+      <farm-byte-sidebar-menu></farm-byte-sidebar-menu>
+      <div class="mt-auto">
+        <farm-byte-sidebar-footer></farm-byte-sidebar-footer>
+      </div>
+    </div>
+  </ng-template>
+</p-sidebar>

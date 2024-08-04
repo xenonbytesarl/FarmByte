@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import "primeng/resources/themes/lara-light-indigo/theme";
+//@import "primeng/resources/themes/lara-dark-indigo/theme";
+@import "primeng/resources/primeng";
+@import "primeflex/primeflex";
+@import "@fortawesome/fontawesome-free/css/all.min";
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+

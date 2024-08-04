@@ -1,0 +1,14 @@
+<div class="flex flex-row align-items-center justify-content-between">
+  <div class="font-light">
+    <p-menu #menu [model]="items" [popup]="true" />
+    <p-button (onClick)="menu.toggle($event)" label="Opération"  icon="fa fa-angle-down" iconPos="right"/>
+  </div>
+  <div class="font-light">
+    <p-menu #menu [model]="items" [popup]="true" />
+    <p-button (onClick)="menu.toggle($event)" label="Reporting"   icon="fa fa-angle-down" iconPos="right"/>
+  </div>
+  <div class="font-light">
+    <p-menu #menu [model]="items" [popup]="true" />
+    <p-button (onClick)="menu.toggle($event)" label="Configuration"  icon="fa fa-angle-down" iconPos="right"/>
+  </div>
+</div>
