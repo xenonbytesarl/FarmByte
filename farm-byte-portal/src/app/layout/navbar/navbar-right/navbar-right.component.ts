@@ -3,7 +3,7 @@ import {AvatarModule} from "primeng/avatar";
 import {BadgeModule} from "primeng/badge";
 
 @Component({
-  selector: 'farm-byte-nav-right',
+  selector: 'farm-byte-navbar-right',
   standalone: true,
     imports: [
         AvatarModule,

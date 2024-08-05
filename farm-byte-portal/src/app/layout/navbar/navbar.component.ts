@@ -14,6 +14,4 @@ import {NavbarRightComponent} from "./navbar-right/navbar-right.component";
 })
 export class NavbarComponent {
 
-
-
 }

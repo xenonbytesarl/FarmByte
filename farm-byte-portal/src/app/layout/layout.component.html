@@ -1,11 +1,13 @@
-<div class="flex flex-row">
+<div class="flex flex-row ">
   <div class="w-23rem">
     <farm-byte-sidebar></farm-byte-sidebar>
   </div>
-  <div class="w-full">
+  <div class="main flex flex-column  w-full ">
     <farm-byte-navbar></farm-byte-navbar>
-    <div class="flex flex-row justify-content-center align-items-start align-content-start h-full w-full pt-5">
+    <div class="flex flex-column align-items-center justify-content-center px-8 pt-5 gap-3">
+
       <router-outlet/>
+
     </div>
   </div>
 </div>
