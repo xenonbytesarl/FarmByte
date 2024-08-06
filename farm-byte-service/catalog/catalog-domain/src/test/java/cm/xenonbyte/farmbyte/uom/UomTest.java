@@ -127,5 +127,35 @@ final class UomTest {
 
     }
 
+    @Test
+    void should_create_uom_when_uom_type_is_lower() {
+        //Given
+        Name name = Name.from("Centimetre");
+        UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
+        Ratio ratio =  Ratio.from(0.5);
+        Uom uom = Uom.from(
+                name,
+                uomCategoryId,
+                UomType.LOWER,
+                ratio
+        );
+
+        //Act
+        Uom createdUom = uomDomainService.createUom(uom);
+
+        //Then
+        assertThat(createdUom).isNotNull();
+        assertThat(createdUom.getUomId())
+                .isNotNull()
+                .satisfies(result -> assertThat(result.getId()).isInstanceOf(UUID.class));
+        assertThat(createdUom.getUomCategoryId())
+                .isNotNull()
+                .isEqualTo(uomCategoryId);
+        assertThat(createdUom.getUomType()).isEqualTo(UomType.LOWER);
+        assertThat(createdUom.getActive()).isEqualTo(Active.from(true));
+        assertThat(createdUom.getRatio()).isEqualTo(ratio);
+        assertThat(createdUom.getName()).isEqualTo(name);
+    }
+
 
 }
