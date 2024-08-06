@@ -6,5 +6,5 @@ package cm.xenonbyte.farmbyte.uom.vo;
  * @since 06/08/2024
  */
 public enum UomType {
-    REFERENCE
+    GREATER, REFERENCE
 }

@@ -50,9 +50,17 @@ public final class Uom {
     public void initiate() {
         if(uomType.equals(UomType.REFERENCE)) {
             ratio = Ratio.from(Ratio.REFERENCE);
+        } else {
+            validateRatio();
         }
         uomId = UomId.generate(UUID.randomUUID());
         active = Active.from(true);
+    }
+
+    private void validateRatio() {
+        if(ratio == null) {
+            throw new IllegalArgumentException("Ratio is required when unit of measure type is not reference.");
+        }
     }
 
     @Nonnull
