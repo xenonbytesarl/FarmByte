@@ -10,6 +10,7 @@
     <artifactId>catalog</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>catalog-adapter</module>
         <module>catalog-domain</module>
     </modules>
 

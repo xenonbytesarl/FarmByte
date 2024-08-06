@@ -8,7 +8,6 @@
   <packaging>pom</packaging>
 
   <modules>
-
     <module>common</module>
     <module>catalog</module>
   </modules>
@@ -24,8 +23,4 @@
 
     </plugins>
   </build>
-
-
-
-
 </project>

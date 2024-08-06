@@ -6,11 +6,13 @@
         <artifactId>catalog</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>catalog-domain</artifactId>
+
+    <artifactId>catalog-adapter</artifactId>
     <packaging>pom</packaging>
+
     <modules>
-        <module>catalog-domain-core</module>
-        <module>catalog-domain-test</module>
+        <module>catalog-adapter-inmemory</module>
     </modules>
+
 
 </project>
