@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.uom;
+package cm.xenonbyte.farmbyte.uom.entity;
 
 import cm.xenonbyte.farmbyte.uom.vo.*;
 import jakarta.annotation.Nonnull;
@@ -49,12 +49,12 @@ public final class Uom {
 
     public void initiate() {
         if(uomType.equals(UomType.REFERENCE)) {
-            ratio = Ratio.from(Ratio.REFERENCE);
+            ratio = Ratio.of(Ratio.REFERENCE);
         } else {
             validateRatio();
         }
-        uomId = UomId.generate(UUID.randomUUID());
-        active = Active.from(true);
+        uomId = UomId.of(UUID.randomUUID());
+        active = Active.with(true);
     }
 
     private void validateRatio() {

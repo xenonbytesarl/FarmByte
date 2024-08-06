@@ -18,7 +18,7 @@ public final class UomCategoryId {
     }
 
     @Nonnull
-    public static UomCategoryId generate(@Nonnull UUID uuid) {
+    public static UomCategoryId of(@Nonnull UUID uuid) {
         return new UomCategoryId(Objects.requireNonNull(uuid));
     }
 

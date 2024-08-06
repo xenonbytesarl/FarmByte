@@ -17,7 +17,7 @@ public final class UomId {
         this.id = Objects.requireNonNull(id);
     }
 
-    public static UomId generate(@Nonnull UUID uuid) {
+    public static UomId of(@Nonnull UUID uuid) {
         return new UomId(Objects.requireNonNull(uuid));
     }
 

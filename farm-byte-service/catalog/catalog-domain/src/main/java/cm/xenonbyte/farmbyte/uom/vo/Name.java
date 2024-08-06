@@ -18,7 +18,7 @@ public final class Name {
     }
 
     @Nonnull
-    public static Name from(String value) {
+    public static Name of(String value) {
         return new Name(value);
     }
 

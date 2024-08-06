@@ -20,7 +20,7 @@ public final class Ratio {
     }
 
     @Nonnull
-    public static Ratio from(Double value) {
+    public static Ratio of(Double value) {
         return new Ratio(value);
     }
 

@@ -18,7 +18,7 @@ public final class Active {
     }
 
     @Nonnull
-    public static Active from(Boolean value) {
+    public static Active with(Boolean value) {
         if(value == null) {
             throw new IllegalArgumentException("Active value is should be true of false");
         }

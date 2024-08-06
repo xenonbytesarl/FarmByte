@@ -1,9 +1,12 @@
 package cm.xenonbyte.farmbyte.uom;
 
-import cm.xenonbyte.farmbyte.uom.service.IUomDomainService;
-import cm.xenonbyte.farmbyte.uom.service.UomDomainService;
+import cm.xenonbyte.farmbyte.uom.entity.Uom;
+import cm.xenonbyte.farmbyte.uom.ports.primary.UomDomainService;
+import cm.xenonbyte.farmbyte.uom.ports.UomDomainServiceImplementation;
+import cm.xenonbyte.farmbyte.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.uom.vo.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,32 +25,34 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 final class UomTest {
 
 
-    private IUomDomainService uomDomainService;
+    private UomDomainService uomDomainService;
+    private UomRepository uomRepository;
 
     @BeforeEach
     void setUp() {
-        uomDomainService = new UomDomainService();
+        uomRepository = new InMemoryUomRepository();
+        uomDomainService = new UomDomainServiceImplementation(uomRepository);
     }
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
             Arguments.of(
-                    Name.from("Unit"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Unit"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.REFERENCE,
                     null
             ),
             Arguments.of(
-                    Name.from("Carton de 10"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Carton de 10"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.GREATER,
-                    Ratio.from(2.0)
+                    Ratio.of(2.0)
             ),
             Arguments.of(
-                    Name.from("Centimetre"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Centimetre"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.LOWER,
-                    Ratio.from(0.5)
+                    Ratio.of(0.5)
             )
         );
     }
@@ -80,34 +85,34 @@ final class UomTest {
                 .isNotNull()
                 .isEqualTo(uomCategoryId);
         assertThat(createdUom.getUomType()).isEqualTo(uomType);
-        assertThat(createdUom.getActive()).isEqualTo(Active.from(true));
-        assertThat(createdUom.getRatio()).isEqualTo(ratio == null ? Ratio.from( Ratio.REFERENCE) : ratio);
+        assertThat(createdUom.getActive()).isEqualTo(Active.with(true));
+        assertThat(createdUom.getRatio()).isEqualTo(ratio == null ? Ratio.of( Ratio.REFERENCE) : ratio);
         assertThat(createdUom.getName()).isEqualTo(name);
     }
 
     static Stream<Arguments> createUomThrowExceptionMethodSourceArgs() {
         return Stream.of(
             Arguments.of(
-                    Name.from("Unit"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Unit"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.GREATER,
                     null,
                     IllegalArgumentException.class,
                     "Ratio is required when unit of measure type is not reference."
             ),
             Arguments.of(
-                    Name.from("Carton de 10"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Carton de 10"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.GREATER,
-                    Ratio.from(0.8),
+                    Ratio.of(0.8),
                     IllegalArgumentException.class,
                     "Ratio should be greater than 0 when unit of measure type is not greater."
             ),
             Arguments.of(
-                    Name.from("Centimetre"),
-                    UomCategoryId.generate(UUID.randomUUID()),
+                    Name.of("Centimetre"),
+                    UomCategoryId.of(UUID.randomUUID()),
                     UomType.LOWER,
-                    Ratio.from(2.0),
+                    Ratio.of(2.0),
                     IllegalArgumentException.class,
                     "Ratio should be lower than 0 when unit of measure type is not lower."
             )
@@ -116,7 +121,7 @@ final class UomTest {
 
     @ParameterizedTest
     @MethodSource("createUomThrowExceptionMethodSourceArgs")
-    void should_throw_exception_when_create_uom_with_uom_type_is_not_reference_and_ratio_is_null(
+    void should_throw_exception_when_create_uom_with_uom_type_and_ratio_are_not_compatible(
             Name name,
             UomCategoryId uomCategoryId,
             UomType uomType,
@@ -140,4 +145,27 @@ final class UomTest {
     }
 
 
+    @Test
+    void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
+        //Given
+        UomCategoryId uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        Uom firstRefereceUom = Uom.from(
+                Name.of("Unite"),
+                uomCategoryId,
+                UomType.REFERENCE,
+                null);
+
+        uomDomainService.createUom(firstRefereceUom);
+
+        Uom secondRefereceUom = Uom.from(
+                Name.of("Piece"),
+                uomCategoryId,
+                UomType.REFERENCE,
+                null);
+
+        //When + Then
+        assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
+                .isInstanceOf(UomDomainException.class)
+                .hasMessage("We can't have two units of measure with type reference in the same category");
+    }
 }
