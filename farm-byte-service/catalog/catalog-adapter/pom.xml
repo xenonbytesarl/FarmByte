@@ -11,7 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>catalog-adapter-inmemory</module>
+        <module>catalog-adapter-data-access-inmemory</module>
+        <module>catalog-adapter-data-access-test</module>
     </modules>
 
 

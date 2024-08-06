@@ -42,4 +42,5 @@ public class InMemoryUomRepository implements UomRepository {
                 uom.getActive().equals(Active.with(true))
         );
     }
+
 }

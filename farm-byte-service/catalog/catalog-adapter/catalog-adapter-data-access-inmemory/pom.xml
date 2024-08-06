@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>catalog-domain</artifactId>
+        <artifactId>catalog-adapter</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>catalog-domain-test</artifactId>
+    <artifactId>catalog-adapter-data-access-inmemory</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -23,21 +23,20 @@
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>catalog-adapter-data-access-inmemory</artifactId>
+            <artifactId>catalog-adapter-data-access-test</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit-jupiter.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj-core.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
+
 
 </project>
