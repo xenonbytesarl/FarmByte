@@ -1,9 +1,10 @@
 package cm.xenonbyte.farmbyte.uom;
 
-import cm.xenonbyte.farmbyte.uom.vo.Name;
-import cm.xenonbyte.farmbyte.uom.vo.Ratio;
-import cm.xenonbyte.farmbyte.uom.vo.UomCategoryId;
-import cm.xenonbyte.farmbyte.uom.vo.UomType;
+import cm.xenonbyte.farmbyte.uom.vo.*;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import java.util.UUID;
 
 /**
  * @author bamk
@@ -14,9 +15,16 @@ public final class Uom {
     private final Name name;
     private final UomCategoryId uomCategoryId;
     private final UomType uomType;
-    private final Ratio ratio;
+    private Ratio ratio;
+    private UomId uomId;
+    private Active active;
 
-    public Uom(Name name, UomCategoryId uomCategoryId, UomType uomType, Ratio ratio) {
+    private Uom(
+            @Nonnull final Name name,
+            @Nonnull final UomCategoryId uomCategoryId,
+            @Nonnull final UomType uomType,
+            @Nullable final Ratio ratio
+    ) {
 
         this.name = name;
         this.uomCategoryId = uomCategoryId;
@@ -24,12 +32,48 @@ public final class Uom {
         this.ratio = ratio;
     }
 
-    public static Uom from(Name name, UomCategoryId uomCategoryId, UomType uomType, Ratio ratio) {
+    @Nonnull
+    public static Uom from(
+            @Nonnull final Name name,
+            @Nonnull final UomCategoryId uomCategoryId,
+            @Nonnull final UomType uomType,
+            @Nullable final Ratio ratio
+    ) {
         return new Uom(
                 name,
                 uomCategoryId,
                 uomType,
                 ratio
         );
+    }
+
+    public void initiate() {
+        if(uomType.equals(UomType.REFERENCE)) {
+            ratio = Ratio.from(Ratio.REFERENCE);
+        }
+        uomId = UomId.generate(UUID.randomUUID());
+        active = Active.from(true);
+    }
+
+    @Nonnull
+    public UomId getUomId() {
+        return uomId;
+    }
+    @Nonnull
+    public Active getActive() {
+        return active;
+    }
+
+    @Nonnull
+    public Ratio getRatio() {
+        return ratio;
+    }
+    @Nonnull
+    public Name getName() {
+        return name;
+    }
+    @Nonnull
+    public UomCategoryId getUomCategoryId() {
+        return uomCategoryId;
     }
 }

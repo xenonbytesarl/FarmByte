@@ -10,6 +10,7 @@ import cm.xenonbyte.farmbyte.uom.Uom;
 public final class UomDomainService implements IUomDomainService {
     @Override
     public Uom createUom(Uom uom) {
+        uom.initiate();
         return uom;
     }
 }

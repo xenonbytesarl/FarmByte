@@ -10,16 +10,15 @@ import java.util.UUID;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class UomCategoryId {
+public final class UomId {
     private final UUID id;
 
-    private UomCategoryId(@Nonnull UUID id) {
+    private UomId(@Nonnull UUID id) {
         this.id = Objects.requireNonNull(id);
     }
 
-    @Nonnull
-    public static UomCategoryId generate(@Nonnull UUID uuid) {
-        return new UomCategoryId(Objects.requireNonNull(uuid));
+    public static UomId generate(@Nonnull UUID uuid) {
+        return new UomId(Objects.requireNonNull(uuid));
     }
 
     @Nonnull
@@ -31,8 +30,8 @@ public final class UomCategoryId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UomCategoryId that = (UomCategoryId) o;
-        return Objects.equals(id, that.id);
+        UomId uomId = (UomId) o;
+        return Objects.equals(id, uomId.id);
     }
 
     @Override
