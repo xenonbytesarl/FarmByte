@@ -50,6 +50,7 @@ final class UomTest {
         assertThat(createdUom.getUomCategoryId())
                 .isNotNull()
                 .isEqualTo(uomCategoryId);
+        assertThat(createdUom.getUomType()).isEqualTo(UomType.REFERENCE);
         assertThat(createdUom.getActive()).isEqualTo(Active.from(true));
         assertThat(createdUom.getRatio()).isEqualTo(Ratio.from(Ratio.REFERENCE));
         assertThat(createdUom.getName()).isEqualTo(name);
@@ -73,6 +74,36 @@ final class UomTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Ratio is required when unit of measure type is not reference.");
 
+    }
+
+    @Test
+    void should_create_uom_when_uom_type_is_greater() {
+        //Given
+        Name name = Name.from("Carton de 10");
+        UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
+        Ratio ratio =  Ratio.from(2D);
+        Uom uom = Uom.from(
+                name,
+                uomCategoryId,
+                UomType.GREATER,
+                ratio
+        );
+
+        //Act
+        Uom createdUom = uomDomainService.createUom(uom);
+
+        //Then
+        assertThat(createdUom).isNotNull();
+        assertThat(createdUom.getUomId())
+                .isNotNull()
+                .satisfies(result -> assertThat(result.getId()).isInstanceOf(UUID.class));
+        assertThat(createdUom.getUomCategoryId())
+                .isNotNull()
+                .isEqualTo(uomCategoryId);
+        assertThat(createdUom.getUomType()).isEqualTo(UomType.GREATER);
+        assertThat(createdUom.getActive()).isEqualTo(Active.from(true));
+        assertThat(createdUom.getRatio()).isEqualTo(ratio);
+        assertThat(createdUom.getName()).isEqualTo(name);
     }
 
 

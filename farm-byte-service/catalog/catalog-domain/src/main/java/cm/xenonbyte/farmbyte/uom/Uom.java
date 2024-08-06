@@ -84,4 +84,9 @@ public final class Uom {
     public UomCategoryId getUomCategoryId() {
         return uomCategoryId;
     }
+
+    @Nonnull
+    public UomType getUomType() {
+        return uomType;
+    }
 }
