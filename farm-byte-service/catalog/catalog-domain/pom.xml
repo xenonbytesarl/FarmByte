@@ -9,7 +9,31 @@
 
     <artifactId>catalog-domain</artifactId>
     <packaging>jar</packaging>
+    <properties>
+        <junit-jupiter.version>5.10.2</junit-jupiter.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
+        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
+    </properties>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta.annotation-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+        </dependency>
+    </dependencies>
 
 
 
