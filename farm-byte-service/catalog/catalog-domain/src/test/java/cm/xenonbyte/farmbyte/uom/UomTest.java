@@ -107,4 +107,25 @@ final class UomTest {
     }
 
 
+    @Test
+    void should_throw_exception_when_create_uom_with_uom_type_is_greater_and_ratio_is_lower_than_reference() {
+        //Given
+        Name name = Name.from("Unit");
+        UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
+        Ratio ratio =  Ratio.from(0.8);
+        Uom uom = Uom.from(
+                name,
+                uomCategoryId,
+                UomType.GREATER,
+                ratio
+        );
+
+        //Act + Then
+        assertThatThrownBy(() -> uomDomainService.createUom(uom))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Ratio should be greater than 0 when unit of measure type is not greater.");
+
+    }
+
+
 }

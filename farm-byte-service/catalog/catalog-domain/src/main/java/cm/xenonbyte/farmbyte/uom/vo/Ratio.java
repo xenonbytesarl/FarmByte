@@ -36,4 +36,8 @@ public final class Ratio {
     public int hashCode() {
         return Objects.hashCode(value);
     }
+
+    public boolean isEqualOrLowerThanReference() {
+        return value != null && value <= REFERENCE;
+    }
 }

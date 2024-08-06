@@ -61,6 +61,9 @@ public final class Uom {
         if(ratio == null) {
             throw new IllegalArgumentException("Ratio is required when unit of measure type is not reference.");
         }
+        if(uomType.equals(UomType.GREATER) && ratio.isEqualOrLowerThanReference()) {
+            throw new IllegalArgumentException("Ratio should be greater than 0 when unit of measure type is not greater.");
+        }
     }
 
     @Nonnull
