@@ -81,7 +81,7 @@ final class UomTest {
         //Given
         Name name = Name.from("Carton de 10");
         UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
-        Ratio ratio =  Ratio.from(2D);
+        Ratio ratio =  Ratio.from(2.0);
         Uom uom = Uom.from(
                 name,
                 uomCategoryId,
@@ -108,7 +108,7 @@ final class UomTest {
 
 
     @Test
-    void should_throw_exception_when_create_uom_with_uom_type_is_greater_and_ratio_is_lower_than_reference() {
+    void should_throw_exception_when_create_uom_with_uom_type_is_greater_and_ratio_is_lower_or_equal_than_reference() {
         //Given
         Name name = Name.from("Unit");
         UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
@@ -155,6 +155,26 @@ final class UomTest {
         assertThat(createdUom.getActive()).isEqualTo(Active.from(true));
         assertThat(createdUom.getRatio()).isEqualTo(ratio);
         assertThat(createdUom.getName()).isEqualTo(name);
+    }
+
+    @Test
+    void should_throw_exception_when_create_uom_with_uom_type_is_lower_and_ratio_is_greater_or_equal_to_reference() {
+        //Given
+        Name name = Name.from("Unit");
+        UomCategoryId uomCategoryId = UomCategoryId.generate(UUID.randomUUID());
+        Ratio ratio =  Ratio.from(2.4);
+        Uom uom = Uom.from(
+                name,
+                uomCategoryId,
+                UomType.LOWER,
+                ratio
+        );
+
+        //Act + Then
+        assertThatThrownBy(() -> uomDomainService.createUom(uom))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Ratio should be lower than 0 when unit of measure type is not lower.");
+
     }
 
 

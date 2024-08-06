@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public final class Ratio {
 
-    public static final Double REFERENCE = 1D;
+    public static final Double REFERENCE = 1.0;
 
     private final Double value;
 
@@ -39,5 +39,9 @@ public final class Ratio {
 
     public boolean isEqualOrLowerThanReference() {
         return value != null && value <= REFERENCE;
+    }
+
+    public boolean isEqualOrGreaterThanReference() {
+        return value != null && value >= REFERENCE;
     }
 }
