@@ -37,7 +37,7 @@ final class UomRestAPIAdapterServiceTest {
     @Mock
     private IUomDomainService uomDomainService;
     @Mock
-    private UomMapper uomMapper;
+    private UomRestViewMapper uomRestViewMapper;
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
@@ -90,9 +90,9 @@ final class UomRestAPIAdapterServiceTest {
         CreateUomViewResponse createUomViewResponse = generateCreateUomViewResponse(uomCategoryId, name, uomTypeEnumResponse, ratioResponse);
         Uom uomResponse = generateCreateUomResponse(name, uomCategoryId, uomType, ratioResponse);
 
-        when(uomMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
+        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
         when(uomDomainService.createUom(uomRequest)).thenReturn(uomResponse);
-        when(uomMapper.toCreateUomViewResponse(uomResponse)).thenReturn(createUomViewResponse);
+        when(uomRestViewMapper.toCreateUomViewResponse(uomResponse)).thenReturn(createUomViewResponse);
 
         ArgumentCaptor<CreateUomViewRequest> createUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(CreateUomViewRequest.class);
         ArgumentCaptor<Uom> createUomRequestArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
@@ -106,13 +106,13 @@ final class UomRestAPIAdapterServiceTest {
                 .isNotNull()
                 .isEqualTo(createUomViewResponse);
 
-        verify(uomMapper, times(1)).toUom(createUomViewRequestArgumentCaptor.capture());
+        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
         verify(uomDomainService, times(1)).createUom(createUomRequestArgumentCaptor.capture());
         assertThat(createUomRequestArgumentCaptor.getValue()).isEqualTo(uomRequest);
 
-        verify(uomMapper, times(1)).toCreateUomViewResponse(createUomResponseArgumentCaptor.capture());
+        verify(uomRestViewMapper, times(1)).toCreateUomViewResponse(createUomResponseArgumentCaptor.capture());
         assertThat(createUomResponseArgumentCaptor.getValue()).isEqualTo(uomResponse);
 
 
@@ -165,7 +165,7 @@ final class UomRestAPIAdapterServiceTest {
 
         Uom uomRequest = generateUom(name, uomCategoryId, uomType, ratioRequest);
 
-        when(uomMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
+        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
         when(uomDomainService.createUom(uomRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
 
         assertThatThrownBy(() -> service.createUom(createUomViewRequest))

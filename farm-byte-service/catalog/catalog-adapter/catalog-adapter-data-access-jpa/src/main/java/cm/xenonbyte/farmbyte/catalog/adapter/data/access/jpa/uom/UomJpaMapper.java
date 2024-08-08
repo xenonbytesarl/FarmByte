@@ -13,7 +13,7 @@ import org.mapstruct.*;
         componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
-public interface UomMapper {
+public interface UomJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "uomId.identifier", target = "id")

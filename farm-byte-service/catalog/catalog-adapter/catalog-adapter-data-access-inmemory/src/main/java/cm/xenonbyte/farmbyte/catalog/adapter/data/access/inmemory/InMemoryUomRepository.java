@@ -1,11 +1,11 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Active;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 
 import java.util.HashMap;
 import java.util.Map;

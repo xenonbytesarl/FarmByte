@@ -17,7 +17,7 @@ import java.util.UUID;
  * @since 07/08/2024
  */
 
-@ContextConfiguration(classes = {UomJpaRepository.class, UomMapper.class})
+@ContextConfiguration(classes = {UomJpaRepository.class, UomJpaMapper.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UomPostgreSqlRepositoryIT extends PostgreSqlRepositoryIT {
 
@@ -25,7 +25,7 @@ class UomPostgreSqlRepositoryIT extends PostgreSqlRepositoryIT {
     private UomJpaRepository uomJpaRepository;
 
     @Autowired
-    private UomMapper uomMapper;
+    private UomJpaMapper uomJpaMapper;
 
     @BeforeEach
     void setUp() {
@@ -34,7 +34,7 @@ class UomPostgreSqlRepositoryIT extends PostgreSqlRepositoryIT {
         uomType =  UomType.REFERENCE;
         name = Name.of("Unite");
 
-        super.uomRepository = new UomPostgreSqlRepository(uomJpaRepository, uomMapper);
+        super.uomRepository = new UomPostgreSqlRepository(uomJpaRepository, uomJpaMapper);
 
     }
 

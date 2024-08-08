@@ -20,11 +20,11 @@ public final class UomDomainService implements IUomDomainService {
 
     @Override
     public @Nonnull Uom createUom(Uom uom) {
-        if (uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType())) {
+        if (uom.getUomType().equals(UomType.REFERENCE) && uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType())) {
             throw new UomDomainException("We can't have two units of measure with type reference in the same category");
         }
         if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
-            throw  new UomDomainException(String.format("An unit of measure with the name %s already exists", uom.getName()));
+            throw  new UomDomainException(String.format("An unit of measure with the name '%s' already exists", uom.getName().getValue()));
         }
         uom.initiate();
         return uomRepository.save(uom);

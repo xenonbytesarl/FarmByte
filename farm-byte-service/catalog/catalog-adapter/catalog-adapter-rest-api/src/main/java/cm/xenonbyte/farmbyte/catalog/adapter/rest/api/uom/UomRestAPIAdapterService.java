@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 public final class UomRestAPIAdapterService implements IUomRestAPIAdapterService {
 
     private final IUomDomainService uomDomainService;
-    private final UomMapper uomMapper;
+    private final UomRestViewMapper uomRestViewMapper;
 
     @Nonnull
     @Override
     public CreateUomViewResponse createUom(@Nonnull CreateUomViewRequest request) {
-        return uomMapper.toCreateUomViewResponse(uomDomainService.createUom(uomMapper.toUom(request)));
+        return uomRestViewMapper.toCreateUomViewResponse(uomDomainService.createUom(uomRestViewMapper.toUom(request)));
     }
 }

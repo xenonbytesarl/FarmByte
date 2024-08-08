@@ -2,10 +2,10 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory.UomCategoryJpa;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
@@ -23,9 +23,9 @@ import java.util.Objects;
 public class UomPostgreSqlRepository implements UomRepository {
 
     private final UomJpaRepository uomJpaRepository;
-    private final UomMapper mapper;
+    private final UomJpaMapper mapper;
 
-    public UomPostgreSqlRepository(final @Nonnull UomJpaRepository uomJpaRepository, final @Nonnull UomMapper mapper) {
+    public UomPostgreSqlRepository(final @Nonnull UomJpaRepository uomJpaRepository, final @Nonnull UomJpaMapper mapper) {
         this.uomJpaRepository = Objects.requireNonNull(uomJpaRepository);
         this.mapper = Objects.requireNonNull(mapper);
     }
@@ -33,7 +33,7 @@ public class UomPostgreSqlRepository implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType) {
-        return uomJpaRepository.existsByUomCategoryJpaAndTypeAndActive(
+        return uomJpaRepository.existsByUomCategoryJpaAndUomTypeJpaAndAndActive(
                 UomCategoryJpa.builder().id(uomCategoryId.getIdentifier()).build(),
                 UomTypeJpa.valueOf(uomType.name()),
                 true

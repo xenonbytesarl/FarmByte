@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
 
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
