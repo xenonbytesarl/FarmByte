@@ -21,7 +21,7 @@ public interface UomJpaMapper {
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "uomCategoryId.identifier", target = "uomCategoryJpa.id")
-    @Mapping(source = "uomType", qualifiedByName = "toUomTypeJpa", target = "type")
+    @Mapping(source = "uomType", qualifiedByName = "toUomTypeJpa", target = "uomTypeJpa")
     UomJpa fromUom(Uom uom);
 
     @Named("toUomTypeJpa")
@@ -35,7 +35,7 @@ public interface UomJpaMapper {
     @Mapping(target = "ratio.value",source = "ratio")
     @Mapping(target = "active.value", source = "active")
     @Mapping(target = "uomCategoryId.identifier",source = "uomCategoryJpa.id")
-    @Mapping(target = "uomType", qualifiedByName = "toUomType", source = "type")
+    @Mapping(target = "uomType", qualifiedByName = "toUomType", source = "uomTypeJpa")
     Uom fromUomJpa(UomJpa uomJpa);
 
     @Named("toUomType")

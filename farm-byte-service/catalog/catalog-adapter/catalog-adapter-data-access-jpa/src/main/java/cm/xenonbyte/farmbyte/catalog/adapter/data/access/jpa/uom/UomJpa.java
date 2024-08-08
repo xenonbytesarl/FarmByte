@@ -41,7 +41,7 @@ public final class UomJpa {
     private Boolean active;
     @Enumerated(EnumType.STRING)
     @Column(name = "c_type", length = 16, nullable = false)
-    private UomTypeJpa type;
+    private UomTypeJpa uomTypeJpa;
     @ManyToOne
     @JoinColumn(name = "c_uom_category_id", nullable = false)
     private UomCategoryJpa uomCategoryJpa;
