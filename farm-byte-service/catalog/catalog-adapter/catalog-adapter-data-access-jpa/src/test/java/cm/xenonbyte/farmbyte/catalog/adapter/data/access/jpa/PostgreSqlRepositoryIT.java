@@ -4,6 +4,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomRepositoryTest;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,9 +21,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @version 1.0
  * @since 07/08/2024
  */
+@DataJpaTest
 @Testcontainers
+@EnableAutoConfiguration
 @ComponentScan(basePackages = {"cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa"})
-public abstract class PostgreSqlRepositoryConfigurationIT extends UomRepositoryTest {
+@EntityScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
+public abstract class PostgreSqlRepositoryIT extends UomRepositoryTest {
     @Container
     @ServiceConnection
     protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.3-alpine");

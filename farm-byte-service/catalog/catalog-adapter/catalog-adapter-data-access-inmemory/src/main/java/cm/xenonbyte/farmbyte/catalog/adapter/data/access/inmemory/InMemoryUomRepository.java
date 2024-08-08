@@ -1,11 +1,11 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.entity.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Active;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Active;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class InMemoryUomRepository implements UomRepository {
 
     @Override
     public Uom save(Uom uom) {
-        uomMap.put(uom.getUomId().getId().toString(), uom);
+        uomMap.put(uom.getUomId().getIdentifier().toString(), uom);
         return uom;
     }
 

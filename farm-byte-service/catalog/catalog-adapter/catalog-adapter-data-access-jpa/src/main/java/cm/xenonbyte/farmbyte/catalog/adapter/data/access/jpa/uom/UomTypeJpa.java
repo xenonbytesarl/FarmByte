@@ -1,10 +1,5 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-
-import java.util.UUID;
-
 /**
  * @author bamk
  * @version 1.0

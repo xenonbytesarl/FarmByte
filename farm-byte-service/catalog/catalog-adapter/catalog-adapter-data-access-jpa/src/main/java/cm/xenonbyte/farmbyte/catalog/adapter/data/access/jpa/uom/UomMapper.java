@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.entity.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import org.mapstruct.*;
 
 /**
@@ -11,16 +11,16 @@ import org.mapstruct.*;
  */
 @Mapper(
         componentModel = "spring",
-        injectionStrategy = InjectionStrategy.FIELD
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface UomMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "uomId.id", target = "id")
+    @Mapping(source = "uomId.identifier", target = "id")
     @Mapping(source = "name.value", target = "name")
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
-    @Mapping(source = "uomCategoryId.id", target = "uomCategoryJpa.id")
+    @Mapping(source = "uomCategoryId.identifier", target = "uomCategoryJpa.id")
     @Mapping(source = "uomType", qualifiedByName = "toUomTypeJpa", target = "type")
     UomJpa fromUom(Uom uom);
 
@@ -30,11 +30,11 @@ public interface UomMapper {
     }
 
     @BeanMapping(ignoreByDefault = true)
-    //@Mapping(target = "uomId.id", source = "id")
+    @Mapping(target = "uomId.identifier", source = "id")
     @Mapping(target = "name.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
-    //@Mapping(target = "active.value", source = "active")
-    @Mapping(target = "uomCategoryId.id",source = "uomCategoryJpa.id")
+    @Mapping(target = "active.value", source = "active")
+    @Mapping(target = "uomCategoryId.identifier",source = "uomCategoryJpa.id")
     @Mapping(target = "uomType", qualifiedByName = "toUomType", source = "type")
     Uom fromUomJpa(UomJpa uomJpa);
 

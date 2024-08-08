@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
+package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

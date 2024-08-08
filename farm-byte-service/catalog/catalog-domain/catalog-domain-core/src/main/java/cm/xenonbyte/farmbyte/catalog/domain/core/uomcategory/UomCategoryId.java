@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo;
+package cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory;
 
 import jakarta.annotation.Nonnull;
 
@@ -11,10 +11,10 @@ import java.util.UUID;
  * @since 06/08/2024
  */
 public final class UomCategoryId {
-    private final UUID id;
+    private final UUID identifier;
 
-    public UomCategoryId(@Nonnull UUID id) {
-        this.id = Objects.requireNonNull(id);
+    public UomCategoryId(@Nonnull UUID identifier) {
+        this.identifier = Objects.requireNonNull(identifier);
     }
 
     @Nonnull
@@ -23,8 +23,8 @@ public final class UomCategoryId {
     }
 
     @Nonnull
-    public UUID getId() {
-        return id;
+    public UUID getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -32,11 +32,11 @@ public final class UomCategoryId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UomCategoryId that = (UomCategoryId) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(identifier, that.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(identifier);
     }
 }

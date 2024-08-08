@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo;
+package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import jakarta.annotation.Nonnull;
 
@@ -9,30 +9,34 @@ import java.util.Objects;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class Name {
+public final class Active {
 
-    private final String value;
+    private final Boolean value;
 
-    public Name(@Nonnull String value) {
+    public Active(@Nonnull Boolean value) {
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
-    public static Name of(String value) {
-        return new Name(value);
+    public static Active with(Boolean value) {
+        if(value == null) {
+            throw new IllegalArgumentException("Active value is should be true of false");
+        }
+        return new Active(value);
     }
 
     @Nonnull
-    public String getValue() {
+    public Boolean getValue() {
         return value;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Name name = (Name) o;
-        return Objects.equals(value, name.value);
+        Active active = (Active) o;
+        return Objects.equals(value, active.value);
     }
 
     @Override

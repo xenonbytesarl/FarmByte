@@ -1,9 +1,9 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.entity.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 
 /**
  * @author bamk

@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory.UomCategoryJpa;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -1,19 +1,20 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.entity.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Active;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.Ratio;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.UomType;
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory.UomCategoryJpa;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Active;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-08T11:11:00+0200",
+    date = "2024-08-08T18:10:58+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
@@ -28,7 +29,7 @@ public class UomMapperImpl implements UomMapper {
         UomJpa.UomJpaBuilder<?, ?> uomJpa = UomJpa.builder();
 
         uomJpa.uomCategoryJpa( uomCategoryIdToUomCategoryJpa( uom.getUomCategoryId() ) );
-        uomJpa.id( uomUomIdId( uom ) );
+        uomJpa.id( uomUomIdIdentifier( uom ) );
         uomJpa.name( uomNameValue( uom ) );
         uomJpa.ratio( uomRatioValue( uom ) );
         uomJpa.active( uomActiveValue( uom ) );
@@ -43,17 +44,21 @@ public class UomMapperImpl implements UomMapper {
             return null;
         }
 
+        UomId uomId = null;
         Name name = null;
         Ratio ratio = null;
+        Active active = null;
         UomCategoryId uomCategoryId = null;
         UomType uomType = null;
 
+        uomId = uomJpaToUomId( uomJpa );
         name = uomJpaToName( uomJpa );
         ratio = uomJpaToRatio( uomJpa );
+        active = uomJpaToActive( uomJpa );
         uomCategoryId = uomCategoryJpaToUomCategoryId( uomJpa.getUomCategoryJpa() );
         uomType = toUomType( uomJpa.getType() );
 
-        Uom uom = new Uom( name, uomCategoryId, uomType, ratio );
+        Uom uom = new Uom( uomId, name, uomCategoryId, uomType, ratio, active );
 
         return uom;
     }
@@ -65,12 +70,12 @@ public class UomMapperImpl implements UomMapper {
 
         UomCategoryJpa.UomCategoryJpaBuilder<?, ?> uomCategoryJpa = UomCategoryJpa.builder();
 
-        uomCategoryJpa.id( uomCategoryId.getId() );
+        uomCategoryJpa.id( uomCategoryId.getIdentifier() );
 
         return uomCategoryJpa.build();
     }
 
-    private UUID uomUomIdId(Uom uom) {
+    private UUID uomUomIdIdentifier(Uom uom) {
         if ( uom == null ) {
             return null;
         }
@@ -78,11 +83,11 @@ public class UomMapperImpl implements UomMapper {
         if ( uomId == null ) {
             return null;
         }
-        UUID id = uomId.getId();
-        if ( id == null ) {
+        UUID identifier = uomId.getIdentifier();
+        if ( identifier == null ) {
             return null;
         }
-        return id;
+        return identifier;
     }
 
     private String uomNameValue(Uom uom) {
@@ -130,6 +135,20 @@ public class UomMapperImpl implements UomMapper {
         return value;
     }
 
+    protected UomId uomJpaToUomId(UomJpa uomJpa) {
+        if ( uomJpa == null ) {
+            return null;
+        }
+
+        UUID identifier = null;
+
+        identifier = uomJpa.getId();
+
+        UomId uomId = new UomId( identifier );
+
+        return uomId;
+    }
+
     protected Name uomJpaToName(UomJpa uomJpa) {
         if ( uomJpa == null ) {
             return null;
@@ -158,16 +177,30 @@ public class UomMapperImpl implements UomMapper {
         return ratio;
     }
 
+    protected Active uomJpaToActive(UomJpa uomJpa) {
+        if ( uomJpa == null ) {
+            return null;
+        }
+
+        Boolean value = null;
+
+        value = uomJpa.getActive();
+
+        Active active = new Active( value );
+
+        return active;
+    }
+
     protected UomCategoryId uomCategoryJpaToUomCategoryId(UomCategoryJpa uomCategoryJpa) {
         if ( uomCategoryJpa == null ) {
             return null;
         }
 
-        UUID id = null;
+        UUID identifier = null;
 
-        id = uomCategoryJpa.getId();
+        identifier = uomCategoryJpa.getId();
 
-        UomCategoryId uomCategoryId = new UomCategoryId( id );
+        UomCategoryId uomCategoryId = new UomCategoryId( identifier );
 
         return uomCategoryId;
     }

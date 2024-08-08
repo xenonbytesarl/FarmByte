@@ -1,9 +1,10 @@
-package cm.xenonbyte.farmbyte.catalog.domain.core.uom.entity;
+package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo.*;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -19,19 +20,20 @@ public final class Uom {
     private UomId uomId;
     private Active active;
 
-
-
     public Uom(
+            @Nullable final UomId uomId,
             @Nonnull final Name name,
             @Nonnull final UomCategoryId uomCategoryId,
             @Nonnull final UomType uomType,
-            @Nullable final Ratio ratio
+            @Nullable final Ratio ratio,
+            @Nullable final Active active
     ) {
-
-        this.name = name;
-        this.uomCategoryId = uomCategoryId;
-        this.uomType = uomType;
+        this.uomId = uomId;
+        this.name = Objects.requireNonNull(name);
+        this.uomCategoryId = Objects.requireNonNull(uomCategoryId);
+        this.uomType = Objects.requireNonNull(uomType);
         this.ratio = ratio;
+        this.active = active;
     }
 
     @Nonnull
@@ -42,10 +44,12 @@ public final class Uom {
             @Nullable final Ratio ratio
     ) {
         return new Uom(
+                null,
                 name,
                 uomCategoryId,
                 uomType,
-                ratio
+                ratio,
+                null
         );
     }
 
@@ -64,10 +68,10 @@ public final class Uom {
             throw new IllegalArgumentException("Ratio is required when unit of measure type is not reference.");
         }
         if(uomType.equals(UomType.GREATER) && ratio.isEqualOrLowerThanReference()) {
-            throw new IllegalArgumentException("Ratio should be greater than 0 when unit of measure type is not greater.");
+            throw new IllegalArgumentException("Ratio should be greater than 1 when unit of measure type is not greater.");
         }
         if(uomType.equals(UomType.LOWER) && ratio.isEqualOrGreaterThanReference()) {
-            throw new IllegalArgumentException("Ratio should be lower than 0 when unit of measure type is not lower.");
+            throw new IllegalArgumentException("Ratio should be lower than 1 when unit of measure type is not lower.");
         }
     }
 

@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.domain.core.uom.vo;
+package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import jakarta.annotation.Nonnull;
 
@@ -11,10 +11,11 @@ import java.util.UUID;
  * @since 06/08/2024
  */
 public final class UomId {
-    private final UUID id;
 
-    public UomId(@Nonnull UUID id) {
-        this.id = Objects.requireNonNull(id);
+    private final UUID identifier;
+
+    public UomId(@Nonnull UUID identifier) {
+        this.identifier = Objects.requireNonNull(identifier);
     }
 
     @Nonnull
@@ -23,8 +24,8 @@ public final class UomId {
     }
 
     @Nonnull
-    public UUID getId() {
-        return id;
+    public UUID getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -32,11 +33,11 @@ public final class UomId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UomId uomId = (UomId) o;
-        return Objects.equals(id, uomId.id);
+        return Objects.equals(identifier, uomId.identifier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(identifier);
     }
 }
