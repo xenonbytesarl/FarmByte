@@ -13,6 +13,7 @@
     <modules>
         <module>catalog-adapter-data-access-inmemory</module>
         <module>catalog-adapter-data-access-test</module>
+        <module>catalog-adapter-data-access-jpa</module>
     </modules>
 
 

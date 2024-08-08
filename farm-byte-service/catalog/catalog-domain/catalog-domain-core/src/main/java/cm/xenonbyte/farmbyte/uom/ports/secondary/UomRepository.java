@@ -14,7 +14,7 @@ public interface UomRepository {
 
     boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType);
 
-    void save(Uom uom);
+    Uom save(Uom uom);
 
     boolean existsByNameAndCategoryAndActive(Name name, UomCategoryId uomCategoryId);
 }

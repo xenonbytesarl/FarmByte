@@ -77,7 +77,7 @@ public abstract class UomRepositoryTest {
     @Test
     void should_save_given_valid_uom() {
         //Given
-        UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
         UomType uomType1 = UomType.GREATER;
         Uom uomToSave = createSomeUom(
                 Name.of("Palette de 6"),
@@ -94,7 +94,7 @@ public abstract class UomRepositoryTest {
 
     protected Uom createSomeUom(Name name, UomCategoryId uomCategoryId, UomType uomType, Ratio ratio) {
         Uom uom = Uom.from(
-                Name.of("Unite"),
+                name,
                 uomCategoryId,
                 uomType,
                 ratio

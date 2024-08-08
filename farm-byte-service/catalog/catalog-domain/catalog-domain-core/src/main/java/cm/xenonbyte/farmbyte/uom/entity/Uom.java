@@ -19,7 +19,9 @@ public final class Uom {
     private UomId uomId;
     private Active active;
 
-    private Uom(
+
+
+    public Uom(
             @Nonnull final Name name,
             @Nonnull final UomCategoryId uomCategoryId,
             @Nonnull final UomType uomType,

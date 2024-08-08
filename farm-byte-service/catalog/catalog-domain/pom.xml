@@ -6,8 +6,10 @@
         <artifactId>catalog</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>catalog-domain</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>catalog-domain-core</module>
         <module>catalog-domain-test</module>

@@ -30,8 +30,9 @@ public class InMemoryUomRepository implements UomRepository {
     }
 
     @Override
-    public void save(Uom uom) {
+    public Uom save(Uom uom) {
         uomMap.put(uom.getUomId().getId().toString(), uom);
+        return uom;
     }
 
     @Override

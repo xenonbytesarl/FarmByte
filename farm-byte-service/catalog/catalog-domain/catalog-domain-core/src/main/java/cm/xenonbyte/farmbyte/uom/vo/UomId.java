@@ -13,10 +13,11 @@ import java.util.UUID;
 public final class UomId {
     private final UUID id;
 
-    private UomId(@Nonnull UUID id) {
+    public UomId(@Nonnull UUID id) {
         this.id = Objects.requireNonNull(id);
     }
 
+    @Nonnull
     public static UomId of(@Nonnull UUID uuid) {
         return new UomId(Objects.requireNonNull(uuid));
     }

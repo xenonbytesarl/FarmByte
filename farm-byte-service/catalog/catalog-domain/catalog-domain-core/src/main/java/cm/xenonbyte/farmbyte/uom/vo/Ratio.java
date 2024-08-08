@@ -15,13 +15,18 @@ public final class Ratio {
 
     private final Double value;
 
-    private Ratio(Double value) {
+    public Ratio(Double value) {
         this.value = value;
     }
 
     @Nonnull
     public static Ratio of(Double value) {
         return new Ratio(value);
+    }
+
+    @Nonnull
+    public Double getValue() {
+        return value;
     }
 
     @Override

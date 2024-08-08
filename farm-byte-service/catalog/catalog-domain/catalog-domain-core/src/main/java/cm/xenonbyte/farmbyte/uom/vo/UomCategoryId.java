@@ -13,13 +13,18 @@ import java.util.UUID;
 public final class UomCategoryId {
     private final UUID id;
 
-    private UomCategoryId(@Nonnull UUID id) {
+    public UomCategoryId(@Nonnull UUID id) {
         this.id = Objects.requireNonNull(id);
     }
 
     @Nonnull
     public static UomCategoryId of(@Nonnull UUID uuid) {
         return new UomCategoryId(Objects.requireNonNull(uuid));
+    }
+
+    @Nonnull
+    public UUID getId() {
+        return id;
     }
 
     @Override

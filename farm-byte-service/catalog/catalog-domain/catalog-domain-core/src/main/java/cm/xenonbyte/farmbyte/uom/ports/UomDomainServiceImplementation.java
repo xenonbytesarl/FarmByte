@@ -29,7 +29,6 @@ public final class UomDomainServiceImplementation implements UomDomainService {
             throw  new UomDomainException(String.format("An unit of measure with the name %s already exists", uom.getName()));
         }
         uom.initiate();
-        uomRepository.save(uom);
-        return uom;
+        return uomRepository.save(uom);
     }
 }

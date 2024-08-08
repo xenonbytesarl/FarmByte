@@ -13,13 +13,18 @@ public final class Name {
 
     private final String value;
 
-    private Name(@Nonnull String value) {
+    public Name(@Nonnull String value) {
         this.value = Objects.requireNonNull(value);
     }
 
     @Nonnull
     public static Name of(String value) {
         return new Name(value);
+    }
+
+    @Nonnull
+    public String getValue() {
+        return value;
     }
 
     @Override

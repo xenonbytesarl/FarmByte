@@ -13,7 +13,7 @@ public final class Active {
 
     private final Boolean value;
 
-    private Active(@Nonnull Boolean value) {
+    public Active(@Nonnull Boolean value) {
         this.value = Objects.requireNonNull(value);
     }
 
@@ -24,6 +24,12 @@ public final class Active {
         }
         return new Active(value);
     }
+
+    @Nonnull
+    public Boolean getValue() {
+        return value;
+    }
+
 
     @Override
     public boolean equals(Object o) {
