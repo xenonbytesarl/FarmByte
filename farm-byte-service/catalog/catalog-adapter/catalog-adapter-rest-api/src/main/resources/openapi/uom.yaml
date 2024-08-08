@@ -1,0 +1,166 @@
+openapi: 3.1.0
+info:
+  title: Unit of Measure API
+  description: |
+    REST API endpoints for Unit of Measure
+  version: 1.0.0
+servers:
+  - url: http://localhost:8085/api/v1/catalog
+    description: Development Server
+  - url: http://localhost:8080/api/v1/catalog
+    description: Production server
+
+paths:
+  /uoms:
+    post:
+      tags:
+        - Uom
+      summary: create an unit of measure
+      operationId: createUom
+      security:
+        - oAuth:
+            - create:uom
+      requestBody:
+        required: true
+        description: uom object to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUomViewRequest'
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiSuccessResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+components:
+  schemas:
+    ValidationError:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    ApiResponse:
+      type: object
+      required:
+        - timestamp
+        - code
+        - status
+        - success
+      properties:
+        timestamp:
+          type: string
+        code:
+          type: integer
+          format: int32
+        status:
+          type: string
+        success:
+          type: boolean
+    ApiSuccessResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            message:
+              type: string
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateUomViewResponse'
+    ApiErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - reason
+            - path
+            - trackId
+          properties:
+            reason:
+              type: string
+            developerMessage:
+              type: string
+            path:
+              type: string
+            trackId:
+              type: string
+              format: uuid
+            error:
+              type: array
+              items:
+                $ref: '#/components/schemas/ValidationError'
+    CreateUomViewRequest:
+      type: object
+      required:
+        - name
+        - uomCategoryId
+        - uomType
+      properties:
+        name:
+          type: string
+        uomCategoryId:
+          type: string
+          format: uuid
+        uomType:
+          type: string
+          enum:
+            - LOWER
+            - REFERENCE
+            - GREATER
+        ratio:
+          type: number
+          format: double
+    CreateUomViewResponse:
+      type: object
+      required:
+        - id
+        - name
+        - uomCategoryId
+        - uomType
+        - ratio
+        - active
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        uomCategoryId:
+          type: string
+          format: uuid
+        uomType:
+          type: string
+          enum:
+            - LOWER
+            - REFERENCE
+            - GREATER
+        ratio:
+          type: number
+          format: double
+        active:
+          type: boolean
