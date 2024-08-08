@@ -33,10 +33,10 @@ public abstract class UomRepositoryTest {
 
         //Given
         UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.randomUUID());
-        UomType uomType1 = UomType.REFERENCE;
+        UomType uomType = UomType.REFERENCE;
 
         //Act
-        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId1, );
+        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId1, uomType);
 
         //Then
         assertThat(result).isFalse();
@@ -46,7 +46,7 @@ public abstract class UomRepositoryTest {
     void should_return_true_when_existent_uom_category_id_and_uom_type_are_given() {
 
         //Act
-        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId, );
+        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId, UomType.REFERENCE);
 
         //Then
         assertThat(result).isTrue();
@@ -86,7 +86,7 @@ public abstract class UomRepositoryTest {
                 Ratio.of(6.0));
         //Act
         uomRepository.save(uomToSave);
-        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId1, );
+        boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId1, uomType1);
 
         //Then
         assertThat(result).isTrue();

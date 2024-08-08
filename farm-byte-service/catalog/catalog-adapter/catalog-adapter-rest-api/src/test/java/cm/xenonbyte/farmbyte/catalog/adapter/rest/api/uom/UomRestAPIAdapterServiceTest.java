@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
  * @version 1.0
  * @since 08/08/2024
  */
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 final class UomRestAPIAdapterServiceTest {
 

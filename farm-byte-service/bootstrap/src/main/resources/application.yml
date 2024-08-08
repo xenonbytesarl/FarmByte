@@ -1,8 +1,8 @@
 spring:
+  profiles:
+    active: @spring.profiles.active@
   jpa:
     open-in-view: false
-    show-sql: true
-    generate-ddl: true
     properties:
       hibernate:
         format_sql: true
@@ -13,22 +13,13 @@ spring:
       ddl-auto: none
     database: postgresql
 
-  datasource:
-    url: jdbc:postgresql://localhost:5433/catalogdb?currentSchema=public&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
-    username: catalog
-    password: PSofy1ULf0M69J7nV5SNTJmCNflrkxKb
-    driver-class-name: org.postgresql.Driver
-
   sql:
     init:
       mode: never
       platform: postgres
 
   flyway:
-    locations: classpath:db/migrations
+    locations: classpath:db/migrations/common
     execute-in-transaction: true
     postgresql:
       transactional-lock: true
-logging:
-  level:
-    org.springframework.web: DEBUG

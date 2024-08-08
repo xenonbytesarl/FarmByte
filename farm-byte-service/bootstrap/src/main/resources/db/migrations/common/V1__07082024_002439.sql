@@ -26,8 +26,3 @@ ALTER TABLE t_uom ADD CONSTRAINT Fk_t_uom_c_uom_category_id FOREIGN KEY (c_uom_c
 
 --Create index for t_uom
 CREATE INDEX Ix_t_uom_c_uom_category_id ON t_uom(c_uom_category_id);
-
-
---Insert data for test
-INSERT INTO t_uom_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01912c0f-2fcf-705b-ae59-d79d159f3ad0', current_timestamp, null, 'Unite', true);
-INSERT INTO t_uom_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01912c2e-b52d-7b85-9c12-85af49fc7798', current_timestamp, null, 'Distance', true);
