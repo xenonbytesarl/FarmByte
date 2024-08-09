@@ -17,6 +17,11 @@
     <dependencies>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-domain</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
