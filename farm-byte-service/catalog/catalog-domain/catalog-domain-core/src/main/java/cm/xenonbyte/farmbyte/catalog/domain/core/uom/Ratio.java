@@ -9,27 +9,16 @@ import java.util.Objects;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class Ratio {
+public record Ratio(@Nonnull Double value) {
 
     public static final Double REFERENCE = 1.0;
 
-    private final Double value;
-
-    public Ratio(Double value) {
-        this.value = value;
-    }
-
     @Nonnull
     public static Ratio of(Double value) {
-        if(value == null) {
+        if (value == null) {
             throw new IllegalArgumentException("ration can't be null");
         }
         return new Ratio(value);
-    }
-
-    @Nonnull
-    public Double getValue() {
-        return value;
     }
 
     @Override
@@ -40,16 +29,11 @@ public final class Ratio {
         return Objects.equals(value, ratio.value);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
-    }
-
     public boolean isEqualOrLowerThanReference() {
-        return value != null && value <= REFERENCE;
+        return value <= REFERENCE;
     }
 
     public boolean isEqualOrGreaterThanReference() {
-        return value != null && value >= REFERENCE;
+        return value >= REFERENCE;
     }
 }

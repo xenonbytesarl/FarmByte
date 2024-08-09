@@ -34,7 +34,7 @@ final class UomTest {
     @BeforeEach
     void setUp() {
         uomRepository = new InMemoryUomRepository();
-        uomDomainService = new UomDomainService(uomRepository);
+        uomDomainService = new UomService(uomRepository);
     }
 
     static Stream<Arguments> createUomMethodSourceArgs() {

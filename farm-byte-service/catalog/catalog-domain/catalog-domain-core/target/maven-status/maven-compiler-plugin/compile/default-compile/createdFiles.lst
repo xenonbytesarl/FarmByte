@@ -3,8 +3,8 @@ cm/xenonbyte/farmbyte/catalog/domain/core/uom/ports/secondary/UomRepository.clas
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/ports/primary/IUomDomainService.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/Uom.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomDomainException.class
+cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomService.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomType.class
-cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomDomainService.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/Ratio.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/Uom$Builder.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uomcategory/UomCategoryId.class

@@ -1,7 +1,6 @@
 package cm.xenonbyte.farmbyte.bootstrap.config;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom.UomJpaRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomDomainService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import jakarta.annotation.Nonnull;
@@ -17,6 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class BeanInitializerConfig {
     @Bean
     public IUomDomainService uomDomainService(@Nonnull UomRepository uomRepository) {
-        return new UomDomainService(uomRepository);
+        return new UomService(uomRepository);
     }
 }

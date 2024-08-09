@@ -11,10 +11,10 @@ import java.util.Objects;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class UomDomainService implements IUomDomainService {
+public final class UomService implements IUomDomainService {
     private final UomRepository uomRepository;
 
-    public UomDomainService(final @Nonnull UomRepository uomRepository) {
+    public UomService(final @Nonnull UomRepository uomRepository) {
         this.uomRepository = Objects.requireNonNull(uomRepository);
     }
 

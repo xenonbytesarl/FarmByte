@@ -1,8 +1,8 @@
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/Ratio.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/Uom.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomDomainException.java
-/Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomDomainService.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomId.java
+/Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomService.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomType.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/ports/primary/IUomDomainService.java
 /Users/bamk/Dev/Java/FarmByte/farm-byte-service/catalog/catalog-domain/catalog-domain-core/src/main/java/cm/xenonbyte/farmbyte/catalog/domain/core/uom/ports/secondary/UomRepository.java

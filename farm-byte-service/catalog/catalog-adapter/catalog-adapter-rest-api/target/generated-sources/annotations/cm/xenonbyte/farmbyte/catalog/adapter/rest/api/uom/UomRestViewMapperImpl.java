@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T15:14:46+0200",
+    date = "2024-08-09T15:59:08+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
@@ -134,7 +134,7 @@ public class UomRestViewMapperImpl implements UomRestViewMapper {
         if ( ratio == null ) {
             return null;
         }
-        Double value = ratio.getValue();
+        Double value = ratio.value();
         if ( value == null ) {
             return null;
         }
