@@ -1,11 +1,17 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
+
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import jakarta.annotation.Nonnull;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
 
 /**
  * @author bamk
@@ -37,7 +43,8 @@ public interface UomApiViewMapper {
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "uomCategoryId.value", target = "uomCategoryId")
     @Mapping(source = "uomType", qualifiedByName = "toUomType2", target = "uomType")
-    @Nonnull CreateUomViewResponse toCreateUomViewResponse(@Nonnull Uom uomResponse);
+    @Nonnull
+    CreateUomViewResponse toCreateUomViewResponse(@Nonnull Uom uomResponse);
 
     @Named("toUomType2")
     default CreateUomViewResponse.UomTypeEnum toUomType2(UomType uomType) {

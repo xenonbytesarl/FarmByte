@@ -1,13 +1,16 @@
 package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -81,16 +84,16 @@ final class UomTest {
 
         //Then
         assertThat(createdUom).isNotNull();
-        Assertions.assertThat(createdUom.getId())
+        assertThat(createdUom.getId())
                 .isNotNull()
-                .satisfies(result -> Assertions.assertThat(result.getValue()).isInstanceOf(UUID.class));
-        Assertions.assertThat(createdUom.getUomCategoryId())
+                .satisfies(result -> assertThat(result.getValue()).isInstanceOf(UUID.class));
+        assertThat(createdUom.getUomCategoryId())
                 .isNotNull()
                 .isEqualTo(uomCategoryId);
-        Assertions.assertThat(createdUom.getUomType()).isEqualTo(uomType);
-        Assertions.assertThat(createdUom.getActive()).isEqualTo(Active.with(true));
+        assertThat(createdUom.getUomType()).isEqualTo(uomType);
+        assertThat(createdUom.getActive()).isEqualTo(Active.with(true));
         assertThat(createdUom.getRatio()).isEqualTo(ratio == null ? Ratio.of( Ratio.REFERENCE) : ratio);
-        Assertions.assertThat(createdUom.getName()).isEqualTo(name);
+        assertThat(createdUom.getName()).isEqualTo(name);
     }
 
     static Stream<Arguments> createUomThrowExceptionMethodSourceArgs() {

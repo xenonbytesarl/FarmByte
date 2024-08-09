@@ -1,10 +1,11 @@
 package cm.xenonbyte.farmbyte.common.adapter.api.handler;
 
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author bamk
