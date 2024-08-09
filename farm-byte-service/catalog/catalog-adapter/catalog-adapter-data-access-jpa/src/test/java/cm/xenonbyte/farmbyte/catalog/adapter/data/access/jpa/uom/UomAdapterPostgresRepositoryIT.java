@@ -1,6 +1,6 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.AdapterPostgresRepositoryTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.AdapterPostgresRepositoryIT;
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Import({BaseEntityJpaConfig.class})
 @ContextConfiguration(classes = {UomJpaRepository.class, UomJpaMapper.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UomAdapterPostgresRepositoryTest extends AdapterPostgresRepositoryTest {
+class UomAdapterPostgresRepositoryIT extends AdapterPostgresRepositoryIT {
 
     @Autowired
     private UomJpaRepository uomJpaRepository;

@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T17:15:56.892206+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T20:29:15.162021+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
 @Validated
 @Tag(name = "Uom", description = "the Uom API")
 @RequestMapping("${openapi.unitOfMeasure.base-path:/api/v1/catalog}")
