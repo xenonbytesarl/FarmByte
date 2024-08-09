@@ -1,19 +1,14 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory;
 
+import cm.xenonbyte.farmbyte.adapter.data.access.jpa.entity.BaseEntityJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.ZonedDateTime;
-import java.util.UUID;
 
 /**
  * @author bamk
@@ -27,16 +22,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "t_uom_category")
-public final class UomCategoryJpa {
-    @Id
-    @Column(name = "c_id", nullable = false, unique = true)
-    private UUID id;
-    @CreationTimestamp
-    @Column(name = "c_created_at",  updatable = false, nullable = false)
-    private ZonedDateTime createdAt;
-    @UpdateTimestamp
-    @Column(name = "c_updated_at", insertable = false)
-    private ZonedDateTime updatedAt;
+public final class UomCategoryJpa extends BaseEntityJpa {
+
     @Column(name = "c_name", nullable = false, unique = true, length = 64)
     private String name;
     @Column(name = "c_active", nullable = false)

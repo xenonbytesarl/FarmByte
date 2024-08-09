@@ -1,12 +1,14 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.PostgreSqlRepositoryTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.AdapterPostgresRepositoryTest;
+import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.UUID;
@@ -16,9 +18,10 @@ import java.util.UUID;
  * @version 1.0
  * @since 07/08/2024
  */
+@Import({BaseEntityJpaConfig.class})
 @ContextConfiguration(classes = {UomJpaRepository.class, UomJpaMapper.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UomPostgreSqlRepositoryTest extends PostgreSqlRepositoryTest {
+class UomAdapterPostgresRepositoryTest extends AdapterPostgresRepositoryTest {
 
     @Autowired
     private UomJpaRepository uomJpaRepository;
@@ -33,7 +36,7 @@ class UomPostgreSqlRepositoryTest extends PostgreSqlRepositoryTest {
         uomType =  UomType.REFERENCE;
         name = Name.of("Unite");
 
-        super.uomRepository = new UomPostgreSqlRepository(uomJpaRepository, uomJpaMapper);
+        super.uomRepository = new UomAdapterPostgresRepository(uomJpaRepository, uomJpaMapper);
 
     }
 

@@ -2,7 +2,6 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomRepositoryTest;
 import jakarta.annotation.Nonnull;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -13,9 +12,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.TestPropertySources;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -33,7 +31,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @EnableConfigurationProperties
 @ComponentScan(basePackages = {"cm.xenonbyte.farmbyte"})
 @EntityScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
-public abstract class PostgreSqlRepositoryTest extends UomRepositoryTest {
+public abstract class AdapterPostgresRepositoryTest extends UomRepositoryTest {
     @Container
     @ServiceConnection
     protected static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.3-alpine");

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UomJpaRepository extends CrudRepository<UomJpa, String> {
-    boolean existsByUomCategoryJpaAndUomTypeJpaAndActive(UomCategoryJpa uomCategoryJpa, UomTypeJpa uomTypeJpa, Boolean active);
+    boolean existsByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(UomCategoryJpa uomCategoryJpa, UomTypeJpa uomTypeJpa);
 
-    boolean existsByNameAndUomCategoryJpaAndActive(String name, UomCategoryJpa uomCategoryJpa, Boolean active);
+    boolean existsByNameAndUomCategoryJpaAndActiveIsTrue(String name, UomCategoryJpa uomCategoryJpa);
 }

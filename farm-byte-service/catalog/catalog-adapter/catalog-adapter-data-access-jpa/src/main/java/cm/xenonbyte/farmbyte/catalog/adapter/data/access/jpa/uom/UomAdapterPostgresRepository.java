@@ -20,12 +20,12 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class UomPostgreSqlRepository implements UomRepository {
+public class UomAdapterPostgresRepository implements UomRepository {
 
     private final UomJpaRepository uomJpaRepository;
     private final UomJpaMapper mapper;
 
-    public UomPostgreSqlRepository(final @Nonnull UomJpaRepository uomJpaRepository, final @Nonnull UomJpaMapper mapper) {
+    public UomAdapterPostgresRepository(final @Nonnull UomJpaRepository uomJpaRepository, final @Nonnull UomJpaMapper mapper) {
         this.uomJpaRepository = Objects.requireNonNull(uomJpaRepository);
         this.mapper = Objects.requireNonNull(mapper);
     }
@@ -33,10 +33,9 @@ public class UomPostgreSqlRepository implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public boolean existsByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
-        return uomJpaRepository.existsByUomCategoryJpaAndUomTypeJpaAndActive(
+        return uomJpaRepository.existsByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(
                 UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
-                UomTypeJpa.valueOf(uomType.name()),
-                true
+                UomTypeJpa.valueOf(uomType.name())
         );
     }
 
@@ -49,10 +48,9 @@ public class UomPostgreSqlRepository implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId) {
-        return uomJpaRepository.existsByNameAndUomCategoryJpaAndActive(
+        return uomJpaRepository.existsByNameAndUomCategoryJpaAndActiveIsTrue(
                 name.getValue(),
-                UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
-                true
+                UomCategoryJpa.builder().id(uomCategoryId.getValue()).build()
         );
     }
 }
