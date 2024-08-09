@@ -123,14 +123,11 @@ components:
       properties:
         name:
           type: string
-          x-field-extra-annotation: "jakarta.validation.constraints.NotNull(message = \"name is required\")"
         uomCategoryId:
           type: string
           format: uuid
-          x-field-extra-annotation: "jakarta.validation.constraints.NotNull(message = \category is required\")"
         uomType:
           type: string
-          x-field-extra-annotation: "jakarta.validation.constraints.NotNull(message = \"unit measure type is required\")"
           enum:
             - LOWER
             - REFERENCE
