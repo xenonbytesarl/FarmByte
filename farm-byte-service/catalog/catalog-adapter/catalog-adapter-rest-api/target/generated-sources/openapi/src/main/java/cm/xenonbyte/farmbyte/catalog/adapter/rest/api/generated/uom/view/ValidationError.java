@@ -19,7 +19,7 @@ import jakarta.annotation.Generated;
  * ValidationError
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T15:59:07.764763+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T16:35:50.817375+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
 public class ValidationError {
 
   private String field;

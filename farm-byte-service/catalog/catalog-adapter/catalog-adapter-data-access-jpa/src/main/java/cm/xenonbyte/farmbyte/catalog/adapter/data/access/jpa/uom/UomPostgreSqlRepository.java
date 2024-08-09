@@ -32,7 +32,7 @@ public class UomPostgreSqlRepository implements UomRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType) {
+    public boolean existsByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
         return uomJpaRepository.existsByUomCategoryJpaAndUomTypeJpaAndActive(
                 UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
                 UomTypeJpa.valueOf(uomType.name()),
@@ -42,13 +42,13 @@ public class UomPostgreSqlRepository implements UomRepository {
 
     @Override
     @Transactional
-    public Uom save(Uom uom) {
+    public Uom save(@Nonnull Uom uom) {
         return mapper.fromUomJpa(uomJpaRepository.save(mapper.fromUom(uom)));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByNameAndCategoryAndActive(Name name, UomCategoryId uomCategoryId) {
+    public boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId) {
         return uomJpaRepository.existsByNameAndUomCategoryJpaAndActive(
                 name.getValue(),
                 UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),

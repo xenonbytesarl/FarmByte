@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ApiErrorResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ValidationError;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomDomainException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -73,8 +73,8 @@ public final class CatalogResponseEntityExceptionHandler extends ResponseEntityE
                 );
     }
 
-    @ExceptionHandler({UomDomainException.class})
-    protected final ResponseEntity<ApiErrorResponse> handleBadRequestException
+    @ExceptionHandler({UomException.class})
+    public final ResponseEntity<ApiErrorResponse> handleBadRequestException
             (RuntimeException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity

@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author bamk
@@ -12,9 +13,9 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
  */
 public interface UomRepository {
 
-    boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType);
+    boolean existsByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType);
 
-    Uom save(Uom uom);
+    Uom save(@Nonnull Uom uom);
 
-    boolean existsByNameAndCategoryAndActive(Name name, UomCategoryId uomCategoryId);
+    boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId);
 }

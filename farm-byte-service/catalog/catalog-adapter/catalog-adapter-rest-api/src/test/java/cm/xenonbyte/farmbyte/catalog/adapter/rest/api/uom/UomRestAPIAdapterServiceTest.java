@@ -190,11 +190,11 @@ final class UomRestAPIAdapterServiceTest {
         String exceptionMessage = "We can't have two units of measure with type reference in the same category";
 
         when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomDomainException(exceptionMessage));
+        when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
-                .isInstanceOf(UomDomainException.class)
+                .isInstanceOf(UomException.class)
                 .hasMessage(exceptionMessage);
 
         verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);
@@ -218,11 +218,11 @@ final class UomRestAPIAdapterServiceTest {
         String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
 
         when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomDomainException(exceptionMessage));
+        when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
-                .isInstanceOf(UomDomainException.class)
+                .isInstanceOf(UomException.class)
                 .hasMessage(exceptionMessage);
 
         verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);

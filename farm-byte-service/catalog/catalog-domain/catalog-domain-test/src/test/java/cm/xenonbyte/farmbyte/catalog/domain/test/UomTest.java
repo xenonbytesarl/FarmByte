@@ -168,7 +168,7 @@ final class UomTest {
 
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
-                .isInstanceOf(UomDomainException.class)
+                .isInstanceOf(UomException.class)
                 .hasMessage("We can't have two units of measure with type reference in the same category");
     }
 
@@ -216,7 +216,7 @@ final class UomTest {
 
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
-                .isInstanceOf(UomDomainException.class)
+                .isInstanceOf(UomException.class)
                 .hasMessage(String.format("An unit of measure with the name '%s' already exists", firstRefereceUom.getName().getValue()));
     }
 }

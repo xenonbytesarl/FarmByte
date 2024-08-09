@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomReposito
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class InMemoryUomRepository implements UomRepository {
     private final Map<UomId, Uom> uomMap = new HashMap<>();
 
     @Override
-    public boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType) {
+    public boolean existsByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
         return uomMap.values().stream()
                 .anyMatch(uom ->
                         uom.getUomCategoryId().equals(uomCategoryId) &&
@@ -31,13 +32,13 @@ public class InMemoryUomRepository implements UomRepository {
     }
 
     @Override
-    public Uom save(Uom uom) {
+    public Uom save(@Nonnull Uom uom) {
         uomMap.put(uom.getId(), uom);
         return uom;
     }
 
     @Override
-    public boolean existsByNameAndCategoryAndActive(Name name, UomCategoryId uomCategoryId) {
+    public boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId) {
         return uomMap.values().stream().anyMatch(uom ->
                 uom.getName().equals(name) &&
                 uom.getUomCategoryId().equals(uomCategoryId) &&

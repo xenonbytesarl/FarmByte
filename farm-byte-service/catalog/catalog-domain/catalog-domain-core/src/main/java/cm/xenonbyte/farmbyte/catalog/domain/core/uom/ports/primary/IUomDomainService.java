@@ -11,5 +11,5 @@ import jakarta.annotation.Nonnull;
 public interface IUomDomainService {
 
     @Nonnull
-    Uom createUom(Uom uom);
+    Uom createUom(@Nonnull Uom uom);
 }

@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomDomainException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -197,7 +197,7 @@ final class UomRestControllerTest {
         );
         String exceptionMessage = "We can't have two units of measure with type reference in the same category";
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomDomainException(exceptionMessage));
+        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
@@ -227,7 +227,7 @@ final class UomRestControllerTest {
         );
         String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomDomainException(exceptionMessage));
+        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
