@@ -26,13 +26,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 final class UomTest {
 
 
-    private IUomDomainService IUomDomainService;
+    private IUomDomainService uomDomainService;
     private UomRepository uomRepository;
 
     @BeforeEach
     void setUp() {
         uomRepository = new InMemoryUomRepository();
-        IUomDomainService = new UomDomainService(uomRepository);
+        uomDomainService = new UomDomainService(uomRepository);
     }
 
     static Stream<Arguments> createUomMethodSourceArgs() {
@@ -75,7 +75,7 @@ final class UomTest {
         );
 
         //Act
-        Uom createdUom = IUomDomainService.createUom(uom);
+        Uom createdUom = uomDomainService.createUom(uom);
 
         //Then
         assertThat(createdUom).isNotNull();
@@ -139,7 +139,7 @@ final class UomTest {
         );
 
         //Act + Then
-        assertThatThrownBy(() -> IUomDomainService.createUom(uom))
+        assertThatThrownBy(() -> uomDomainService.createUom(uom))
                 .isInstanceOf(exceptionClass)
                 .hasMessage(exceptionMessage);
 
@@ -156,7 +156,7 @@ final class UomTest {
                 UomType.REFERENCE,
                 null);
 
-        IUomDomainService.createUom(firstRefereceUom);
+        uomDomainService.createUom(firstRefereceUom);
 
         Uom secondRefereceUom = Uom.from(
                 Name.of("Piece"),
@@ -165,9 +165,33 @@ final class UomTest {
                 null);
 
         //When + Then
-        assertThatThrownBy(() -> IUomDomainService.createUom(secondRefereceUom))
+        assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
                 .isInstanceOf(UomDomainException.class)
                 .hasMessage("We can't have two units of measure with type reference in the same category");
+    }
+
+    @Test
+    void should_create_uom_when_create_two_uom_with_uom_type_as_greater_for_the_same_category() {
+        //Given
+        UomCategoryId uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        Uom firstRefereceUom = Uom.from(
+                Name.of("Carton de 10"),
+                uomCategoryId,
+                UomType.GREATER,
+                Ratio.of(2.0));
+
+        uomDomainService.createUom(firstRefereceUom);
+
+        Uom secondRefereceUom = Uom.from(
+                Name.of("Carton de 50"),
+                uomCategoryId,
+                UomType.GREATER,
+                Ratio.of(50.0));
+        //Act
+        Uom result = uomDomainService.createUom(secondRefereceUom);
+
+        assertThat(result).isNotNull();
+        //Then
     }
 
     @Test
@@ -180,7 +204,7 @@ final class UomTest {
                 UomType.REFERENCE,
                 null);
 
-        IUomDomainService.createUom(firstRefereceUom);
+        uomDomainService.createUom(firstRefereceUom);
 
         Uom secondRefereceUom = Uom.from(
                 Name.of("Unite"),
@@ -189,8 +213,8 @@ final class UomTest {
                 Ratio.of(1.5));
 
         //When + Then
-        assertThatThrownBy(() -> IUomDomainService.createUom(secondRefereceUom))
+        assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
                 .isInstanceOf(UomDomainException.class)
-                .hasMessage(String.format("An unit of measure with the name %s already exists", firstRefereceUom.getName()));
+                .hasMessage(String.format("An unit of measure with the name '%s' already exists", firstRefereceUom.getName().getValue()));
     }
 }

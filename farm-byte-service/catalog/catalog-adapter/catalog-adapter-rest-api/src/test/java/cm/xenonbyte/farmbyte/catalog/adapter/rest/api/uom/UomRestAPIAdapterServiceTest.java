@@ -2,12 +2,10 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,7 +33,7 @@ import static org.mockito.Mockito.*;
 final class UomRestAPIAdapterServiceTest {
 
     @InjectMocks
-    private UomRestAPIAdapterService service;
+    private UomRestAPIAdapterService uomRestAPIAdapterService;
     @Mock
     private IUomDomainService uomDomainService;
     @Mock
@@ -101,7 +99,7 @@ final class UomRestAPIAdapterServiceTest {
         ArgumentCaptor<Uom> createUomResponseArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
 
         //Act
-        CreateUomViewResponse result = service.createUom(createUomViewRequest);
+        CreateUomViewResponse result = uomRestAPIAdapterService.createUom(createUomViewRequest);
 
         //Then
         assertThat(result)
@@ -170,17 +168,75 @@ final class UomRestAPIAdapterServiceTest {
         when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
         when(uomDomainService.createUom(uomRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
 
-        assertThatThrownBy(() -> service.createUom(createUomViewRequest))
+        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
                 .isInstanceOf(exceptionClass)
                 .hasMessageContaining(exceptionMessage);
     }
+
+    @Test
+    void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
+        //Given
+        String name = "Unite";
+        UUID uomCategoryId = UUID.randomUUID();
+        CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
+                uomCategoryId,
+                name,
+                CreateUomViewRequest.UomTypeEnum.REFERENCE,
+                null
+        );
+
+        Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
+        String exceptionMessage = "We can't have two units of measure with type reference in the same category";
+
+        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
+        when(uomDomainService.createUom(uom)).thenThrow(new UomDomainException(exceptionMessage));
+
+        //Act + Then
+        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
+                .isInstanceOf(UomDomainException.class)
+                .hasMessage(exceptionMessage);
+
+        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);
+        verify(uomDomainService, times(1)).createUom(uom);
+
+    }
+
+    @Test
+    void should_throw_exception_when_create_two_uom_with_same_name() {
+        //Given
+        String name = "Unite";
+        UUID uomCategoryId = UUID.randomUUID();
+        CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
+                uomCategoryId,
+                name,
+                CreateUomViewRequest.UomTypeEnum.REFERENCE,
+                null
+        );
+
+        Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
+        String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
+
+        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
+        when(uomDomainService.createUom(uom)).thenThrow(new UomDomainException(exceptionMessage));
+
+        //Act + Then
+        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
+                .isInstanceOf(UomDomainException.class)
+                .hasMessage(exceptionMessage);
+
+        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);
+        verify(uomDomainService, times(1)).createUom(uom);
+
+    }
+
+
 
     private static Uom generateUom(String name, UUID uomCategoryId, UomType uomType, Double ratio) {
         return Uom.from(
                 Name.of(name),
                 UomCategoryId.of(uomCategoryId),
                 uomType,
-                Ratio.of(ratio)
+                ratio == null? null: Ratio.of(ratio)
         );
     }
 

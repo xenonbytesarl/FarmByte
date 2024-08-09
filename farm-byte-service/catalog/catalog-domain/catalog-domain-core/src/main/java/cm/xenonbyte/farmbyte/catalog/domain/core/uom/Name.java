@@ -19,6 +19,9 @@ public final class Name {
 
     @Nonnull
     public static Name of(String value) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         return new Name(value);
     }
 

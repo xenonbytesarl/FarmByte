@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/catalogdb?currentSchema=public&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: catalog
+    password: PSofy1ULf0M69J7nV5SNTJmCNflrkxKb
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: filesystem:${bootstrap.project.resourceDir}/db/migrations/common,filesystem:${bootstrap.project.resourceDir}/db/migrations/test
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.flywaydb.core: DEBUG
+    org.flywaydb.database.postgresql: DEBUG

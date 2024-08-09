@@ -21,6 +21,9 @@ public final class Ratio {
 
     @Nonnull
     public static Ratio of(Double value) {
+        if(value == null) {
+            throw new IllegalArgumentException("ration can't be null");
+        }
         return new Ratio(value);
     }
 

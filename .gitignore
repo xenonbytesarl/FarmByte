@@ -243,3 +243,6 @@ replay_pid*
 # End of https://www.toptal.com/developers/gitignore/api/java
 */target/*
 */target/**
+
+*/catalog/catalog-adapter/catalog-adapter-data-access-jpa/target/**
+*/catalog/catalog-adapter/catalog-adapter-data-access-rest-api/target/**

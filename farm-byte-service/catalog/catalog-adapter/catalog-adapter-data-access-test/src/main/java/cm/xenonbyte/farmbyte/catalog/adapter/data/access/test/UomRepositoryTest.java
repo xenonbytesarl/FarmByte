@@ -33,7 +33,7 @@ public abstract class UomRepositoryTest {
 
         //Given
         UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.randomUUID());
-        UomType uomType = UomType.REFERENCE;
+
 
         //Act
         boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId1, uomType);

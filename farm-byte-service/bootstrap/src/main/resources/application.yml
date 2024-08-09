@@ -12,14 +12,12 @@ spring:
     hibernate:
       ddl-auto: none
     database: postgresql
-
   sql:
     init:
       mode: never
       platform: postgres
-
   flyway:
-    locations: classpath:db/migrations/common
     execute-in-transaction: true
     postgresql:
       transactional-lock: true
+    enabled: true
