@@ -1,0 +1,8 @@
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/ApiUtil.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/UomsApi.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/ApiErrorResponse.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/ApiSuccessResponse.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/CreateUomViewRequest.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/CreateUomViewResponse.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/ModelApiResponse.java
+src/main/java/cm/xenonbyte/farmbyte/catalog/adapter/rest/api/generated/uom/view/ValidationError.java

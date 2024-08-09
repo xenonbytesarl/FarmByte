@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-domain</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>${jakarta.annotation-api.version}</version>

@@ -6,7 +6,6 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import java.util.UUID;
 import javax.annotation.processing.Generated;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T11:46:23+0200",
+    date = "2024-08-09T13:32:37+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
@@ -29,7 +28,7 @@ public class UomJpaMapperImpl implements UomJpaMapper {
         UomJpa.UomJpaBuilder<?, ?> uomJpa = UomJpa.builder();
 
         uomJpa.uomCategoryJpa( uomCategoryIdToUomCategoryJpa( uom.getUomCategoryId() ) );
-        uomJpa.id( uomUomIdIdentifier( uom ) );
+        uomJpa.id( uomIdValue( uom ) );
         uomJpa.name( uomNameValue( uom ) );
         uomJpa.ratio( uomRatioValue( uom ) );
         uomJpa.active( uomActiveValue( uom ) );
@@ -44,23 +43,16 @@ public class UomJpaMapperImpl implements UomJpaMapper {
             return null;
         }
 
-        UomId uomId = null;
-        Name name = null;
-        Ratio ratio = null;
-        Active active = null;
-        UomCategoryId uomCategoryId = null;
-        UomType uomType = null;
+        Uom.Builder uom = Uom.builder();
 
-        uomId = uomJpaToUomId( uomJpa );
-        name = uomJpaToName( uomJpa );
-        ratio = uomJpaToRatio( uomJpa );
-        active = uomJpaToActive( uomJpa );
-        uomCategoryId = uomCategoryJpaToUomCategoryId( uomJpa.getUomCategoryJpa() );
-        uomType = toUomType( uomJpa.getUomTypeJpa() );
+        uom.id( uomJpaToUomId( uomJpa ) );
+        uom.name( uomJpaToName( uomJpa ) );
+        uom.ratio( uomJpaToRatio( uomJpa ) );
+        uom.active( uomJpaToActive( uomJpa ) );
+        uom.uomCategoryId( uomCategoryJpaToUomCategoryId( uomJpa.getUomCategoryJpa() ) );
+        uom.uomType( toUomType( uomJpa.getUomTypeJpa() ) );
 
-        Uom uom = new Uom( uomId, name, uomCategoryId, uomType, ratio, active );
-
-        return uom;
+        return uom.build();
     }
 
     protected UomCategoryJpa uomCategoryIdToUomCategoryJpa(UomCategoryId uomCategoryId) {
@@ -75,19 +67,19 @@ public class UomJpaMapperImpl implements UomJpaMapper {
         return uomCategoryJpa.build();
     }
 
-    private UUID uomUomIdIdentifier(Uom uom) {
+    private UUID uomIdValue(Uom uom) {
         if ( uom == null ) {
             return null;
         }
-        UomId uomId = uom.getUomId();
-        if ( uomId == null ) {
+        UomId id = uom.getId();
+        if ( id == null ) {
             return null;
         }
-        UUID identifier = uomId.getIdentifier();
-        if ( identifier == null ) {
+        UUID value = id.getValue();
+        if ( value == null ) {
             return null;
         }
-        return identifier;
+        return value;
     }
 
     private String uomNameValue(Uom uom) {
@@ -140,11 +132,11 @@ public class UomJpaMapperImpl implements UomJpaMapper {
             return null;
         }
 
-        UUID identifier = null;
+        UUID value = null;
 
-        identifier = uomJpa.getId();
+        value = uomJpa.getId();
 
-        UomId uomId = new UomId( identifier );
+        UomId uomId = new UomId( value );
 
         return uomId;
     }

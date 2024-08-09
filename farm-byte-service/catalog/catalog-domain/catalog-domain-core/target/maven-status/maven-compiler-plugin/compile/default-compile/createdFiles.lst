@@ -8,4 +8,5 @@ cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomType.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/UomDomainService.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/Name.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uom/Ratio.class
+cm/xenonbyte/farmbyte/catalog/domain/core/uom/Uom$Builder.class
 cm/xenonbyte/farmbyte/catalog/domain/core/uomcategory/UomCategoryId.class

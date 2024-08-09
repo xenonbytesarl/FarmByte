@@ -276,7 +276,7 @@ final class UomRestControllerTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").isNotEmpty())
+                .andExpect(jsonPath("$.reason").isEmpty())
                 .andExpect(jsonPath("$.error").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].message").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].field").isNotEmpty());
