@@ -10,26 +10,18 @@
     <artifactId>catalog-adapter-data-access-inmemory</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <junit-jupiter.version>5.10.2</junit-jupiter.version>
-        <assertj-core.version>3.25.3</assertj-core.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-domain</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-adapter-data-access-test</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

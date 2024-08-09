@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ final class UomApiAdapterServiceTest {
     @InjectMocks
     private UomApiAdapterService uomApiAdapterService;
     @Mock
-    private IUomDomainService uomDomainService;
+    private IUomService uomDomainService;
     @Mock
     private UomApiViewMapper uomApiViewMapper;
 

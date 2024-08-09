@@ -17,6 +17,12 @@
 
   <properties>
     <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+    <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
+    <openapi-generator-maven-plugin.version>7.7.0</openapi-generator-maven-plugin.version>
+    <swagger-annotations-jakarta.version>2.2.21</swagger-annotations-jakarta.version>
+    <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+    <junit-jupiter.version>5.10.2</junit-jupiter.version>
+    <assertj-core.version>3.25.3</assertj-core.version>
     <java.version>21</java.version>
   </properties>
 
@@ -28,6 +34,47 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>common-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>common-adapter-data-access-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>common-adapter-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>catalog-domain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>catalog-adapter-data-access-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>catalog-adapter-data-access-inmemory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>catalog-adapter-data-access-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>catalog-adapter-rest-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

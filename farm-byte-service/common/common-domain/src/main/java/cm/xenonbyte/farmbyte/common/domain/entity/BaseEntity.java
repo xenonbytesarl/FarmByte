@@ -17,8 +17,8 @@ public abstract class BaseEntity<ID> {
         return id;
     }
 
-    public void setId(@Nonnull ID id) {
-        this.id = Objects.requireNonNull(id);
+    public void setId(ID id) {
+        this.id = id;
     }
 
     @Override

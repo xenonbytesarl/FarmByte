@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 final class UomTest {
 
 
-    private IUomDomainService uomDomainService;
+    private IUomService uomDomainService;
     private UomRepository uomRepository;
 
     @BeforeEach

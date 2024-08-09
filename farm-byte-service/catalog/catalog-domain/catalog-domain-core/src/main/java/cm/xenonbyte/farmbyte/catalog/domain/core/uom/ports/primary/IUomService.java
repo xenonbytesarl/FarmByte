@@ -8,7 +8,7 @@ import jakarta.annotation.Nonnull;
  * @version 1.0
  * @since 06/08/2024
  */
-public interface IUomDomainService {
+public interface IUomService {
 
     @Nonnull
     Uom createUom(@Nonnull Uom uom);

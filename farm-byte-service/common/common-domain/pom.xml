@@ -9,9 +9,6 @@
 
     <artifactId>common-domain</artifactId>
     <packaging>jar</packaging>
-    <properties>
-        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
-    </properties>
 
     <dependencies>
         <dependency>

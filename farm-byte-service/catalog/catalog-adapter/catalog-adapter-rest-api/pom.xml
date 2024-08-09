@@ -10,29 +10,18 @@
     <artifactId>catalog-adapter-rest-api</artifactId>
     <packaging>jar</packaging>
 
-
-    <properties>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <openapi-generator-maven-plugin.version>7.7.0</openapi-generator-maven-plugin.version>
-        <swagger-annotations-jakarta.version>2.2.21</swagger-annotations-jakarta.version>
-        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-domain</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-adapter-api</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,7 +43,7 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
+            <version>${org.mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>

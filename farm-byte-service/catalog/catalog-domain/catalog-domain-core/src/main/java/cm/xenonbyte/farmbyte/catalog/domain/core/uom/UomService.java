@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -11,7 +11,7 @@ import java.util.Objects;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class UomService implements IUomDomainService {
+public final class UomService implements IUomService {
     private final UomRepository uomRepository;
 
     public UomService(final @Nonnull UomRepository uomRepository) {

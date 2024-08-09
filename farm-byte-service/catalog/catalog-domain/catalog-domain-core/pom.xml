@@ -14,6 +14,8 @@
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <assertj-core.version>3.25.3</assertj-core.version>
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
+        <junit-jupiter.version>5.10.2</junit-jupiter.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
     </properties>
 
 
@@ -21,7 +23,6 @@
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-domain</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
