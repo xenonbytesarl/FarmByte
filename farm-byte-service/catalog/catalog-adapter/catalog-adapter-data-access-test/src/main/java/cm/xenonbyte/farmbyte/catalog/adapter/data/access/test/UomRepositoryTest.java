@@ -29,7 +29,7 @@ public abstract class UomRepositoryTest {
 
 
     @Test
-    void should_return_false_when_non_existent_uom_category_id_or_uom_type_are_given() {
+    protected void should_return_false_when_non_existent_uom_category_id_or_uom_type_are_given() {
 
         //Given
         UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.randomUUID());
@@ -43,7 +43,7 @@ public abstract class UomRepositoryTest {
     }
 
     @Test
-    void should_return_true_when_existent_uom_category_id_and_uom_type_are_given() {
+    protected void should_return_true_when_existent_uom_category_id_and_uom_type_are_given() {
 
         //Act
         boolean result = uomRepository.existsByCategoryIdAndUomTypeAndActive(uomCategoryId, UomType.REFERENCE);
@@ -53,7 +53,7 @@ public abstract class UomRepositoryTest {
     }
 
     @Test
-    void should_return_true_when_existent_uom_name_and_category_are_given() {
+    protected void should_return_true_when_existent_uom_name_and_category_are_given() {
 
         //Act
         boolean result = uomRepository.existsByNameAndCategoryAndActive(name, uomCategoryId);
@@ -63,7 +63,7 @@ public abstract class UomRepositoryTest {
     }
 
     @Test
-    void should_return_false_when_non_existent_name_or_category_are_given() {
+    protected void should_return_false_when_non_existent_name_or_category_are_given() {
         //Given
         Name name1 = Name.of("Lot de 20");
         UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.randomUUID());
@@ -75,7 +75,7 @@ public abstract class UomRepositoryTest {
     }
 
     @Test
-    void should_save_given_valid_uom() {
+    protected void should_save_given_valid_uom() {
         //Given
         UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
         UomType uomType1 = UomType.GREATER;
