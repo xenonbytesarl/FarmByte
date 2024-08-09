@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T13:32:52+0200",
+    date = "2024-08-09T13:52:43+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
@@ -48,7 +48,7 @@ public class UomRestViewMapperImpl implements UomRestViewMapper {
         createUomViewResponse.setName( uomResponseNameValue( uomResponse ) );
         createUomViewResponse.setRatio( uomResponseRatioValue( uomResponse ) );
         createUomViewResponse.setActive( uomResponseActiveValue( uomResponse ) );
-        createUomViewResponse.setUomCategoryId( uomResponseUomCategoryIdIdentifier( uomResponse ) );
+        createUomViewResponse.setUomCategoryId( uomResponseUomCategoryIdValue( uomResponse ) );
         createUomViewResponse.setUomType( toUomType2( uomResponse.getUomType() ) );
 
         return createUomViewResponse;
@@ -87,11 +87,11 @@ public class UomRestViewMapperImpl implements UomRestViewMapper {
             return null;
         }
 
-        UUID identifier = null;
+        UUID value = null;
 
-        identifier = createUomViewRequest.getUomCategoryId();
+        value = createUomViewRequest.getUomCategoryId();
 
-        UomCategoryId uomCategoryId = new UomCategoryId( identifier );
+        UomCategoryId uomCategoryId = new UomCategoryId( value );
 
         return uomCategoryId;
     }
@@ -156,7 +156,7 @@ public class UomRestViewMapperImpl implements UomRestViewMapper {
         return value;
     }
 
-    private UUID uomResponseUomCategoryIdIdentifier(Uom uom) {
+    private UUID uomResponseUomCategoryIdValue(Uom uom) {
         if ( uom == null ) {
             return null;
         }
@@ -164,10 +164,10 @@ public class UomRestViewMapperImpl implements UomRestViewMapper {
         if ( uomCategoryId == null ) {
             return null;
         }
-        UUID identifier = uomCategoryId.getIdentifier();
-        if ( identifier == null ) {
+        UUID value = uomCategoryId.getValue();
+        if ( value == null ) {
             return null;
         }
-        return identifier;
+        return value;
     }
 }

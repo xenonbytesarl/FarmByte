@@ -24,7 +24,7 @@ import jakarta.annotation.Generated;
  * ApiErrorResponse
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T13:32:51.493460+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T13:52:42.890984+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
 public class ApiErrorResponse {
 
   private String timestamp;

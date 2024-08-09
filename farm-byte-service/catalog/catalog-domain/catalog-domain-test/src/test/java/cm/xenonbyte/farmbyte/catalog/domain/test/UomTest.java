@@ -39,19 +39,19 @@ final class UomTest {
         return Stream.of(
             Arguments.of(
                     Name.of("Unit"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.REFERENCE,
                     null
             ),
             Arguments.of(
                     Name.of("Carton de 10"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(2.0)
             ),
             Arguments.of(
                     Name.of("Centimetre"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(0.1)
             )
@@ -79,9 +79,9 @@ final class UomTest {
 
         //Then
         assertThat(createdUom).isNotNull();
-        Assertions.assertThat(createdUom.getUomId())
+        Assertions.assertThat(createdUom.getId())
                 .isNotNull()
-                .satisfies(result -> Assertions.assertThat(result.getIdentifier()).isInstanceOf(UUID.class));
+                .satisfies(result -> Assertions.assertThat(result.getValue()).isInstanceOf(UUID.class));
         Assertions.assertThat(createdUom.getUomCategoryId())
                 .isNotNull()
                 .isEqualTo(uomCategoryId);
@@ -95,7 +95,7 @@ final class UomTest {
         return Stream.of(
             Arguments.of(
                     Name.of("Unit"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     null,
                     IllegalArgumentException.class,
@@ -103,7 +103,7 @@ final class UomTest {
             ),
             Arguments.of(
                     Name.of("Carton de 10"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(0.8),
                     IllegalArgumentException.class,
@@ -111,7 +111,7 @@ final class UomTest {
             ),
             Arguments.of(
                     Name.of("Centimetre"),
-                    UomCategoryId.of(UUID.randomUUID()),
+                    new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(2.0),
                     IllegalArgumentException.class,
@@ -149,7 +149,7 @@ final class UomTest {
     @Test
     void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
         //Given
-        UomCategoryId uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of("Unite"),
                 uomCategoryId,
@@ -173,7 +173,7 @@ final class UomTest {
     @Test
     void should_create_uom_when_create_two_uom_with_uom_type_as_greater_for_the_same_category() {
         //Given
-        UomCategoryId uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of("Carton de 10"),
                 uomCategoryId,
@@ -197,7 +197,7 @@ final class UomTest {
     @Test
     void should_throw_exception_when_create_two_uom_with_same_name() {
         //Given
-        UomCategoryId uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of("Unite"),
                 uomCategoryId,

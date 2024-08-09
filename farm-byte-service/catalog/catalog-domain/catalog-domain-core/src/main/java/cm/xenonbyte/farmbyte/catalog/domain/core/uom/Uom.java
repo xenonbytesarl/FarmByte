@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -12,28 +13,32 @@ import java.util.UUID;
  * @version 1.0
  * @since 06/08/2024
  */
-public final class Uom {
+public final class Uom extends BaseEntity<UomId> {
     private final Name name;
     private final UomCategoryId uomCategoryId;
     private final UomType uomType;
     private Ratio ratio;
-    private UomId uomId;
     private Active active;
 
-    public Uom(
-            @Nullable final UomId uomId,
+    private Uom(
             @Nonnull final Name name,
             @Nonnull final UomCategoryId uomCategoryId,
             @Nonnull final UomType uomType,
-            @Nullable final Ratio ratio,
-            @Nullable final Active active
+            @Nullable final Ratio ratio
     ) {
-        this.uomId = uomId;
         this.name = Objects.requireNonNull(name);
         this.uomCategoryId = Objects.requireNonNull(uomCategoryId);
         this.uomType = Objects.requireNonNull(uomType);
         this.ratio = ratio;
-        this.active = active;
+    }
+
+    private Uom(Builder builder) {
+        setId(builder.id);
+        name = builder.name;
+        uomCategoryId = builder.uomCategoryId;
+        uomType = builder.uomType;
+        ratio = builder.ratio;
+        active = builder.active;
     }
 
     @Nonnull
@@ -44,13 +49,15 @@ public final class Uom {
             @Nullable final Ratio ratio
     ) {
         return new Uom(
-                null,
                 name,
                 uomCategoryId,
                 uomType,
-                ratio,
-                null
+                ratio
         );
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public void initiate() {
@@ -59,7 +66,7 @@ public final class Uom {
         } else {
             validateRatio();
         }
-        uomId = UomId.of(UUID.randomUUID());
+        setId(new UomId(UUID.randomUUID()));
         active = Active.with(true);
     }
 
@@ -75,10 +82,8 @@ public final class Uom {
         }
     }
 
-    @Nonnull
-    public UomId getUomId() {
-        return uomId;
-    }
+
+
     @Nonnull
     public Active getActive() {
         return active;
@@ -100,5 +105,51 @@ public final class Uom {
     @Nonnull
     public UomType getUomType() {
         return uomType;
+    }
+
+    public static final class Builder {
+        private UomId id;
+        private Name name;
+        private UomCategoryId uomCategoryId;
+        private UomType uomType;
+        private Ratio ratio;
+        private Active active;
+
+        private Builder() {
+        }
+
+        public Builder id(UomId val) {
+            id = val;
+            return this;
+        }
+
+        public Builder name(Name val) {
+            name = val;
+            return this;
+        }
+
+        public Builder uomCategoryId(UomCategoryId val) {
+            uomCategoryId = val;
+            return this;
+        }
+
+        public Builder uomType(UomType val) {
+            uomType = val;
+            return this;
+        }
+
+        public Builder ratio(Ratio val) {
+            ratio = val;
+            return this;
+        }
+
+        public Builder active(Active val) {
+            active = val;
+            return this;
+        }
+
+        public Uom build() {
+            return new Uom(this);
+        }
     }
 }

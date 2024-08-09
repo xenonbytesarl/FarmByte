@@ -29,7 +29,7 @@ class UomPostgreSqlRepositoryTest extends PostgreSqlRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        uomCategoryId = UomCategoryId.of(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+        uomCategoryId = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
         uomType =  UomType.REFERENCE;
         name = Name.of("Unite");
 

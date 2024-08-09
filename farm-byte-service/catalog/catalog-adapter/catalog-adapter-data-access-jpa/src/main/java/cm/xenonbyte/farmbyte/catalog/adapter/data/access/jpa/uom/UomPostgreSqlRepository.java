@@ -34,7 +34,7 @@ public class UomPostgreSqlRepository implements UomRepository {
     @Transactional(readOnly = true)
     public boolean existsByCategoryIdAndUomTypeAndActive(UomCategoryId uomCategoryId, UomType uomType) {
         return uomJpaRepository.existsByUomCategoryJpaAndUomTypeJpaAndActive(
-                UomCategoryJpa.builder().id(uomCategoryId.getIdentifier()).build(),
+                UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
                 UomTypeJpa.valueOf(uomType.name()),
                 true
         );
@@ -51,7 +51,7 @@ public class UomPostgreSqlRepository implements UomRepository {
     public boolean existsByNameAndCategoryAndActive(Name name, UomCategoryId uomCategoryId) {
         return uomJpaRepository.existsByNameAndUomCategoryJpaAndActive(
                 name.getValue(),
-                UomCategoryJpa.builder().id(uomCategoryId.getIdentifier()).build(),
+                UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
                 true
         );
     }

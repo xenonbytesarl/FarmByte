@@ -21,7 +21,7 @@ public final class InMemoryUomRepositoryTest extends UomRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        uomCategoryId = UomCategoryId.of(UUID.randomUUID());
+        uomCategoryId = new UomCategoryId(UUID.randomUUID());
         uomType =  UomType.REFERENCE;
         name = Name.of("Unite");
 

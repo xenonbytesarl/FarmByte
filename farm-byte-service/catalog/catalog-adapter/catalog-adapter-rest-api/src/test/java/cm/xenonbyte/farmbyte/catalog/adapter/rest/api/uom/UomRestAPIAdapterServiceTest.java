@@ -234,7 +234,7 @@ final class UomRestAPIAdapterServiceTest {
     private static Uom generateUom(String name, UUID uomCategoryId, UomType uomType, Double ratio) {
         return Uom.from(
                 Name.of(name),
-                UomCategoryId.of(uomCategoryId),
+                new UomCategoryId(uomCategoryId),
                 uomType,
                 ratio == null? null: Ratio.of(ratio)
         );
@@ -270,7 +270,7 @@ final class UomRestAPIAdapterServiceTest {
     private static Uom generateCreateUomResponse(String name, UUID uomCategoryId, UomType uomType, Double ratioResponse) {
         Uom uom = Uom.from(
                 Name.of(name),
-                UomCategoryId.of(uomCategoryId),
+                new UomCategoryId(uomCategoryId),
                 UomType.valueOf(uomType.name()),
                 Ratio.of(ratioResponse)
         );

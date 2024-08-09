@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T13:32:37+0200",
+    date = "2024-08-09T13:52:42+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
@@ -62,7 +62,7 @@ public class UomJpaMapperImpl implements UomJpaMapper {
 
         UomCategoryJpa.UomCategoryJpaBuilder<?, ?> uomCategoryJpa = UomCategoryJpa.builder();
 
-        uomCategoryJpa.id( uomCategoryId.getIdentifier() );
+        uomCategoryJpa.id( uomCategoryId.getValue() );
 
         return uomCategoryJpa.build();
     }
@@ -188,11 +188,11 @@ public class UomJpaMapperImpl implements UomJpaMapper {
             return null;
         }
 
-        UUID identifier = null;
+        UUID value = null;
 
-        identifier = uomCategoryJpa.getId();
+        value = uomCategoryJpa.getId();
 
-        UomCategoryId uomCategoryId = new UomCategoryId( identifier );
+        UomCategoryId uomCategoryId = new UomCategoryId( value );
 
         return uomCategoryId;
     }

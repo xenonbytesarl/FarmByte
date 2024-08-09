@@ -32,7 +32,7 @@ public abstract class UomRepositoryTest {
     void should_return_false_when_non_existent_uom_category_id_or_uom_type_are_given() {
 
         //Given
-        UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.randomUUID());
 
 
         //Act
@@ -66,7 +66,7 @@ public abstract class UomRepositoryTest {
     void should_return_false_when_non_existent_name_or_category_are_given() {
         //Given
         Name name1 = Name.of("Lot de 20");
-        UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.randomUUID());
+        UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.randomUUID());
         //Act
         boolean result = uomRepository.existsByNameAndCategoryAndActive(name1, uomCategoryId1);
 
@@ -77,7 +77,7 @@ public abstract class UomRepositoryTest {
     @Test
     void should_save_given_valid_uom() {
         //Given
-        UomCategoryId uomCategoryId1 = UomCategoryId.of(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+        UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
         UomType uomType1 = UomType.GREATER;
         Uom uomToSave = createSomeUom(
                 Name.of("Palette de 6"),
@@ -98,7 +98,6 @@ public abstract class UomRepositoryTest {
                 uomCategoryId,
                 uomType,
                 ratio
-
         );
         uom.initiate();
         return uom;

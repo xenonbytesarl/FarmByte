@@ -31,7 +31,7 @@ public class InMemoryUomRepository implements UomRepository {
 
     @Override
     public Uom save(Uom uom) {
-        uomMap.put(uom.getUomId().getIdentifier().toString(), uom);
+        uomMap.put(uom.getId().getValue().toString(), uom);
         return uom;
     }
 

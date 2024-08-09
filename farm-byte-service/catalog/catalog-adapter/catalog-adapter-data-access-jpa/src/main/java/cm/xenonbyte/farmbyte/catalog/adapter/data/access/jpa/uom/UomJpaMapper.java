@@ -16,11 +16,11 @@ import org.mapstruct.*;
 public interface UomJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "uomId.identifier", target = "id")
+    @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.value", target = "name")
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
-    @Mapping(source = "uomCategoryId.identifier", target = "uomCategoryJpa.id")
+    @Mapping(source = "uomCategoryId.value", target = "uomCategoryJpa.id")
     @Mapping(source = "uomType", qualifiedByName = "toUomTypeJpa", target = "uomTypeJpa")
     UomJpa fromUom(Uom uom);
 
@@ -30,11 +30,11 @@ public interface UomJpaMapper {
     }
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "uomId.identifier", source = "id")
+    @Mapping(target = "id.value", source = "id")
     @Mapping(target = "name.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
     @Mapping(target = "active.value", source = "active")
-    @Mapping(target = "uomCategoryId.identifier",source = "uomCategoryJpa.id")
+    @Mapping(target = "uomCategoryId.value",source = "uomCategoryJpa.id")
     @Mapping(target = "uomType", qualifiedByName = "toUomType", source = "uomTypeJpa")
     Uom fromUomJpa(UomJpa uomJpa);
 

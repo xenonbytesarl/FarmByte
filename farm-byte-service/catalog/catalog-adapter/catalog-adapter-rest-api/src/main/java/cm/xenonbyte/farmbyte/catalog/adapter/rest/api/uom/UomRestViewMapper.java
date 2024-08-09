@@ -21,7 +21,7 @@ public interface UomRestViewMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
-    @Mapping(target = "uomCategoryId.identifier",source = "uomCategoryId")
+    @Mapping(target = "uomCategoryId.value",source = "uomCategoryId")
     @Mapping(target = "uomType", qualifiedByName = "toUomType1", source = "uomType")
     @Nonnull Uom toUom(@Nonnull CreateUomViewRequest createUomViewRequest);
 
@@ -31,11 +31,11 @@ public interface UomRestViewMapper {
     }
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "uomId.identifier", target = "id")
+    @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.value", target = "name")
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
-    @Mapping(source = "uomCategoryId.identifier", target = "uomCategoryId")
+    @Mapping(source = "uomCategoryId.value", target = "uomCategoryId")
     @Mapping(source = "uomType", qualifiedByName = "toUomType2", target = "uomType")
     @Nonnull CreateUomViewResponse toCreateUomViewResponse(@Nonnull Uom uomResponse);
 
