@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
+package cm.xenonbyte.farmbyte.common.domain.vo;
 
 import jakarta.annotation.Nonnull;
 
