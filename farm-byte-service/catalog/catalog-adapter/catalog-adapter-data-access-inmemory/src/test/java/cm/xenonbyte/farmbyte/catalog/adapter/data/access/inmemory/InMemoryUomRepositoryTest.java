@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;

@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.PostgreSqlRepositoryTest;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import org.junit.jupiter.api.BeforeEach;

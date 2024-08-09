@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainSer
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
+import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

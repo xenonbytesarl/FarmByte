@@ -5,6 +5,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.*;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
