@@ -20,13 +20,13 @@ import static org.springframework.http.HttpStatus.CREATED;
  */
 @RestController
 @RequiredArgsConstructor
-public class UomRestController implements UomsApi {
+public class UomApiRest implements UomsApi {
 
-    private final UomRestAPIAdapterService uomRestAPIAdapterService;
+    private final UomApiAdapterService uomApiAdapterService;
 
     @Override
     public ResponseEntity<ApiSuccessResponse> createUom(CreateUomViewRequest createUomViewRequest) {
-        CreateUomViewResponse createUomViewResponse = uomRestAPIAdapterService.createUom(createUomViewRequest);
+        CreateUomViewResponse createUomViewResponse = uomApiAdapterService.createUom(createUomViewRequest);
         return ResponseEntity.status(CREATED).body(
                 new ApiSuccessResponse()
                         .timestamp(ZonedDateTime.now().toString())

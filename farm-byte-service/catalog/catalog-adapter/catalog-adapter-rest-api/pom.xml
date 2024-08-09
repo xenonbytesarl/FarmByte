@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-adapter-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

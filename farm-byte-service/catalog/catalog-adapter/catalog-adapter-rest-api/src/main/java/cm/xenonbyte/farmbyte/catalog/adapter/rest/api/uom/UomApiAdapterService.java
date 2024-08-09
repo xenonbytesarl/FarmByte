@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public final class UomRestAPIAdapterService implements IUomRestAPIAdapterService {
+public final class UomApiAdapterService implements IUomApiAdapterService {
 
     private final IUomDomainService uomDomainService;
-    private final UomRestViewMapper uomRestViewMapper;
+    private final UomApiViewMapper uomApiViewMapper;
 
     @Nonnull
     @Override
     public CreateUomViewResponse createUom(@Nonnull CreateUomViewRequest request) {
-        return uomRestViewMapper.toCreateUomViewResponse(uomDomainService.createUom(uomRestViewMapper.toUom(request)));
+        return uomApiViewMapper.toCreateUomViewResponse(uomDomainService.createUom(uomApiViewMapper.toUom(request)));
     }
 }

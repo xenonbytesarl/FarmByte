@@ -16,7 +16,7 @@ import org.mapstruct.*;
         componentModel = "spring",
         injectionStrategy = InjectionStrategy.FIELD
 )
-public interface UomRestViewMapper {
+public interface UomApiViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name.value", source = "name")

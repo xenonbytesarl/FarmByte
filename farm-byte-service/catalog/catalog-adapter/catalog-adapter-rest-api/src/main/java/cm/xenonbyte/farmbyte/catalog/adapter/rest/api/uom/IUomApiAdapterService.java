@@ -9,6 +9,6 @@ import jakarta.annotation.Nonnull;
  * @version 1.0
  * @since 08/08/2024
  */
-public interface IUomRestAPIAdapterService {
+public interface IUomApiAdapterService {
     @Nonnull CreateUomViewResponse createUom(@Nonnull CreateUomViewRequest request);
 }

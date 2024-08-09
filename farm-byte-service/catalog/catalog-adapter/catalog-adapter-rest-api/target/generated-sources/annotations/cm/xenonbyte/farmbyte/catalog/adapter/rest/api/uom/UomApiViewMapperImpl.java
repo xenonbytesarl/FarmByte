@@ -10,18 +10,21 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import java.util.UUID;
 import javax.annotation.processing.Generated;
+
+import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-08-09T16:35:51+0200",
+    date = "2024-08-09T17:15:57+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Homebrew)"
 )
 @Component
-public class UomRestViewMapperImpl implements UomRestViewMapper {
+public class UomApiViewMapperImpl implements UomApiViewMapper {
 
+    @Nonnull
     @Override
-    public Uom toUom(CreateUomViewRequest createUomViewRequest) {
+    public Uom toUom(@Nonnull CreateUomViewRequest createUomViewRequest) {
         if ( createUomViewRequest == null ) {
             return null;
         }

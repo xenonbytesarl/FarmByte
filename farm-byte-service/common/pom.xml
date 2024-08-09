@@ -13,5 +13,6 @@
    <modules>
 
        <module>common-domain</module>
+       <module>common-adapter-api</module>
    </modules>
 </project>

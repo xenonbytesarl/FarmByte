@@ -31,14 +31,14 @@ import static org.mockito.Mockito.*;
  */
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-final class UomRestAPIAdapterServiceTest {
+final class UomApiAdapterServiceTest {
 
     @InjectMocks
-    private UomRestAPIAdapterService uomRestAPIAdapterService;
+    private UomApiAdapterService uomApiAdapterService;
     @Mock
     private IUomDomainService uomDomainService;
     @Mock
-    private UomRestViewMapper uomRestViewMapper;
+    private UomApiViewMapper uomApiViewMapper;
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
@@ -91,29 +91,29 @@ final class UomRestAPIAdapterServiceTest {
         CreateUomViewResponse createUomViewResponse = generateCreateUomViewResponse(uomCategoryId, name, uomTypeEnumResponse, ratioResponse);
         Uom uomResponse = generateCreateUomResponse(name, uomCategoryId, uomType, ratioResponse);
 
-        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
+        when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
         when(uomDomainService.createUom(uomRequest)).thenReturn(uomResponse);
-        when(uomRestViewMapper.toCreateUomViewResponse(uomResponse)).thenReturn(createUomViewResponse);
+        when(uomApiViewMapper.toCreateUomViewResponse(uomResponse)).thenReturn(createUomViewResponse);
 
         ArgumentCaptor<CreateUomViewRequest> createUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(CreateUomViewRequest.class);
         ArgumentCaptor<Uom> createUomRequestArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
         ArgumentCaptor<Uom> createUomResponseArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
 
         //Act
-        CreateUomViewResponse result = uomRestAPIAdapterService.createUom(createUomViewRequest);
+        CreateUomViewResponse result = uomApiAdapterService.createUom(createUomViewRequest);
 
         //Then
         assertThat(result)
                 .isNotNull()
                 .isEqualTo(createUomViewResponse);
 
-        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequestArgumentCaptor.capture());
+        verify(uomApiViewMapper, times(1)).toUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
         verify(uomDomainService, times(1)).createUom(createUomRequestArgumentCaptor.capture());
         assertThat(createUomRequestArgumentCaptor.getValue()).isEqualTo(uomRequest);
 
-        verify(uomRestViewMapper, times(1)).toCreateUomViewResponse(createUomResponseArgumentCaptor.capture());
+        verify(uomApiViewMapper, times(1)).toCreateUomViewResponse(createUomResponseArgumentCaptor.capture());
         assertThat(createUomResponseArgumentCaptor.getValue()).isEqualTo(uomResponse);
 
 
@@ -166,10 +166,10 @@ final class UomRestAPIAdapterServiceTest {
 
         Uom uomRequest = generateUom(name, uomCategoryId, uomType, ratioRequest);
 
-        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
+        when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
         when(uomDomainService.createUom(uomRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
 
-        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
+        assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
                 .isInstanceOf(exceptionClass)
                 .hasMessageContaining(exceptionMessage);
     }
@@ -189,15 +189,15 @@ final class UomRestAPIAdapterServiceTest {
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
         String exceptionMessage = "We can't have two units of measure with type reference in the same category";
 
-        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
+        when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
         when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
-        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
+        assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
                 .isInstanceOf(UomException.class)
                 .hasMessage(exceptionMessage);
 
-        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);
+        verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);
         verify(uomDomainService, times(1)).createUom(uom);
 
     }
@@ -217,15 +217,15 @@ final class UomRestAPIAdapterServiceTest {
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
         String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
 
-        when(uomRestViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
+        when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
         when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
-        assertThatThrownBy(() -> uomRestAPIAdapterService.createUom(createUomViewRequest))
+        assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
                 .isInstanceOf(UomException.class)
                 .hasMessage(exceptionMessage);
 
-        verify(uomRestViewMapper, times(1)).toUom(createUomViewRequest);
+        verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);
         verify(uomDomainService, times(1)).createUom(uom);
 
     }

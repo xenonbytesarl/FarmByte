@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
  * CreateUomViewResponse
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T16:35:50.817375+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-08-09T17:15:56.892206+02:00[Europe/Paris]", comments = "Generator version: 7.7.0")
 public class CreateUomViewResponse {
 
   private UUID id;

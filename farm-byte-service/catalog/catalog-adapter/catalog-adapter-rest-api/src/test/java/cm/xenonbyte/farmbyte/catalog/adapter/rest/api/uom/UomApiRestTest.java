@@ -38,17 +38,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ActiveProfiles("test")
 @EnableAutoConfiguration
-@ContextConfiguration(classes = {UomRestAPIAdapterService.class})
-@WebMvcTest(UomRestController.class)
+@ContextConfiguration(classes = {UomApiAdapterService.class})
+@WebMvcTest(UomApiRest.class)
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-final class UomRestControllerTest {
+final class UomApiRestTest {
 
     public static final String UOM_PATH_URI = "/api/v1/catalog/uoms";
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UomRestAPIAdapterService uomRestAPIAdapterService;
+    private UomApiAdapterService uomApiAdapterService;
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
@@ -96,7 +96,7 @@ final class UomRestControllerTest {
 
         CreateUomViewResponse createUomViewResponse = generateCreateUomViewResponse(uomCategoryId, name, ratioResponse, uomTypeEnumResponse);
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenReturn(createUomViewResponse);
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenReturn(createUomViewResponse);
         ArgumentCaptor<CreateUomViewRequest> createUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(CreateUomViewRequest.class);
 
         //When + Then
@@ -117,7 +117,7 @@ final class UomRestControllerTest {
                 .andExpect(jsonPath("$.data.body.uomCategoryId").value(uomCategoryId.toString()))
                 .andExpect(jsonPath("$.data.body.id").isNotEmpty());
 
-        verify(uomRestAPIAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
+        verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
     }
@@ -163,7 +163,7 @@ final class UomRestControllerTest {
         //Given
         CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(uomCategoryId, name, ratioRequest, uomTypeEnumRequest);
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
 
         ArgumentCaptor<CreateUomViewRequest> createUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(CreateUomViewRequest.class);
 
@@ -180,7 +180,7 @@ final class UomRestControllerTest {
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.reason").value(exceptionMessage));
 
-        verify(uomRestAPIAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
+        verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
     }
@@ -197,7 +197,7 @@ final class UomRestControllerTest {
         );
         String exceptionMessage = "We can't have two units of measure with type reference in the same category";
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
@@ -227,7 +227,7 @@ final class UomRestControllerTest {
         );
         String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
 
-        when(uomRestAPIAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
