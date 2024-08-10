@@ -246,3 +246,10 @@ replay_pid*
 
 */catalog/catalog-adapter/catalog-adapter-data-access-jpa/target/**
 */catalog/catalog-adapter/catalog-adapter-data-access-rest-api/target/**
+farm-byte-service/bootstrap/target/
+farm-byte-service/catalog/catalog-adapter/catalog-adapter-data-access-inmemory/target/
+farm-byte-service/catalog/catalog-adapter/catalog-adapter-rest-api/target/
+farm-byte-service/catalog/catalog-domain/catalog-domain-test/target/
+farm-byte-service/common/common-adapter-api/target/
+farm-byte-service/common/common-adapter-data-access-jpa/target/
+farm-byte-service/common/common-domain/target/

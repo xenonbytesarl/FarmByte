@@ -104,7 +104,7 @@ final class UomTest {
                     UomType.GREATER,
                     null,
                     IllegalArgumentException.class,
-                    "Ratio is required when unit of measure type is not reference."
+                    "Uom.1"
             ),
             Arguments.of(
                     Name.of("Carton de 10"),
@@ -112,7 +112,7 @@ final class UomTest {
                     UomType.GREATER,
                     Ratio.of(0.8),
                     IllegalArgumentException.class,
-                    "Ratio should be greater than 1 when unit of measure type is not greater."
+                    "Uom.2"
             ),
             Arguments.of(
                     Name.of("Centimetre"),
@@ -120,7 +120,7 @@ final class UomTest {
                     UomType.LOWER,
                     Ratio.of(2.0),
                     IllegalArgumentException.class,
-                    "Ratio should be lower than 1 when unit of measure type is not lower."
+                    "Uom.3"
             )
         );
     }
@@ -172,7 +172,7 @@ final class UomTest {
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
                 .isInstanceOf(UomException.class)
-                .hasMessage("We can't have two units of measure with type reference in the same category");
+                .hasMessage("UomReferenceDuplicateException.1");
     }
 
     @Test
@@ -220,6 +220,6 @@ final class UomTest {
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
                 .isInstanceOf(UomException.class)
-                .hasMessage(String.format("An unit of measure with the name '%s' already exists", firstRefereceUom.getName().getValue()));
+                .hasMessage("UomNameDuplicateException.1");
     }
 }

@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.UomsApi;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ApiSuccessResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
+import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class UomApiRest implements UomsApi {
                         .success(true)
                         .status(CREATED.name())
                         .code(CREATED.value())
-                        .message("Unit of measure created successfully")
+                        .message(MessageUtil.getMessage("UomApiRest.1", ""))
                         .data(of("body", createUomViewResponse))
         );
     }

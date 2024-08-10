@@ -20,7 +20,7 @@ public final class Name {
     @Nonnull
     public static Name of(String value) {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new IllegalArgumentException("Name.1");
         }
         return new Name(value);
     }

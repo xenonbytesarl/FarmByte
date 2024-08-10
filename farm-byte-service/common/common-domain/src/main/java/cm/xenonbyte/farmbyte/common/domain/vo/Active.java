@@ -20,7 +20,7 @@ public final class Active {
     @Nonnull
     public static Active with(Boolean value) {
         if(value == null) {
-            throw new IllegalArgumentException("Active value is should be true of false");
+            throw new IllegalArgumentException("Active.1");
         }
         return new Active(value);
     }

@@ -1,6 +1,8 @@
 spring:
+
   profiles:
     active: @spring.profiles.active@
+
   jpa:
     open-in-view: false
     properties:
@@ -12,12 +14,17 @@ spring:
     hibernate:
       ddl-auto: none
     database: postgresql
+
   sql:
     init:
       mode: never
       platform: postgres
+
   flyway:
     execute-in-transaction: true
     postgresql:
       transactional-lock: true
     enabled: true
+
+  jackson:
+    default-property-inclusion: non_null

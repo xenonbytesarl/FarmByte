@@ -20,6 +20,6 @@ import lombok.Setter;
 public class ValidationError{
     @NotBlank(message = "field is required")
     private String field;
-    @NotBlank(message = "message is required")
+    @NotBlank(message = "messages is required")
     private String message;
 }

@@ -74,13 +74,13 @@ public final class Uom extends BaseEntity<UomId> {
 
     private void validateRatio() {
         if(ratio == null) {
-            throw new IllegalArgumentException("Ratio is required when unit of measure type is not reference.");
+            throw new IllegalArgumentException("Uom.1");
         }
         if(uomType.equals(UomType.GREATER) && ratio.isEqualOrLowerThanReference()) {
-            throw new IllegalArgumentException("Ratio should be greater than 1 when unit of measure type is not greater.");
+            throw new IllegalArgumentException("Uom.2");
         }
         if(uomType.equals(UomType.LOWER) && ratio.isEqualOrGreaterThanReference()) {
-            throw new IllegalArgumentException("Ratio should be lower than 1 when unit of measure type is not lower.");
+            throw new IllegalArgumentException("Uom.3");
         }
     }
 

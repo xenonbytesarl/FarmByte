@@ -3,7 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameDuplicateException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceDuplicateException;
+import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -20,14 +22,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.ACCEPT_LANGUAGE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {UomApiAdapterService.class})
 @WebMvcTest(UomApiRest.class)
+
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
 final class UomApiRestTest {
 
@@ -94,7 +98,7 @@ final class UomApiRestTest {
     ) throws Exception {
 
         //Given
-
+        String message = "UomApiRest.1";
         CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(uomCategoryId, name, ratioRequest, uomTypeEnumRequest);
 
         CreateUomViewResponse createUomViewResponse = generateCreateUomViewResponse(uomCategoryId, name, ratioResponse, uomTypeEnumResponse);
@@ -105,6 +109,7 @@ final class UomApiRestTest {
         //When + Then
         mockMvc.perform(post(UOM_PATH_URI)
                 .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
                 .contentType(APPLICATION_JSON)
                 .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
@@ -118,7 +123,8 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.data.body.ratio").value(ratioResponse))
                 .andExpect(jsonPath("$.data.body.active").value(true))
                 .andExpect(jsonPath("$.data.body.uomCategoryId").value(uomCategoryId.toString()))
-                .andExpect(jsonPath("$.data.body.id").isNotEmpty());
+                .andExpect(jsonPath("$.data.body.id").isNotEmpty())
+                .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(message, "")));
 
         verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
@@ -133,21 +139,21 @@ final class UomApiRestTest {
                         "Unit",
                         null,
                         CreateUomViewRequest.UomTypeEnum.GREATER,
-                        "Ratio is required when unit of measure type is not reference."
+                        "Uom.1"
                 ),
                 Arguments.of(
                         UUID.randomUUID(),
                         "Carton de 10",
                         0.8,
                         CreateUomViewRequest.UomTypeEnum.GREATER,
-                        "Ratio should be greater than 1 when unit of measure type is not greater."
+                        "Uom.2"
                 ),
                 Arguments.of(
                         UUID.randomUUID(),
                         "Carton de 10",
                         2.0,
                         CreateUomViewRequest.UomTypeEnum.LOWER,
-                        "Ratio should be greater than 1 when unit of measure type is not greater."
+                        "Uom.3"
                 )
         );
     }
@@ -174,6 +180,7 @@ final class UomApiRestTest {
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -181,7 +188,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(exceptionMessage));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, "")));
 
         verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
@@ -198,14 +205,15 @@ final class UomApiRestTest {
                 null,
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
-        String exceptionMessage = "We can't have two units of measure with type reference in the same category";
+        String exceptionMessage = "UomReferenceDuplicateException.1";
 
-        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomReferenceDuplicateException());
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -213,7 +221,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(exceptionMessage));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,"")));
 
     }
 
@@ -228,14 +236,15 @@ final class UomApiRestTest {
                 null,
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
-        String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
+        String exceptionMessage = "UomNameDuplicateException.1";
 
-        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomException(exceptionMessage));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomNameDuplicateException(new Object[]{name}));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -243,7 +252,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(exceptionMessage));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,new String[]{name})));
 
     }
 
@@ -279,7 +288,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").isEmpty())
+                .andExpect(jsonPath("$.reason").isNotEmpty())
                 .andExpect(jsonPath("$.error").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].message").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].field").isNotEmpty());

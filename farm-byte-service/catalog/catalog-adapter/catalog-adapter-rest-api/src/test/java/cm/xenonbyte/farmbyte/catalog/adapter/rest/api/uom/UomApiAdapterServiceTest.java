@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameDuplicateException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceDuplicateException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
@@ -193,10 +195,10 @@ final class UomApiAdapterServiceTest {
         );
 
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
-        String exceptionMessage = "We can't have two units of measure with type reference in the same category";
+        String exceptionMessage = "UomReferenceDuplicateException.1";
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
+        when(uomDomainService.createUom(uom)).thenThrow(new UomReferenceDuplicateException());
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
@@ -221,10 +223,10 @@ final class UomApiAdapterServiceTest {
         );
 
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
-        String exceptionMessage = String.format("An unit of measure with the name '%s' already exists", name);
+        String exceptionMessage = "UomNameDuplicateException.1";
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomException(exceptionMessage));
+        when(uomDomainService.createUom(uom)).thenThrow(new UomNameDuplicateException(new Object[]{uom.getName().getValue()}));
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))

@@ -32,7 +32,7 @@ public final class UomService implements IUomService {
         }
 
         if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
-            throw  new UomNameDuplicateException(uom.getName().getValue());
+            throw  new UomNameDuplicateException(new Object[]{uom.getName().getValue()});
         }
     }
 }

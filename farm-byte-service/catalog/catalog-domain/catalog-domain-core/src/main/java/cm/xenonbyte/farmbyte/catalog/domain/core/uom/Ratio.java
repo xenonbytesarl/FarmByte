@@ -16,7 +16,7 @@ public record Ratio(@Nonnull Double value) {
     @Nonnull
     public static Ratio of(Double value) {
         if (value == null) {
-            throw new IllegalArgumentException("ration can't be null");
+            throw new IllegalArgumentException("Ration.1");
         }
         return new Ratio(value);
     }
