@@ -17,7 +17,7 @@
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>common-adapter-api</artifactId>
+            <artifactId>common-adapter-rest-api</artifactId>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>

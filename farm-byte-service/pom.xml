@@ -50,7 +50,7 @@
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>common-adapter-api</artifactId>
+        <artifactId>common-adapter-rest-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
