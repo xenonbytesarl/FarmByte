@@ -4,6 +4,8 @@ import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.RATION_CAN_NOT_BE_NULL;
+
 /**
  * @author bamk
  * @version 1.0
@@ -13,10 +15,11 @@ public record Ratio(@Nonnull Double value) {
 
     public static final Double REFERENCE = 1.0;
 
+
     @Nonnull
     public static Ratio of(Double value) {
         if (value == null) {
-            throw new IllegalArgumentException("Ration.1");
+            throw new IllegalArgumentException(RATION_CAN_NOT_BE_NULL);
         }
         return new Ratio(value);
     }

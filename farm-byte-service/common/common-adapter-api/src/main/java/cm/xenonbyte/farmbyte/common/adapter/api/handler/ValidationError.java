@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.FIELD_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.MESSAGES_IS_REQUIRED;
+
 /**
  * @author bamk
  * @version 1.0
@@ -18,8 +21,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ValidationError{
-    @NotBlank(message = "field is required")
+
+    @NotBlank(message = FIELD_IS_REQUIRED)
     private String field;
-    @NotBlank(message = "messages is required")
+    @NotBlank(message = MESSAGES_IS_REQUIRED)
     private String message;
 }

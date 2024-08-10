@@ -6,6 +6,9 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 
 import java.nio.charset.StandardCharsets;
 
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.DEFAULTS_PATH;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.DEFAULT_BUNDLE_PATH;
+
 /**
  * @author bamk
  * @version 1.0
@@ -13,9 +16,6 @@ import java.nio.charset.StandardCharsets;
  */
 @Configuration
 public class MessageSourceConfig {
-
-    public static final String DEFAULT_BUNDLE_PATH = "classpath:messages/messages";
-    public static final String DEFAULTS_PATH = "classpath:messages/defaults";
 
     @Bean
     public static ReloadableResourceBundleMessageSource messageSource() {

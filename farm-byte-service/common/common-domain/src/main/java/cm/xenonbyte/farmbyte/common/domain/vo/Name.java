@@ -4,6 +4,8 @@ import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.NAME_IS_REQUIRED;
+
 /**
  * @author bamk
  * @version 1.0
@@ -20,7 +22,7 @@ public final class Name {
     @Nonnull
     public static Name of(String value) {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Name.1");
+            throw new IllegalArgumentException(NAME_IS_REQUIRED);
         }
         return new Name(value);
     }

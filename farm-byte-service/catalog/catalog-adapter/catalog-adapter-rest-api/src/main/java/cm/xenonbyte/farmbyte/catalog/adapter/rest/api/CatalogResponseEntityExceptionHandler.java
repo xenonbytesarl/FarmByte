@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Locale;
-
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.PATH_URI_REPLACE;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -28,7 +27,7 @@ public final class CatalogResponseEntityExceptionHandler extends CommonResponseE
 
     @ExceptionHandler({UomException.class})
     public ResponseEntity<ApiErrorResponse> handleBadRequestException
-            (BaseDomainException exception, WebRequest request, Locale locale) {
+            (BaseDomainException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity
                 .status(BAD_REQUEST)

@@ -4,12 +4,15 @@ import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.ACTIVE_SHOULD_BE_TRUE_OR_FALSE;
+
 /**
  * @author bamk
  * @version 1.0
  * @since 06/08/2024
  */
 public final class Active {
+
 
     private final Boolean value;
 
@@ -20,7 +23,7 @@ public final class Active {
     @Nonnull
     public static Active with(Boolean value) {
         if(value == null) {
-            throw new IllegalArgumentException("Active.1");
+            throw new IllegalArgumentException(ACTIVE_SHOULD_BE_TRUE_OR_FALSE);
         }
         return new Active(value);
     }

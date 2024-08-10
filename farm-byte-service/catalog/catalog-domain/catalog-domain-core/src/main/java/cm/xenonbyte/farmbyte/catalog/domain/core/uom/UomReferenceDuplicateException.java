@@ -1,5 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY;
+
 /**
  * @author bamk
  * @version 1.0
@@ -8,6 +10,6 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 public final class UomReferenceDuplicateException extends UomException {
 
     public UomReferenceDuplicateException() {
-        super("UomReferenceDuplicateException.1");
+        super(UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY);
     }
 }

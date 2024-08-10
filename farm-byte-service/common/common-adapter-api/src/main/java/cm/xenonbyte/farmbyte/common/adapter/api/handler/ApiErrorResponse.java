@@ -11,6 +11,12 @@ import lombok.Setter;
 import java.util.List;
 import java.util.UUID;
 
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.CODE_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.PATH_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.STATUS_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.SUCCESS_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.TIMESTAMPS_IS_REQUIRED;
+
 /**
  * @author bamk
  * @version 1.0
@@ -22,18 +28,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiErrorResponse {
-        @NotBlank(message = "timestamps is required")
+
+        @NotBlank(message = TIMESTAMPS_IS_REQUIRED)
         private String timestamp;
-        @NotNull(message = "field is required")
+        @NotNull(message = CODE_IS_REQUIRED)
         private Integer code;
-        @NotBlank(message = "status is required")
+        @NotBlank(message = STATUS_IS_REQUIRED)
         private String status;
-        @NotNull(message = "success is required")
+        @NotNull(message = SUCCESS_IS_REQUIRED)
         private Boolean success;
         private String developerMessage;
         private String reason;
         private String message;
-        @NotBlank(message = "path is required")
+        @NotBlank(message = PATH_IS_REQUIRED)
         private String path;
         private UUID correlationId;
         private List<ValidationError> error;

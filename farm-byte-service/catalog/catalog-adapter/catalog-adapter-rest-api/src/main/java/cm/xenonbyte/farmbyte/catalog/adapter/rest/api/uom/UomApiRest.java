@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -23,6 +24,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequiredArgsConstructor
 public class UomApiRest implements UomsApi {
 
+    public static final String UOM_CREATED_SUCCESSFULLY = "UomApiRest.1";
+
     private final UomApiAdapterService uomApiAdapterService;
 
     @Override
@@ -34,8 +37,8 @@ public class UomApiRest implements UomsApi {
                         .success(true)
                         .status(CREATED.name())
                         .code(CREATED.value())
-                        .message(MessageUtil.getMessage("UomApiRest.1", ""))
-                        .data(of("body", createUomViewResponse))
+                        .message(MessageUtil.getMessage(UOM_CREATED_SUCCESSFULLY, ""))
+                        .data(of(BODY, createUomViewResponse))
         );
     }
 }

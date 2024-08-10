@@ -8,9 +8,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.DEFAULT_LOCALE;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.LOCALES;
 
 /**
  * @author bamk
@@ -19,9 +21,6 @@ import java.util.Locale;
  */
 @Configuration
 public class CustomLocalResolver extends AcceptHeaderLocaleResolver {
-
-    private static final String DEFAULT_LOCALE = "en";
-    private static final List<Locale> LOCALES = Arrays.asList(Locale.forLanguageTag("en"), Locale.forLanguageTag("fr"));
 
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
