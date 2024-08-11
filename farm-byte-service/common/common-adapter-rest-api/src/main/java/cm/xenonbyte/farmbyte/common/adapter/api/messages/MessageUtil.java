@@ -4,6 +4,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * @author bamk
@@ -17,6 +18,10 @@ public final class MessageUtil {
 
     public static String getMessage(String message, String... dynamicValues) {
         return MessageSourceConfig.messageSource().getMessage(message, dynamicValues, LocaleContextHolder.getLocale());
+    }
+
+    public static String getMessage(String message, Locale locale, String... dynamicValues) {
+        return MessageSourceConfig.messageSource().getMessage(message, dynamicValues, locale);
     }
 
     public static String[] toStringArray(Object[] args) {

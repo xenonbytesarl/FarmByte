@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
+import java.util.Locale;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static java.util.Map.of;
@@ -29,7 +30,7 @@ public class UomApiRest implements UomsApi {
     private final UomApiAdapterService uomApiAdapterService;
 
     @Override
-    public ResponseEntity<ApiSuccessResponse> createUom(CreateUomViewRequest createUomViewRequest) {
+    public ResponseEntity<ApiSuccessResponse> createUom(String acceptLanguage, CreateUomViewRequest createUomViewRequest) {
         CreateUomViewResponse createUomViewResponse = uomApiAdapterService.createUom(createUomViewRequest);
         return ResponseEntity.status(CREATED).body(
                 new ApiSuccessResponse()
@@ -37,7 +38,7 @@ public class UomApiRest implements UomsApi {
                         .success(true)
                         .status(CREATED.name())
                         .code(CREATED.value())
-                        .message(MessageUtil.getMessage(UOM_CREATED_SUCCESSFULLY, ""))
+                        .message(MessageUtil.getMessage(UOM_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(BODY, createUomViewResponse))
         );
     }

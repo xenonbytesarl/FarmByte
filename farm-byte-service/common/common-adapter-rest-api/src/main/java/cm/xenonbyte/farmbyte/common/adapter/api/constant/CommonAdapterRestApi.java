@@ -1,9 +1,5 @@
 package cm.xenonbyte.farmbyte.common.adapter.api.constant;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
 /**
  * @author bamk
  * @version 1.0
@@ -21,9 +17,11 @@ public final class CommonAdapterRestApi {
     public static final boolean SUCCESS_FALSE = false;
     public static final String FIELD_IS_REQUIRED = "field is required";
     public static final String MESSAGES_IS_REQUIRED = "messages is required";
-    public static final String DEFAULT_LOCALE = "en";
-    public static final List<Locale> LOCALES = Arrays.asList(Locale.forLanguageTag("en"), Locale.forLanguageTag("fr"));
+    public static final String FR_LOCALE = "fr";
+    public static final String EN_LOCALE = "en";
+    public static final String DEFAULT_LOCALE = EN_LOCALE;
     public static final String DEFAULT_BUNDLE_PATH = "classpath:messages/messages";
     public static final String DEFAULTS_PATH = "classpath:messages/defaults";
     public static final String BODY = "body";
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
 }
