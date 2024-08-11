@@ -1,0 +1,39 @@
+services:
+  farmbyte-postgresql:
+    container_name: farmbyte-postgresql
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: farmbyte
+      POSTGRES_PASSWORD: 01913eb8-019b-7bbc-9c32-3ab303ea4c9e
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: farmbyte_db
+    volumes:
+      - farmbyte_postgresql:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - farmbyte-network
+    restart: unless-stopped
+  farmbyte-api:
+    container_name: farmbyte-api
+    image: farmbyte/farmbyte:1.0.0
+    environment:
+      PROFILE: local
+      DS_DB_SERVER: farmbyte-postgresql
+      DS_DB_PORT: 5432
+      DS_DB_NAME: farmbyte_db
+      DS_DB_USER: farmbyte
+      DS_DB_PASSWORD: 01913eb8-019b-7bbc-9c32-3ab303ea4c9e
+    ports:
+      - 8090:8090
+    depends_on:
+      - farmbyte-postgresql
+    networks:
+      - farmbyte-network
+networks:
+  farmbyte-network:
+    driver: bridge
+
+volumes:
+  farmbyte_postgresql:
+    driver: local
