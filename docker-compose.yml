@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
   farmbyte-api:
     container_name: farmbyte-api
-    image: farmbyte/farmbyte:1.0.0
+    image: farmbyte/farmbyte-service:1.0.0
     environment:
       PROFILE: local
       DS_DB_SERVER: farmbyte-postgresql
@@ -30,6 +30,15 @@ services:
       - farmbyte-postgresql
     networks:
       - farmbyte-network
+  farmbyte-ui:
+    container_name: farmbyte-ui
+    image: farmbyte/farmbyte-portal:1.0.0
+    ports:
+      - 80:80
+    networks:
+      - farmbyte-network
+    depends_on:
+      - farmbyte-api
 networks:
   farmbyte-network:
     driver: bridge

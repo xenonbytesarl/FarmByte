@@ -1,5 +1,6 @@
-#Build statge
+#Build stage
 FROM maven:3.9.8-amazoncorretto-21 AS build
+
 WORKDIR /build
 COPY . .
 RUN mvn dependency:go-offline
@@ -7,6 +8,7 @@ RUN mvn clean package -DskipTests
 
 #Runtime Stage
 FROM amazoncorretto:21
+
 ARG PROFILE=local
 ARG APP_VERSION=1.0-SNAPSHOT
 ARG DS_DB_SERVER=farmbyte-postgresql
