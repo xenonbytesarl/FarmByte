@@ -3,6 +3,11 @@ spring:
   profiles:
     active: @spring.profiles.active@
 
+  datasource:
+    url: jdbc:postgresql://${DS_DB_SERVER}:${DS_DB_PORT}/${DS_DB_NAME}?currentSchema=public&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: ${DS_DB_USER}
+    password: ${DS_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
     properties:
