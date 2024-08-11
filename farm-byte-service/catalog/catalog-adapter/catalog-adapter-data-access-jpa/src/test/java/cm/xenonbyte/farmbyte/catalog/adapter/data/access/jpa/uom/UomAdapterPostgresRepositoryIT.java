@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.UUID;
 
@@ -18,9 +20,11 @@ import java.util.UUID;
  * @version 1.0
  * @since 07/08/2024
  */
+@ActiveProfiles("test")
 @Import({BaseEntityJpaConfig.class})
 @ContextConfiguration(classes = {UomJpaRepository.class, UomJpaMapper.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 class UomAdapterPostgresRepositoryIT extends AdapterPostgresRepositoryIT {
 
     @Autowired

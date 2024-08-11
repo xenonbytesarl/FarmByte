@@ -4,9 +4,9 @@ spring:
     active: @spring.profiles.active@
 
   datasource:
-    url: jdbc:postgresql://${DS_DB_SERVER}:${DS_DB_PORT}/${DS_DB_NAME}?currentSchema=public&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
-    username: ${DS_DB_USER}
-    password: ${DS_DB_PASSWORD}
+    url: jdbc:postgresql://${DB_SERVER}:${DB_PORT}/${DB_NAME}?currentSchema=public&binaryTransfer=true&reWriteBatchedInserts=true&stringtype=unspecified
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
@@ -32,4 +32,4 @@ spring:
     enabled: true
 
   jackson:
-    default-property-inclusion: non_null
+    default-property-inclusion: always

@@ -11,12 +11,11 @@ FROM amazoncorretto:21
 
 ARG PROFILE=local
 ARG APP_VERSION=1.0-SNAPSHOT
-ARG DS_DB_SERVER=farmbyte-postgresql
 ARG DS_DB_PORT=5432
-ARG DS_DB_NAME=farmbyte_db
-ARG DS_DB_USER=farmbyte
-ARG DS_DB_PASSWORD=01913eb8-019b-7bbc-9c32-3ab303ea4c9e
-ARG APP_PORT=8090
+ARG DS_DB_SERVER=missing_db_server
+ARG DS_DB_NAME=missiong_db_name
+ARG DS_DB_USER=missing_db_user
+ARG DS_DB_PASSWORD=missing_db_password
 
 WORKDIR /app
 COPY --from=build /build/bootstrap/target/bootstrap-*.jar /app/
@@ -25,16 +24,18 @@ COPY --from=build /build/bootstrap/target/bootstrap-*.jar /app/
 RUN APP_VERSION=$(ls /app | grep *.jar | awk 'NR==2{split($0,a,"-"); print a[3]}' | awk '{sub(/.jar$/,"")}1')\
     && echo "Building container with BSN v-$APP_VERSION"
 
-ENV PACKAGE_VERSION=${APP_VERSION}
-ENV ACTIVE_PROFILE=${PROFILE}
-ENV DB_URL=jdbc:postgresql://${DS_DB_SERVER}:${DS_DB_PORT}/${DS_DB_NAME}
-ENV DB_USER=${DS_DB_USER}
-ENV DB_PASSWORD=${DS_DB_PASSWORD}
-ENV EXPOSED_PORT=${APP_PORT}
+ENV PACKAGE_VERSION=1.0-SNAPSHOT
+ENV ACTIVE_PROFILE=local
+ENV DB_USER=dev
+ENV DB_PASSWORD=019142fc-f35d-7cf1-b893-24095a02405d
+ENV DB_NAME=devb_db
+ENV DB_SERVER=farmbyte-postgresql
+ENV DB_PORT=5432
+ENV APP_PORT=8080
 
-EXPOSE ${EXPOSED_PORT}
+EXPOSE ${APP_PORT}
 
-CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} \
+CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=jdbc:postgresql://${DB_SERVER}:${DB_PORT}/${DB_NAME} \
     -Dspring.datasource.username=${DB_USER} -Dspring.datasource.password=${DB_PASSWORD} \
     bootstrap-${PACKAGE_VERSION}.jar
 

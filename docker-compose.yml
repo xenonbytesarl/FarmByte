@@ -3,38 +3,39 @@ services:
     container_name: farmbyte-postgresql
     image: postgres:16.4
     environment:
-      POSTGRES_USER: farmbyte
-      POSTGRES_PASSWORD: 01913eb8-019b-7bbc-9c32-3ab303ea4c9e
-      PGDATA: /var/lib/postgresql/data
-      POSTGRES_DB: farmbyte_db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - farmbyte_postgresql:/data/postgres
     ports:
-      - 5432:5432
+      - '5437:${DB_PORT}'
     networks:
       - farmbyte-network
     restart: unless-stopped
   farmbyte-api:
     container_name: farmbyte-api
-    image: farmbyte/farmbyte-service:1.0.0
+    image: farmbyte/farmbyte-service:1.0.6
     environment:
-      PROFILE: local
-      DS_DB_SERVER: farmbyte-postgresql
-      DS_DB_PORT: 5432
-      DS_DB_NAME: farmbyte_db
-      DS_DB_USER: farmbyte
-      DS_DB_PASSWORD: 01913eb8-019b-7bbc-9c32-3ab303ea4c9e
+      - ACTIVE_PROFILE=${ACTIVE_PROFILE}
+      - DB_SERVER=${DB_SERVER}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - APP_PORT=${APP_PORT}
     ports:
-      - 8090:8090
+      - '${APP_PORT}:${APP_PORT}'
     depends_on:
       - farmbyte-postgresql
     networks:
       - farmbyte-network
   farmbyte-ui:
     container_name: farmbyte-ui
-    image: farmbyte/farmbyte-portal:1.0.0
+    image: farmbyte/farmbyte-portal:1.0.3
     ports:
-      - 80:80
+      - '80:80'
     networks:
       - farmbyte-network
     depends_on:
