@@ -26,11 +26,12 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpHeaders.ACCEPT_LANGUAGE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ContextConfiguration(classes = {UomApiAdapterService.class})
 @WebMvcTest(UomApiRest.class)
-
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
 final class UomApiRestTest {
 
@@ -109,8 +109,8 @@ final class UomApiRestTest {
         //When + Then
         mockMvc.perform(post(UOM_PATH_URI)
                 .accept(APPLICATION_JSON)
-                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
                 .contentType(APPLICATION_JSON)
+                .header(ACCEPT_LANGUAGE, EN_LOCALE)
                 .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -124,7 +124,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.data.body.active").value(true))
                 .andExpect(jsonPath("$.data.body.uomCategoryId").value(uomCategoryId.toString()))
                 .andExpect(jsonPath("$.data.body.id").isNotEmpty())
-                .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(message, "")));
+                .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(message, Locale.forLanguageTag(EN_LOCALE), "")));
 
         verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
@@ -180,7 +180,7 @@ final class UomApiRestTest {
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
-                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -188,7 +188,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, "")));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE),"")));
 
         verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
@@ -213,7 +213,7 @@ final class UomApiRestTest {
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
-                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -221,7 +221,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,"")));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,  Locale.forLanguageTag(EN_LOCALE),"")));
 
     }
 
@@ -244,7 +244,7 @@ final class UomApiRestTest {
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
-                        .header(ACCEPT_LANGUAGE, Locale.FRENCH)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -252,7 +252,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,new String[]{name})));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
 
     }
 
@@ -276,11 +276,13 @@ final class UomApiRestTest {
                 null,
                 null
         );
+        String exceptionMessage = "CommonResponseEntityExceptionHandler.1";
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -288,7 +290,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").isNotEmpty())
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE), "")))
                 .andExpect(jsonPath("$.error").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].message").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].field").isNotEmpty());

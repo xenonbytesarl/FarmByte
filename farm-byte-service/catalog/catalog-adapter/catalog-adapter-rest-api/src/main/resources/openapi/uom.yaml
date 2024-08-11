@@ -27,6 +27,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateUomViewRequest'
+      parameters:
+        - $ref: '#/components/parameters/accept-language'
       responses:
         201:
           description: successful operation
@@ -53,6 +55,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 components:
+  parameters:
+    accept-language:
+      name: Accept-Language
+      in: header
+      required: true
+      schema:
+        type: string
+        enum: [en, fr]
   schemas:
     ValidationError:
       type: object
