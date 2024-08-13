@@ -137,29 +137,33 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
           build-args: |
             APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
-#  deploy-service:
-#    name: Deploy FarmByte Service
-#    runs-on: self-hosted
-#    needs: [build-image]
-#    steps:
-#      - name: Create deployment folder
-#        run: |
-#          ssh ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }} "mkdir -p ci-cd"
-#
-#      - name: Copy docker compose file
-#        run: |
-#          scp docker-compose.yml ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }}:ci-cd/
-#
-#      - name: Set environment variables and deploy
-#        run: |
-#          ssh ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }} <<EOF
-#          export DB_USER=${{ secrets.DB_USER }}
-#          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-#          export DB_SERVER=${{ secrets.DB_SERVER }}
-#          export DB_NAME=${{ secrets.DB_NAME }}
-#          export DB_PORT=${{ secrets.DB_PORT }}
-#          export APP_PORT=${{ secrets.APP_PORT }}
-#          cd ci-cd
-#          docker compose -f docker-compose.yml pull -q
-#          docker compose -f docker-compose.yml up -d
-#          EOF
+  deploy-service:
+    name: Deploy FarmByte Service
+    runs-on: self-hosted
+    needs: [build-image]
+    steps:
+      - name: Create deployment folder
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_IP }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: mkdir -p ci_cd
+      - name: Copy docker compose file
+        run: |
+          scp -i ${{  secrets.SERVER_PUBLIC_KEY }} docker-compose.yml ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }}:ci-cd/
+
+      - name: Set environment variables and deploy
+        run: |
+          ssh -i ${{  secrets.SERVER_PUBLIC_KEY }} ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }} <<EOF
+          export DB_USER=${{ secrets.DB_USER }}
+          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          export DB_SERVER=${{ secrets.DB_SERVER }}
+          export DB_NAME=${{ secrets.DB_NAME }}
+          export DB_PORT=${{ secrets.DB_PORT }}
+          export APP_PORT=${{ secrets.APP_PORT }}
+          export APP_PORT=${{ secrets.ACTIVE_PROFILE }}ƒ◊
+          cd ci-cd
+          docker compose -f docker-compose.yml pull -q
+          docker compose -f docker-compose.yml up -d
+          EOF
