@@ -21,10 +21,8 @@ WORKDIR /app
 COPY --from=build /build/bootstrap/target/bootstrap-*.jar /app/
 
 # Extract the JAR version
-RUN APP_VERSION=$(ls /app | grep *.jar | awk 'NR==2{split($0,a,"-"); print a[3]}' | awk '{sub(/.jar$/,"")}1')\
-    && echo "Building container with BSN v-$APP_VERSION"
 
-ENV PACKAGE_VERSION=1.0-SNAPSHOT
+ENV APP_VERSION=1.0-SNAPSHOT
 ENV ACTIVE_PROFILE=local
 ENV DB_USER=dev
 ENV DB_PASSWORD=019142fc-f35d-7cf1-b893-24095a02405d
