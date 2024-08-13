@@ -7,16 +7,17 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
       - POSTGRES_DB=${DB_NAME}
+      - PGPORT=${DB_PORT}
     volumes:
-      - farmbyte_postgresql:/data/postgres
+      - ./farmbyte_postgresql:/data/postgres
     ports:
-      - '5437:${DB_PORT}'
+      - '${DB_PORT}:${DB_PORT}'
     networks:
       - farmbyte-network
     restart: unless-stopped
   farmbyte-api:
     container_name: farmbyte-api
-    image: farmbyte/farmbyte-service:1.0.6
+    image: xenonbytesarl/farm-byte-service:latest
     environment:
       - ACTIVE_PROFILE=${ACTIVE_PROFILE}
       - DB_SERVER=${DB_SERVER}
@@ -31,15 +32,6 @@ services:
       - farmbyte-postgresql
     networks:
       - farmbyte-network
-  farmbyte-ui:
-    container_name: farmbyte-ui
-    image: farmbyte/farmbyte-portal:1.0.3
-    ports:
-      - '80:80'
-    networks:
-      - farmbyte-network
-    depends_on:
-      - farmbyte-api
 networks:
   farmbyte-network:
     driver: bridge
