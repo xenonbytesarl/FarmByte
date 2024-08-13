@@ -11,7 +11,6 @@ FROM amazoncorretto:21
 
 ARG PROFILE=local
 ARG APP_VERSION=1.0-SNAPSHOT
-ARG DS_DB_PORT=5432
 ARG DS_DB_SERVER=missing_db_server
 ARG DS_DB_NAME=missiong_db_name
 ARG DS_DB_USER=missing_db_user
@@ -22,7 +21,7 @@ COPY --from=build /build/bootstrap/target/bootstrap-*.jar /app/
 
 # Extract the JAR version
 
-ENV APP_VERSION=1.0-SNAPSHOT
+ENV APP_VERSION=${APP_VERSION}
 ENV ACTIVE_PROFILE=local
 ENV DB_USER=dev
 ENV DB_PASSWORD=019142fc-f35d-7cf1-b893-24095a02405d
@@ -35,5 +34,5 @@ EXPOSE ${APP_PORT}
 
 CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=jdbc:postgresql://${DB_SERVER}:${DB_PORT}/${DB_NAME} \
     -Dspring.datasource.username=${DB_USER} -Dspring.datasource.password=${DB_PASSWORD} \
-    bootstrap-${PACKAGE_VERSION}.jar
+    bootstrap-${APP_VERSION}.jar
 

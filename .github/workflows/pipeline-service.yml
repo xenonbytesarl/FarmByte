@@ -1,13 +1,13 @@
-name: Github Action Pipeline for FarmByte-Service
+name: CI Pipeline for FarmByte-Service 1
 
 on:
   push:
     branches:
-      - '*'         # matches every branch that doesn't contain a '/'
-      - '*/*'       # matches every branch containing a single '/'
-      - '**'        # matches every branch
-      - '!develop'  # excludes develop
-      - '!main'   # excludes main
+      - '*'         #matches every branch that doesn't contain a '/'
+      - '*/*'       #matches every branch containing a single '/'
+      - '**'        #matches every branch
+      - '!develop'  #excludes develop
+      - '!main'   #excludes main
     paths:
       - farm-byte-service/**
       - docker/service/**
@@ -94,7 +94,7 @@ jobs:
 
   build-image:
     runs-on: self-hosted
-    name: Build
+    name: Build Docker Image
     needs: [build-jar]
     steps:
       - name: Build the Project
@@ -126,6 +126,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get current date in number
+        id: current_date
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Build image and push to docker registry
         uses: docker/build-push-action@v5
@@ -134,32 +138,46 @@ jobs:
           file: docker/service/Dockerfile
           push: true
           platforms: linux/amd64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}.${{ steps.current_date.outputs.CURRENT_DATE }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
           build-args: |
             APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
-#  deploy-service:
-#    name: Deploy FarmByte Service
-#    runs-on: self-hosted
-#    needs: [build-image]
-#    steps:
-#      - name: Create deployment folder
-#        run: |
-#          ssh ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }} "mkdir -p ci-cd"
-#
-#      - name: Copy docker compose file
-#        run: |
-#          scp docker-compose.yml ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }}:ci-cd/
-#
-#      - name: Set environment variables and deploy
-#        run: |
-#          ssh ${{ secrets.SERVER_USERNAME}}@${{ secrets.SERVER_IP }} <<EOF
-#          export DB_USER=${{ secrets.DB_USER }}
-#          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-#          export DB_SERVER=${{ secrets.DB_SERVER }}
-#          export DB_NAME=${{ secrets.DB_NAME }}
-#          export DB_PORT=${{ secrets.DB_PORT }}
-#          export APP_PORT=${{ secrets.APP_PORT }}
-#          cd ci-cd
-#          docker compose -f docker-compose.yml pull -q
-#          docker compose -f docker-compose.yml up -d
-#          EOF
+  deploy-service:
+    name: Deploy FarmByte Service
+    runs-on: self-hosted
+    needs: [build-image]
+    steps:
+      - name: Create deployment folder
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: mkdir -p ci_cd
+      - name: Copy docker compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          rm: true
+          overwrite: true
+          source: docker-compose.yml
+          target: ci_cd
+      - name: Set environment variables and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: |
+            export DB_USER=${{ secrets.DB_USER }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export DB_SERVER=${{ secrets.DB_SERVER }}
+            export DB_NAME=${{ secrets.DB_NAME }}
+            export DB_PORT=${{ secrets.DB_PORT }}
+            export APP_PORT=${{ secrets.APP_PORT }}
+            export ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }}
+            cd ci_cd
+            docker compose -f docker-compose.yml pull -q
+            docker compose down 
+            docker compose -f docker-compose.yml up -d
