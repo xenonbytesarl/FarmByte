@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
   farmbyte-api:
     container_name: farmbyte-api
-    image: farmbyte/farmbyte-service:1.0.6
+    image: xenonbytesarl/farm-byte-service:latest
     environment:
       - ACTIVE_PROFILE=${ACTIVE_PROFILE}
       - DB_SERVER=${DB_SERVER}
@@ -31,15 +31,6 @@ services:
       - farmbyte-postgresql
     networks:
       - farmbyte-network
-  farmbyte-ui:
-    container_name: farmbyte-ui
-    image: farmbyte/farmbyte-portal:1.0.3
-    ports:
-      - '80:80'
-    networks:
-      - farmbyte-network
-    depends_on:
-      - farmbyte-api
 networks:
   farmbyte-network:
     driver: bridge
