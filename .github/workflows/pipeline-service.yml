@@ -16,139 +16,143 @@ on:
 
 jobs:
 
-#  compile:
-#    runs-on: self-hosted
-#    name: Compile project
-#    steps:
-#      - name: Checkout the code
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Setup JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 21
-#          distribution: 'corretto'
-#
-#      - name: Set up Maven
-#        uses: stCarolas/setup-maven@v5
-#        with:
-#          maven-version: 3.9.8
-#
-#      - name: Compile project
-#        run: |
-#          cd farm-byte-service
-#          mvn clean compile
-#
-#  unit-tests:
-#    runs-on: self-hosted
-#    name: Unit Tests
-#    steps:
-#      - name: Checkout the code
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Setup JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 21
-#          distribution: 'corretto'
-#
-#      - name: Set up Maven
-#        uses: stCarolas/setup-maven@v5
-#        with:
-#          maven-version: 3.9.8
-#
-#      - name: Test the project
-#        run: |
-#          cd farm-byte-service
-#          mvn clean test
-#
-#  build-jar:
-#    runs-on: self-hosted
-#    name: Build Jar
-#    needs: [compile, unit-tests]
-#    steps:
-#      - name: Build the Project
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Setup JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 21
-#          distribution: 'corretto'
-#
-#      - name: Set up Maven
-#        uses: stCarolas/setup-maven@v5
-#        with:
-#          maven-version: 3.9.8
-#
-#      - name: Test the project
-#        run: |
-#          cd farm-byte-service
-#          mvn clean package -DskipTests
-#
-#  build-image:
-#    runs-on: self-hosted
-#    name: Build
-#    needs: [build-jar]
-#    steps:
-#      - name: Build the Project
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Setup JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 21
-#          distribution: 'corretto'
-#      - name: Set up Maven
-#        uses: stCarolas/setup-maven@v5
-#        with:
-#          maven-version: 3.9.8
-#      - name: Build project
-#        run: |
-#          cd farm-byte-service
-#          mvn clean package -DskipTests
-#      - name: Extract project version
-#        id: extract_version
-#        run: |
-#          cd farm-byte-service
-#          echo "VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
-#
-#      - name: Login to Dockerhub
-#        uses: docker/login-action@v3
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#      - name: Build image and push to docker registry
-#        uses: docker/build-push-action@v5
-#        with:
-#          context: farm-byte-service
-#          file: docker/service/Dockerfile
-#          push: true
-#          platforms: linux/amd64
-#          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farmbyte/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}, ${{ secrets.DOCKERHUB_USERNAME }}/farmbyte/farm-byte-service:latest
-#          build-args: |
-#            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
+  compile:
+    runs-on: self-hosted
+    name: Compile project
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+
+      - name: Compile project
+        run: |
+          cd farm-byte-service
+          mvn clean compile
+
+  unit-tests:
+    runs-on: self-hosted
+    name: Unit Tests
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+
+      - name: Test the project
+        run: |
+          cd farm-byte-service
+          mvn clean test
+
+  build-jar:
+    runs-on: self-hosted
+    name: Build Jar
+    needs: [compile, unit-tests]
+    steps:
+      - name: Build the Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+
+      - name: Test the project
+        run: |
+          cd farm-byte-service
+          mvn clean package -DskipTests
+
+  build-image:
+    runs-on: self-hosted
+    name: Build Docker Image
+    needs: [build-jar]
+    steps:
+      - name: Build the Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Build project
+        run: |
+          cd farm-byte-service
+          mvn clean package -DskipTests
+      - name: Extract project version
+        id: extract_version
+        run: |
+          cd farm-byte-service
+          echo "VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get current date in number
+        id: current_date
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Build image and push to docker registry
+        uses: docker/build-push-action@v5
+        with:
+          context: farm-byte-service
+          file: docker/service/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}.${{ steps.current_date.outputs.CURRENT_DATE }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
+          build-args: |
+            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
   deploy-service:
     name: Deploy FarmByte Service
     runs-on: self-hosted
-#    needs: [build-image]
+    needs: [build-image]
     steps:
-#      - name: Create deployment folder
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.SERVER_IP }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.SERVER_PRIVATE_KEY }}
-#          script: mkdir -p ci_cd
+      - name: Create deployment folder
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: mkdir -p ci_cd
       - name: Copy docker compose file
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -158,21 +162,22 @@ jobs:
           rm: true
           overwrite: true
           source: docker-compose.yml
-          target: "ci_cd"
-#      - name: Set environment variables and deploy
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.SERVER_IP }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.SERVER_PRIVATE_KEY }}
-#          script: |
-#            export DB_USER=${{ secrets.DB_USER }}
-#            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-#            export DB_SERVER=${{ secrets.DB_SERVER }}
-#            export DB_NAME=${{ secrets.DB_NAME }}
-#            export DB_PORT=${{ secrets.DB_PORT }}
-#            export APP_PORT=${{ secrets.APP_PORT }}
-#            export ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }}
-#            cd ci_cd
-#            docker compose -f docker-compose.yml pull -q
-#            docker compose -f docker-compose.yml up -d
+          target: ci_cd
+      - name: Set environment variables and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: |
+            export DB_USER=${{ secrets.DB_USER }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export DB_SERVER=${{ secrets.DB_SERVER }}
+            export DB_NAME=${{ secrets.DB_NAME }}
+            export DB_PORT=${{ secrets.DB_PORT }}
+            export APP_PORT=${{ secrets.APP_PORT }}
+            export ACTIVE_PROFILE=${{ secrets.ACTIVE_PROFILE }}
+            cd ci_cd
+            docker compose -f docker-compose.yml pull -q
+            docker compose down 
+            docker compose -f docker-compose.yml up -d

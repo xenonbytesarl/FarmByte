@@ -7,10 +7,11 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - PGDATA=/var/lib/postgresql/data
       - POSTGRES_DB=${DB_NAME}
+      - PGPORT=${DB_PORT}
     volumes:
       - farmbyte_postgresql:/data/postgres
     ports:
-      - '5437:${DB_PORT}'
+      - '${DB_PORT}:${DB_PORT}'
     networks:
       - farmbyte-network
     restart: unless-stopped
