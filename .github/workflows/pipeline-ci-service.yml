@@ -1,18 +1,30 @@
-name: CI Pipeline for FarmByte-Service 1
+name: CI Pipeline for FarmByte-Service 2
 
 on:
-  push:
-    branches:
-      - '*'         # matches every branch that doesn't contain a '/'
-      - '*/*'       # matches every branch containing a single '/'
-      - '**'        # matches every branch
-      - '!develop'  # excludes develop
-      - '!main'   # excludes main
-    paths:
-      - farm-byte-service/**
-      - docker/service/**
-      - 'docker-compose.yml'
-      - .github/workflows/**
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Is Release?'
+        required: false
+        default: 'false'
+      build_type:
+        description: 'Type'
+        required: false
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+      release_version:
+        description: 'Release version'
+        required: false
+        default: ''
+      next_snapshot_version:
+        description: 'Next snapshot version'
+        required: false
+        default: ''
+
+
 
 jobs:
 
