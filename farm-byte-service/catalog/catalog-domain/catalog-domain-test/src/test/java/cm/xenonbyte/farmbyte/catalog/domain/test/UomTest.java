@@ -32,11 +32,10 @@ final class UomTest {
 
 
     private IUomService uomDomainService;
-    private UomRepository uomRepository;
 
     @BeforeEach
     void setUp() {
-        uomRepository = new InMemoryUomRepository();
+        UomRepository uomRepository = new InMemoryUomRepository();
         uomDomainService = new UomService(uomRepository);
     }
 
