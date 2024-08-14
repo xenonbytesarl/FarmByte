@@ -13,6 +13,10 @@
     <dependencies>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-resource</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-adapter-data-access-jpa</artifactId>
         </dependency>
         <dependency>
@@ -43,6 +47,12 @@
             <id>test</id>
             <properties>
                 <spring.profiles.active>test</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>int</id>
+            <properties>
+                <spring.profiles.active>int</spring.profiles.active>
             </properties>
         </profile>
         <profile>

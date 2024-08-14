@@ -53,6 +53,11 @@
         <artifactId>common-adapter-rest-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>common-resource</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
