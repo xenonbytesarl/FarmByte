@@ -1,18 +1,17 @@
 name: CI Pipeline for FarmByte-Service 1
 
 on:
-  push:
+  pull_request:
     branches:
-      - '*'         #matches every branch that doesn't contain a '/'
-      - '*/*'       #matches every branch containing a single '/'
-      - '**'        #matches every branch
-      - '!develop'  #excludes develop
-      - '!main'   #excludes main
+      - 'develop'
     paths:
       - farm-byte-service/**
       - docker/service/**
       - 'docker-compose.yml'
       - .github/workflows/**
+  push:
+    branches:
+      - 'develop'
 
 jobs:
 
