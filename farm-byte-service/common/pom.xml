@@ -14,5 +14,6 @@
        <module>common-domain</module>
        <module>common-adapter-rest-api</module>
        <module>common-adapter-data-access-jpa</module>
+       <module>common-resource</module>
    </modules>
 </project>

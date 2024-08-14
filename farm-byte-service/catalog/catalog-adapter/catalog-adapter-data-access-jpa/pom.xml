@@ -82,5 +82,10 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-resource</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
