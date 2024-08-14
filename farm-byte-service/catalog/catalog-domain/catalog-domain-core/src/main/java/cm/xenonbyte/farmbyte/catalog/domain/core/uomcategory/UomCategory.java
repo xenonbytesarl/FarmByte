@@ -26,8 +26,8 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
         this.name = Objects.requireNonNull(name, NAME_UOM_CATEGORY_IS_REQUIRED);
     }
 
-    public UomCategory(@Nonnull Name uomCategoryName, @Nonnull UomCategoryId parentUomCategoryId) {
-        this.name = Objects.requireNonNull(uomCategoryName, NAME_UOM_CATEGORY_IS_REQUIRED);
+    public UomCategory(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
+        this.name = Objects.requireNonNull(name, NAME_UOM_CATEGORY_IS_REQUIRED);
         this.parentUomCategoryId = Objects.requireNonNull(parentUomCategoryId, PARENT_UOM_CATEGORY_ID_IS_REQUIRED);
     }
 
