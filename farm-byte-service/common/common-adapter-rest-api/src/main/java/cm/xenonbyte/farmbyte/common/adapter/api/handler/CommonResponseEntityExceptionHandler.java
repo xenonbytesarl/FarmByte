@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.PATH_URI_REPLACE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.SUCCESS_FALSE;
@@ -35,7 +37,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public abstract class CommonResponseEntityExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<Object> handleMethodArgumentNotValid(
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException exception,
             WebRequest request, Locale locale) {
 
@@ -47,7 +49,7 @@ public abstract class CommonResponseEntityExceptionHandler {
                                 .message(MessageUtil.getMessage(
                                     Objects.requireNonNull(String.format(
                                         "%s.%s.%s", StringUtils.capitalize(fieldError.getObjectName()), fieldError.getField(), fieldError.getCode())
-                                ), ""))
+                                ), locale, ""))
                                 .build()
                 ));
         log.error("", exception);
@@ -66,7 +68,7 @@ public abstract class CommonResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler({IllegalArgumentException.class, MissingRequestHeaderException.class})
     protected ResponseEntity<ApiErrorResponse> handleIllegalArgumentException
             (RuntimeException exception, WebRequest request, Locale locale) {
         log.error("", exception);
@@ -85,7 +87,7 @@ public abstract class CommonResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({BaseDomainBadException.class})
-    public ResponseEntity<ApiErrorResponse> handleBaseDomainBadException
+    protected ResponseEntity<ApiErrorResponse> handleBaseDomainBadException
             (BaseDomainBadException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity
@@ -104,7 +106,7 @@ public abstract class CommonResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({BaseDomainNotFoundException.class})
-    public ResponseEntity<ApiErrorResponse> handleBaseDomainNotFoundException
+    protected ResponseEntity<ApiErrorResponse> handleBaseDomainNotFoundException
             (BaseDomainNotFoundException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity
@@ -123,7 +125,7 @@ public abstract class CommonResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({BaseDomainConflictException.class})
-    public ResponseEntity<ApiErrorResponse> handleBaseDomainConflictException
+    protected ResponseEntity<ApiErrorResponse> handleBaseDomainConflictException
             (BaseDomainConflictException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity
@@ -152,6 +154,7 @@ public abstract class CommonResponseEntityExceptionHandler {
                                 .code(INTERNAL_SERVER_ERROR.value())
                                 .status(INTERNAL_SERVER_ERROR.name())
                                 .success(SUCCESS_FALSE)
+                                .correlationId(UUID.randomUUID())
                                 .reason(MessageUtil.getMessage(UNEXPECTED_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, locale, ""))
                                 .path(request.getDescription(SUCCESS_FALSE).replace(PATH_URI_REPLACE, ""))
                                 .build()
