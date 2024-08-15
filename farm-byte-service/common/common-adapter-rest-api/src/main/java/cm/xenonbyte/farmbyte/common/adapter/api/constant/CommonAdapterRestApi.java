@@ -22,6 +22,6 @@ public final class CommonAdapterRestApi {
     public static final String DEFAULT_LOCALE = EN_LOCALE;
     public static final String DEFAULT_BUNDLE_PATH = "classpath:messages/messages";
     public static final String DEFAULTS_PATH = "classpath:messages/defaults";
-    public static final String BODY = "body";
+    public static final String BODY = "content";
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
 }

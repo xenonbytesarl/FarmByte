@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 import java.util.Objects;
 import java.util.UUID;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.NAME_UOM_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_UOM_CATEGORY_ID_IS_REQUIRED;
 
 /**
@@ -38,10 +39,19 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
     }
 
     public static UomCategory of(@Nonnull Name name) {
+        if (name == null) {
+            throw new IllegalArgumentException(NAME_UOM_CATEGORY_IS_REQUIRED);
+        }
         return new UomCategory(name);
     }
 
     public static UomCategory of(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
+        if (name == null) {
+            throw new IllegalArgumentException(NAME_UOM_CATEGORY_IS_REQUIRED);
+        }
+        if (parentUomCategoryId == null) {
+            throw new IllegalArgumentException(PARENT_UOM_CATEGORY_ID_IS_REQUIRED);
+        }
         return new UomCategory(name, parentUomCategoryId);
     }
 

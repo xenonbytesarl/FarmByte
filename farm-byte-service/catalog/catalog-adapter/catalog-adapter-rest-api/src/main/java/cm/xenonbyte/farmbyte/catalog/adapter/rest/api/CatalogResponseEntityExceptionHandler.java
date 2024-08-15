@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ApiErrorResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
 import cm.xenonbyte.farmbyte.common.adapter.api.handler.CommonResponseEntityExceptionHandler;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainException;
+import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainBadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,9 +24,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public final class CatalogResponseEntityExceptionHandler extends CommonResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler({UomException.class})
+    @ExceptionHandler({BaseDomainBadException.class})
     public ResponseEntity<ApiErrorResponse> handleBadRequestException
-            (BaseDomainException exception, WebRequest request) {
+            (BaseDomainBadException exception, WebRequest request) {
         log.error("", exception);
         return ResponseEntity
                 .status(BAD_REQUEST)
