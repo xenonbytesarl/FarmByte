@@ -30,7 +30,7 @@ public final class InMemoryUomCategoryRepository implements UomCategoryRepositor
     }
 
     @Override
-    public Boolean existsByParentUomCategoryId(UomCategoryId parentCategoryId) {
+    public Boolean existsById(UomCategoryId parentCategoryId) {
         return uomCategories.get(parentCategoryId) != null;
     }
 }

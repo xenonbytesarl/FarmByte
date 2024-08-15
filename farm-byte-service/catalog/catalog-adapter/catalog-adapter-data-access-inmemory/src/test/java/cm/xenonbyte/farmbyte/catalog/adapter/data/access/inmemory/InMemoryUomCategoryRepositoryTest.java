@@ -17,12 +17,12 @@ public final class InMemoryUomCategoryRepositoryTest extends UomCategoryReposito
         uomCategoryRepository = new InMemoryUomCategoryRepository();
 
         name = Name.of("Unite");
-        UomCategory uomCategory = new UomCategory(name);
+        UomCategory uomCategory = UomCategory.of(name);
         uomCategory.initiate();
         uomCategoryRepository.save(uomCategory);
 
         parentUomCategoryId = uomCategory.getId();
 
-        new UomCategory(Name.of("Carton"), parentUomCategoryId);
+        UomCategory.of(Name.of("Carton"), parentUomCategoryId);
     }
 }

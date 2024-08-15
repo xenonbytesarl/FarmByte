@@ -34,7 +34,7 @@ final class UomCategoryTest {
         UomCategoryRepository uomCategoryRepository = new InMemoryUomCategoryRepository();
         uomCategoryService = new UomCategoryService(uomCategoryRepository);
 
-        parentUomCategory = new UomCategory(new Name("Temps"));
+        parentUomCategory = UomCategory.of(new Name("Temps"));
         parentUomCategory.initiate();
         uomCategoryRepository.save(parentUomCategory);
     }
@@ -43,7 +43,7 @@ final class UomCategoryTest {
     void should_create_uom_category_as_root_category() {
         //Given
         Name uomCategoryName = Name.of("Unite");
-        UomCategory uomCategory = new UomCategory(uomCategoryName);
+        UomCategory uomCategory = UomCategory.of(uomCategoryName);
 
         //Act
         UomCategory createUomCategory = uomCategoryService.createUomCategory(uomCategory);
@@ -61,7 +61,7 @@ final class UomCategoryTest {
     void should_create_child_uom_category_when_child_exist() {
         //Given
         Name uomCategoryName = Name.of("Unite");
-        UomCategory uomCategory = new UomCategory(uomCategoryName, parentUomCategory.getId());
+        UomCategory uomCategory = UomCategory.of(uomCategoryName, parentUomCategory.getId());
 
         //Act
         UomCategory childUomCategory = uomCategoryService.createUomCategory(uomCategory);
@@ -73,14 +73,14 @@ final class UomCategoryTest {
         assertThat(childUomCategory.getId().getValue())
                 .isInstanceOf(UUID.class)
                 .isNotNull();
-        assertThat(childUomCategory.getParentCategoryId()).isEqualTo(parentUomCategory.getId());
+        assertThat(childUomCategory.getParentUomCategoryId()).isEqualTo(parentUomCategory.getId());
     }
 
     @Test
     void should_throw_exception_when_uom_category_name_exists() {
         //Given
         Name uomCategoryName = Name.of("Temps");
-        UomCategory uomCategory = new UomCategory(uomCategoryName);
+        UomCategory uomCategory = UomCategory.of(uomCategoryName);
 
         //Act + Then
         assertThatThrownBy(() -> uomCategoryService.createUomCategory(uomCategory))
@@ -92,7 +92,7 @@ final class UomCategoryTest {
     void should_throw_exception_when_create_child_category_with_non_existing_parent() {
         //Given
         Name uomCategoryName = Name.of("Unite");
-        UomCategory uomCategory = new UomCategory(uomCategoryName, new UomCategoryId(UUID.randomUUID()));
+        UomCategory uomCategory = UomCategory.of(uomCategoryName, new UomCategoryId(UUID.randomUUID()));
 
         assertThatThrownBy(() -> uomCategoryService.createUomCategory(uomCategory))
                 .isInstanceOf(UomParentCategoryNotFoundException.class)

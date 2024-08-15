@@ -15,5 +15,5 @@ public interface UomCategoryRepository {
 
     UomCategory save(@Nonnull UomCategory uomCategory);
 
-    Boolean existsByParentUomCategoryId(UomCategoryId parentCategoryId);
+    Boolean existsById(UomCategoryId parentCategoryId);
 }

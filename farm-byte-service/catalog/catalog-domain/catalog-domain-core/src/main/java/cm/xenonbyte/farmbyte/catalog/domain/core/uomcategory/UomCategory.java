@@ -8,7 +8,6 @@ import jakarta.annotation.Nonnull;
 import java.util.Objects;
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.NAME_UOM_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_UOM_CATEGORY_ID_IS_REQUIRED;
 
 /**
@@ -22,13 +21,32 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
     private UomCategoryId parentUomCategoryId;
     private Active active;
 
-    public UomCategory(@Nonnull Name name) {
-        this.name = Objects.requireNonNull(name, NAME_UOM_CATEGORY_IS_REQUIRED);
+    private UomCategory(@Nonnull Name name) {
+        this.name = Objects.requireNonNull(name);
     }
 
-    public UomCategory(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
-        this.name = Objects.requireNonNull(name, NAME_UOM_CATEGORY_IS_REQUIRED);
+    private UomCategory(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
+        this.name = Objects.requireNonNull(name);
         this.parentUomCategoryId = Objects.requireNonNull(parentUomCategoryId, PARENT_UOM_CATEGORY_ID_IS_REQUIRED);
+    }
+
+    private UomCategory(Builder builder) {
+        setId(builder.id);
+        name = builder.name;
+        parentUomCategoryId = builder.parentUomCategoryId;
+        active = builder.active;
+    }
+
+    public static UomCategory of(@Nonnull Name name) {
+        return new UomCategory(name);
+    }
+
+    public static UomCategory of(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
+        return new UomCategory(name, parentUomCategoryId);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
 
@@ -45,7 +63,42 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
         return active;
     }
 
-    public UomCategoryId getParentCategoryId() {
+    public UomCategoryId getParentUomCategoryId() {
         return parentUomCategoryId;
+    }
+
+
+    public static final class Builder {
+        private UomCategoryId id;
+        private Name name;
+        private UomCategoryId parentUomCategoryId;
+        private Active active;
+
+        private Builder() {
+        }
+
+        public Builder id(UomCategoryId val) {
+            id = val;
+            return this;
+        }
+
+        public Builder name(Name val) {
+            name = val;
+            return this;
+        }
+
+        public Builder parentUomCategoryId(UomCategoryId val) {
+            parentUomCategoryId = val;
+            return this;
+        }
+
+        public Builder active(Active val) {
+            active = val;
+            return this;
+        }
+
+        public UomCategory build() {
+            return new UomCategory(this);
+        }
     }
 }
