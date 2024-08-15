@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: Unit of Measure API
+  title: Category of Unit of Measure API
   description: |
-    REST API endpoints for Unit of Measure
+    REST API endpoints for Category Unit of Measure
   version: 1.0.0
 servers:
   - url: http://localhost:8085/api/v1/catalog
@@ -11,22 +11,22 @@ servers:
     description: Production server
 
 paths:
-  /uoms:
+  /uom-categories:
     post:
       tags:
-        - Uom
-      summary: create an unit of measure
-      operationId: createUom
+        - UomCategory
+      summary: create a category unit of measure
+      operationId: createUomCategory
       security:
         - oAuth:
-            - create:uom
+            - create:uom:category
       requestBody:
         required: true
-        description: uom object to be created
+        description: category uom object to be created
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUomViewRequest'
+              $ref: '#/components/schemas/CreateUomCategoryViewRequest'
       parameters:
         - $ref: '#/components/parameters/accept-language'
       responses:
@@ -101,7 +101,7 @@ components:
             data:
               type: object
               additionalProperties:
-                $ref: '#/components/schemas/CreateUomViewResponse'
+                $ref: '#/components/schemas/CreateUomCategoryViewResponse'
     ApiErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ApiResponse'
@@ -124,36 +124,23 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/ValidationError'
-    CreateUomViewRequest:
+    CreateUomCategoryViewRequest:
       type: object
       required:
         - name
-        - uomCategoryId
-        - uomType
       properties:
         name:
           type: string
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
-        uomCategoryId:
+        parentUomCategoryId:
           type: string
           format: uuid
-        uomType:
-          type: string
-          enum:
-            - LOWER
-            - REFERENCE
-            - GREATER
-        ratio:
-          type: number
-          format: double
-    CreateUomViewResponse:
+    CreateUomCategoryViewResponse:
       type: object
       required:
         - id
         - name
-        - uomCategoryId
-        - uomType
-        - ratio
+        - parenUomCategoryId
         - active
       properties:
         id:
@@ -162,17 +149,8 @@ components:
         name:
           type: string
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
-        uomCategoryId:
+        parentUomCategoryId:
           type: string
           format: uuid
-        uomType:
-          type: string
-          enum:
-            - LOWER
-            - REFERENCE
-            - GREATER
-        ratio:
-          type: number
-          format: double
         active:
           type: boolean

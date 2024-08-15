@@ -11,13 +11,13 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -41,12 +41,16 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 final class UomApiAdapterServiceTest {
 
-    @InjectMocks
-    private UomApiAdapterService uomApiAdapterService;
+    private IUomApiAdapterService uomApiAdapterService;
     @Mock
-    private IUomService uomDomainService;
+    private IUomService uomService;
     @Mock
     private UomApiViewMapper uomApiViewMapper;
+
+    @BeforeEach
+    void setUp() {
+        uomApiAdapterService = new UomApiAdapterService(uomService, uomApiViewMapper);
+    }
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
@@ -100,12 +104,12 @@ final class UomApiAdapterServiceTest {
         Uom uomResponse = generateCreateUomResponse(name, uomCategoryId, uomType, ratioResponse);
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
-        when(uomDomainService.createUom(uomRequest)).thenReturn(uomResponse);
+        when(uomService.createUom(uomRequest)).thenReturn(uomResponse);
         when(uomApiViewMapper.toCreateUomViewResponse(uomResponse)).thenReturn(createUomViewResponse);
 
         ArgumentCaptor<CreateUomViewRequest> createUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(CreateUomViewRequest.class);
-        ArgumentCaptor<Uom> createUomRequestArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
-        ArgumentCaptor<Uom> createUomResponseArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
+        ArgumentCaptor<Uom> uomArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
+
 
         //Act
         CreateUomViewResponse result = uomApiAdapterService.createUom(createUomViewRequest);
@@ -118,11 +122,11 @@ final class UomApiAdapterServiceTest {
         verify(uomApiViewMapper, times(1)).toUom(createUomViewRequestArgumentCaptor.capture());
         assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
-        verify(uomDomainService, times(1)).createUom(createUomRequestArgumentCaptor.capture());
-        assertThat(createUomRequestArgumentCaptor.getValue()).isEqualTo(uomRequest);
+        verify(uomService, times(1)).createUom(uomArgumentCaptor.capture());
+        assertThat(uomArgumentCaptor.getValue()).isEqualTo(uomRequest);
 
-        verify(uomApiViewMapper, times(1)).toCreateUomViewResponse(createUomResponseArgumentCaptor.capture());
-        assertThat(createUomResponseArgumentCaptor.getValue()).isEqualTo(uomResponse);
+        verify(uomApiViewMapper, times(1)).toCreateUomViewResponse(uomArgumentCaptor.capture());
+        assertThat(uomArgumentCaptor.getValue()).isEqualTo(uomResponse);
 
 
     }
@@ -175,7 +179,7 @@ final class UomApiAdapterServiceTest {
         Uom uomRequest = generateUom(name, uomCategoryId, uomType, ratioRequest);
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uomRequest);
-        when(uomDomainService.createUom(uomRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
+        when(uomService.createUom(uomRequest)).thenThrow(new IllegalArgumentException(exceptionMessage));
 
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
                 .isInstanceOf(exceptionClass)
@@ -198,7 +202,7 @@ final class UomApiAdapterServiceTest {
         String exceptionMessage = "UomReferenceDuplicateException.1";
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomReferenceDuplicateException());
+        when(uomService.createUom(uom)).thenThrow(new UomReferenceDuplicateException());
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
@@ -206,7 +210,7 @@ final class UomApiAdapterServiceTest {
                 .hasMessage(exceptionMessage);
 
         verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);
-        verify(uomDomainService, times(1)).createUom(uom);
+        verify(uomService, times(1)).createUom(uom);
 
     }
 
@@ -226,7 +230,7 @@ final class UomApiAdapterServiceTest {
         String exceptionMessage = "UomNameDuplicateException.1";
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomDomainService.createUom(uom)).thenThrow(new UomNameDuplicateException(new Object[]{uom.getName().getValue()}));
+        when(uomService.createUom(uom)).thenThrow(new UomNameDuplicateException(new Object[]{uom.getName().getValue()}));
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
@@ -234,7 +238,7 @@ final class UomApiAdapterServiceTest {
                 .hasMessage(exceptionMessage);
 
         verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);
-        verify(uomDomainService, times(1)).createUom(uom);
+        verify(uomService, times(1)).createUom(uom);
 
     }
 

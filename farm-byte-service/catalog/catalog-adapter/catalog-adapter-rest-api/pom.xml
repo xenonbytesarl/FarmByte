@@ -101,6 +101,38 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>uom-category</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/uom-category.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory</apiPackage>
+                            <modelPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>false</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <requestMappingMode>api_interface</requestMappingMode>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>true</useResponseEntity>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <typeMappings>
+                                    <typeMapping>createUomResponse=CreateUomResponse</typeMapping>
+                                </typeMappings>
+                                <importMappings>
+                                    <importMapping>CreateUomCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomCategoryViewResponse</importMapping>
+                                </importMappings>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameDuplicateException;
@@ -14,9 +15,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,8 +25,11 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_DUPLICATE_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
+import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,18 +46,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 08/08/2024
  */
 @ActiveProfiles("test")
-@EnableAutoConfiguration
-@ContextConfiguration(classes = {UomApiAdapterService.class})
 @WebMvcTest(UomApiRest.class)
+@ContextConfiguration(classes = {UomApiAdapterService.class})
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-final class UomApiRestTest {
+final class UomApiRestTest extends ApiRestConfigTest {
 
     public static final String UOM_PATH_URI = "/api/v1/catalog/uoms";
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private UomApiAdapterService uomApiAdapterService;
+
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
@@ -119,11 +119,11 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.code").value(201))
                 .andExpect(jsonPath("$.status").value("CREATED"))
                 .andExpect(jsonPath("$.data").isNotEmpty())
-                .andExpect(jsonPath("$.data.body.name").value(name))
-                .andExpect(jsonPath("$.data.body.ratio").value(ratioResponse))
-                .andExpect(jsonPath("$.data.body.active").value(true))
-                .andExpect(jsonPath("$.data.body.uomCategoryId").value(uomCategoryId.toString()))
-                .andExpect(jsonPath("$.data.body.id").isNotEmpty())
+                .andExpect(jsonPath("$.data.content.name").value(name))
+                .andExpect(jsonPath("$.data.content.ratio").value(ratioResponse))
+                .andExpect(jsonPath("$.data.content.active").value(true))
+                .andExpect(jsonPath("$.data.content.uomCategoryId").value(uomCategoryId.toString()))
+                .andExpect(jsonPath("$.data.content.id").isNotEmpty())
                 .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(message, Locale.forLanguageTag(EN_LOCALE), "")));
 
         verify(uomApiAdapterService, times(1)).createUom(createUomViewRequestArgumentCaptor.capture());
@@ -205,7 +205,6 @@ final class UomApiRestTest {
                 null,
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
-        String exceptionMessage = "UomReferenceDuplicateException.1";
 
         when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomReferenceDuplicateException());
 
@@ -221,7 +220,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage,  Locale.forLanguageTag(EN_LOCALE),"")));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY,  Locale.forLanguageTag(EN_LOCALE),"")));
 
     }
 
@@ -236,7 +235,6 @@ final class UomApiRestTest {
                 null,
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
-        String exceptionMessage = "UomNameDuplicateException.1";
 
         when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomNameDuplicateException(new Object[]{name}));
 
@@ -252,7 +250,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_DUPLICATE_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
 
     }
 
@@ -276,7 +274,6 @@ final class UomApiRestTest {
                 null,
                 null
         );
-        String exceptionMessage = "CommonResponseEntityExceptionHandler.1";
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
@@ -290,7 +287,7 @@ final class UomApiRestTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE), "")))
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), "")))
                 .andExpect(jsonPath("$.error").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].message").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].field").isNotEmpty());

@@ -4,9 +4,10 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import jakarta.annotation.Nonnull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * @author bamk
@@ -15,11 +16,15 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public final class UomApiAdapterService implements IUomApiAdapterService {
 
     private final IUomService uomDomainService;
     private final UomApiViewMapper uomApiViewMapper;
+
+    public UomApiAdapterService(final @Nonnull IUomService uomDomainService, final @Nonnull UomApiViewMapper uomApiViewMapper) {
+        this.uomDomainService = Objects.requireNonNull(uomDomainService);
+        this.uomApiViewMapper = Objects.requireNonNull(uomApiViewMapper);
+    }
 
     @Nonnull
     @Override
