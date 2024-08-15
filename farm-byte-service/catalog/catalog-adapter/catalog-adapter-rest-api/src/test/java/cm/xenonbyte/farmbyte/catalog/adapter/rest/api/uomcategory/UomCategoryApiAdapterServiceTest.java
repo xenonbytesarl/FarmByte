@@ -3,8 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uomcategory;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryDuplicateNameException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryConflictNameException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.ports.primary.IUomCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -21,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_DUPLICATE_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -120,8 +119,8 @@ final class UomCategoryApiAdapterServiceTest {
                 Arguments.of(
                         "Unite",
                         null,
-                        new UomCategoryDuplicateNameException(new String[]{UOM_CATEGORY_NAME_DUPLICATE_EXCEPTION}),
-                        UOM_CATEGORY_NAME_DUPLICATE_EXCEPTION
+                        new UomCategoryConflictNameException(new String[]{UOM_CATEGORY_NAME_CONFLICT_EXCEPTION}),
+                        UOM_CATEGORY_NAME_CONFLICT_EXCEPTION
                 ),
                 Arguments.of(
                         "Temps",
@@ -137,7 +136,7 @@ final class UomCategoryApiAdapterServiceTest {
     void should_throw_exception_when_create_uom_category(
             String nameAsString,
             UUID parentUomCategoryUUID,
-            UomCategoryException exceptionClass,
+            RuntimeException exceptionClass,
             String exceptionMessage
     ) {
 

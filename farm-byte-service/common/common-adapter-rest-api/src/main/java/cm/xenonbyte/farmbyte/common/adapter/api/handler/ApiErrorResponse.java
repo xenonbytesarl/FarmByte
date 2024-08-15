@@ -37,7 +37,6 @@ public class ApiErrorResponse {
         private String status;
         @NotNull(message = SUCCESS_IS_REQUIRED)
         private Boolean success;
-        private String developerMessage;
         private String reason;
         private String message;
         @NotBlank(message = PATH_IS_REQUIRED)
