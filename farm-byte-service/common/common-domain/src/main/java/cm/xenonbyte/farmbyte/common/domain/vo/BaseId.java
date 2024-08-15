@@ -4,8 +4,6 @@ import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.BASE_ID_IS_REQUIRED;
-
 /**
  * @author bamk
  * @version 1.0
@@ -15,7 +13,7 @@ public abstract class BaseId<T> {
     private final T value;
 
     protected BaseId(@Nonnull T value) {
-        this.value = Objects.requireNonNull(value,BASE_ID_IS_REQUIRED);
+        this.value = value;
     }
 
     @Nonnull

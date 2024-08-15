@@ -5,12 +5,16 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
+import java.util.UUID;
 
 
 /**
@@ -27,13 +31,21 @@ public interface UomApiViewMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
-    @Mapping(target = "uomCategoryId.value",source = "uomCategoryId")
+    @Mapping(target = "uomCategoryId", qualifiedByName = "getUomCategoryIdDomain", source = "uomCategoryId")
     @Mapping(target = "uomType", qualifiedByName = "toUomType1", source = "uomType")
-    @Nonnull Uom toUom(@Nonnull CreateUomViewRequest createUomViewRequest);
+    @Nonnull Uom toUom(@Valid @Nonnull CreateUomViewRequest createUomViewRequest);
 
     @Named("toUomType1")
-    default UomType toUomType1(CreateUomViewRequest.UomTypeEnum uomTypeEnum) {
+    default UomType toUomType1( CreateUomViewRequest.UomTypeEnum uomTypeEnum) {
         return UomType.valueOf(uomTypeEnum.getValue());
+    }
+
+    @Named("getUomCategoryIdDomain")
+    default UomCategoryId getUomCategoryIdDomain(UUID uomCategoryId) {
+        if(uomCategoryId == null) {
+            return null;
+        }
+        return new UomCategoryId(uomCategoryId);
     }
 
     @BeanMapping(ignoreByDefault = true)
