@@ -4,9 +4,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameDuplicateException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceDuplicateException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
@@ -25,6 +24,11 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.times;
@@ -140,7 +144,7 @@ final class UomApiAdapterServiceTest {
                         UomType.GREATER,
                         CreateUomViewRequest.UomTypeEnum.GREATER,
                         IllegalArgumentException.class,
-                        "Ratio is required when unit of measure type is not reference."
+                        RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE
                 ),
                 Arguments.of(
                         UUID.randomUUID(),
@@ -149,7 +153,7 @@ final class UomApiAdapterServiceTest {
                         UomType.GREATER,
                         CreateUomViewRequest.UomTypeEnum.GREATER,
                         IllegalArgumentException.class,
-                        "Ratio should be greater than 1 when unit of measure type is not greater."
+                        UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER
                 ),
                 Arguments.of(
                         UUID.randomUUID(),
@@ -158,7 +162,7 @@ final class UomApiAdapterServiceTest {
                         UomType.LOWER,
                         CreateUomViewRequest.UomTypeEnum.LOWER,
                         IllegalArgumentException.class,
-                        "Ratio should be greater than 1 when unit of measure type is not greater."
+                        UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER
                 )
         );
     }
@@ -199,15 +203,14 @@ final class UomApiAdapterServiceTest {
         );
 
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
-        String exceptionMessage = "UomReferenceDuplicateException.1";
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomService.createUom(uom)).thenThrow(new UomReferenceDuplicateException());
+        when(uomService.createUom(uom)).thenThrow(new UomReferenceConflictException());
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
-                .isInstanceOf(UomException.class)
-                .hasMessage(exceptionMessage);
+                .isInstanceOf(UomReferenceConflictException.class)
+                .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
 
         verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);
         verify(uomService, times(1)).createUom(uom);
@@ -227,14 +230,14 @@ final class UomApiAdapterServiceTest {
         );
 
         Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
-        String exceptionMessage = "UomNameDuplicateException.1";
+        String exceptionMessage = UOM_NAME_CONFLICT_EXCEPTION;
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomService.createUom(uom)).thenThrow(new UomNameDuplicateException(new Object[]{uom.getName().getValue()}));
+        when(uomService.createUom(uom)).thenThrow(new UomNameConflictException(new Object[]{uom.getName().getValue()}));
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
-                .isInstanceOf(UomException.class)
+                .isInstanceOf(UomNameConflictException.class)
                 .hasMessage(exceptionMessage);
 
         verify(uomApiViewMapper, times(1)).toUom(createUomViewRequest);

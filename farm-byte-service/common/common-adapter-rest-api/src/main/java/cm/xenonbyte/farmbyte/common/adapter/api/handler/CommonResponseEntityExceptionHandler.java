@@ -1,6 +1,9 @@
 package cm.xenonbyte.farmbyte.common.adapter.api.handler;
 
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
+import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainBadException;
+import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainConflictException;
+import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -19,7 +22,9 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
 import static java.time.LocalDateTime.now;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * @author bamk
@@ -76,6 +81,63 @@ public abstract class CommonResponseEntityExceptionHandler {
                                 .reason(MessageUtil.getMessage(exception.getLocalizedMessage(), locale, ""))
                                 .path(request.getDescription(SUCCESS_FALSE).replace(PATH_URI_REPLACE, ""))
                                 .build()
+                );
+    }
+
+    @ExceptionHandler({BaseDomainBadException.class})
+    public ResponseEntity<ApiErrorResponse> handleBaseDomainBadException
+            (BaseDomainBadException exception, WebRequest request) {
+        log.error("", exception);
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ApiErrorResponse.builder()
+                                .timestamp(now().toString())
+                                .code(BAD_REQUEST.value())
+                                .status(BAD_REQUEST.name())
+                                .success(false)
+                                .reason(MessageUtil.getMessage(exception.getLocalizedMessage(), MessageUtil.toStringArray(exception.getArgs()) ))
+                                .path(request.getDescription(false).replace(PATH_URI_REPLACE, ""))
+                                .build()
+
+                );
+    }
+
+    @ExceptionHandler({BaseDomainNotFoundException.class})
+    public ResponseEntity<ApiErrorResponse> handleBaseDomainNotFoundException
+            (BaseDomainNotFoundException exception, WebRequest request) {
+        log.error("", exception);
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        ApiErrorResponse.builder()
+                                .timestamp(now().toString())
+                                .code(NOT_FOUND.value())
+                                .status(NOT_FOUND.name())
+                                .success(false)
+                                .reason(MessageUtil.getMessage(exception.getLocalizedMessage(), MessageUtil.toStringArray(exception.getArgs()) ))
+                                .path(request.getDescription(false).replace(PATH_URI_REPLACE, ""))
+                                .build()
+
+                );
+    }
+
+    @ExceptionHandler({BaseDomainConflictException.class})
+    public ResponseEntity<ApiErrorResponse> handleBaseDomainConflictException
+            (BaseDomainConflictException exception, WebRequest request) {
+        log.error("", exception);
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(
+                        ApiErrorResponse.builder()
+                                .timestamp(now().toString())
+                                .code(CONFLICT.value())
+                                .status(CONFLICT.name())
+                                .success(false)
+                                .reason(MessageUtil.getMessage(exception.getLocalizedMessage(), MessageUtil.toStringArray(exception.getArgs()) ))
+                                .path(request.getDescription(false).replace(PATH_URI_REPLACE, ""))
+                                .build()
+
                 );
     }
 

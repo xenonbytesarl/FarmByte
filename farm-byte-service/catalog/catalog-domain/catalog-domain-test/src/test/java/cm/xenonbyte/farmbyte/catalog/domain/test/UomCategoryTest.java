@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryConflictNameException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomParentCategoryNotFoundException;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_DUPLICATE_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -84,8 +84,8 @@ final class UomCategoryTest {
 
         //Act + Then
         assertThatThrownBy(() -> uomCategoryService.createUomCategory(uomCategory))
-                .isInstanceOf(UomCategoryException.class)
-                .hasMessage(UOM_CATEGORY_NAME_DUPLICATE_EXCEPTION);
+                .isInstanceOf(UomCategoryConflictNameException.class)
+                .hasMessage(UOM_CATEGORY_NAME_CONFLICT_EXCEPTION);
     }
 
     @Test

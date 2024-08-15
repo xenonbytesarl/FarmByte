@@ -4,8 +4,8 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameDuplicateException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceDuplicateException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +25,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_DUPLICATE_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -206,7 +206,7 @@ final class UomApiRestTest extends ApiRestConfigTest {
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
 
-        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomReferenceDuplicateException());
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomReferenceConflictException());
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
@@ -215,12 +215,12 @@ final class UomApiRestTest extends ApiRestConfigTest {
                         .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_REFERENCE_DUPLICATE_IN_SAME_CATEGORY,  Locale.forLanguageTag(EN_LOCALE),"")));
+                .andExpect(jsonPath("$.code").value(409))
+                .andExpect(jsonPath("$.status").value("CONFLICT"))
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY,  Locale.forLanguageTag(EN_LOCALE),"")));
 
     }
 
@@ -236,7 +236,7 @@ final class UomApiRestTest extends ApiRestConfigTest {
                 CreateUomViewRequest.UomTypeEnum.REFERENCE
         );
 
-        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomNameDuplicateException(new Object[]{name}));
+        when(uomApiAdapterService.createUom(createUomViewRequest)).thenThrow(new UomNameConflictException(new Object[]{name}));
 
         //Act + Then
         mockMvc.perform(post(UOM_PATH_URI)
@@ -245,12 +245,12 @@ final class UomApiRestTest extends ApiRestConfigTest {
                         .header(ACCEPT_LANGUAGE, EN_LOCALE)
                         .content(createUomViewRequestAsString(createUomViewRequest)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_DUPLICATE_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
+                .andExpect(jsonPath("$.code").value(409))
+                .andExpect(jsonPath("$.status").value("CONFLICT"))
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
 
     }
 

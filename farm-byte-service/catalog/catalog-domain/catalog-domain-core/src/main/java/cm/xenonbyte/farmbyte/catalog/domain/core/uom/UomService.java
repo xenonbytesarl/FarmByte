@@ -28,11 +28,11 @@ public final class UomService implements IUomService {
 
     private void validateUom(Uom uom) {
         if (uom.getUomType().equals(UomType.REFERENCE) && uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType())) {
-            throw new UomReferenceDuplicateException();
+            throw new UomReferenceConflictException();
         }
 
         if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
-            throw  new UomNameDuplicateException(new Object[]{uom.getName().getValue()});
+            throw  new UomNameConflictException(new Object[]{uom.getName().getValue()});
         }
     }
 }

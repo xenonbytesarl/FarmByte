@@ -3,7 +3,8 @@ package cm.xenonbyte.farmbyte.catalog.domain.test;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
@@ -20,6 +21,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -170,8 +173,8 @@ final class UomTest {
 
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
-                .isInstanceOf(UomException.class)
-                .hasMessage("UomReferenceDuplicateException.1");
+                .isInstanceOf(UomReferenceConflictException.class)
+                .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
     }
 
     @Test
@@ -218,7 +221,7 @@ final class UomTest {
 
         //When + Then
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
-                .isInstanceOf(UomException.class)
-                .hasMessage("UomNameDuplicateException.1");
+                .isInstanceOf(UomNameConflictException.class)
+                .hasMessage(UOM_NAME_CONFLICT_EXCEPTION);
     }
 }
