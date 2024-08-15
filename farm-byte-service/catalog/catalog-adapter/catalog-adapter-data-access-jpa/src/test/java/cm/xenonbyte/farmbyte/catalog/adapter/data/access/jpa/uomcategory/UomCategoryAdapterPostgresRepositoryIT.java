@@ -1,8 +1,7 @@
-package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
+package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory;
 
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomRepositoryTest;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomCategoryRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
@@ -31,18 +30,18 @@ import java.util.UUID;
 /**
  * @author bamk
  * @version 1.0
- * @since 07/08/2024
+ * @since 15/08/2024
  */
 @DataJpaTest
 @Testcontainers
 @ActiveProfiles("test")
 @Import({BaseEntityJpaConfig.class})
-@ComponentScan(basePackages = {"cm.xenonbyte.farmbyte"})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {UomJpaRepository.class, UomJpaMapper.class})
 @EntityScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
+@ComponentScan(basePackages = {"cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa"})
+@ContextConfiguration(classes = {UomCategoryJpaRepository.class, UomCategoryJpaMapper.class})
 @EnableJpaRepositories(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
-class UomAdapterPostgresRepositoryIT extends UomRepositoryTest {
+class UomCategoryAdapterPostgresRepositoryIT extends UomCategoryRepositoryTest {
 
     @Container
     @ServiceConnection
@@ -73,21 +72,19 @@ class UomAdapterPostgresRepositoryIT extends UomRepositoryTest {
     }
 
     @Autowired
-    private UomJpaRepository uomJpaRepository;
+    private UomCategoryJpaRepository uomCategoryJpaRepository;
 
     @Autowired
-    private UomJpaMapper uomJpaMapper;
+    private UomCategoryJpaMapper uomCategoryJpaMapper;
 
     @BeforeEach
     void setUp() {
 
-        uomCategoryId = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
-        uomType =  UomType.REFERENCE;
+        super.uomCategoryRepository = new UomCategoryAdapterPostgresRepository(uomCategoryJpaRepository, uomCategoryJpaMapper);
+
         name = Name.of("Unite");
 
-        super.uomRepository = new UomAdapterPostgresRepository(uomJpaRepository, uomJpaMapper);
+        parentUomCategoryId = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
 
     }
-
-
 }

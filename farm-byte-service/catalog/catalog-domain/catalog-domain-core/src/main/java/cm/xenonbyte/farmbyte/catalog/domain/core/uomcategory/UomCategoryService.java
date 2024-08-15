@@ -27,8 +27,8 @@ public final class UomCategoryService implements IUomCategoryService {
     }
 
     private void validateUomCategory(UomCategory uomCategory) {
-        if(uomCategory.getParentCategoryId() != null && !uomCategoryRepository.existsByParentUomCategoryId(uomCategory.getParentCategoryId())) {
-            throw new UomParentCategoryNotFoundException(new String[] {uomCategory.getParentCategoryId().getValue().toString()});
+        if(uomCategory.getParentUomCategoryId() != null && !uomCategoryRepository.existsById(uomCategory.getParentUomCategoryId())) {
+            throw new UomParentCategoryNotFoundException(new String[] {uomCategory.getParentUomCategoryId().getValue().toString()});
         }
         if(uomCategoryRepository.existsByName(uomCategory.getName())) {
             throw new UomCategoryDuplicateNameException(new String[] {uomCategory.getName().getValue()});

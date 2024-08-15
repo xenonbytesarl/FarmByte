@@ -37,14 +37,14 @@ public abstract class UomCategoryRepositoryTest {
         Boolean result = uomCategoryRepository.existsByName(name);
 
         //Then
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
 
     }
 
     @Test
     protected void should_return_false_when_given_parent_uom_category_id_does_not_exist() {
         //Act
-        Boolean result = uomCategoryRepository.existsByParentUomCategoryId(new UomCategoryId(UUID.randomUUID()));
+        Boolean result = uomCategoryRepository.existsById(new UomCategoryId(UUID.randomUUID()));
 
         //Then
         assertThat(result).isFalse();
@@ -54,7 +54,7 @@ public abstract class UomCategoryRepositoryTest {
     @Test
     protected void should_return_true_when_given_parent_uom_category_id__exist() {
         //Act
-        Boolean result = uomCategoryRepository.existsByParentUomCategoryId(parentUomCategoryId);
+        Boolean result = uomCategoryRepository.existsById(parentUomCategoryId);
 
         //Then
         assertThat(result).isTrue();
@@ -62,10 +62,10 @@ public abstract class UomCategoryRepositoryTest {
     }
 
     @Test
-    protected void should_new_uom_category() {
+    protected void should_create_new_uom_category() {
         //Given
         Name volumeCategory = Name.of("Volume");
-        UomCategory uomCategory = new UomCategory(volumeCategory);
+        UomCategory uomCategory = UomCategory.of(volumeCategory);
         uomCategory.initiate();
 
         //Act
