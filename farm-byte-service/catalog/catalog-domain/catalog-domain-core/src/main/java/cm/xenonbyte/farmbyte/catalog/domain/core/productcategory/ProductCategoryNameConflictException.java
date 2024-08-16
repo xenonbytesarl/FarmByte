@@ -11,7 +11,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
  */
 public final class ProductCategoryNameConflictException extends BaseDomainConflictException {
 
-    protected ProductCategoryNameConflictException(Object[] args) {
+    public ProductCategoryNameConflictException(Object[] args) {
         super(PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION, args);
     }
 }

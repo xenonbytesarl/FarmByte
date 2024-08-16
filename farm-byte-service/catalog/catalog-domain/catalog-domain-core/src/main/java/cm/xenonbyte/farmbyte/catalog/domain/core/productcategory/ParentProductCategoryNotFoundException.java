@@ -10,7 +10,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
  * @since 16/08/2024
  */
 public final class ParentProductCategoryNotFoundException extends BaseDomainNotFoundException {
-    protected ParentProductCategoryNotFoundException(Object[] args) {
+    public ParentProductCategoryNotFoundException(Object[] args) {
         super(PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION, args);
     }
 }
