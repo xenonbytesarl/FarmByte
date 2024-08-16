@@ -14,9 +14,9 @@ public final class CatalogDomainCoreConstant {
     public static final String RATION_CAN_NOT_BE_NULL = "Ration.1";
 
     public static final String UOM_CATEGORY_NAME_CONFLICT_EXCEPTION = "UomCategoryNameConflictException.1";
-    public static final String UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION = "UomParentCategoryNotFoundException.1";
-    public static final String NAME_UOM_CATEGORY_IS_REQUIRED = "ParentUomCategory.1";
-    public static final String PARENT_UOM_CATEGORY_ID_IS_REQUIRED = "ParentUomCategory.2";
+    public static final String UOM_CATEGORY_NOT_FOUND_EXCEPTION = "UomCategoryNotFoundException.1";
+    public static final String UOM_CATEGORY_NAME_IS_REQUIRED = "UomCategory.1";
+    public static final String UOM_CATEGORY_ID_IS_REQUIRED = "UomCategory.2";
 
     public static final String PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION = "ProductCategoryNameConflictException.1";
     public static final String PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION = "ParentProductCategoryNotFoundException.1";

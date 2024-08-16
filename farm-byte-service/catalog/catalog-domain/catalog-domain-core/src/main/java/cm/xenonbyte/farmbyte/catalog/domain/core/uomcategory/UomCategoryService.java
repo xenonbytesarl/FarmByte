@@ -33,7 +33,7 @@ public final class UomCategoryService implements IUomCategoryService {
             throw new UomParentCategoryNotFoundException(new String[] {uomCategory.getParentUomCategoryId().getValue().toString()});
         }
         if(uomCategoryRepository.existsByName(uomCategory.getName())) {
-            throw new UomCategoryConflictNameException(new String[] {uomCategory.getName().getValue()});
+            throw new UomCategoryNameConflictException(new String[] {uomCategory.getName().getValue()});
         }
     }
 }

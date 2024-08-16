@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uomcategory;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryConflictNameException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uomcategory.UomCategoryApiRest.UOM_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -126,7 +126,7 @@ public final class UomCategoryApiRestTest extends ApiRestConfigTest {
                 Arguments.of(
                         "Unite",
                         UUID.randomUUID(),
-                        new UomCategoryConflictNameException(new String[] {"Unite"}),
+                        new UomCategoryNameConflictException(new String[] {"Unite"}),
                         UOM_CATEGORY_NAME_CONFLICT_EXCEPTION,
                         "Unite",
                         409,
@@ -138,7 +138,7 @@ public final class UomCategoryApiRestTest extends ApiRestConfigTest {
                         "Unite",
                         UUID.fromString("019156f3-0db6-794e-bfe0-f371636cd410"),
                         new UomParentCategoryNotFoundException(new String[] {"019156f3-0db6-794e-bfe0-f371636cd410"}),
-                        UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION,
+                        UOM_CATEGORY_NOT_FOUND_EXCEPTION,
                         "019156f3-0db6-794e-bfe0-f371636cd410",
                         404,
                         "NOT_FOUND",

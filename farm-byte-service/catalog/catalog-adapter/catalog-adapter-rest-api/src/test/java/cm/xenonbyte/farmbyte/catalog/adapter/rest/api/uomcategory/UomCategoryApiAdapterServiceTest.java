@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uomcategory;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryConflictNameException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.ports.primary.IUomCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
@@ -119,14 +119,14 @@ final class UomCategoryApiAdapterServiceTest {
                 Arguments.of(
                         "Unite",
                         null,
-                        new UomCategoryConflictNameException(new String[]{UOM_CATEGORY_NAME_CONFLICT_EXCEPTION}),
+                        new UomCategoryNameConflictException(new String[]{UOM_CATEGORY_NAME_CONFLICT_EXCEPTION}),
                         UOM_CATEGORY_NAME_CONFLICT_EXCEPTION
                 ),
                 Arguments.of(
                         "Temps",
                         UUID.randomUUID(),
-                        new UomParentCategoryNotFoundException(new String[]{UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION}),
-                        UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION
+                        new UomParentCategoryNotFoundException(new String[]{UOM_CATEGORY_NOT_FOUND_EXCEPTION}),
+                        UOM_CATEGORY_NOT_FOUND_EXCEPTION
                 )
         );
     }
