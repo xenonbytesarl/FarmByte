@@ -9,9 +9,9 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
  * @version 1.0
  * @since 14/08/2024
  */
-public final class UomCategoryConflictNameException extends BaseDomainConflictException {
+public final class UomCategoryNameConflictException extends BaseDomainConflictException {
 
-    public UomCategoryConflictNameException(Object[] args) {
+    public UomCategoryNameConflictException(Object[] args) {
         super(UOM_CATEGORY_NAME_CONFLICT_EXCEPTION, args);
 
     }
