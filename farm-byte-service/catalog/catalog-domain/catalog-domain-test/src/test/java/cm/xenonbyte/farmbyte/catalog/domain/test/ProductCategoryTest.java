@@ -1,13 +1,13 @@
 package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryProductCategoryRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ParentProductCategoryNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategoryNameConflictException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategoryService;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ports.primary.IProductCategoryService;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ports.secondary.ProductCategoryRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ParentProductCategoryNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductCategoryService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

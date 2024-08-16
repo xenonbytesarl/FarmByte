@@ -1,6 +1,5 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;

@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductCategoryRepositoryTest;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.junit.jupiter.api.BeforeEach;
 

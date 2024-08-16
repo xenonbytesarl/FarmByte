@@ -1,8 +1,8 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ProductCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.productcategory.ports.secondary.ProductCategoryRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 

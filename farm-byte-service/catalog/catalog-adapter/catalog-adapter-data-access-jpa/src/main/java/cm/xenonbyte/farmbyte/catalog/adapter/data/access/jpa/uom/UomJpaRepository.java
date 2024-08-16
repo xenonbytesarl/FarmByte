@@ -1,6 +1,5 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory.UomCategoryJpa;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.AfterAll;
