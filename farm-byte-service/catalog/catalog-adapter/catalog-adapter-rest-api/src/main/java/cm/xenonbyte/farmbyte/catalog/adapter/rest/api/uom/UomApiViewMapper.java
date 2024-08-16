@@ -5,7 +5,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import org.mapstruct.BeanMapping;

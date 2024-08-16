@@ -1,8 +1,8 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import org.junit.jupiter.api.Test;
 

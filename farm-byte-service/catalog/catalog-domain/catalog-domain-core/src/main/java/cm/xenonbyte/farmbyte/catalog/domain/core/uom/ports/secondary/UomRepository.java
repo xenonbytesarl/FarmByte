@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import jakarta.annotation.Nonnull;
 
 /**

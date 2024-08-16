@@ -1,11 +1,10 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uomcategory.UomCategoryJpa;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uomcategory.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
