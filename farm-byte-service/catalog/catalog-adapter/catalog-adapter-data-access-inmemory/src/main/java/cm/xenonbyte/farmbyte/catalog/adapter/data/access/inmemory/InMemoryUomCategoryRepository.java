@@ -19,7 +19,7 @@ public final class InMemoryUomCategoryRepository implements UomCategoryRepositor
     private final Map<UomCategoryId, UomCategory> uomCategories = new HashMap<>();
 
     @Override
-    public Boolean existsByName(Name name) {
+    public Boolean existsByName(@Nonnull Name name) {
         return uomCategories.values().stream().anyMatch(uomCategory -> uomCategory.getName().equals(name));
     }
 
