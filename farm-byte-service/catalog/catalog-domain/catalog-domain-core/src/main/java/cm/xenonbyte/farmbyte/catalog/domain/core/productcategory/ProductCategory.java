@@ -31,6 +31,13 @@ public final class ProductCategory extends BaseEntity<ProductCategoryId> {
         this.parentProductCategoryId = Objects.requireNonNull(parentProductCategoryId);
     }
 
+    private ProductCategory(Builder builder) {
+        setId(builder.id);
+        name = builder.name;
+        active = builder.active;
+        parentProductCategoryId = builder.parentProductCategoryId;
+    }
+
     public static ProductCategory of(Name name) {
         if (name == null) {
             throw new IllegalArgumentException(PRODUCT_CATEGORY_NAME_IS_REQUIRED);
@@ -48,6 +55,10 @@ public final class ProductCategory extends BaseEntity<ProductCategoryId> {
         return new ProductCategory(name, parentProductCategoryId);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public Active getActive() {
         return active;
     }
@@ -63,5 +74,40 @@ public final class ProductCategory extends BaseEntity<ProductCategoryId> {
 
     public ProductCategoryId getParentProductCategoryId() {
         return parentProductCategoryId;
+    }
+
+
+    public static final class Builder {
+        private ProductCategoryId id;
+        private Name name;
+        private Active active;
+        private ProductCategoryId parentProductCategoryId;
+
+        private Builder() {
+        }
+
+        public Builder id(ProductCategoryId val) {
+            id = val;
+            return this;
+        }
+
+        public Builder name(Name val) {
+            name = val;
+            return this;
+        }
+
+        public Builder active(Active val) {
+            active = val;
+            return this;
+        }
+
+        public Builder parentProductCategoryId(ProductCategoryId val) {
+            parentProductCategoryId = val;
+            return this;
+        }
+
+        public ProductCategory build() {
+            return new ProductCategory(this);
+        }
     }
 }

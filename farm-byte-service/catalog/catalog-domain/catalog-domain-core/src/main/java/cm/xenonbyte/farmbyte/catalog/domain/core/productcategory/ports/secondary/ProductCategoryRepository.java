@@ -13,7 +13,7 @@ import jakarta.annotation.Nonnull;
 public interface ProductCategoryRepository {
     @Nonnull ProductCategory save(@Nonnull ProductCategory parentProductCategory);
 
-    boolean existsById(@Nonnull ProductCategoryId parentProductCategoryId);
+    Boolean existsById(@Nonnull ProductCategoryId parentProductCategoryId);
 
-    boolean existsByName(@Nonnull Name name);
+    Boolean existsByName(@Nonnull Name name);
 }

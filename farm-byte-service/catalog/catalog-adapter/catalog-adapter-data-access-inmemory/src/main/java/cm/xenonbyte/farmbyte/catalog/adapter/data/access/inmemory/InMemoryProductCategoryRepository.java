@@ -26,12 +26,12 @@ public final class InMemoryProductCategoryRepository implements ProductCategoryR
     }
 
     @Override
-    public boolean existsById(@Nonnull ProductCategoryId parentProductCategoryId) {
+    public Boolean existsById(@Nonnull ProductCategoryId parentProductCategoryId) {
         return productCategoryMap.containsKey(parentProductCategoryId);
     }
 
     @Override
-    public boolean existsByName(@Nonnull Name name) {
+    public Boolean existsByName(@Nonnull Name name) {
         return productCategoryMap.values().stream().anyMatch(productCategory -> productCategory.getName().equals(name));
     }
 }
