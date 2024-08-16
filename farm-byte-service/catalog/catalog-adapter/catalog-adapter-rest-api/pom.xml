@@ -133,6 +133,38 @@
                             </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>product-category</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/product-category.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory</apiPackage>
+                            <modelPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>false</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <requestMappingMode>api_interface</requestMappingMode>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>true</useResponseEntity>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <typeMappings>
+                                    <typeMapping>createProductResponse=CreateProductResponse</typeMapping>
+                                </typeMappings>
+                                <importMappings>
+                                    <importMapping>CreateProductCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductCategoryViewResponse</importMapping>
+                                </importMappings>
+                            </configOptions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
