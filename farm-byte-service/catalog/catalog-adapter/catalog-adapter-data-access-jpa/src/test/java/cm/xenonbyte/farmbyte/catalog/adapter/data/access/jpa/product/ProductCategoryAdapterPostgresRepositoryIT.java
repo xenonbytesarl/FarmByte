@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product.ProductCate
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductCategoryRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,7 +86,7 @@ public class ProductCategoryAdapterPostgresRepositoryIT extends ProductCategoryR
 
         super.productCategoryRepository = new ProductCategoryAdapterPostgresRepository(productCategoryJpaRepository, productCategoryJpaMapper);
 
-        name = Name.of("Raw Material");
+        name = Name.of(Text.of("Raw Material"));
 
         parentProductCategoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
 

@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -48,8 +50,14 @@ public class UomAdapterPostgresRepository implements UomRepository {
     @Transactional(readOnly = true)
     public boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId) {
         return uomJpaRepository.existsByNameAndUomCategoryJpaAndActiveIsTrue(
-                name.getValue(),
+                name.getText().getValue(),
                 UomCategoryJpa.builder().id(uomCategoryId.getValue()).build()
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Uom> findByUomId(@Nonnull UomId uomId) {
+        return uomJpaRepository.findById(uomId.getValue()).map(mapper::fromUomJpa);
     }
 }

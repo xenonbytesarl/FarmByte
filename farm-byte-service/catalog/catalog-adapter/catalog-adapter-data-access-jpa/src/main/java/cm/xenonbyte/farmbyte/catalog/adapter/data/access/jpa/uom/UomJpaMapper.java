@@ -22,7 +22,7 @@ public interface UomJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
-    @Mapping(source = "name.value", target = "name")
+    @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "uomCategoryId.value", target = "uomCategoryJpa.id")
@@ -36,7 +36,7 @@ public interface UomJpaMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
-    @Mapping(target = "name.value", source = "name")
+    @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
     @Mapping(target = "active.value", source = "active")
     @Mapping(target = "uomCategoryId.value",source = "uomCategoryJpa.id")

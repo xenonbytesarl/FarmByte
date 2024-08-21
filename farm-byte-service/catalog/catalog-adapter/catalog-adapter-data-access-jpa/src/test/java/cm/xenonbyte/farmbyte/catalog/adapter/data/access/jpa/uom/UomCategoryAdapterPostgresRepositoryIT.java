@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomCategoryRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -82,7 +83,7 @@ class UomCategoryAdapterPostgresRepositoryIT extends UomCategoryRepositoryTest {
 
         super.uomCategoryRepository = new UomCategoryAdapterPostgresRepository(uomCategoryJpaRepository, uomCategoryJpaMapper);
 
-        name = Name.of("Unite");
+        name = Name.of(Text.of("Unite"));
 
         parentUomCategoryId = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
 

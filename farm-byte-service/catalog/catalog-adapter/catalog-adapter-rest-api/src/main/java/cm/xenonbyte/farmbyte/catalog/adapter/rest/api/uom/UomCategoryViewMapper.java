@@ -25,7 +25,7 @@ import java.util.UUID;
 public interface UomCategoryViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name.value", source = "name")
+    @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "parentUomCategoryId", qualifiedByName = "getParentCategoryIdDomain", source = "parentUomCategoryId")
     UomCategory toUomCategory(@Valid CreateUomCategoryViewRequest createUomCategoryViewRequest);
 
@@ -39,7 +39,7 @@ public interface UomCategoryViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
-    @Mapping(source = "name.value", target = "name")
+    @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "parentUomCategoryId.value", target = "parentUomCategoryId")
     @Valid CreateUomCategoryViewResponse toCreateUomCategoryViewResponse(UomCategory uomCategory);

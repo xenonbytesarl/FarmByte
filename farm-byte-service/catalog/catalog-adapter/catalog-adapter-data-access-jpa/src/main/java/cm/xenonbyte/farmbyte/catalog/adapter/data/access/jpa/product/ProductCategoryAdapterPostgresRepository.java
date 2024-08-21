@@ -31,7 +31,7 @@ public final class ProductCategoryAdapterPostgresRepository implements ProductCa
 
     @Override
     public Boolean existsByName(@Nonnull Name name) {
-        return productCategoryJpaRepository.existsByName(name.getValue());
+        return productCategoryJpaRepository.existsByName(name.getText().getValue());
     }
 
     @Override

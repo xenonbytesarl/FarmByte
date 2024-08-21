@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;
@@ -23,7 +24,7 @@ public final class InMemoryUomRepositoryTest extends UomRepositoryTest {
     void setUp() {
         uomCategoryId = new UomCategoryId(UUID.randomUUID());
         uomType =  UomType.REFERENCE;
-        name = Name.of("Unite");
+        name = Name.of(Text.of("Unite"));
 
         super.uomRepository = new InMemoryUomRepository();
 
@@ -33,7 +34,7 @@ public final class InMemoryUomRepositoryTest extends UomRepositoryTest {
                 uomCategoryId,
                 uomType,
                 null);
-        Uom uom2 = createSomeUom(Name.of("Carton de 5"),
+        Uom uom2 = createSomeUom(Name.of(Text.of("Carton de 5")),
                 uomCategoryId,
                 uomType,
                 Ratio.of(5.0));

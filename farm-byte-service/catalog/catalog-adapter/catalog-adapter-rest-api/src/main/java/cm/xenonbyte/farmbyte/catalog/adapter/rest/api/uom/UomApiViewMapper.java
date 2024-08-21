@@ -29,7 +29,7 @@ import java.util.UUID;
 public interface UomApiViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name.value", source = "name")
+    @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "ratio.value",source = "ratio")
     @Mapping(target = "uomCategoryId", qualifiedByName = "getUomCategoryIdDomain", source = "uomCategoryId")
     @Mapping(target = "uomType", qualifiedByName = "toUomType1", source = "uomType")
@@ -50,7 +50,7 @@ public interface UomApiViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
-    @Mapping(source = "name.value", target = "name")
+    @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "ratio.value", target = "ratio")
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "uomCategoryId.value", target = "uomCategoryId")

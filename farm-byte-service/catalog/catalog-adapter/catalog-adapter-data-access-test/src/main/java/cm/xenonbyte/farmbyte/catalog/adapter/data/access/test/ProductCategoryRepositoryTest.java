@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ public abstract class ProductCategoryRepositoryTest {
     @Test
     protected void should_return_false_when_product_category_with_given_name_not_exist() {
         //Act
-        Boolean result = productCategoryRepository.existsByName(Name.of("Anything"));
+        Boolean result = productCategoryRepository.existsByName(Name.of(Text.of("Anything")));
 
         //Then
         assertThat(result).isFalse();
@@ -64,7 +65,7 @@ public abstract class ProductCategoryRepositoryTest {
     @Test
     protected void should_create_new_uom_category() {
         //Given
-        Name volumeCategory = Name.of("Raw Material");
+        Name volumeCategory = Name.of(Text.of("Raw Material"));
         ProductCategory productCategory = ProductCategory.of(volumeCategory);
         productCategory.initiate();
 
