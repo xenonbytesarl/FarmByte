@@ -2,6 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -11,6 +12,7 @@ import java.util.Objects;
  * @version 1.0
  * @since 16/08/2024
  */
+@DomainService
 public final class ProductCategoryService implements IProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
 
