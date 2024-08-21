@@ -7,8 +7,10 @@ package cm.xenonbyte.farmbyte.common.domain.constant;
  */
 public final class CommonDomainConstant {
 
-    public static final String ACTIVE_SHOULD_BE_TRUE_OR_FALSE = "Active.1";
-    public static final String NAME_IS_REQUIRED = "Name.1";
-    public static final String BASE_ID_IS_REQUIRED = "BaseId.1";
+    public static final String ACTIVE_VALUE_IS_REQUIRED = "Active.1";
+    public static final String NAME_VALUE_IS_REQUIRED = "Name.1";
+    public static String URL_VALUE_IS_REQUIRED = "Image.1";
+    public static String MONEY_AMOUNT_IS_REQUIRED = "Money.1";
+    public static final String REFERENCE_VALUE_IS_REQUIRED = "Reference.1";
 
 }
