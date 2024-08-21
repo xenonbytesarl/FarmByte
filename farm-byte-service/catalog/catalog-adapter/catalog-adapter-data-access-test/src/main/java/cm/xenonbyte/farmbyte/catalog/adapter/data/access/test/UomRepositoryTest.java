@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -65,7 +66,7 @@ public abstract class UomRepositoryTest {
     @Test
     protected void should_return_false_when_non_existent_name_or_category_are_given() {
         //Given
-        Name name1 = Name.of("Lot de 20");
+        Name name1 = Name.of(Text.of("Lot de 20"));
         UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.randomUUID());
         //Act
         boolean result = uomRepository.existsByNameAndCategoryAndActive(name1, uomCategoryId1);
@@ -80,7 +81,7 @@ public abstract class UomRepositoryTest {
         UomCategoryId uomCategoryId1 = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
         UomType uomType1 = UomType.GREATER;
         Uom uomToSave = createSomeUom(
-                Name.of("Palette de 6"),
+                Name.of(Text.of("Palette de 6")),
                 uomCategoryId1,
                 uomType1,
                 Ratio.of(6.0));

@@ -10,6 +10,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -233,7 +234,7 @@ final class UomApiAdapterServiceTest {
         String exceptionMessage = UOM_NAME_CONFLICT_EXCEPTION;
 
         when(uomApiViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-        when(uomService.createUom(uom)).thenThrow(new UomNameConflictException(new Object[]{uom.getName().getValue()}));
+        when(uomService.createUom(uom)).thenThrow(new UomNameConflictException(new Object[]{uom.getName().getText()}));
 
         //Act + Then
         assertThatThrownBy(() -> uomApiAdapterService.createUom(createUomViewRequest))
@@ -249,7 +250,7 @@ final class UomApiAdapterServiceTest {
 
     private static Uom generateUom(String name, UUID uomCategoryId, UomType uomType, Double ratio) {
         return Uom.from(
-                Name.of(name),
+                Name.of(Text.of(name)),
                 new UomCategoryId(uomCategoryId),
                 uomType,
                 ratio == null? null: Ratio.of(ratio)
@@ -285,7 +286,7 @@ final class UomApiAdapterServiceTest {
 
     private static Uom generateCreateUomResponse(String name, UUID uomCategoryId, UomType uomType, Double ratioResponse) {
         Uom uom = Uom.from(
-                Name.of(name),
+                Name.of(Text.of(name)),
                 new UomCategoryId(uomCategoryId),
                 UomType.valueOf(uomType.name()),
                 Ratio.of(ratioResponse)

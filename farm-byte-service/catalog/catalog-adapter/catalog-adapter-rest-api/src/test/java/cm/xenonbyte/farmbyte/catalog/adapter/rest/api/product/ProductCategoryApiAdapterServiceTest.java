@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -79,7 +80,7 @@ final class ProductCategoryApiAdapterServiceTest {
                 .name(nameAsString)
                 .parentProductCategoryId(parentProductCategoryUUID);
         ProductCategory productCategory = ProductCategory.builder()
-                .name(Name.of(nameAsString))
+                .name(Name.of(Text.of(nameAsString)))
                 .build();
         CreateProductCategoryViewResponse createProductCategoryViewResponse = new CreateProductCategoryViewResponse()
                 .id(newProductCategoryUUID)
@@ -146,7 +147,7 @@ final class ProductCategoryApiAdapterServiceTest {
                 .name(nameAsString)
                 .parentProductCategoryId(parentProductCategoryUUID);
         ProductCategory productCategory = ProductCategory.builder()
-                .name(Name.of(nameAsString))
+                .name(Name.of(Text.of(nameAsString)))
                 .build();
 
         when(productCategoryViewMapper.toProductCategory(createProductCategoryViewRequest)).thenReturn(productCategory);

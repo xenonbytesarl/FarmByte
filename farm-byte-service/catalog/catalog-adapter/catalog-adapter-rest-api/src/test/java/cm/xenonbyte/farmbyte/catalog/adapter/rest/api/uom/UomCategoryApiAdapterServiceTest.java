@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictExce
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -78,7 +79,7 @@ final class UomCategoryApiAdapterServiceTest {
                 .name(nameAsString)
                 .parentUomCategoryId(parentUomCategoryUUID);
         UomCategory uomCategory = UomCategory.builder()
-                .name(Name.of(nameAsString))
+                .name(Name.of(Text.of(nameAsString)))
                 .build();
         CreateUomCategoryViewResponse createUomCategoryViewResponse = new CreateUomCategoryViewResponse()
                 .id(newUomCategoryUUID)
@@ -145,7 +146,7 @@ final class UomCategoryApiAdapterServiceTest {
                 .name(nameAsString)
                 .parentUomCategoryId(parentUomCategoryUUID);
         UomCategory uomCategory = UomCategory.builder()
-                .name(Name.of(nameAsString))
+                .name(Name.of(Text.of(nameAsString)))
                 .build();
 
         when(uomCategoryViewMapper.toUomCategory(createUomCategoryViewRequest)).thenReturn(uomCategory);

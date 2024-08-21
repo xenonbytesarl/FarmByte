@@ -11,6 +11,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -44,6 +45,11 @@ public class InMemoryUomRepository implements UomRepository {
                 uom.getUomCategoryId().equals(uomCategoryId) &&
                 uom.getActive().equals(Active.with(true))
         );
+    }
+
+    @Override
+    public Optional<Uom> findByUomId(@Nonnull UomId uomId) {
+        return Optional.ofNullable(uomMap.get(uomId));
     }
 
 }

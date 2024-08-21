@@ -25,7 +25,7 @@ import java.util.UUID;
 public interface ProductCategoryViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name.value", source = "name")
+    @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "parentProductCategoryId", qualifiedByName = "getParentCategoryIdDomain", source = "parentProductCategoryId")
     @Nonnull ProductCategory toProductCategory(@Nonnull CreateProductCategoryViewRequest createProductCategoryViewRequest);
 
@@ -39,7 +39,7 @@ public interface ProductCategoryViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
-    @Mapping(source = "name.value", target = "name")
+    @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "parentProductCategoryId.value", target = "parentProductCategoryId")
     @Nonnull CreateProductCategoryViewResponse toCreateProductCategoryViewResponse(@Nonnull ProductCategory productCategory);

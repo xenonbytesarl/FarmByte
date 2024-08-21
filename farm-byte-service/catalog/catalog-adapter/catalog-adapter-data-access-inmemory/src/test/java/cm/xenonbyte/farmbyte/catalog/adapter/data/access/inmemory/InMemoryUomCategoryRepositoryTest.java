@@ -3,6 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomCategoryRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -16,13 +17,13 @@ public final class InMemoryUomCategoryRepositoryTest extends UomCategoryReposito
     void setUp() {
         uomCategoryRepository = new InMemoryUomCategoryRepository();
 
-        name = Name.of("Unite");
+        name = Name.of(Text.of("Unite"));
         UomCategory uomCategory = UomCategory.of(name);
         uomCategory.initiate();
         uomCategoryRepository.save(uomCategory);
 
         parentUomCategoryId = uomCategory.getId();
 
-        UomCategory.of(Name.of("Carton"), parentUomCategoryId);
+        UomCategory.of(Name.of(Text.of("Carton")), parentUomCategoryId);
     }
 }

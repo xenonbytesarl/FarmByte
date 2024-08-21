@@ -31,7 +31,7 @@ public final class UomCategoryAdapterPostgresRepository implements UomCategoryRe
 
     @Override
     public Boolean existsByName(@Nonnull Name name) {
-        return uomCategoryJpaRepository.existsByName(name.getValue());
+        return uomCategoryJpaRepository.existsByName(name.getText().getValue());
     }
 
     @Override
