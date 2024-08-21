@@ -3,15 +3,16 @@ package cm.xenonbyte.farmbyte.catalog.domain.test;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,19 +46,19 @@ final class UomTest {
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
             Arguments.of(
-                    Name.of("Unit"),
+                    Name.of(Text.of("Unit")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.REFERENCE,
                     null
             ),
             Arguments.of(
-                    Name.of("Carton de 10"),
+                    Name.of(Text.of("Carton de 10")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(2.0)
             ),
             Arguments.of(
-                    Name.of("Centimetre"),
+                    Name.of(Text.of("Centimetre")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(0.1)
@@ -101,7 +102,7 @@ final class UomTest {
     static Stream<Arguments> createUomThrowExceptionMethodSourceArgs() {
         return Stream.of(
             Arguments.of(
-                    Name.of("Unit"),
+                    Name.of(Text.of("Unit")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     null,
@@ -109,7 +110,7 @@ final class UomTest {
                     "Uom.1"
             ),
             Arguments.of(
-                    Name.of("Carton de 10"),
+                    Name.of(Text.of("Carton de 10")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(0.8),
@@ -117,7 +118,7 @@ final class UomTest {
                     "Uom.2"
             ),
             Arguments.of(
-                    Name.of("Centimetre"),
+                    Name.of(Text.of("Centimetre")),
                     new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(2.0),
@@ -158,7 +159,7 @@ final class UomTest {
         //Given
         UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
-                Name.of("Unite"),
+                Name.of(Text.of("Unite")),
                 uomCategoryId,
                 UomType.REFERENCE,
                 null);
@@ -166,7 +167,7 @@ final class UomTest {
         uomDomainService.createUom(firstRefereceUom);
 
         Uom secondRefereceUom = Uom.from(
-                Name.of("Piece"),
+                Name.of(Text.of("Piece")),
                 uomCategoryId,
                 UomType.REFERENCE,
                 null);
@@ -182,7 +183,7 @@ final class UomTest {
         //Given
         UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
-                Name.of("Carton de 10"),
+                Name.of(Text.of("Carton de 10")),
                 uomCategoryId,
                 UomType.GREATER,
                 Ratio.of(2.0));
@@ -190,7 +191,7 @@ final class UomTest {
         uomDomainService.createUom(firstRefereceUom);
 
         Uom secondRefereceUom = Uom.from(
-                Name.of("Carton de 50"),
+                Name.of(Text.of("Carton de 50")),
                 uomCategoryId,
                 UomType.GREATER,
                 Ratio.of(50.0));
@@ -206,7 +207,7 @@ final class UomTest {
         //Given
         UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
-                Name.of("Unite"),
+                Name.of(Text.of("Unite")),
                 uomCategoryId,
                 UomType.REFERENCE,
                 null);
@@ -214,7 +215,7 @@ final class UomTest {
         uomDomainService.createUom(firstRefereceUom);
 
         Uom secondRefereceUom = Uom.from(
-                Name.of("Unite"),
+                Name.of(Text.of("Unite")),
                 uomCategoryId,
                 UomType.GREATER,
                 Ratio.of(1.5));

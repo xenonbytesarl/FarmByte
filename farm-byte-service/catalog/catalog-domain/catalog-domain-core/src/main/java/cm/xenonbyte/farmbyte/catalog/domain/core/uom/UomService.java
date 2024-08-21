@@ -34,7 +34,7 @@ public final class UomService implements IUomService {
         }
 
         if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
-            throw  new UomNameConflictException(new Object[]{uom.getName().getValue()});
+            throw  new UomNameConflictException(new Object[]{uom.getName().getText()});
         }
     }
 }

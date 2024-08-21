@@ -9,6 +9,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ public final class ProductCategoryTest {
         productCategoryRepository = new InMemoryProductCategoryRepository();
         productCategoryService = new ProductCategoryService(productCategoryRepository);
 
-        parentProductCategory = ProductCategory.of(new Name("Raw Material"));
+        parentProductCategory = ProductCategory.of(new Name(Text.of("Raw Material")));
         parentProductCategory.initiate();
         productCategoryRepository.save(parentProductCategory);
     }
@@ -42,7 +43,7 @@ public final class ProductCategoryTest {
     @Test
     void should_create_product_category_as_root_category() {
         //Given
-        Name productCategoryName = Name.of("Unite");
+        Name productCategoryName = Name.of(Text.of("Unite"));
         ProductCategory productCategory = ProductCategory.of(productCategoryName);
 
         //Act
@@ -60,7 +61,7 @@ public final class ProductCategoryTest {
     @Test
     void should_create_child_uom_category_when_child_exist() {
         //Given
-        Name productCategoryName = Name.of("Manufactured");
+        Name productCategoryName = Name.of(Text.of("Manufactured"));
         ProductCategory productCategory = ProductCategory.of(productCategoryName, parentProductCategory.getId());
 
         //Act
@@ -79,7 +80,7 @@ public final class ProductCategoryTest {
     @Test
     void should_throw_exception_when_uom_category_name_exists() {
         //Given
-        Name productCategoryName = Name.of("Raw Material");
+        Name productCategoryName = Name.of(Text.of("Raw Material"));
         ProductCategory productCategory = ProductCategory.of(productCategoryName);
 
         //Act + Then
@@ -91,7 +92,7 @@ public final class ProductCategoryTest {
     @Test
     void should_throw_exception_when_create_child_category_with_non_existing_parent() {
         //Given
-        Name productCategoryName = Name.of("Raw Material");
+        Name productCategoryName = Name.of(Text.of("Raw Material"));
         ProductCategory productCategory = ProductCategory.of(productCategoryName, new ProductCategoryId(UUID.randomUUID()));
 
         assertThatThrownBy(() -> productCategoryService.createProductCategory(productCategory))

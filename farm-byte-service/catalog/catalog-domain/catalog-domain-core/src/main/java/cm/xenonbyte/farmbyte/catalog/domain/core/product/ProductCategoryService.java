@@ -32,7 +32,7 @@ public final class ProductCategoryService implements IProductCategoryService {
             throw new ParentProductCategoryNotFoundException(new String[] {productCategory.getParentProductCategoryId().getValue().toString()});
         }
         if(productCategoryRepository.existsByName(productCategory.getName())) {
-            throw new ProductCategoryNameConflictException(new String[] {productCategory.getName().getValue()});
+            throw new ProductCategoryNameConflictException(new String[] {productCategory.getName().getText().getValue()});
         }
     }
 }

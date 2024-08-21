@@ -22,4 +22,14 @@ public final class CatalogDomainCoreConstant {
     public static final String PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION = "ParentProductCategoryNotFoundException.1";
     public static final String PRODUCT_CATEGORY_NAME_IS_REQUIRED = "ProductCategory.1";
     public static final String PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED = "ParentProductCategory.2";
+
+    public static final String PRODUCT_NAME_IS_REQUIRED = "Product.1";
+    public static final String PRODUCT_CATEGORY_IS_REQUIRED = "Product.2";
+    public static final String PRODUCT_TYPE_IS_REQUIRED = "Product.3";
+    public static final String PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK = "Product.4";
+    public static final String PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK = "Product.5";
+    public static final String PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO = "Product.6";
+    public static final String PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO = "Product.7";
+    public static final String PRODUCT_NAME_CONFLICT_EXCEPTION = "ProductNameConflictException.1";
+    public static final String PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION = "ProductStockAndPurchaseUomBadException.1";
 }

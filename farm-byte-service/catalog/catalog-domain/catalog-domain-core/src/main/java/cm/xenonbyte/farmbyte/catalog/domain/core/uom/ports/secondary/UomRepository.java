@@ -1,10 +1,13 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary;
 
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import jakarta.annotation.Nonnull;
+
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -18,4 +21,6 @@ public interface UomRepository {
     Uom save(@Nonnull Uom uom);
 
     boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId);
+
+    Optional<Uom> findByUomId(@Nonnull UomId uomId);
 }

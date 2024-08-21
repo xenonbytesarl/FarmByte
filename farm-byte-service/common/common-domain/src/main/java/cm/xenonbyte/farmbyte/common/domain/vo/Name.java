@@ -4,7 +4,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.NAME_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.NAME_VALUE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -13,23 +13,23 @@ import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.
  */
 public final class Name {
 
-    private final String value;
+    private final Text text;
 
-    public Name(@Nonnull String value) {
-        this.value = Objects.requireNonNull(value);
+    public Name(@Nonnull Text text) {
+        this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static Name of(String value) {
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException(NAME_IS_REQUIRED);
+    public static Name of(Text value) {
+        if (value.isEmpty()) {
+            throw new IllegalArgumentException(NAME_VALUE_IS_REQUIRED);
         }
         return new Name(value);
     }
 
     @Nonnull
-    public String getValue() {
-        return value;
+    public Text getText() {
+        return text;
     }
 
     @Override
@@ -37,11 +37,11 @@ public final class Name {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Name name = (Name) o;
-        return Objects.equals(value, name.value);
+        return Objects.equals(text, name.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Objects.hashCode(text);
     }
 }
