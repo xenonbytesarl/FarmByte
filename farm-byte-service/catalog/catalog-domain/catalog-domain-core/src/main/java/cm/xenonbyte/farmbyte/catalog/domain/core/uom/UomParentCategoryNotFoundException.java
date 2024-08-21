@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainNotFoundException;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 
 /**
  * @author bamk
@@ -12,7 +12,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 public final class UomParentCategoryNotFoundException extends BaseDomainNotFoundException {
 
     public UomParentCategoryNotFoundException(Object[] args) {
-        super(UOM_CATEGORY_NOT_FOUND_EXCEPTION, args);
+        super(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, args);
 
     }
 }
