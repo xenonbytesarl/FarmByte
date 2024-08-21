@@ -1,14 +1,18 @@
 package cm.xenonbyte.farmbyte.catalog.domain.test;
 
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.InMemoryUomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -22,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,30 +41,36 @@ final class UomTest {
 
 
     private IUomService uomDomainService;
+    private UomCategoryId uomCategoryId;
 
     @BeforeEach
     void setUp() {
         UomRepository uomRepository = new InMemoryUomRepository();
-        uomDomainService = new UomService(uomRepository);
+        UomCategoryRepository uomCategoryRepository = new InMemoryUomCategoryRepository();
+        uomDomainService = new UomService(uomRepository, uomCategoryRepository);
+
+        uomCategoryId = new UomCategoryId(UUID.randomUUID());
+        uomCategoryRepository.save(UomCategory.builder()
+                .id(uomCategoryId)
+                .name(Name.of(Text.of("Root")))
+                .build());
+
     }
 
     static Stream<Arguments> createUomMethodSourceArgs() {
         return Stream.of(
             Arguments.of(
                     Name.of(Text.of("Unit")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.REFERENCE,
                     null
             ),
             Arguments.of(
                     Name.of(Text.of("Carton de 10")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(2.0)
             ),
             Arguments.of(
                     Name.of(Text.of("Centimetre")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(0.1)
             )
@@ -70,7 +81,6 @@ final class UomTest {
     @MethodSource("createUomMethodSourceArgs")
     void should_create_uom_when_uom_type_is_reference(
             Name name,
-            UomCategoryId uomCategoryId,
             UomType uomType,
             Ratio ratio
     ) {
@@ -103,7 +113,6 @@ final class UomTest {
         return Stream.of(
             Arguments.of(
                     Name.of(Text.of("Unit")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     null,
                     IllegalArgumentException.class,
@@ -111,7 +120,6 @@ final class UomTest {
             ),
             Arguments.of(
                     Name.of(Text.of("Carton de 10")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.GREATER,
                     Ratio.of(0.8),
                     IllegalArgumentException.class,
@@ -119,7 +127,6 @@ final class UomTest {
             ),
             Arguments.of(
                     Name.of(Text.of("Centimetre")),
-                    new UomCategoryId(UUID.randomUUID()),
                     UomType.LOWER,
                     Ratio.of(2.0),
                     IllegalArgumentException.class,
@@ -132,7 +139,6 @@ final class UomTest {
     @MethodSource("createUomThrowExceptionMethodSourceArgs")
     void should_throw_exception_when_create_uom_with_uom_type_and_ratio_are_not_compatible(
             Name name,
-            UomCategoryId uomCategoryId,
             UomType uomType,
             Ratio ratio,
             Class< ? extends RuntimeException> exceptionClass,
@@ -157,7 +163,6 @@ final class UomTest {
     @Test
     void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
         //Given
-        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of(Text.of("Unite")),
                 uomCategoryId,
@@ -181,7 +186,6 @@ final class UomTest {
     @Test
     void should_create_uom_when_create_two_uom_with_uom_type_as_greater_for_the_same_category() {
         //Given
-        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of(Text.of("Carton de 10")),
                 uomCategoryId,
@@ -205,7 +209,6 @@ final class UomTest {
     @Test
     void should_throw_exception_when_create_two_uom_with_same_name() {
         //Given
-        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
         Uom firstRefereceUom = Uom.from(
                 Name.of(Text.of("Unite")),
                 uomCategoryId,
@@ -224,5 +227,21 @@ final class UomTest {
         assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
                 .isInstanceOf(UomNameConflictException.class)
                 .hasMessage(UOM_NAME_CONFLICT_EXCEPTION);
+    }
+
+    @Test
+    void should_throw_error_when_uom_category_not_exist() {
+        //Given
+        UomCategoryId uomCategoryId = new UomCategoryId(UUID.randomUUID());
+        Uom uom = Uom.from(
+                Name.of(Text.of("Unite")),
+                uomCategoryId,
+                UomType.REFERENCE,
+                null);
+
+        //Act + Then
+        assertThatThrownBy(() -> uomDomainService.createUom(uom))
+                .isInstanceOf(UomCategoryNotFoundException.class)
+                .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
     }
 }

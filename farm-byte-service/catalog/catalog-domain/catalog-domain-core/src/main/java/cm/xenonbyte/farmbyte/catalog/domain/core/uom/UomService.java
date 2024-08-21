@@ -1,7 +1,8 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.IUomService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import jakarta.annotation.Nonnull;
 
@@ -15,17 +16,27 @@ import java.util.Objects;
 @DomainService
 public final class UomService implements IUomService {
     private final UomRepository uomRepository;
+    private final UomCategoryRepository uomCategoryRepository;
 
-    public UomService(final @Nonnull UomRepository uomRepository) {
+    public UomService(
+            final @Nonnull UomRepository uomRepository,
+            final @Nonnull UomCategoryRepository uomCategoryRepository) {
         this.uomRepository = Objects.requireNonNull(uomRepository);
+        this.uomCategoryRepository = Objects.requireNonNull(uomCategoryRepository);
     }
 
     @Override
     public @Nonnull Uom createUom(@Nonnull Uom uom) {
-        //TODO check if category exists
+        verifyUomCategory(uom);
         validateUom(uom);
         uom.initiate();
         return uomRepository.save(uom);
+    }
+
+    private void verifyUomCategory(Uom uom) {
+        if(uom.getUomCategoryId() != null && !uomCategoryRepository.existsById(uom.getUomCategoryId())) {
+            throw new UomCategoryNotFoundException(new String[] {uom.getUomCategoryId().getValue().toString()});
+        }
     }
 
     private void validateUom(Uom uom) {

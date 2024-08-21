@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.times;
@@ -126,8 +126,8 @@ final class UomCategoryApiAdapterServiceTest {
                 Arguments.of(
                         "Temps",
                         UUID.randomUUID(),
-                        new UomParentCategoryNotFoundException(new String[]{UOM_CATEGORY_NOT_FOUND_EXCEPTION}),
-                        UOM_CATEGORY_NOT_FOUND_EXCEPTION
+                        new UomParentCategoryNotFoundException(new String[]{UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION}),
+                        UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION
                 )
         );
     }
