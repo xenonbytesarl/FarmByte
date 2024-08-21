@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         scanBasePackages = "cm.xenonbyte.farmbyte"
 )
 @ComponentScan(
+        basePackages = "cm.xenonbyte.farmbyte",
         includeFilters = {
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, value = {DomainService.class})
         }
@@ -24,8 +25,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         basePackages = "cm.xenonbyte.farmbyte"
 )
 @EntityScan(basePackages = "cm.xenonbyte.farmbyte")
-public class FarmByteBootStrapApplication
-{
+public class FarmByteBootStrapApplication {
+
     public static void main( String[] args )
     {
         SpringApplication.run(FarmByteBootStrapApplication.class, args);
