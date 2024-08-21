@@ -9,6 +9,9 @@ servers:
     description: Development Server
   - url: http://localhost:8080/api/v1/catalog
     description: Production server
+tags:
+  - name: ProductCategory
+    description: "The Product API Category"
 
 paths:
   /product-categories:
