@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductS
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
+import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
  * @version 1.0
  * @since 20/08/2024
  */
+@DomainService
 public final class ProductService implements IProductService {
 
     private final ProductRepository productRepository;

@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public final class ProductCategoryAdapterPostgresRepository implements ProductCategoryRepository {
+public class ProductCategoryAdapterPostgresRepository implements ProductCategoryRepository {
 
     private final ProductCategoryJpaRepository productCategoryJpaRepository;
     private final ProductCategoryJpaMapper productCategoryJpaMapper;
@@ -30,17 +31,20 @@ public final class ProductCategoryAdapterPostgresRepository implements ProductCa
 
 
     @Override
+    @Transactional(readOnly = true)
     public Boolean existsByName(@Nonnull Name name) {
         return productCategoryJpaRepository.existsByName(name.getText().getValue());
     }
 
     @Override
+    @Transactional
     public ProductCategory save(@Nonnull ProductCategory productCategory) {
         return productCategoryJpaMapper.toProductCategory(
                 productCategoryJpaRepository.save(productCategoryJpaMapper.toProductCategoryJpa(productCategory)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Boolean existsById(ProductCategoryId parentCategoryId) {
         return productCategoryJpaRepository.existsById(parentCategoryId.getValue());
     }

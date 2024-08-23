@@ -4,11 +4,10 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +20,8 @@ public abstract class ProductRepositoryTest {
 
     protected ProductRepository productRepository;
     protected Name name;
+    protected ProductCategoryId categoryId;
+    protected Image image;
 
     @Test
     protected void should_return_false_when_find_product_with_an_un_existing_name() {
@@ -46,9 +47,11 @@ public abstract class ProductRepositoryTest {
         Name name1 = Name.of(Text.of("Product.3"));
         Product product = Product.builder()
                 .name(name1)
-                .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                .categoryId(categoryId)
                 .type(ProductType.SERVICE)
+                .image(image)
                 .build();
+        product.validate();
         product.initiate();
 
         //Act

@@ -1,8 +1,10 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product;
 
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.config.BaseEntityJpaConfig;
-import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductCategoryRepositoryTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductRepositoryTest;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
+import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
@@ -31,18 +33,18 @@ import java.util.UUID;
 /**
  * @author bamk
  * @version 1.0
- * @since 16/08/2024
+ * @since 23/08/2024
  */
 @DataJpaTest
 @Testcontainers
 @ActiveProfiles("test")
-@Import({BaseEntityJpaConfig.class})
+@Import({BaseEntityJpaConfig.class, ReferenceMapper.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @EntityScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
 @ComponentScan(basePackages = {"cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa"})
-@ContextConfiguration(classes = {ProductCategoryJpaRepository.class, ProductCategoryJpaMapper.class})
+@ContextConfiguration(classes = {ProductJpaRepository.class, ProductJpaMapper.class})
 @EnableJpaRepositories(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa")
-public class ProductCategoryAdapterPostgresRepositoryIT extends ProductCategoryRepositoryTest {
+class ProductAdapterPostgresRepositoryIT extends ProductRepositoryTest {
 
     @Container
     @ServiceConnection
@@ -73,19 +75,16 @@ public class ProductCategoryAdapterPostgresRepositoryIT extends ProductCategoryR
     }
 
     @Autowired
-    private ProductCategoryJpaRepository productCategoryJpaRepository;
+    private ProductJpaRepository productJpaRepository;
 
     @Autowired
-    private ProductCategoryJpaMapper productCategoryJpaMapper;
+    private ProductJpaMapper productJpaMapper;
 
     @BeforeEach
     void setUp() {
-
-        super.productCategoryRepository = new ProductCategoryAdapterPostgresRepository(productCategoryJpaRepository, productCategoryJpaMapper);
-
-        name = Name.of(Text.of("Raw Material"));
-
-        parentProductCategoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
-
+        super.productRepository = new ProductAdapterPostgresRepository(productJpaRepository, productJpaMapper);
+        super.categoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+        super.image = Image.with(Text.of("product.png"));
+        super.name = Name.of(Text.of("Product.2"));
     }
 }

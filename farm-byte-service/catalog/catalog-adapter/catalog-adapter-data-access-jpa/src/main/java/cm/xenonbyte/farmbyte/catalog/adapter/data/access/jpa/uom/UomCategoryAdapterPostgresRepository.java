@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public final class UomCategoryAdapterPostgresRepository implements UomCategoryRepository {
+public class UomCategoryAdapterPostgresRepository implements UomCategoryRepository {
 
     private final UomCategoryJpaRepository uomCategoryJpaRepository;
     private final UomCategoryJpaMapper uomCategoryJpaMapper;
@@ -30,17 +31,20 @@ public final class UomCategoryAdapterPostgresRepository implements UomCategoryRe
 
 
     @Override
+    @Transactional(readOnly = true)
     public Boolean existsByName(@Nonnull Name name) {
         return uomCategoryJpaRepository.existsByName(name.getText().getValue());
     }
 
     @Override
+    @Transactional
     public UomCategory save(@Nonnull UomCategory uomCategory) {
         return uomCategoryJpaMapper.toUomCategory(
                 uomCategoryJpaRepository.save(uomCategoryJpaMapper.toUomCategoryJpa(uomCategory)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Boolean existsById(UomCategoryId parentCategoryId) {
         return uomCategoryJpaRepository.existsById(parentCategoryId.getValue());
     }
