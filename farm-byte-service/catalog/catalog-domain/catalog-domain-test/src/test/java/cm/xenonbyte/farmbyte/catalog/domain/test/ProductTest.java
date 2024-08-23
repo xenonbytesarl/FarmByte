@@ -111,7 +111,7 @@ public final class ProductTest {
                 .isNotNull()
                 .satisfies(cp -> assertThat(cp.getValue()).isInstanceOf(UUID.class));
         assertThat(createdProduct.getName()).isEqualTo(product.getName());
-        assertThat(createdProduct.getProductCategoryId()).isEqualTo(product.getProductCategoryId());
+        assertThat(createdProduct.getCategoryId()).isEqualTo(product.getCategoryId());
         assertThat(createdProduct.getStockUomId()).isEqualTo(product.getStockUomId());
         assertThat(createdProduct.getPurchaseUomId()).isEqualTo(product.getPurchaseUomId());
         assertThat(createdProduct.getType()).isEqualTo(product.getType());

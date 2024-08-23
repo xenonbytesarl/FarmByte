@@ -31,6 +31,7 @@ public final class CatalogDomainCoreConstant {
     public static final String PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK = "Product.5";
     public static final String PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO = "Product.6";
     public static final String PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO = "Product.7";
+    public static final String PRODUCT_IMAGE_IS_REQUIRED = "Product.8";
     public static final String PRODUCT_NAME_CONFLICT_EXCEPTION = "ProductNameConflictException.1";
     public static final String PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION = "ProductStockAndPurchaseUomBadException.1";
 }

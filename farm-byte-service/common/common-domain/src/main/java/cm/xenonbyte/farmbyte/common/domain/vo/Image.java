@@ -14,10 +14,10 @@ import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.
 public final class Image {
 
     public static final String DEFAULT_PRODUCT_IMAGE_URL = "products/product.png";
-    private final Text url;
+    private final Text text;
 
-    public Image(@Nonnull Text url) {
-        this.url = Objects.requireNonNull(url);
+    public Image(@Nonnull Text text) {
+        this.text = Objects.requireNonNull(text);
     }
 
     public static Image with(@Nonnull Text url) {
@@ -27,16 +27,20 @@ public final class Image {
         return new Image(url);
     }
 
+    public Text getText() {
+        return text;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return Objects.equals(url, image.url);
+        return Objects.equals(text, image.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(url);
+        return Objects.hashCode(text);
     }
 }

@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductRepositoryT
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
+import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,8 @@ public final class InMemoryProductRepositoryTest extends ProductRepositoryTest {
     void setUp() {
         productRepository = new InMemoryProductRepository();
         name = Name.of(Text.of("Product.2"));
+        categoryId = new ProductCategoryId(UUID.randomUUID());
+        image = Image.with(Text.of("product.png"));
 
         productRepository.save(Product.builder()
                 .name(name)

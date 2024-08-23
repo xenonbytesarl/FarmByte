@@ -14,10 +14,10 @@ import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.
 public final class Reference {
 
     
-    private final Text value;
+    private final Text text;
 
-    public Reference(@Nonnull Text value) {
-        this.value = Objects.requireNonNull(value);
+    public Reference(@Nonnull Text text) {
+        this.text = Objects.requireNonNull(text);
     }
     
     public static Reference of(@Nonnull Text value) {
@@ -27,8 +27,8 @@ public final class Reference {
         return new Reference(value);
     }
 
-    public Text getValue() {
-        return value;
+    public Text getText() {
+        return text;
     }
 
     @Override
@@ -36,11 +36,11 @@ public final class Reference {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reference reference = (Reference) o;
-        return Objects.equals(value, reference.value);
+        return Objects.equals(text, reference.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(value);
+        return Objects.hashCode(text);
     }
 }

@@ -12,6 +12,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_IMAGE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
@@ -84,6 +85,10 @@ public final class Product extends BaseEntity<ProductId> {
         if(salePrice != null && salePrice.isNegative()) {
             throw new IllegalArgumentException(PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO);
         }
+
+        if(image == null || image.getText().isEmpty()) {
+            throw new IllegalArgumentException(PRODUCT_IMAGE_IS_REQUIRED);
+        }
     }
 
     public boolean isStorable() {
@@ -121,7 +126,7 @@ public final class Product extends BaseEntity<ProductId> {
         return name;
     }
 
-    public ProductCategoryId getProductCategoryId() {
+    public ProductCategoryId getCategoryId() {
         return categoryId;
     }
 

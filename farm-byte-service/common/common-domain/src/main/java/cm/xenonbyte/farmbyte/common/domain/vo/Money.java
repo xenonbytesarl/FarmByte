@@ -28,6 +28,10 @@ public final class Money {
         return new Money(amount);
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
     public boolean isNegative() {
         return lessThan(ZERO);
     }

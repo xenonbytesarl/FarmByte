@@ -8,9 +8,9 @@ import java.util.UUID;
 /**
  * @author bamk
  * @version 1.0
- * @since 15/08/2024
+ * @since 23/08/2024
  */
 @Repository
-public interface ProductCategoryJpaRepository extends JpaRepository<ProductCategoryJpa, UUID> {
+public interface ProductJpaRepository extends JpaRepository<ProductJpa, UUID> {
     Boolean existsByName(String value);
 }
