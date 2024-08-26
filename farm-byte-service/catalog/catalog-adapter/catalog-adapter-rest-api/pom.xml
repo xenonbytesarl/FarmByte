@@ -125,7 +125,7 @@
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
                                 <typeMappings>
-                                    <typeMapping>createUomResponse=CreateUomResponse</typeMapping>
+                                    <typeMapping>createUomCategoryResponse=CreateUomCategoryResponse</typeMapping>
                                 </typeMappings>
                                 <importMappings>
                                     <importMapping>CreateUomCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomCategoryViewResponse</importMapping>
@@ -157,10 +157,42 @@
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
                                 <typeMappings>
-                                    <typeMapping>createProductResponse=CreateProductResponse</typeMapping>
+                                    <typeMapping>createProductCategoryResponse=CreateProductCategoryResponse</typeMapping>
                                 </typeMappings>
                                 <importMappings>
                                     <importMapping>CreateProductCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductCategoryViewResponse</importMapping>
+                                </importMappings>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>product</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/product.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product</apiPackage>
+                            <modelPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view</modelPackage>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            <configOptions>
+                                <delegatePattern>false</delegatePattern>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                                <documentationProvider>springdoc</documentationProvider>
+                                <requestMappingMode>api_interface</requestMappingMode>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>true</useResponseEntity>
+                                <useBeanValidation>true</useBeanValidation>
+                                <performBeanValidation>true</performBeanValidation>
+                                <typeMappings>
+                                    <typeMapping>createProductResponse=CreateProductResponse</typeMapping>
+                                </typeMappings>
+                                <importMappings>
+                                    <importMapping>CreateProductResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse</importMapping>
                                 </importMappings>
                             </configOptions>
                         </configuration>

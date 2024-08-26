@@ -43,15 +43,18 @@ public abstract class CommonResponseEntityExceptionHandler {
 
         List<ValidationError> errors = new ArrayList<>();
         exception.getBindingResult().getFieldErrors()
-                .forEach(fieldError -> errors.add(
-                        ValidationError.builder()
+                .forEach(fieldError -> {
+                    String message = String.format(
+                            "%s.%s.%s", StringUtils.capitalize(fieldError.getObjectName()), fieldError.getField(), fieldError.getCode());
+                    if(!errors.stream().anyMatch(error -> error.getField().equals(fieldError.getField()))) {
+                        errors.add(
+                            ValidationError.builder()
                                 .field(fieldError.getField())
-                                .message(MessageUtil.getMessage(
-                                    Objects.requireNonNull(String.format(
-                                        "%s.%s.%s", StringUtils.capitalize(fieldError.getObjectName()), fieldError.getField(), fieldError.getCode())
-                                ), locale, ""))
+                                .message(MessageUtil.getMessage(Objects.requireNonNull(message), locale, ""))
                                 .build()
-                ));
+                        );
+                    }
+                });
         log.error("", exception);
         return ResponseEntity
                 .status(BAD_REQUEST)

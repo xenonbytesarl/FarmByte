@@ -1,12 +1,16 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestBeanConfig;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomIdMapper;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ImageMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.MoneyMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -47,9 +51,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ActiveProfiles("test")
 @WebMvcTest(UomApiRest.class)
-@ContextConfiguration(classes = {UomApiAdapterService.class})
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-final class UomApiRestTest extends ApiRestConfigTest {
+@ContextConfiguration(classes = {UomApiAdapterService.class, ReferenceMapper.class, ImageMapper.class, UomIdMapper.class, MoneyMapper.class})
+final class UomApiRestTest extends ApiRestBeanConfig {
 
     public static final String UOM_PATH_URI = "/api/v1/catalog/uoms";
     @Autowired

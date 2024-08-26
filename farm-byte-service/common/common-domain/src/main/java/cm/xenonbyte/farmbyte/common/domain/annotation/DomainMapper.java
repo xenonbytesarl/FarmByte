@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 /**
  * @author bamk
  * @version 1.0
- * @since 15/08/2024
+ * @since 26/08/2024
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface DomainService {
+public @interface DomainMapper {
 }

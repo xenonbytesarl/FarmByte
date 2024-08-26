@@ -1,11 +1,15 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestBeanConfig;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomIdMapper;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ImageMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.MoneyMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -48,9 +52,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ActiveProfiles("test")
 @WebMvcTest(UomCategoryApiRest.class)
-@ContextConfiguration(classes = {UomCategoryApiAdapterService.class})
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-public final class UomCategoryApiRestTest extends ApiRestConfigTest {
+@ContextConfiguration(classes = {UomCategoryApiAdapterService.class, ReferenceMapper.class, ImageMapper.class, UomIdMapper.class, MoneyMapper.class})
+public final class UomCategoryApiRestTest extends ApiRestBeanConfig {
 
     public static final String UOM_CATEGORY_PATH_URI = "/api/v1/catalog/uom-categories";
     @Autowired
