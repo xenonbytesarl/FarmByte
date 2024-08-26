@@ -52,4 +52,9 @@ public class InMemoryUomRepository implements UomRepository {
         return Optional.ofNullable(uomMap.get(uomId));
     }
 
+    @Override
+    public boolean existsById(@Nonnull UomId uomId) {
+        return uomMap.containsKey(uomId);
+    }
+
 }

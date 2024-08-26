@@ -60,4 +60,9 @@ public class UomAdapterPostgresRepository implements UomRepository {
     public Optional<Uom> findByUomId(@Nonnull UomId uomId) {
         return uomJpaRepository.findById(uomId.getValue()).map(mapper::fromUomJpa);
     }
+
+    @Override
+    public boolean existsById(@Nonnull UomId uomId) {
+        return uomJpaRepository.existsById(uomId.getValue());
+    }
 }

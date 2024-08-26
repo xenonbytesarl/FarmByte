@@ -1,8 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
-import cm.xenonbyte.farmbyte.catalog.domain.ProductNameConflictException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
@@ -23,12 +22,15 @@ public final class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final UomRepository uomRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     public ProductService(
             @Nonnull ProductRepository productRepository,
-            @Nonnull UomRepository uomRepository) {
+            @Nonnull UomRepository uomRepository,
+            @Nonnull ProductCategoryRepository productCategoryRepository) {
         this.productRepository = Objects.requireNonNull(productRepository);
         this.uomRepository = Objects.requireNonNull(uomRepository);
+        this.productCategoryRepository = Objects.requireNonNull(productCategoryRepository);
     }
 
     @Nonnull
@@ -42,7 +44,8 @@ public final class ProductService implements IProductService {
 
     private void verify(Product product) {
         verifyProductName(product.getName());
-        verifyProductUom(product);
+        verifyProductCategory(product.getCategoryId());
+        verifyUom(product);
     }
 
     private void verifyProductName(Name name) {
@@ -51,7 +54,19 @@ public final class ProductService implements IProductService {
         }
     }
 
-    private void verifyProductUom(Product product) {
+    private void verifyProductCategory(ProductCategoryId categoryId) {
+        if(categoryId != null && !productCategoryRepository.existsById(categoryId)) {
+            throw new ProductCategoryNotFoundException(new String[] {categoryId.getValue().toString()});
+        }
+    }
+
+    private void verifyUom(Product product) {
+        if(product.getStockUomId() != null && !uomRepository.existsById(product.getStockUomId())) {
+            throw new ProductUomNotFoundException(new String[] {product.getStockUomId().getValue().toString()});
+        }
+        if(product.getPurchaseUomId() != null && !uomRepository.existsById(product.getPurchaseUomId())) {
+            throw new ProductUomNotFoundException(new String[] {product.getStockUomId().getValue().toString()});
+        }
         if(product.isStorable() && product.getStockUomId() != null && product.getPurchaseUomId() != null) {
             Optional<Uom> optionalStockUom = uomRepository.findByUomId(product.getStockUomId());
             Optional<Uom> optionalPurchaseUom = uomRepository.findByUomId(product.getPurchaseUomId());

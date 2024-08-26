@@ -1,11 +1,12 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Ratio;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.Test;
 
@@ -25,9 +26,26 @@ public abstract class UomRepositoryTest {
     protected UomCategoryId uomCategoryId;
     protected UomType uomType;
     protected Name name;
+    protected UomId uomId;
 
 
+    @Test
+    void should_return_false_when_non_existent_uom_id_are_given() {
+        //Act
+        boolean result = uomRepository.existsById(new UomId(UUID.randomUUID()));
 
+        //Act + Then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void should_return_true_when__existent_uom_id_are_given() {
+        //Act
+        boolean result = uomRepository.existsById(uomId);
+
+        //Then
+        assertThat(result).isTrue();
+    }
 
     @Test
     protected void should_return_false_when_non_existent_uom_category_id_or_uom_type_are_given() {

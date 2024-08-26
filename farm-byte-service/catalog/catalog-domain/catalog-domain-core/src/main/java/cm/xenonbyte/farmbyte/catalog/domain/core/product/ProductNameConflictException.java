@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.catalog.domain;
+package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainConflictException;
 
