@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api;
 
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductApiAdapterService;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryApiAdapterService;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomApiAdapterService;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryApiAdapterService;
@@ -10,7 +11,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
  * @version 1.0
  * @since 15/08/2024
  */
-public class ApiRestConfigTest {
+
+public class ApiRestBeanConfig {
     @MockBean
     protected UomCategoryApiAdapterService uomCategoryApiAdapterService;
 
@@ -19,4 +21,7 @@ public class ApiRestConfigTest {
 
     @MockBean
     protected ProductCategoryApiAdapterService productCategoryApiAdapterService;
+
+    @MockBean
+    protected ProductApiAdapterService productApiAdapterService;
 }

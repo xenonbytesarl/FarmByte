@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.common.domain.mapper;
 
+import cm.xenonbyte.farmbyte.common.domain.annotation.DomainMapper;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 
@@ -8,6 +9,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Text;
  * @version 1.0
  * @since 24/08/2024
  */
+@DomainMapper
 public final class ImageMapper {
     public Image map(String value) {
         if(value == null || value.isEmpty()) {

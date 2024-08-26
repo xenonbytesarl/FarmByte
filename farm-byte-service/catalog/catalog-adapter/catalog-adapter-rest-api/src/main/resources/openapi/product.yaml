@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: Category of Product API
+  title: Product API
   description: |
-    REST API endpoints for Category Product
+    REST API endpoints for Product
   version: 1.0.0
 servers:
   - url: http://localhost:8085/api/v1/catalog
@@ -10,26 +10,26 @@ servers:
   - url: http://localhost:8080/api/v1/catalog
     description: Production server
 tags:
-  - name: ProductCategory
-    description: "The Product Category API"
+  - name: Product
+    description: "The Product API"
 
 paths:
-  /product-categories:
+  /products:
     post:
       tags:
-        - ProductCategory
-      summary: create a category product
-      operationId: createProductCategory
+        - Product
+      summary: create a product
+      operationId: createProduct
       security:
         - oAuth:
-            - create:product:category
+            - create:product
       requestBody:
         required: true
-        description: category product object to be created
+        description: product object to be created
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateProductCategoryViewRequest'
+              $ref: '#/components/schemas/CreateProductViewRequest'
       parameters:
         - $ref: '#/components/parameters/accept-language'
       responses:
@@ -104,7 +104,7 @@ components:
             data:
               type: object
               additionalProperties:
-                $ref: '#/components/schemas/CreateProductCategoryViewResponse'
+                $ref: '#/components/schemas/CreateProductViewResponse'
     ApiErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ApiResponse'
@@ -127,23 +127,57 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/ValidationError'
-    CreateProductCategoryViewRequest:
+    CreateProductViewRequest:
       type: object
       required:
         - name
+        - type
+        - categoryId
       properties:
         name:
           type: string
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
-        parentProductCategoryId:
+        reference:
+          type: string
+        purchasePrice:
+          type: number
+          format: decimal
+        salePrice:
+          type: number
+          format: decimal
+        purchasable:
+          type: boolean
+        sellable:
+          type: boolean
+        image:
+          type: string
+        type:
+          type: string
+          enum:
+            - STOCK
+            - CONSUMABLE
+            - SERVICE
+        categoryId:
           type: string
           format: uuid
-    CreateProductCategoryViewResponse:
+        stockUomId:
+          type: string
+          format: uuid
+        purchaseUomId:
+          type: string
+          format: uuid
+    CreateProductViewResponse:
       type: object
       required:
         - id
         - name
-        - parentProductCategoryId
+        - image
+        - salePrice
+        - purchasePrice
+        - purchasable
+        - sellable
+        - categoryId
+        - type
         - active
       properties:
         id:
@@ -152,7 +186,33 @@ components:
         name:
           type: string
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
-        parentProductCategoryId:
+        reference:
+          type: string
+        purchasePrice:
+          type: number
+          format: decimal
+        salePrice:
+          type: number
+          format: decimal
+        purchasable:
+          type: boolean
+        sellable:
+          type: boolean
+        image:
+          type: string
+        type:
+          type: string
+          enum:
+            - STOCK
+            - CONSUMABLE
+            - SERVICE
+        categoryId:
+          type: string
+          format: uuid
+        stockUomId:
+          type: string
+          format: uuid
+        purchaseUomId:
           type: string
           format: uuid
         active:

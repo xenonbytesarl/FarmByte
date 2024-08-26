@@ -1,11 +1,15 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestConfigTest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.ApiRestBeanConfig;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ParentProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomIdMapper;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ImageMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.MoneyMapper;
+import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -48,13 +52,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @ActiveProfiles("test")
 @WebMvcTest(ProductCategoryApiRest.class)
-@ContextConfiguration(classes = {ProductCategoryApiAdapterService.class})
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-public final class ProductCategoryApiRestTest extends ApiRestConfigTest {
+@ContextConfiguration(classes = {ProductCategoryApiAdapterService.class, ReferenceMapper.class, ImageMapper.class, UomIdMapper.class, MoneyMapper.class})
+public final class ProductCategoryApiRestTest extends ApiRestBeanConfig {
 
     public static final String PRODUCT_CATEGORY_PATH_URI = "/api/v1/catalog/product-categories";
     @Autowired
     private MockMvc mockMvc;
+
 
     static Stream<Arguments> createProductMethodSourceArgs() {
         return Stream.of(

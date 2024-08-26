@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.bootstrap;
 
+import cm.xenonbyte.farmbyte.common.domain.annotation.DomainMapper;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(
         basePackages = "cm.xenonbyte.farmbyte",
         includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = {DomainService.class})
+                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = {DomainService.class, DomainMapper.class})
         }
 )
 @EnableJpaRepositories(
