@@ -34,4 +34,6 @@ public final class CatalogDomainCoreConstant {
     public static final String PRODUCT_IMAGE_IS_REQUIRED = "Product.8";
     public static final String PRODUCT_NAME_CONFLICT_EXCEPTION = "ProductNameConflictException.1";
     public static final String PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION = "ProductStockAndPurchaseUomBadException.1";
+    public static final String PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION="ProductCategoryNotFoundException.1";
+    public static final String PRODUCT_UOM_NOT_FOUND_EXCEPTION="ProductUomNotFoundException.1";
 }

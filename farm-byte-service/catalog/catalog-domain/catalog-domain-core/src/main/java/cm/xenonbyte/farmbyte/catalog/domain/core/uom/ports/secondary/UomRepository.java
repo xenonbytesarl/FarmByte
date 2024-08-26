@@ -23,4 +23,6 @@ public interface UomRepository {
     boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId);
 
     Optional<Uom> findByUomId(@Nonnull UomId uomId);
+
+    boolean existsById(@Nonnull UomId uomId);
 }

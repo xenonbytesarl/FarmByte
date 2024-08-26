@@ -40,6 +40,8 @@ public final class InMemoryUomRepositoryTest extends UomRepositoryTest {
                 Ratio.of(5.0));
         uomRepository.save(uom1);
         uomRepository.save(uom2);
+
+        uomId = uom1.getId();
     }
 
 }
