@@ -2,8 +2,16 @@ package cm.xenonbyte.farmbyte.common.domain.vo;
 
 import jakarta.annotation.Nonnull;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.DEFAULT_PRODUCT_IMAGE_PATH;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.EMPTY;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.PLUS;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.POINT;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.SLASH;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.UNDERSCORE;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.URL_VALUE_IS_REQUIRED;
 
 /**
@@ -13,7 +21,8 @@ import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.
  */
 public final class Image {
 
-    public static final String DEFAULT_PRODUCT_IMAGE_URL = "products/product.png";
+    public static final String DEFAULT_PRODUCT_IMAGE_URL = DEFAULT_PRODUCT_IMAGE_PATH + "/product.png";
+
     private final Text text;
 
     public Image(@Nonnull Text text) {
@@ -42,5 +51,18 @@ public final class Image {
     @Override
     public int hashCode() {
         return Objects.hashCode(text);
+    }
+
+    public Image computeAbsolutePath() {
+
+        return Image.with(
+            Text.of(DEFAULT_PRODUCT_IMAGE_PATH)
+                    .concat(SLASH)
+                    .concat(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSZ")))
+                            .replace(PLUS, EMPTY)
+                            .replace(POINT, EMPTY)
+                    .concat(UNDERSCORE)
+                    .concat(text.getValue())
+        );
     }
 }

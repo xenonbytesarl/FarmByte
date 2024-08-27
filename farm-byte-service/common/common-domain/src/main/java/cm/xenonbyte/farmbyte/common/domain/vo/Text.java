@@ -44,4 +44,11 @@ public class Text {
     }
 
 
+    public Text concat(@Nonnull String value) {
+        return new Text(this.value.concat(value));
+    }
+
+    public Text replace(@Nonnull String oldValue, @Nonnull String newValue) {
+        return Text.of(this.value.replace(oldValue, newValue));
+    }
 }
