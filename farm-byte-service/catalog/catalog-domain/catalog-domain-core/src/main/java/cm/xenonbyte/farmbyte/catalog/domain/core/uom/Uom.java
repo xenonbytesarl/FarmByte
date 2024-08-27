@@ -3,6 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Ratio;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 

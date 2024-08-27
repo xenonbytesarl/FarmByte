@@ -20,14 +20,14 @@ public interface ProductCategoryJpaMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
-    @Mapping(source = "parentProductCategoryId.value", target = "parentProductCategoryJpa.id")
+    @Mapping(expression = "java(uomCategory.getParentProductCategoryId() == null? null: cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product.ProductCategoryJpa.builder().id(uomCategory.getParentProductCategoryId().getValue()).build())", target = "parentProductCategoryJpa")
     @Mapping(source = "active.value", target = "active")
     ProductCategoryJpa toProductCategoryJpa(ProductCategory uomCategory);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
     @Mapping(target = "name.text.value", source = "name")
-    @Mapping(target = "parentProductCategoryId.value", source = "parentProductCategoryJpa.id")
+    @Mapping(target = "parentProductCategoryId", expression = "java(uomCategoryJpa.getParentProductCategoryJpa() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId(uomCategoryJpa.getParentProductCategoryJpa().getId()))")
     @Mapping(target = "active.value", source = "active")
     ProductCategory toProductCategory(ProductCategoryJpa uomCategoryJpa);
 }

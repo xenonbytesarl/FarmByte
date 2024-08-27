@@ -3,17 +3,11 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomIdMapper;
-import cm.xenonbyte.farmbyte.common.domain.mapper.ImageMapper;
-import cm.xenonbyte.farmbyte.common.domain.mapper.MoneyMapper;
-import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
 import jakarta.annotation.Nonnull;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 /**
  * @author bamk
@@ -22,50 +16,40 @@ import org.mapstruct.Named;
  */
 @Mapper(
         componentModel = "spring",
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
-        uses = {ReferenceMapper.class, ImageMapper.class, UomIdMapper.class, MoneyMapper.class}
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface ProductViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "reference", source = "reference")
+    @Mapping(target = "reference", expression = "java(createProductViewRequest.getReference() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Reference.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(createProductViewRequest.getReference())))")
     @Mapping(target = "name.text.value", source = "name")
-    @Mapping(target = "image", source = "image")
-    @Mapping(target = "purchasePrice", source = "purchasePrice")
-    @Mapping(target = "salePrice", source = "salePrice")
-    @Mapping(target = "purchasable.value", source = "purchasable")
-    @Mapping(target = "sellable.value", source = "sellable")
-    @Mapping(target = "type", qualifiedByName = "getType", source = "type")
+    @Mapping(target = "image", expression = "java(createProductViewRequest.getImage() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Image.with(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(createProductViewRequest.getImage())))")
+    @Mapping(target = "purchasePrice", expression = "java(createProductViewRequest.getImage() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Money.of(createProductViewRequest.getPurchasePrice()))")
+    @Mapping(target = "salePrice", expression = "java(createProductViewRequest.getSalePrice() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Money.of(createProductViewRequest.getSalePrice()))")
+    @Mapping(target = "purchasable", expression = "java(createProductViewRequest.getPurchasable() == null? null: cm.xenonbyte.farmbyte.catalog.domain.core.product.Purchasable.of(createProductViewRequest.getPurchasable()))")
+    @Mapping(target = "sellable", expression = "java(createProductViewRequest.getSellable() == null? null: cm.xenonbyte.farmbyte.catalog.domain.core.product.Sellable.of(createProductViewRequest.getSellable()))")
+    @Mapping(target = "type", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType.valueOf(createProductViewRequest.getType().name()))")
     @Mapping(target = "categoryId.value", source = "categoryId")
-    @Mapping(target = "stockUomId", source = "stockUomId")
-    @Mapping(target = "purchaseUomId", source = "purchaseUomId")
+    @Mapping(target = "stockUomId", expression = "java(createProductViewRequest.getStockUomId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId(createProductViewRequest.getStockUomId()))")
+    @Mapping(target = "purchaseUomId", expression = "java(createProductViewRequest.getPurchaseUomId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId(createProductViewRequest.getPurchaseUomId()))")
     @Nonnull Product toProduct(@Nonnull CreateProductViewRequest createProductViewRequest);
 
-    @Named("getType")
-    default ProductType getType(@Nonnull CreateProductViewRequest.TypeEnum type) {
-        return ProductType.valueOf(type.name());
-    }
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
-    @Mapping(source = "reference", target = "reference")
+    @Mapping(expression = "java(product.getReference() == null? null: product.getReference().getText().getValue())", target = "reference")
     @Mapping(source = "name.text.value", target = "name")
-    @Mapping(source = "image", target = "image")
-    @Mapping(source = "purchasePrice", target = "purchasePrice")
-    @Mapping(source = "salePrice", target = "salePrice")
+    @Mapping(source = "image.text.value", target = "image")
+    @Mapping(source = "purchasePrice.amount", target = "purchasePrice")
+    @Mapping(source = "salePrice.amount", target = "salePrice")
     @Mapping(source = "purchasable.value", target = "purchasable")
     @Mapping(source = "sellable.value", target = "sellable")
     @Mapping(source = "active.value", target = "active")
-    @Mapping(source = "type", qualifiedByName = "getTypeView", target = "type")
+    @Mapping(expression = "java(CreateProductViewResponse.TypeEnum.valueOf(product.getType().name()))", target = "type")
     @Mapping(source = "categoryId.value", target = "categoryId")
-    @Mapping(source = "stockUomId", target = "stockUomId")
-    @Mapping(source = "purchaseUomId", target = "purchaseUomId")
+    @Mapping(expression = "java(product.getStockUomId() == null? null: product.getStockUomId().getValue())", target = "stockUomId")
+    @Mapping(expression = "java(product.getPurchaseUomId() == null? null: product.getPurchaseUomId().getValue())", target = "purchaseUomId")
     @Nonnull CreateProductViewResponse toCreateProductViewResponse(@Nonnull Product product);
-
-    @Named("getTypeView")
-    default CreateProductViewResponse.TypeEnum getTypeView(@Nonnull ProductType type) {
-        return CreateProductViewResponse.TypeEnum.valueOf(type.name());
-    }
 
 
 }

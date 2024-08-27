@@ -8,11 +8,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomIdMapper;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import cm.xenonbyte.farmbyte.common.domain.mapper.ImageMapper;
-import cm.xenonbyte.farmbyte.common.domain.mapper.MoneyMapper;
-import cm.xenonbyte.farmbyte.common.domain.mapper.ReferenceMapper;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @WebMvcTest(ProductApiRest.class)
 @ComponentScan(basePackages = "cm.xenonbyte.farmbyte.catalog.adapter.rest.api")
-@ContextConfiguration(classes = {ProductApiAdapterService.class, ReferenceMapper.class, ImageMapper.class, UomIdMapper.class, MoneyMapper.class})
+@ContextConfiguration(classes = {ProductApiAdapterService.class})
 public final class ProductApiRestTest extends ApiRestBeanConfig {
 
     public static final String PRODUCT_PATH_URI = "/api/v1/catalog/products";
