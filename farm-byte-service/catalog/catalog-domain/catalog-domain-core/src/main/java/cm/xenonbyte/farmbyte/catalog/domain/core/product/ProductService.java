@@ -65,7 +65,7 @@ public final class ProductService implements IProductService {
             throw new ProductUomNotFoundException(new String[] {product.getStockUomId().getValue().toString()});
         }
         if(product.getPurchaseUomId() != null && !uomRepository.existsById(product.getPurchaseUomId())) {
-            throw new ProductUomNotFoundException(new String[] {product.getStockUomId().getValue().toString()});
+            throw new ProductUomNotFoundException(new String[] {product.getPurchaseUomId().getValue().toString()});
         }
         if(product.isStorable() && product.getStockUomId() != null && product.getPurchaseUomId() != null) {
             Optional<Uom> optionalStockUom = uomRepository.findByUomId(product.getStockUomId());

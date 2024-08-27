@@ -26,7 +26,7 @@ public interface ProductCategoryViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name.text.value", source = "name")
-    @Mapping(target = "parentProductCategoryId", qualifiedByName = "getParentCategoryIdDomain", source = "parentProductCategoryId")
+    @Mapping(target = "parentProductCategoryId", expression = "java(createProductCategoryViewRequest.getParentProductCategoryId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId(createProductCategoryViewRequest.getParentProductCategoryId()))")
     @Nonnull ProductCategory toProductCategory(@Nonnull CreateProductCategoryViewRequest createProductCategoryViewRequest);
 
     @Named("getParentCategoryIdDomain")
@@ -41,6 +41,6 @@ public interface ProductCategoryViewMapper {
     @Mapping(source = "id.value", target = "id")
     @Mapping(source = "name.text.value", target = "name")
     @Mapping(source = "active.value", target = "active")
-    @Mapping(source = "parentProductCategoryId.value", target = "parentProductCategoryId")
+    @Mapping(expression = "java(productCategory.getParentProductCategoryId() == null? null: productCategory.getParentProductCategoryId().getValue())", target = "parentProductCategoryId")
     @Nonnull CreateProductCategoryViewResponse toCreateProductCategoryViewResponse(@Nonnull ProductCategory productCategory);
 }
