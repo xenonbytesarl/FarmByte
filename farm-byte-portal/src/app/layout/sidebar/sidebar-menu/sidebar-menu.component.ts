@@ -1,15 +1,18 @@
-import { Component } from '@angular/core';
-import {Ripple} from "primeng/ripple";
+import {Component, inject} from '@angular/core';
+import {SidebarStore} from "../sidebar.store";
+import {RouterLink} from "@angular/router";
+import {SidebarMenuItemComponent} from "./sidebar-menu-item/sidebar-menu-item.component";
 
 @Component({
-  selector: 'farm-byte-sidebar-menu',
+  selector: 'app-sidebar-menu',
   standalone: true,
-    imports: [
-        Ripple
-    ],
+  imports: [
+    RouterLink,
+    SidebarMenuItemComponent
+  ],
   templateUrl: './sidebar-menu.component.html',
   styleUrl: './sidebar-menu.component.scss'
 })
 export class SidebarMenuComponent {
-
+  readonly sidebarStore = inject(SidebarStore);
 }

@@ -1,35 +1,23 @@
-import {Component, ViewChild} from '@angular/core';
-import {Sidebar, SidebarModule} from "primeng/sidebar";
-import {Button} from "primeng/button";
-import {AvatarModule} from "primeng/avatar";
-import {Ripple} from "primeng/ripple";
-import {StyleClassModule} from "primeng/styleclass";
-import {SidebarBrandComponent} from "./sidebar-brand/sidebar-brand.component";
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {RouterLink, RouterLinkActive} from "@angular/router";
+import {NgClass} from "@angular/common";
 import {SidebarMenuComponent} from "./sidebar-menu/sidebar-menu.component";
-import {SidebarFooterComponent} from "./sidebar-footer/sidebar-footer.component";
+import {SidebarLogoComponent} from "./sidebar-logo/sidebar-logo.component";
+import {NavBarStore} from "../navbar/navbar.store";
 
 @Component({
-  selector: 'farm-byte-sidebar',
+  selector: 'app-sidebar',
   standalone: true,
   imports: [
-    SidebarModule,
-    Button,
-    AvatarModule,
-    Ripple,
-    StyleClassModule,
-    SidebarBrandComponent,
+    RouterLink,
+    RouterLinkActive,
+    NgClass,
     SidebarMenuComponent,
-    SidebarFooterComponent
+    SidebarLogoComponent
   ],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarComponent {
-  @ViewChild('sidebarRef') sidebarRef!: Sidebar;
-
-  closeCallback(e: Event): void {
-    this.sidebarRef.close(e);
-  }
-
-  sidebarVisible: boolean = true;
 }

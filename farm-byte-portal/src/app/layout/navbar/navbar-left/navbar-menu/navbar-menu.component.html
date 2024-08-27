@@ -1,0 +1,6 @@
+<ul class="xm:flex md:flex xm:flex-col md:flex-row text-nowrap md:justify-start xm:justify-center md:items-center xm:items-end gap-4 md:ml-8">
+  @for(menu of sidebarStore.selectedSidebarMenu()?.navbarMenu?.menus; track menu.link + menu.label; let index = $index) {
+    <app-navbar-menu-item class="w-full" [menu]="menu"/>
+  }
+</ul>
+

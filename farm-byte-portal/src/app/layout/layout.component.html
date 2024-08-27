@@ -1,13 +1,15 @@
-<div class="flex flex-row ">
-  <div class="w-23rem">
-    <farm-byte-sidebar></farm-byte-sidebar>
+<div class="h-screen w-screen flex flex-row">
+  <div
+    [ngClass]="navbarStore.toggleSidebar()? 'md:w-[70px] transition-all ease-in duration-300': 'md:w-[250px] transition-all ease-in duration-300'"
+    class="md:w-[250px] xm:w-[70px] bg-amber-900 h-full">
+    <app-sidebar/>
   </div>
-  <div class="main flex flex-column  w-full ">
-    <farm-byte-navbar></farm-byte-navbar>
-    <div class="flex flex-column align-items-center justify-content-center px-8 pt-5 gap-3">
-
-      <router-outlet/>
-
+  <div class="md:w-full xm:w-full">
+    <div class="flex flex-col bg-gray-50">
+      <app-navbar/>
+      <div class="p-8">
+        <router-outlet/>
+      </div>
     </div>
   </div>
 </div>

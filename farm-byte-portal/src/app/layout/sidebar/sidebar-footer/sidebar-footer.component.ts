@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
-import {AvatarModule} from "primeng/avatar";
-import {Ripple} from "primeng/ripple";
+import {Component} from '@angular/core';
 
 @Component({
-  selector: 'farm-byte-sidebar-footer',
+  selector: 'app-sidebar-footer',
   standalone: true,
-    imports: [
-        AvatarModule,
-        Ripple
-    ],
+  imports: [],
   templateUrl: './sidebar-footer.component.html',
   styleUrl: './sidebar-footer.component.scss'
 })
