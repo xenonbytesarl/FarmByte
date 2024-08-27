@@ -100,6 +100,8 @@ public final class Product extends BaseEntity<ProductId> {
 
         if(this.image == null) {
             this.image = Image.with(Text.of(Image.DEFAULT_PRODUCT_IMAGE_URL));
+        } else {
+            this.image = image.computeAbsolutePath();
         }
 
         if (this.salePrice == null) {
