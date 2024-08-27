@@ -1,10 +1,15 @@
-<div class="right flex flex-row align-items-center justify-content-around gap-6">
-  <div>
-    <i class="fa fa-bell text-2xl cursor-pointer" pBadge  value="3" severity="danger" ></i>
+<div class="hidden md:flex flex-row justify-center items-center gap-3">
+  <div class="w-[2rem] rounded-full p-1 cursor-pointer" (click)="navbarStore.doShowSearchInput()">
+    <span class="material-symbols-outlined">search</span>
   </div>
-  <p-avatar
-    image="https://img.freepik.com/free-icon/user_318-159711.jpg"
-    size="normal"
-    shape="circle"
-  />
+  <div class="w-[2rem] rounded-full p-1 cursor-pointer">
+    <span class="material-symbols-outlined">translate</span>
+  </div>
+  <div class="w-[2rem] rounded-full p-1 cursor-pointer relative">
+    <span class="material-symbols-outlined">notifications</span>
+    <span class="absolute -top-1 right-1 w-[1rem] h-[1rem] rounded-full bg-red-500 text-center text-white text-xs">3</span>
+  </div>
+  <div class="rounded-full p-1 cursor-pointer">
+    <img class="w-[2.5rem] h-[2.5rem] object-cover" alt="..." src="https://static.vecteezy.com/ti/vecteur-libre/p1/4607806-homme-visage-emotif-icone-souriant-barbu-homme-caractere-en-jaune-plat-vector-illustration-isole-sur-blanc-heureux-humain-psychologique-portrait-positif-emotions-utilisateur-avatar-pour-app-web-design-vectoriel.jpg">
+  </div>
 </div>

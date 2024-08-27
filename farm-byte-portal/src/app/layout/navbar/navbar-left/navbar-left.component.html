@@ -1,4 +1,10 @@
-<div class="flex justify-content-start align-items-center">
-  <farm-byte-navbar-feature></farm-byte-navbar-feature>
-  <farm-byte-navbar-content></farm-byte-navbar-content>
+<div class="md:flex xm:flex md:flex-row xm:flex-col md:justify-start md:items-center">
+  <div class="hidden md:flex items-center rounded-full cursor-pointer mr-[2rem]" (click)="onToggleSidebar()">
+    <span class="material-symbols-outlined">menu</span>
+  </div>
+  @if(sidebarStore.selectedSidebarMenu()?.navbarMenu) {
+    <p class="hidden md:block font-bold text-xl">{{ sidebarStore.selectedSidebarMenu()?.navbarMenu?.module }}</p>
+    <app-navbar-menu/>
+  }
 </div>
+
