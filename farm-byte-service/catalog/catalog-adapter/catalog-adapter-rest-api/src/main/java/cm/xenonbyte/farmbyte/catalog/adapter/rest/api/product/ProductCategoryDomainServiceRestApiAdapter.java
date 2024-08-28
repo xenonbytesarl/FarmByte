@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCa
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public final class ProductCategoryDomainServiceRestApiAdapter implements ProductCategoryServiceRestApiAdapter {
+public class ProductCategoryDomainServiceRestApiAdapter implements ProductCategoryServiceRestApiAdapter {
 
     private final ProductCategoryService productCategoryService;
     private final ProductCategoryViewMapper productCategoryViewMapper;
@@ -30,6 +31,7 @@ public final class ProductCategoryDomainServiceRestApiAdapter implements Product
 
     @Nonnull
     @Override
+    @Transactional
     public CreateProductCategoryViewResponse createProductCategory(@Nonnull CreateProductCategoryViewRequest createProductCategoryViewRequest) {
 
         return productCategoryViewMapper.toCreateProductCategoryViewResponse(

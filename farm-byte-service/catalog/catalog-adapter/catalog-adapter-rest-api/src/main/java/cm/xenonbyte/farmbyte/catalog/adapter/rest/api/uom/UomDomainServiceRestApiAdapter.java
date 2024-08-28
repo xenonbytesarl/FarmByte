@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public final class UomDomainServiceRestApiAdapter implements UomServiceRestApiAdapter {
+public class UomDomainServiceRestApiAdapter implements UomServiceRestApiAdapter {
 
     private final UomService uomDomainService;
     private final UomApiViewMapper uomApiViewMapper;
@@ -28,6 +29,7 @@ public final class UomDomainServiceRestApiAdapter implements UomServiceRestApiAd
 
     @Nonnull
     @Override
+    @Transactional
     public CreateUomViewResponse createUom(@Nonnull CreateUomViewRequest request) {
         return uomApiViewMapper.toCreateUomViewResponse(uomDomainService.createUom(uomApiViewMapper.toUom(request)));
     }
