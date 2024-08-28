@@ -15,5 +15,6 @@
        <module>common-adapter-rest-api</module>
        <module>common-adapter-data-access-jpa</module>
        <module>common-resource</module>
+       <module>common-adapter-file-storage</module>
    </modules>
 </project>

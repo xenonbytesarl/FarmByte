@@ -3,6 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
 import jakarta.annotation.Nonnull;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author bamk
@@ -10,5 +13,7 @@ import jakarta.annotation.Nonnull;
  * @since 23/08/2024
  */
 public interface IProductApiAdapterService {
-    @Nonnull CreateProductViewResponse createProduct(@Nonnull CreateProductViewRequest createProductViewRequest);
+    @Nonnull
+    CreateProductViewResponse createProduct(
+            @Nonnull CreateProductViewRequest createProductViewRequest, @Nonnull MultipartFile image) throws IOException;
 }

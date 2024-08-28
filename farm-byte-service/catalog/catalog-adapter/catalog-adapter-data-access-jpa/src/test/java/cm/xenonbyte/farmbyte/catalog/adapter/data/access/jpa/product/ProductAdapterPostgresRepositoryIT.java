@@ -3,8 +3,8 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.AdapterPostgresRepositoryConfigTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductRepositoryTest;
+import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
-import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class ProductAdapterPostgresRepositoryIT extends ProductRepositoryTest {
     void setUp() {
         super.productRepository = new ProductAdapterPostgresRepository(productJpaRepository, productJpaMapper);
         super.categoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
-        super.image = Image.with(Text.of("product.png"));
+        super.imageName = Filename.of(Text.of("product.png"));
         super.name = Name.of(Text.of("Product.2"));
     }
 }

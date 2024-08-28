@@ -24,6 +24,10 @@
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>common-adapter-file-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
         </dependency>
         <dependency>

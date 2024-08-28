@@ -3,11 +3,10 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
-import cm.xenonbyte.farmbyte.common.domain.vo.Image;
+import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Money;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
-import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public final class Product extends BaseEntity<ProductId> {
     private final UomId purchaseUomId;
     private final ProductType type;
     private Reference reference;
-    private Image image;
+    private Filename imageName;
     private Money salePrice;
     private Money purchasePrice;
     private Active active;
@@ -48,7 +47,7 @@ public final class Product extends BaseEntity<ProductId> {
         purchaseUomId = builder.purchaseUomId;
         type = builder.type;
         reference = builder.reference;
-        image = builder.image;
+        imageName = builder.imageName;
         salePrice = builder.salePrice;
         purchasePrice = builder.purchasePrice;
         active = builder.active;
@@ -98,12 +97,6 @@ public final class Product extends BaseEntity<ProductId> {
         setId(new ProductId(UUID.randomUUID()));
         this.active = Active.with(true);
 
-        if(this.image == null) {
-            this.image = Image.with(Text.of(Image.DEFAULT_PRODUCT_IMAGE_URL));
-        } else {
-            this.image = image.computeAbsolutePath();
-        }
-
         if (this.salePrice == null) {
             this.salePrice = Money.ZERO;
         }
@@ -146,8 +139,8 @@ public final class Product extends BaseEntity<ProductId> {
         return reference;
     }
 
-    public Image getImage() {
-        return image;
+    public Filename getImageName() {
+        return imageName;
     }
 
     public Money getSalePrice() {
@@ -178,7 +171,7 @@ public final class Product extends BaseEntity<ProductId> {
         private UomId purchaseUomId;
         private ProductType type;
         private Reference reference;
-        private Image image;
+        private Filename imageName;
         private Money salePrice;
         private Money purchasePrice;
         private Active active;
@@ -223,8 +216,8 @@ public final class Product extends BaseEntity<ProductId> {
             return this;
         }
 
-        public Builder image(Image val) {
-            image = val;
+        public Builder imageName(Filename val) {
+            imageName = val;
             return this;
         }
 

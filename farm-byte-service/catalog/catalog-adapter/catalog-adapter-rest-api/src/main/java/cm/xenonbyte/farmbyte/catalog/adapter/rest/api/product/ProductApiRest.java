@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZonedDateTime;
 import java.util.Locale;
@@ -33,7 +34,7 @@ public class ProductApiRest implements ProductsApi {
     }
 
     @Override
-    public ResponseEntity<ApiSuccessResponse> createProduct(String acceptLanguage, CreateProductViewRequest createProductViewRequest) {
+    public ResponseEntity<ApiSuccessResponse> createProduct(String acceptLanguage, CreateProductViewRequest createProductViewRequest, MultipartFile image) throws Exception {
         return ResponseEntity.status(CREATED).body(
                 new ApiSuccessResponse()
                         .code(CREATED.value())
@@ -41,7 +42,7 @@ public class ProductApiRest implements ProductsApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .message(MessageUtil.getMessage(PRODUCT_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(Map.of(BODY, productApiAdapterService.createProduct(createProductViewRequest)))
+                        .data(Map.of(BODY, productApiAdapterService.createProduct(createProductViewRequest, image)))
         );
     }
 }
