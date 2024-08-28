@@ -15,8 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static cm.xenonbyte.farmbyte.common.adapter.file.storage.StorageBadException.CANNOT_STORE_FILE_OUTSIDE_CURRENT_DIRECTORY;
-
 /**
  * @author bamk
  * @version 1.0
@@ -29,16 +27,9 @@ public final class FileSystemStorageManager implements StorageManager {
     public Filename store(@Nonnull Image image, @Nonnull StorageLocation location) {
 
         try {
-            Path rootLocation = Paths.get(location.getPath().getValue());
-
-            if(!Files.exists(rootLocation)) {
-                Files.createDirectories(rootLocation);
-            }
-            Text newName = image.computeImageName();
-            Path destinationFile = rootLocation.resolve(Paths.get(newName.getValue())).normalize().toAbsolutePath();
-
-            if(!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
-                throw new StorageBadException(CANNOT_STORE_FILE_OUTSIDE_CURRENT_DIRECTORY);
+            Path destinationFile = Paths.get(image.getName().getValue()).normalize().toAbsolutePath();
+            if(!Files.exists(destinationFile.getParent())) {
+                Files.createDirectories(destinationFile.getParent());
             }
             try(InputStream inputStream = image.getContent()) {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
