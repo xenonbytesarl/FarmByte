@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: true
+    generate-ddl: true
+  flyway:
+    locations: classpath:db/migrations/common,classpath:db/migrations/test
+logging:
+  level:
+    org.springframework.web: DEBUG
+server:
+  port: ${APP_PORT}
