@@ -45,7 +45,7 @@ public final class UomDomainService implements UomService {
         }
 
         if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
-            throw  new UomNameConflictException(new Object[]{uom.getName().getText()});
+            throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
         }
     }
 }

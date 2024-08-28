@@ -250,19 +250,8 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.code").value(409))
                 .andExpect(jsonPath("$.status").value("CONFLICT"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), new String[]{name})));
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
 
-    }
-
-    private static CreateUomViewResponse generateCreateUomViewResponse(UUID uomCategoryId, String name, Double ratio, CreateUomViewResponse.UomTypeEnum uomTypeEnumResponse) {
-        return new CreateUomViewResponse()
-                .id(UUID.randomUUID())
-                .uomCategoryId(uomCategoryId)
-                .uomType(CreateUomViewResponse.UomTypeEnum.REFERENCE)
-                .name(name)
-                .ratio(ratio)
-                .active(true)
-                .uomType(uomTypeEnumResponse);
     }
 
     @Test
@@ -291,6 +280,17 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                 .andExpect(jsonPath("$.error").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].message").isNotEmpty())
                 .andExpect(jsonPath("$.error[0].field").isNotEmpty());
+    }
+
+    private static CreateUomViewResponse generateCreateUomViewResponse(UUID uomCategoryId, String name, Double ratio, CreateUomViewResponse.UomTypeEnum uomTypeEnumResponse) {
+        return new CreateUomViewResponse()
+                .id(UUID.randomUUID())
+                .uomCategoryId(uomCategoryId)
+                .uomType(CreateUomViewResponse.UomTypeEnum.REFERENCE)
+                .name(name)
+                .ratio(ratio)
+                .active(true)
+                .uomType(uomTypeEnumResponse);
     }
 
     private static CreateUomViewRequest generateCreateUomViewRequest(UUID uomCategoryId, String name, Double ratioRequest, CreateUomViewRequest.UomTypeEnum uomTypeEnumRequest) {
