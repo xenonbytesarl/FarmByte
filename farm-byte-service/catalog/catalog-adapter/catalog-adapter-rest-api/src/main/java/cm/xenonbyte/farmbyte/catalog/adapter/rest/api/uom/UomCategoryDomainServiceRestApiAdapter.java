@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategorySe
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public final class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServiceRestApiAdapter {
+public class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServiceRestApiAdapter {
 
     private final UomCategoryService uomCategoryService;
     private final UomCategoryViewMapper uomCategoryViewMapper;
@@ -28,6 +29,7 @@ public final class UomCategoryDomainServiceRestApiAdapter implements UomCategory
 
     @Nonnull
     @Override
+    @Transactional
     public CreateUomCategoryViewResponse createUomCategory(@Nonnull CreateUomCategoryViewRequest createUomCategoryViewRequest) {
         return uomCategoryViewMapper.toCreateUomCategoryViewResponse(
                 uomCategoryService.createUomCategory(
