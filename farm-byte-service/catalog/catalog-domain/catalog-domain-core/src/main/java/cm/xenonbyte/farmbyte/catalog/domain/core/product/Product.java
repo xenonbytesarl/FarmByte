@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
-import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
+import cm.xenonbyte.farmbyte.common.domain.entity.AggregateRoot;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Money;
@@ -23,7 +23,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
  * @version 1.0
  * @since 20/08/2024
  */
-public final class Product extends BaseEntity<ProductId> {
+public final class Product extends AggregateRoot<ProductId> {
 
 
     private final Name name;
