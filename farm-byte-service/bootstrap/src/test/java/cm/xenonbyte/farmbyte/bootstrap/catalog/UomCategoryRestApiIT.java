@@ -50,9 +50,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @DirtiesContext
 @ActiveProfiles("test")
 @ExtendWith({DatabaseSetupExtension.class, SpringExtension.class})
-@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public final class UomCategoryRestApiIT {
+@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
+public class UomCategoryRestApiIT {
 
     @LocalServerPort
     private int port;

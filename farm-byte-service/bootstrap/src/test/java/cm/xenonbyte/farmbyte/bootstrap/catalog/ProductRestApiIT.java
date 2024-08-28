@@ -63,9 +63,9 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @DirtiesContext
 @ActiveProfiles("test")
 @ExtendWith({DatabaseSetupExtension.class, SpringExtension.class})
-@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public final class ProductRestApiIT {
+@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
+public class ProductRestApiIT {
 
     @LocalServerPort
     private int port;
@@ -89,19 +89,9 @@ public final class ProductRestApiIT {
         String name = "Product.1";
         UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
 
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .type(CreateProductViewRequest.TypeEnum.SERVICE)
-                .categoryId(categoryId);
+        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiSuccessResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiSuccessResponse.class);
@@ -156,14 +146,7 @@ public final class ProductRestApiIT {
                 .categoryId(categoryId)
                 .type(typeRequest);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -186,19 +169,9 @@ public final class ProductRestApiIT {
         String name = "Product.2";
         UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
 
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .type(CreateProductViewRequest.TypeEnum.SERVICE)
-                .categoryId(categoryId);
+        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -216,19 +189,9 @@ public final class ProductRestApiIT {
         String name = "Product.1";
         UUID categoryId = UUID.randomUUID();
 
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .type(CreateProductViewRequest.TypeEnum.SERVICE)
-                .categoryId(categoryId);
+        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -256,14 +219,7 @@ public final class ProductRestApiIT {
                 .purchaseUomId(purchaseUomId)
                 .categoryId(categoryId);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -292,14 +248,7 @@ public final class ProductRestApiIT {
                 .purchaseUomId(purchaseUomId)
                 .categoryId(categoryId);
 
-        Resource image = getImageResource("product_image.txt");
-
-        MultiValueMap body = new LinkedMultiValueMap();
-
-        body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(body, getHttpHeaders());
+        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -309,6 +258,24 @@ public final class ProductRestApiIT {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getSuccess()).isFalse();
         assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUnitName, purchaseUnitName));
+    }
+
+    private static CreateProductViewRequest getCreateProductViewRequest(String name, UUID categoryId) {
+        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
+                .name(name)
+                .type(CreateProductViewRequest.TypeEnum.SERVICE)
+                .categoryId(categoryId);
+        return createProductViewRequest;
+    }
+
+    private @NotNull MultiValueMap getMultiValueMap(CreateProductViewRequest createProductViewRequest) throws URISyntaxException {
+        Resource image = getImageResource("product_image.txt");
+
+        MultiValueMap body = new LinkedMultiValueMap();
+
+        body.add("image", image);
+        body.add("createProductViewRequest", createProductViewRequest);
+        return body;
     }
 
     private String createProductViewAsString(@Nonnull CreateProductViewRequest createProductViewRequest) throws JsonProcessingException {

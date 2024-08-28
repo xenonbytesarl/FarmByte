@@ -256,3 +256,5 @@ farm-byte-service/common/common-domain/target/
 farm-byte-service/catalog/catalog-adapter/catalog-adapter-data-access-test/target/
 farm-byte-service/catalog/catalog-domain/catalog-domain-core/target/
 farm-byte-service/common/common-adapter-rest-api/target/
+farm-byte-service/common/common-adapter-file-storage/target/
+farm-byte-service/common/common-resource/target/
