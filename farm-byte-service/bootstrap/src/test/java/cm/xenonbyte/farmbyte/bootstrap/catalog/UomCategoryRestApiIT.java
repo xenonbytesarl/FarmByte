@@ -161,8 +161,9 @@ public final class UomCategoryRestApiIT {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getSuccess()).isFalse();
         assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), "args"));
-        assertThat(response.getBody().getError().get(0).getField()).isNotEmpty();
-        assertThat(response.getBody().getError().get(0).getMessage()).isNotEmpty();
+        assertThat(response.getBody().getError()).isNotEmpty();
+        assertThat(response.getBody().getError().getFirst().getField()).isNotEmpty();
+        assertThat(response.getBody().getError().getFirst().getMessage()).isNotEmpty();
     }
 
     private static CreateUomCategoryViewRequest getCreateUomCategoryViewRequest(String nameValue, UUID parentUomCategoryUUID) {

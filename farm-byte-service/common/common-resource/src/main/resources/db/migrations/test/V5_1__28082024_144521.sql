@@ -1,0 +1,1 @@
+INSERT INTO t_uom_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01919905-c273-7aaa-8965-ef4ed404e4b9', current_timestamp, null, 'Temps', true);
