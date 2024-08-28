@@ -1,11 +1,11 @@
 package cm.xenonbyte.farmbyte.bootstrap.catalog;
 
 import cm.xenonbyte.farmbyte.bootstrap.DatabaseSetupExtension;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.ApiErrorResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiSuccessResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryServiceRestApiAdapter;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,15 +27,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_CREATED_SUCCESSFULLY;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_CREATED_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -52,7 +51,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ExtendWith({DatabaseSetupExtension.class, SpringExtension.class})
 @TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public final class UomCategoryRestApiIT {
+public final class ProductCategoryRestApiIT {
 
     @LocalServerPort
     private int port;
@@ -61,37 +60,37 @@ public final class UomCategoryRestApiIT {
     TestRestTemplate restTemplate;
 
     @Autowired
-    UomCategoryServiceRestApiAdapter uomCategoryServiceRestApiAdapter;
+    ProductCategoryServiceRestApiAdapter productCategoryServiceRestApiAdapter;
 
     String BASE_URL;
 
     @BeforeEach
     void setUp() {
-        BASE_URL = "http://localhost:" + port + "/api/v1/catalog/uom-categories";
+        BASE_URL = "http://localhost:" + port + "/api/v1/catalog/product-categories";
     }
 
-    static Stream<Arguments> createUomMethodSourceArgs() {
+    static Stream<Arguments> createProductMethodSourceArgs() {
         return Stream.of(
                 Arguments.of(
-                        "Unite.1",
+                        "Unite",
                         null
                 ),
                 Arguments.of(
-                        "Unite.2",
-                        UUID.fromString("01912c2e-b52d-7b85-9c12-85af49fc7798")
+                        "Law Raw Material",
+                        UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0")
                 )
         );
     }
 
     @ParameterizedTest
-    @MethodSource("createUomMethodSourceArgs")
-    void should_create_uom_category(
-        String nameValue,
-        UUID parentUomCategoryUUID
-    ) throws URISyntaxException {
+    @MethodSource("createProductMethodSourceArgs")
+    void should_create_root_or_child_product_category(
+            String nameValue,
+            UUID parentProductCategoryUUID
+    ) throws Exception {
         //Given
-        CreateUomCategoryViewRequest createUomCategoryViewRequest = getCreateUomCategoryViewRequest(nameValue, parentUomCategoryUUID);
-        HttpEntity<CreateUomCategoryViewRequest> request = new HttpEntity<>(createUomCategoryViewRequest, getHttpHeaders());
+        CreateProductCategoryViewRequest createProductCategoryViewRequest = getCreateProductCategoryViewRequest(nameValue, parentProductCategoryUUID);
+        HttpEntity<CreateProductCategoryViewRequest> request = new HttpEntity<>(createProductCategoryViewRequest, getHttpHeaders());
 
         //Act
         ResponseEntity<ApiSuccessResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiSuccessResponse.class);
@@ -102,42 +101,42 @@ public final class UomCategoryRestApiIT {
         assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(CreateUomCategoryViewResponse.class);
         assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
         assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
-        assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_CREATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_CREATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
 
     }
 
-    static Stream<Arguments> createUomMethodThrowExceptionSourceArgs() {
+    static Stream<Arguments> createProductMethodThrowExceptionSourceArgs() {
         return Stream.of(
                 Arguments.of(
-                        "Unite",
-                        UUID.fromString("01912c2e-b52d-7b85-9c12-85af49fc7798"),
-                        UOM_CATEGORY_NAME_CONFLICT_EXCEPTION,
-                        409,
-                        "Unite"
+                        "Raw of material",
+                        UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
+                        PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION,
+                        "Raw of material",
+                        409
 
                 ),
                 Arguments.of(
-                        "Unite.1",
+                        "Raw of material",
                         UUID.fromString("019156f3-0db6-794e-bfe0-f371636cd410"),
-                        UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION,
-                        404,
-                        "019156f3-0db6-794e-bfe0-f371636cd410"
+                        PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION,
+                        "019156f3-0db6-794e-bfe0-f371636cd410",
+                        404
                 )
         );
     }
 
     @ParameterizedTest
-    @MethodSource("createUomMethodThrowExceptionSourceArgs")
-    void should_throw_exception_when_create_uom_category_fail(
+    @MethodSource("createProductMethodThrowExceptionSourceArgs")
+    void should_throw_exception_when_create_product_category_fail(
             String nameValue,
-            UUID parentUomCategoryUUID,
+            UUID parentProductCategoryUUID,
             String exceptionMessage,
-            int code,
-            String args
+            String args,
+            int code
 
     ) throws Exception {
-        CreateUomCategoryViewRequest createUomCategoryViewRequest = getCreateUomCategoryViewRequest(nameValue, parentUomCategoryUUID);
-        HttpEntity<CreateUomCategoryViewRequest> request = new HttpEntity<>(createUomCategoryViewRequest, getHttpHeaders());
+        CreateProductCategoryViewRequest createProductCategoryViewRequest = getCreateProductCategoryViewRequest(nameValue, parentProductCategoryUUID);
+        HttpEntity<CreateProductCategoryViewRequest> request = new HttpEntity<>(createProductCategoryViewRequest, getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -150,10 +149,11 @@ public final class UomCategoryRestApiIT {
     }
 
     @Test
-    void should_throw_exception_when_create_uom_category_without_required_field() throws Exception {
-        CreateUomCategoryViewRequest createUomCategoryViewRequest = getCreateUomCategoryViewRequest(null, null);
+    void should_throw_exception_when_create_product_category_without_required_field() throws Exception {
+        //Given
+        CreateProductCategoryViewRequest createProductCategoryViewRequest = getCreateProductCategoryViewRequest(null, null);
 
-        HttpEntity<CreateUomCategoryViewRequest> request = new HttpEntity<>(createUomCategoryViewRequest, getHttpHeaders());
+        HttpEntity<CreateProductCategoryViewRequest> request = new HttpEntity<>(createProductCategoryViewRequest, getHttpHeaders());
 
         //Act
         ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -166,12 +166,13 @@ public final class UomCategoryRestApiIT {
         assertThat(response.getBody().getError()).isNotEmpty();
         assertThat(response.getBody().getError().getFirst().getField()).isNotEmpty();
         assertThat(response.getBody().getError().getFirst().getMessage()).isNotEmpty();
+
     }
 
-    private static CreateUomCategoryViewRequest getCreateUomCategoryViewRequest(String nameValue, UUID parentUomCategoryUUID) {
-        return new CreateUomCategoryViewRequest()
+    private static CreateProductCategoryViewRequest getCreateProductCategoryViewRequest(String nameValue, UUID parentProductCategoryUUID) {
+        return new CreateProductCategoryViewRequest()
                 .name(nameValue)
-                .parentUomCategoryId(parentUomCategoryUUID);
+                .parentProductCategoryId(parentProductCategoryUUID);
     }
 
     private static @NotNull HttpHeaders getHttpHeaders() {
