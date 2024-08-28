@@ -21,6 +21,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,9 +46,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
  * @version 1.0
  * @since 28/08/2024
  */
+@DirtiesContext
 @ActiveProfiles("test")
-@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 @ExtendWith({DatabaseSetupExtension.class, SpringExtension.class})
+@TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public final class UomRestApiIT {
 

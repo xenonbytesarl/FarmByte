@@ -1,1 +1,3 @@
 INSERT INTO t_uom_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01919905-c273-7aaa-8965-ef4ed404e4b9', current_timestamp, null, 'Temps', true);
+
+INSERT INTO t_uom (c_id, c_created_at, c_updated_at, c_name, c_ratio, c_active, c_type, c_uom_category_id) VALUES  ('019199bf-2ea3-7ac1-8ad4-6dd062d5efec', current_timestamp, null, 'Jour', 24.0, true, 'GREATER', '01919905-c273-7aaa-8965-ef4ed404e4b9');
