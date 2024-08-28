@@ -4,7 +4,6 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Cre
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductService;
 import cm.xenonbyte.farmbyte.common.domain.ports.primary.StorageManager;
-import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
@@ -47,11 +46,13 @@ public final class ProductApiAdapterService implements IProductApiAdapterService
     @Override
     public CreateProductViewResponse createProduct(@Nonnull CreateProductViewRequest createProductViewRequest,
                                                    @Nonnull MultipartFile multipartFile) throws IOException {
-        Image image = Image.with(Text.of(multipartFile.getOriginalFilename()), multipartFile.getInputStream());
-        Filename filename = storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
-        createProductViewRequest.setFilename(filename.getText().getValue());
-        //createProductViewRequest.
-        return productViewMapper.toCreateProductViewResponse(
+        Image image = Image
+                .with(Text.of(multipartFile.getOriginalFilename()), multipartFile.getInputStream())
+                .computeImageName(rootPathStorageProducts);
+        createProductViewRequest.setFilename(image.getName().getValue());
+        CreateProductViewResponse createProductViewResponse = productViewMapper.toCreateProductViewResponse(
                 productService.createProduct(productViewMapper.toProduct(createProductViewRequest)));
+        storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
+        return createProductViewResponse;
     }
 }

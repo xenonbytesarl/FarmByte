@@ -272,7 +272,6 @@ final class ProductApiAdapterServiceTest {
                 .purchaseUomId(purchaseUomId == null? null: new UomId(purchaseUomId))
                 .build();
 
-        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(exceptionClass.getConstructor(String.class).newInstance(exceptionMessage));
@@ -286,7 +285,7 @@ final class ProductApiAdapterServiceTest {
                 .isInstanceOf(exceptionClass)
                 .hasMessage(exceptionMessage);
 
-        verify(storageManager).store(any(), any());
+        //verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -310,7 +309,6 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
-        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductNameConflictException.class.getConstructor(Object[].class).newInstance(new Object[] {new String[]{name}}));
@@ -324,7 +322,6 @@ final class ProductApiAdapterServiceTest {
                 .isInstanceOf(ProductNameConflictException.class)
                 .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
 
-        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -349,7 +346,6 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
-        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
@@ -364,7 +360,6 @@ final class ProductApiAdapterServiceTest {
                 .isInstanceOf(ProductCategoryNotFoundException.class)
                 .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
 
-        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -395,7 +390,6 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
-        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductUomNotFoundException.class.getConstructor(Object[].class)
@@ -410,7 +404,6 @@ final class ProductApiAdapterServiceTest {
                 .isInstanceOf(ProductUomNotFoundException.class)
                 .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
 
-        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -441,7 +434,6 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
-        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductStockAndPurchaseUomBadException.class.getConstructor(Object[].class)
@@ -458,7 +450,6 @@ final class ProductApiAdapterServiceTest {
                 .isInstanceOf(ProductStockAndPurchaseUomBadException.class)
                 .hasMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION);
 
-        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 

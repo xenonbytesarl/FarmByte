@@ -12,6 +12,7 @@ import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.IMAGE_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.PLUS;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.POINT;
+import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.SLASH;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.UNDERSCORE;
 
 /**
@@ -50,13 +51,16 @@ public final class Image {
         return content;
     }
 
-    public Text computeImageName() {
-
-        return Text.of(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSZ"))
-                        .replace(PLUS, EMPTY)
-                        .replace(POINT, EMPTY))
-                    .concat(UNDERSCORE)
-                    .concat(name.getValue());
+    public Image computeImageName(String rootTypePath) {
+        Text computedFileName = StorageLocation.computeStoragePtah(rootTypePath).getPath()
+                                        .concat(SLASH)
+                                        .concat(
+                                            ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSZ"))
+                                                .replace(PLUS, EMPTY)
+                                                .replace(POINT, EMPTY))
+                                        .concat(UNDERSCORE)
+                                        .concat(name.getValue());
+        return Image.with(computedFileName, content);
     }
 
     @Override
