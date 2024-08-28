@@ -69,7 +69,8 @@ public final class ProductTest {
         productRepository = new InMemoryProductRepository();
         uomRepository = new InMemoryUomRepository();
         productCategoryRepository = new InMemoryProductCategoryRepository();
-        productService = new ProductService(productRepository, uomRepository, productCategoryRepository);
+        productService = new ProductService(
+                productRepository, uomRepository, productCategoryRepository);
 
 
         saveProductCategory(
@@ -157,7 +158,7 @@ public final class ProductTest {
         assertThat(createdProduct.getPurchaseUomId()).isEqualTo(product.getPurchaseUomId());
         assertThat(createdProduct.getType()).isEqualTo(product.getType());
         assertThat(createdProduct.getReference()).isEqualTo(product.getReference());
-        assertThat(createdProduct.getImage()).isEqualTo(product.getImage());
+        assertThat(createdProduct.getImageName()).isEqualTo(product.getImageName());
         assertThat(createdProduct.getSalePrice()).isEqualTo(product.getSalePrice());
         assertThat(createdProduct.getPurchasePrice()).isEqualTo(product.getPurchasePrice());
         assertThat(createdProduct.getActive().getValue()).isTrue();

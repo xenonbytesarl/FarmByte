@@ -9,10 +9,14 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictExce
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
+import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
+import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,11 +25,14 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -46,7 +53,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,6 +76,22 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
     @Autowired
     private MockMvc mockMvc;
 
+    MockMultipartFile imageMultipartFile;
+    StorageLocation location;
+    Filename fileName;
+
+    @BeforeEach
+    void setUp() {
+        imageMultipartFile = new MockMultipartFile(
+                "image",
+                "image.jpg",
+                "image/jpeg",
+                "<<image data>>".getBytes(StandardCharsets.UTF_8)
+        );
+        location = StorageLocation.computeStoragePtah("products");
+        fileName = Filename.of(Text.of(location.getPath().getValue()));
+        ReflectionTestUtils.setField(productApiAdapterService, "rootPathStorageProducts", "products");
+    }
 
     @Test
     void should_create_product() throws Exception {
@@ -80,6 +105,13 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .type(CreateProductViewRequest.TypeEnum.SERVICE)
                 .categoryId(categoryId);
 
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
         CreateProductViewResponse createProductViewResponse = new CreateProductViewResponse()
                 .id(productId.getValue())
                 .name(name)
@@ -89,19 +121,21 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .salePrice(BigDecimal.ZERO)
                 .purchasable(false)
                 .sellable(false)
-                .image(Image.DEFAULT_PRODUCT_IMAGE_URL)
-                .active(true)
-                ;
-        when(productApiAdapterService.createProduct(createProductViewRequest)).thenReturn(createProductViewResponse);
+                .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                .active(true);
+
+        when(productApiAdapterService.createProduct(createProductViewRequest, imageMultipartFile)).thenReturn(createProductViewResponse);
         ArgumentCaptor<CreateProductViewRequest> createProductViewRequestArgumentCaptor =
                 ArgumentCaptor.forClass(CreateProductViewRequest.class);
+        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(imageMultipartFile)
+                        .file(createProductViewMultipartFile)
                 .accept(APPLICATION_JSON)
                 .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                .contentType(APPLICATION_JSON)
-                .content(createProductViewAsString(createProductViewRequest)))
+                .contentType(MULTIPART_FORM_DATA))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$").isNotEmpty())
@@ -114,8 +148,9 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .andExpect(jsonPath("$.data.content.name").value(name))
                 .andExpect(jsonPath("$.data.content.categoryId").value(categoryId.toString()));
 
-        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture());
+        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
         assertThat(createProductViewRequestArgumentCaptor.getValue()).isEqualTo(createProductViewRequest);
+        assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
     }
 
     static Stream<Arguments> createProductThrowExceptionMethodSource() {
@@ -158,13 +193,20 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .name(name)
                 .categoryId(categoryId)
                 .type(typeRequest);
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(createProductViewMultipartFile)
+                        .file(imageMultipartFile)
                 .accept(APPLICATION_JSON)
                 .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                .contentType(APPLICATION_JSON)
-                .content(createProductViewAsString(createProductViewRequest)))
+                .contentType(MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))
@@ -189,23 +231,37 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .type(CreateProductViewRequest.TypeEnum.SERVICE)
                 .categoryId(categoryId);
 
-        when(productApiAdapterService.createProduct(createProductViewRequest))
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        when(productApiAdapterService.createProduct(createProductViewRequest, imageMultipartFile))
                 .thenThrow(ProductNameConflictException.class.getConstructor(Object[].class).newInstance(new Object[]{new String[]{name}}));
+        ArgumentCaptor<CreateProductViewRequest> createProductViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(CreateProductViewRequest.class);
+        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(createProductViewMultipartFile)
+                        .file(imageMultipartFile)
                 .accept(APPLICATION_JSON)
                 .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                .contentType(APPLICATION_JSON)
-                .content(createProductViewAsString(createProductViewRequest)))
+                .contentType(MULTIPART_FORM_DATA))
             .andDo(print())
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.code").value(409))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.status").value("CONFLICT"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)))
-        ;
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
+
+        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+        assertThat(createProductViewRequestArgumentCaptor.getValue()).isEqualTo(createProductViewRequest);
+        assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
     }
 
     @Test
@@ -219,23 +275,37 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .type(CreateProductViewRequest.TypeEnum.SERVICE)
                 .categoryId(categoryId);
 
-        when(productApiAdapterService.createProduct(createProductViewRequest))
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        when(productApiAdapterService.createProduct(createProductViewRequest, imageMultipartFile))
                 .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class).newInstance(new Object[]{new String[]{categoryId.toString()}}));
+        ArgumentCaptor<CreateProductViewRequest> createProductViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(CreateProductViewRequest.class);
+        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(createProductViewMultipartFile)
+                        .file(imageMultipartFile)
                         .accept(APPLICATION_JSON)
                         .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                        .contentType(APPLICATION_JSON)
-                        .content(createProductViewAsString(createProductViewRequest)))
+                        .contentType(MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString())))
-        ;
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString())));
+
+        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+        assertThat(createProductViewRequestArgumentCaptor.getValue()).isEqualTo(createProductViewRequest);
+        assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
     }
 
     @Test
@@ -253,23 +323,37 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .purchaseUomId(purchaseUomId)
                 .categoryId(categoryId);
 
-        when(productApiAdapterService.createProduct(createProductViewRequest))
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        when(productApiAdapterService.createProduct(createProductViewRequest, imageMultipartFile))
                 .thenThrow(ProductUomNotFoundException.class.getConstructor(Object[].class).newInstance(new Object[]{new String[]{stockUomId.toString()}}));
+        ArgumentCaptor<CreateProductViewRequest> createProductViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(CreateProductViewRequest.class);
+        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
-                        .accept(APPLICATION_JSON)
-                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                        .contentType(APPLICATION_JSON)
-                        .content(createProductViewAsString(createProductViewRequest)))
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(createProductViewMultipartFile)
+                        .file(imageMultipartFile)
+                    .accept(APPLICATION_JSON)
+                    .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                    .contentType(MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.code").value(404))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString())))
-        ;
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString())));
+
+        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+        assertThat(createProductViewRequestArgumentCaptor.getValue()).isEqualTo(createProductViewRequest);
+        assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
     }
 
     @Test
@@ -287,23 +371,37 @@ public final class ProductApiRestTest extends ApiRestBeanConfig {
                 .purchaseUomId(purchaseUomId)
                 .categoryId(categoryId);
 
-        when(productApiAdapterService.createProduct(createProductViewRequest))
+        MockMultipartFile createProductViewMultipartFile = new MockMultipartFile(
+                "createProductViewRequest",
+                "createProductViewRequest",
+                APPLICATION_JSON_VALUE,
+                createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        when(productApiAdapterService.createProduct(createProductViewRequest, imageMultipartFile))
                 .thenThrow(ProductStockAndPurchaseUomBadException.class.getConstructor(Object[].class).newInstance(new Object[]{new String[]{stockUomId.toString(), purchaseUomId.toString()}}));
+        ArgumentCaptor<CreateProductViewRequest> createProductViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(CreateProductViewRequest.class);
+        ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
 
         //Act + Then
-        mockMvc.perform(post(PRODUCT_PATH_URI)
+        mockMvc.perform(multipart(PRODUCT_PATH_URI)
+                        .file(createProductViewMultipartFile)
+                        .file(imageMultipartFile)
                         .accept(APPLICATION_JSON)
                         .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                        .contentType(APPLICATION_JSON)
-                        .content(createProductViewAsString(createProductViewRequest)))
+                        .contentType(MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString(), purchaseUomId.toString())))
-        ;
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString(), purchaseUomId.toString())));
+
+        verify(productApiAdapterService, times(1)).createProduct(createProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+        assertThat(createProductViewRequestArgumentCaptor.getValue()).isEqualTo(createProductViewRequest);
+        assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
     }
 
     private String createProductViewAsString(@Nonnull CreateProductViewRequest createProductViewRequest) throws JsonProcessingException {

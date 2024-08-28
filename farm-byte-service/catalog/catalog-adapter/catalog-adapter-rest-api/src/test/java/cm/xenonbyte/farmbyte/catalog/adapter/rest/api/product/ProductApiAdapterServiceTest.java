@@ -12,8 +12,10 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.IProductService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
-import cm.xenonbyte.farmbyte.common.domain.vo.Image;
+import cm.xenonbyte.farmbyte.common.domain.ports.primary.StorageManager;
+import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,10 +26,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -42,6 +48,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,17 +67,30 @@ final class ProductApiAdapterServiceTest {
     private IProductService productService;
     @Mock
     private ProductViewMapper productViewMapper;
+    @Mock
+    private StorageManager storageManager;
+
+    MockMultipartFile multipartFile;
+    StorageLocation location;
+    Filename fileName;
 
     @BeforeEach
-    void setUp() {
-        productApiAdapterService = new ProductApiAdapterService(productService, productViewMapper);
+    void setUp() throws IOException {
+        productApiAdapterService = new ProductApiAdapterService(productService, productViewMapper, storageManager);
+        multipartFile = new MockMultipartFile(
+                "image",
+        "image.jpg",
+            "image/jpeg", "<<image data>>".getBytes(StandardCharsets.UTF_8)
+        );
+        location = StorageLocation.computeStoragePtah("products");
+        fileName = Filename.of(Text.of(location.getPath().getValue()));
+        ReflectionTestUtils.setField(productApiAdapterService, "rootPathStorageProducts", "products");
     }
 
     static Stream<Arguments> createProductMethodSource() {
         return Stream.of(
                 Arguments.of(
                         "Product.1",
-                        null,
                         UUID.randomUUID(),
                         "SERVICE",
                         UUID.randomUUID(),
@@ -79,7 +99,6 @@ final class ProductApiAdapterServiceTest {
                 ),
                 Arguments.of(
                         "Product.2",
-                        null,
                         UUID.randomUUID(),
                         "CONSUMABLE",
                         UUID.randomUUID(),
@@ -88,7 +107,6 @@ final class ProductApiAdapterServiceTest {
                 ),
                 Arguments.of(
                         "Product.3",
-                        null,
                         UUID.randomUUID(),
                         "STOCK",
                         UUID.randomUUID(),
@@ -102,18 +120,16 @@ final class ProductApiAdapterServiceTest {
     @MethodSource("createProductMethodSource")
     void should_create_product(
             String name,
-            String image,
             UUID categoryId,
             String type,
             UUID productId,
             UUID stockUomId,
             UUID purchaseUomId
-    ) {
+    ) throws IOException {
 
         //Given
         CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
                 .name(name)
-                .image(image)
                 .categoryId(categoryId)
                 .type(CreateProductViewRequest.TypeEnum.valueOf(type))
                 .stockUomId(stockUomId)
@@ -121,7 +137,6 @@ final class ProductApiAdapterServiceTest {
 
         Product productRequest = Product.builder()
                 .name(Name.of(Text.of(name)))
-                .image(image == null || image.isEmpty()? null: Image.with(Text.of(image)))
                 .type(ProductType.valueOf(type))
                 .categoryId(new ProductCategoryId(categoryId))
                 .stockUomId(stockUomId == null? null: new UomId(stockUomId))
@@ -131,7 +146,6 @@ final class ProductApiAdapterServiceTest {
         Product productResponse= Product.builder()
                 .id(new ProductId(productId))
                 .name(Name.of(Text.of(name)))
-                .image(image == null || image.isEmpty()? null: Image.with(Text.of(image)))
                 .type(ProductType.valueOf(type))
                 .categoryId(new ProductCategoryId(categoryId))
                 .stockUomId(stockUomId == null? null: new UomId(stockUomId))
@@ -140,7 +154,6 @@ final class ProductApiAdapterServiceTest {
 
         CreateProductViewResponse createProductViewResponse = new CreateProductViewResponse()
                 .name(name)
-                .image(image)
                 .categoryId(categoryId)
                 .type(CreateProductViewResponse.TypeEnum.valueOf(type))
                 .purchasable(false)
@@ -152,6 +165,7 @@ final class ProductApiAdapterServiceTest {
                 .purchasable(null)
                 .id(productId);
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest)).thenReturn(productResponse);
         when(productViewMapper.toCreateProductViewResponse(productResponse)).thenReturn(createProductViewResponse);
@@ -162,11 +176,12 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        CreateProductViewResponse result = productApiAdapterService.createProduct(createProductViewRequest);
+        CreateProductViewResponse result = productApiAdapterService.createProduct(createProductViewRequest, multipartFile);
 
         //Then
         assertThat(result).isNotNull().isEqualTo(createProductViewResponse);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
         verify(productViewMapper, times(1)).toCreateProductViewResponse(productArgumentCaptor.capture());
@@ -181,7 +196,6 @@ final class ProductApiAdapterServiceTest {
         return Stream.of(
                 Arguments.of(
                         null,
-                        null,
                         UUID.randomUUID(),
                         "SERVICE",
                         null,
@@ -193,7 +207,6 @@ final class ProductApiAdapterServiceTest {
                 Arguments.of(
                         "Product.1",
                         null,
-                        null,
                         "SERVICE",
                         null,
                         null,
@@ -203,7 +216,6 @@ final class ProductApiAdapterServiceTest {
                 ),
                 Arguments.of(
                         "Product.2",
-                        null,
                         UUID.randomUUID(),
                         null,
                         null,
@@ -214,7 +226,6 @@ final class ProductApiAdapterServiceTest {
                 ),
                 Arguments.of(
                         "Product.3",
-                        null,
                         UUID.randomUUID(),
                         "STOCK",
                         null,
@@ -224,7 +235,6 @@ final class ProductApiAdapterServiceTest {
                 ),
                 Arguments.of(
                         "Product.1",
-                        null,
                         UUID.randomUUID(),
                         "STOCK",
                         UUID.randomUUID(),
@@ -239,7 +249,6 @@ final class ProductApiAdapterServiceTest {
     @MethodSource("createProductThrowExceptionMethodSource")
     void should_throw_exception_when_create_product_with_missing_required_attributes(
         String name,
-        String image,
         UUID categoryId,
         String type,
         UUID stockUomId,
@@ -250,7 +259,6 @@ final class ProductApiAdapterServiceTest {
         //Given
         CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
                 .name(name)
-                .image(image)
                 .categoryId(categoryId)
                 .type(type == null? null: CreateProductViewRequest.TypeEnum.valueOf(type))
                 .stockUomId(stockUomId)
@@ -258,13 +266,13 @@ final class ProductApiAdapterServiceTest {
 
         Product productRequest = Product.builder()
                 .name(name == null || name.isEmpty()? null: Name.of(Text.of(name)))
-                .image(image == null || image.isEmpty()? null: Image.with(Text.of(image)))
                 .type(type == null? null: ProductType.valueOf(type))
                 .categoryId(new ProductCategoryId(categoryId))
                 .stockUomId(stockUomId == null? null: new UomId(stockUomId))
                 .purchaseUomId(purchaseUomId == null? null: new UomId(purchaseUomId))
                 .build();
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(exceptionClass.getConstructor(String.class).newInstance(exceptionMessage));
@@ -274,10 +282,11 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest))
+        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest, multipartFile))
                 .isInstanceOf(exceptionClass)
                 .hasMessage(exceptionMessage);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -301,6 +310,7 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductNameConflictException.class.getConstructor(Object[].class).newInstance(new Object[] {new String[]{name}}));
@@ -310,10 +320,11 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest))
+        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest, multipartFile))
                 .isInstanceOf(ProductNameConflictException.class)
                 .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -338,6 +349,7 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
@@ -348,10 +360,11 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest))
+        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest, multipartFile))
                 .isInstanceOf(ProductCategoryNotFoundException.class)
                 .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -382,6 +395,7 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductUomNotFoundException.class.getConstructor(Object[].class)
@@ -392,10 +406,11 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest))
+        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest, multipartFile))
                 .isInstanceOf(ProductUomNotFoundException.class)
                 .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 
@@ -426,6 +441,7 @@ final class ProductApiAdapterServiceTest {
                 .categoryId(new ProductCategoryId(categoryId))
                 .build();
 
+        when(storageManager.store(any(), any())).thenReturn(fileName);
         when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
         when(productService.createProduct(productRequest))
                 .thenThrow(ProductStockAndPurchaseUomBadException.class.getConstructor(Object[].class)
@@ -438,10 +454,11 @@ final class ProductApiAdapterServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //Act
-        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest))
+        assertThatThrownBy(() -> productApiAdapterService.createProduct(createProductViewRequest, multipartFile))
                 .isInstanceOf(ProductStockAndPurchaseUomBadException.class)
                 .hasMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION);
 
+        verify(storageManager).store(any(), any());
         verify(productViewMapper, times(1)).toProduct(createProductViewRequestArgumentCaptor.capture());
         verify(productService, times(1)).createProduct(productArgumentCaptor.capture());
 

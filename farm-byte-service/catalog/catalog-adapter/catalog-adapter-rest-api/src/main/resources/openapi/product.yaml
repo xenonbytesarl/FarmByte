@@ -27,9 +27,18 @@ paths:
         required: true
         description: product object to be created
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CreateProductViewRequest'
+              type: object
+              required:
+                - image
+                - createProductViewRequest
+              properties:
+                createProductViewRequest:
+                  $ref: '#/components/schemas/CreateProductViewRequest'
+                image:
+                  type: string
+                  format: binary
       parameters:
         - $ref: '#/components/parameters/accept-language'
       responses:
@@ -127,6 +136,14 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/ValidationError'
+    ImageViewRequest:
+      type: object
+      required:
+        - image
+      properties:
+        image:
+          type: string
+          format: binary
     CreateProductViewRequest:
       type: object
       required:
@@ -149,8 +166,6 @@ components:
           type: boolean
         sellable:
           type: boolean
-        image:
-          type: string
         type:
           type: string
           enum:
@@ -166,12 +181,14 @@ components:
         purchaseUomId:
           type: string
           format: uuid
+        filename:
+          type: string
     CreateProductViewResponse:
       type: object
       required:
         - id
         - name
-        - image
+        - filename
         - salePrice
         - purchasePrice
         - purchasable
@@ -198,7 +215,7 @@ components:
           type: boolean
         sellable:
           type: boolean
-        image:
+        filename:
           type: string
         type:
           type: string
