@@ -3,6 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.Page;
+import cm.xenonbyte.farmbyte.common.domain.vo.Sort;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -33,6 +36,16 @@ public final class UomCategoryDomainService implements UomCategoryService {
     public UomCategory findUomCategoryById(UomCategoryId uomCategoryId) {
         Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
         return optionalUomCategory.orElseThrow(() -> new UomCategoryNotFoundException(new String[]{uomCategoryId.toString()}));
+    }
+
+    @Override
+    public Page<UomCategory> findUomCategories(int page, int size, String sortAttribute, Sort sortDirection) {
+        return uomCategoryRepository.findAll(page, size, sortAttribute, sortDirection);
+    }
+
+    @Override
+    public Page<UomCategory> findUomCategoryByKeyword(int page, int size, String sortAttribute, Sort sortDirection, Keyword keyword) {
+        return uomCategoryRepository.findByKeyWord(page, size, sortAttribute, sortDirection, keyword);
     }
 
     private void validateUomCategory(UomCategory uomCategory) {

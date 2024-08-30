@@ -2,20 +2,27 @@ package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.UomCategoryInMemoryRepositoryAdapter;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.Page;
+import cm.xenonbyte.farmbyte.common.domain.vo.Sort;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
@@ -112,7 +119,7 @@ final class UomCategoryDomainServiceTest {
     }
 
     @Nested
-    class FetchUomCategoryByIdDomainTest {
+    class FindUomCategoryByIdDomainTest {
 
         UomCategoryId uomCategoryId;
         UomCategory uomCategory;
@@ -146,6 +153,121 @@ final class UomCategoryDomainServiceTest {
             assertThatThrownBy(() -> uomCategoryService.findUomCategoryById(new UomCategoryId(UUID.randomUUID())))
                     .isInstanceOf(UomCategoryNotFoundException.class)
                     .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+    }
+
+    @Nested
+    class FindUomCategoriesDomainTest {
+
+        @BeforeEach
+        void setUp() {
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-c68e-7801-8ee1-b4440de65267")))
+                    .name(Name.of(Text.of("Temps")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-5241-706b-9aa3-4a596d3c68d8")))
+                    .name(Name.of(Text.of("Distance")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-70c9-76f8-8d47-a9cadaa64db4")))
+                    .name(Name.of(Text.of("Unite")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-89da-73f6-bebc-b6852270e376")))
+                    .name(Name.of(Text.of("Volume")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-a17c-7a3c-bf52-9f1ccf029208")))
+                    .name(Name.of(Text.of("Poids")))
+                    .build());
+        }
+
+        static Stream<Arguments> findUomCategoriesMethodSource() {
+            return Stream.of(
+                    Arguments.of(3, 2, "name", Sort.ASC, 3, 5, 2,1),
+                    Arguments.of(3, 2, "name", Sort.DSC, 3, 5, 2,1)
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("findUomCategoriesMethodSource")
+        void should_success_when_find_all_uom_categories(
+                Integer page,
+                Integer size,
+                String sortAttribute,
+                Sort sortDirection,
+                Integer totalPages,
+                Integer totalElements,
+                Integer pageSize,
+                Integer contentSize
+        ) {
+            //Then
+            Page<UomCategory> result = uomCategoryService.findUomCategories(page, size, sortAttribute, sortDirection);
+
+            assertThat(result.getTotalElements()).isEqualTo(totalElements);
+            assertThat(result.getTotalPages()).isEqualTo(totalPages);
+            assertThat(result.getSize()).isEqualTo(pageSize);
+            assertThat(result.getContent().size()).isEqualTo(contentSize);
+        }
+
+    }
+
+    @Nested
+    class FindUomCategoryByKeyword {
+
+        @BeforeEach
+        void setUp() {
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-c68e-7801-8ee1-b4440de65267")))
+                    .name(Name.of(Text.of("Temps")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-5241-706b-9aa3-4a596d3c68d8")))
+                    .name(Name.of(Text.of("Distance")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-70c9-76f8-8d47-a9cadaa64db4")))
+                    .name(Name.of(Text.of("Unite")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-89da-73f6-bebc-b6852270e376")))
+                    .name(Name.of(Text.of("Volume")))
+                    .build());
+            uomCategoryRepository.save(UomCategory.builder()
+                    .id(new UomCategoryId(UUID.fromString("0191a3b7-a17c-7a3c-bf52-9f1ccf029208")))
+                    .name(Name.of(Text.of("Poids")))
+                    .build());
+        }
+
+        static Stream<Arguments> findUomCategoryByKeywordMethodSource() {
+            return Stream.of(
+                    Arguments.of("n",1, 2, "name", Sort.ASC, 1, 2, 2,2),
+                    Arguments.of("e",2, 2, "name", Sort.ASC, 2, 4, 2,2),
+                    Arguments.of("w",0, 0, "name", Sort.ASC, 0, 0, 0,0)
+
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("findUomCategoryByKeywordMethodSource")
+        void should_success_when_find_uom_category_with_keyword(
+                String keyword,
+                Integer page,
+                Integer size,
+                String sortAttribute,
+                Sort sortDirection,
+                Integer totalPages,
+                Integer totalElements,
+                Integer pageSize,
+                Integer contentSize
+        ) {
+            Page<UomCategory> result = uomCategoryService.findUomCategoryByKeyword(page, size, sortAttribute, sortDirection, Keyword.of(Text.of(keyword)));
+            assertThat(result).isNotNull();
+            assertThat(result.getTotalElements()).isEqualTo(totalElements);
+            assertThat(result.getTotalPages()).isEqualTo(totalPages);
+            assertThat(result.getSize()).isEqualTo(pageSize);
+            assertThat(result.getContent().size()).isEqualTo(contentSize);
         }
     }
 

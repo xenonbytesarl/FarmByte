@@ -21,5 +21,7 @@ public final class CommonDomainConstant {
     public static final String UNDERSCORE = "_";
     public static final String FILE_UPLOAD_DIRECTORY_IS_REQUIRED = "StorageLocation.1";
     public static final String ROOT_STORAGE_PATH = System.getProperty("user.home").concat("/farmbyte");
+    public static final String PAGE_INVALID_SUB_LIST_INDEX = "PageInitializationBadException.1";
+    public static final String PAGE_INVALID_CURRENT_PAGE = "PageInitializationBadException.2";
 
 }
