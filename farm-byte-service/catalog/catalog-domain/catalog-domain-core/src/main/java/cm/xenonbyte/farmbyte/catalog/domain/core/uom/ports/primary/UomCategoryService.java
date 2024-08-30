@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -10,4 +11,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface UomCategoryService {
     @Nonnull UomCategory createUomCategory(@Nonnull UomCategory uomCategory);
+
+    UomCategory findUomCategoryById(UomCategoryId uomCategoryId);
 }

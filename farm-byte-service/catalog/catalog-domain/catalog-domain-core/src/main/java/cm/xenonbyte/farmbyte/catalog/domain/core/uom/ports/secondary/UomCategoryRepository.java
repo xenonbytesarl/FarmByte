@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 
+import java.util.Optional;
+
 /**
  * @author bamk
  * @version 1.0
@@ -16,4 +18,6 @@ public interface UomCategoryRepository {
     UomCategory save(@Nonnull UomCategory uomCategory);
 
     Boolean existsById(UomCategoryId parentCategoryId);
+
+    Optional<UomCategory> findById(UomCategoryId uomCategoryId);
 }
