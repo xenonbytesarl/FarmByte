@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -32,5 +33,10 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
     @Override
     public Boolean existsById(UomCategoryId parentCategoryId) {
         return uomCategories.get(parentCategoryId) != null;
+    }
+
+    @Override
+    public Optional<UomCategory> findById(UomCategoryId uomCategoryId) {
+        return Optional.ofNullable(uomCategories.get(uomCategoryId));
     }
 }

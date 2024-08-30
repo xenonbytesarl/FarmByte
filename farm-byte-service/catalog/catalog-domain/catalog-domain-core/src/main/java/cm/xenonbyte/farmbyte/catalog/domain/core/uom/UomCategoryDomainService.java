@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -26,6 +27,12 @@ public final class UomCategoryDomainService implements UomCategoryService {
         validateUomCategory(uomCategory);
         uomCategory.initiate();
         return uomCategoryRepository.save(uomCategory);
+    }
+
+    @Override
+    public UomCategory findUomCategoryById(UomCategoryId uomCategoryId) {
+        Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
+        return optionalUomCategory.orElseThrow(() -> new UomCategoryNotFoundException(new String[]{uomCategoryId.toString()}));
     }
 
     private void validateUomCategory(UomCategory uomCategory) {
