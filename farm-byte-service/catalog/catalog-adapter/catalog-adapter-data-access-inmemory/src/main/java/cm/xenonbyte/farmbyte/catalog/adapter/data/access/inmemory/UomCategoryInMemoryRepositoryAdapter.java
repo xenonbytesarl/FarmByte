@@ -5,8 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
-import cm.xenonbyte.farmbyte.common.domain.vo.Page;
-import cm.xenonbyte.farmbyte.common.domain.vo.Sort;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import jakarta.annotation.Nonnull;
 
 import java.util.Comparator;
@@ -46,29 +46,29 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
     }
 
     @Override
-    public Page<UomCategory> findAll(@Nonnull Integer page, @Nonnull Integer size, @Nonnull String sortAttribute, @Nonnull Sort sortDirection) {
-        Page<UomCategory> uomCategoryPage = new Page<>();
+    public PageInfo<UomCategory> findAll(@Nonnull Integer page, @Nonnull Integer size, @Nonnull String sortAttribute, @Nonnull Direction direction) {
+        PageInfo<UomCategory> uomCategoryPageInfo = new PageInfo<>();
         Comparator<UomCategory> comparing = Comparator.comparing((UomCategory a) -> a.getName().getText().getValue());
-        return uomCategoryPage.with(
+        return uomCategoryPageInfo.with(
                 page,
                 size,
                 uomCategories.values().stream()
-                    .sorted(Sort.ASC.equals(sortDirection) ? comparing : comparing.reversed())
+                    .sorted(Direction.ASC.equals(direction) ? comparing : comparing.reversed())
                     .toList()
         );
     }
 
     @Override
-    public Page<UomCategory> findByKeyWord(int page, int size, String sortAttribute, Sort sortDirection, Keyword keyword) {
+    public PageInfo<UomCategory> findByKeyWord(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
         Predicate<UomCategory> uomCategoryNammePredicate = uomCategory -> uomCategory.getName().getText().getValue().contains(keyword.getText().getValue());
         Comparator<UomCategory> comparing = Comparator.comparing((UomCategory a) -> a.getName().getText().getValue());
-        Page<UomCategory> uomCategoryPage = new Page<>();
-        return uomCategoryPage.with(
+        PageInfo<UomCategory> uomCategoryPageInfo = new PageInfo<>();
+        return uomCategoryPageInfo.with(
                 page,
                 size,
                 uomCategories.values().stream()
                         .filter(uomCategoryNammePredicate)
-                        .sorted(Sort.ASC.equals(sortDirection) ? comparing: comparing.reversed())
+                        .sorted(Direction.ASC.equals(direction) ? comparing: comparing.reversed())
                         .toList()
         );
     }
