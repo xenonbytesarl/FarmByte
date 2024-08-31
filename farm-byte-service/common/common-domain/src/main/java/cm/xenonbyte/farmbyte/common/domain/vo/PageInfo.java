@@ -12,19 +12,19 @@ import java.util.Objects;
  * @version 1.0
  * @since 30/08/2024
  */
-public final class Page<T> {
+public final class PageInfo<T> {
     private Boolean first;
     private Boolean last;
     private Integer pageSize;
-    private Integer totalElements;
+    private Long totalElements;
     private Integer totalPages;
     private List<T> content;
 
-    public Page() {
+    public PageInfo() {
     }
 
-    private Page(Boolean first, Boolean last, Integer pageSize, Integer totalElements,
-                 Integer totalPages, List<T> content) {
+    public PageInfo(Boolean first, Boolean last, Integer pageSize, Long totalElements,
+                     Integer totalPages, List<T> content) {
         this.first = first;
         this.last = last;
         this.pageSize = pageSize;
@@ -33,22 +33,22 @@ public final class Page<T> {
         this.content = content;
     }
 
-    public Page<T> with(@Nonnull Integer page, @Nonnull Integer pageSize, @Nonnull List<T> items) {
+    public PageInfo<T> with(@Nonnull Integer page, @Nonnull Integer pageSize, @Nonnull List<T> items) {
 
         if(items == null || items.isEmpty()) {
-            return new Page<>(false, false, 0, 0, 0, new ArrayList<>());
+            return new PageInfo<>(false, false, 0, 0l, 0, new ArrayList<>());
         }
-        int totalElements = items.size();
+        long totalElements = items.size();
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
-        if(page < 1 || page > totalPages) {
+        if(page < 0 || page - 1 > totalPages) {
             throw new PageInitializationBadException(new String[]{String.valueOf(page), String.valueOf(totalElements)});
         }
-        int startIndex = (page - 1) * pageSize;
-        int stopIndex = Math.min(startIndex + pageSize, totalElements);
-        if( startIndex < totalElements ) {
-            return new Page<>(
-                    page == 1,
-                    page == totalPages,
+        int startIndex = page * pageSize;
+        int stopIndex = Math.min(startIndex + pageSize, (int)totalElements);
+        if( startIndex <= totalElements ) {
+            return new PageInfo<>(
+                    page == 0,
+                    page == totalPages - 1,
                     pageSize,
                     totalElements,
                     totalPages,
@@ -69,7 +69,7 @@ public final class Page<T> {
         return pageSize;
     }
 
-    public Integer getTotalElements() {
+    public Long getTotalElements() {
         return totalElements;
     }
 
@@ -85,8 +85,8 @@ public final class Page<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Page<?> page = (Page<?>) o;
-        return Objects.equals(first, page.first) && Objects.equals(last, page.last) && Objects.equals(pageSize, page.pageSize) && Objects.equals(totalElements, page.totalElements) && Objects.equals(totalPages, page.totalPages) && Objects.equals(content, page.content);
+        PageInfo<?> pageInfo = (PageInfo<?>) o;
+        return Objects.equals(first, pageInfo.first) && Objects.equals(last, pageInfo.last) && Objects.equals(pageSize, pageInfo.pageSize) && Objects.equals(totalElements, pageInfo.totalElements) && Objects.equals(totalPages, pageInfo.totalPages) && Objects.equals(content, pageInfo.content);
     }
 
     @Override

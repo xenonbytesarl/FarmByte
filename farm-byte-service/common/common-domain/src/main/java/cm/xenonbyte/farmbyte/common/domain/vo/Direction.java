@@ -5,6 +5,6 @@ package cm.xenonbyte.farmbyte.common.domain.vo;
  * @version 1.0
  * @since 30/08/2024
  */
-public enum Sort {
+public enum Direction {
     ASC, DSC
 }

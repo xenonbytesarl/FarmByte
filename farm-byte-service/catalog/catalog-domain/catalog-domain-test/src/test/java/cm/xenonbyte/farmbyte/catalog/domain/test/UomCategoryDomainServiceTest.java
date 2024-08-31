@@ -11,8 +11,8 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategorySe
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
-import cm.xenonbyte.farmbyte.common.domain.vo.Page;
-import cm.xenonbyte.farmbyte.common.domain.vo.Sort;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -185,8 +185,8 @@ final class UomCategoryDomainServiceTest {
 
         static Stream<Arguments> findUomCategoriesMethodSource() {
             return Stream.of(
-                    Arguments.of(3, 2, "name", Sort.ASC, 3, 5, 2,1),
-                    Arguments.of(3, 2, "name", Sort.DSC, 3, 5, 2,1)
+                    Arguments.of(2, 2, "name", Direction.ASC, 3, 5l, 2,1),
+                    Arguments.of(2, 2, "name", Direction.DSC, 3, 5l, 2,1)
             );
         }
 
@@ -196,14 +196,14 @@ final class UomCategoryDomainServiceTest {
                 Integer page,
                 Integer size,
                 String sortAttribute,
-                Sort sortDirection,
+                Direction direction,
                 Integer totalPages,
-                Integer totalElements,
+                Long totalElements,
                 Integer pageSize,
                 Integer contentSize
         ) {
             //Then
-            Page<UomCategory> result = uomCategoryService.findUomCategories(page, size, sortAttribute, sortDirection);
+            PageInfo<UomCategory> result = uomCategoryService.findUomCategories(page, size, sortAttribute, direction);
 
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
@@ -242,9 +242,9 @@ final class UomCategoryDomainServiceTest {
 
         static Stream<Arguments> findUomCategoryByKeywordMethodSource() {
             return Stream.of(
-                    Arguments.of("n",1, 2, "name", Sort.ASC, 1, 2, 2,2),
-                    Arguments.of("e",2, 2, "name", Sort.ASC, 2, 4, 2,2),
-                    Arguments.of("w",0, 0, "name", Sort.ASC, 0, 0, 0,0)
+                    Arguments.of("n",0, 2, "name", Direction.ASC, 1, 2l, 2,2),
+                    Arguments.of("e",1, 2, "name", Direction.ASC, 2, 4l, 2,2),
+                    Arguments.of("w",0, 0, "name", Direction.ASC, 0, 0l, 0,0)
 
             );
         }
@@ -256,13 +256,13 @@ final class UomCategoryDomainServiceTest {
                 Integer page,
                 Integer size,
                 String sortAttribute,
-                Sort sortDirection,
+                Direction direction,
                 Integer totalPages,
-                Integer totalElements,
+                Long totalElements,
                 Integer pageSize,
                 Integer contentSize
         ) {
-            Page<UomCategory> result = uomCategoryService.findUomCategoryByKeyword(page, size, sortAttribute, sortDirection, Keyword.of(Text.of(keyword)));
+            PageInfo<UomCategory> result = uomCategoryService.findUomCategoryByKeyword(page, size, sortAttribute, direction, Keyword.of(Text.of(keyword)));
             assertThat(result).isNotNull();
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
