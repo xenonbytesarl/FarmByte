@@ -7,7 +7,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import org.jetbrains.annotations.NotNull;
+import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -256,7 +256,7 @@ public class UomRestApiIT {
                 .uomType(uomTypeEnumRequest);
     }
 
-    private static @NotNull HttpHeaders getHttpHeaders() {
+    private static @Nonnull HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAcceptLanguageAsLocales(List.of(Locale.forLanguageTag(EN_LOCALE)));
         headers.setAccept(List.of(APPLICATION_JSON));
