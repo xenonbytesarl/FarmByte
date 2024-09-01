@@ -2,12 +2,12 @@ package cm.xenonbyte.farmbyte.bootstrap.catalog;
 
 import cm.xenonbyte.farmbyte.bootstrap.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiSuccessResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import org.jetbrains.annotations.NotNull;
+import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,7 +94,7 @@ public class UomCategoryRestApiIT {
         HttpEntity<CreateUomCategoryViewRequest> request = new HttpEntity<>(createUomCategoryViewRequest, getHttpHeaders());
 
         //Act
-        ResponseEntity<ApiSuccessResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiSuccessResponse.class);
+        ResponseEntity<CreateUomCategoryViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateUomCategoryViewApiResponse.class);
 
         //Then
         assertThat(response.getStatusCode().value()).isEqualTo(201);
@@ -174,7 +174,7 @@ public class UomCategoryRestApiIT {
                 .parentUomCategoryId(parentUomCategoryUUID);
     }
 
-    private static @NotNull HttpHeaders getHttpHeaders() {
+    private static @Nonnull HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAcceptLanguageAsLocales(List.of(Locale.forLanguageTag(EN_LOCALE)));
         headers.setAccept(List.of(APPLICATION_JSON));
