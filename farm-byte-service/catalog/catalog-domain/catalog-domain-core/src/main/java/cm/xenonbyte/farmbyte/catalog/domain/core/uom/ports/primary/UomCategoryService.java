@@ -19,5 +19,5 @@ public interface UomCategoryService {
 
     PageInfo<UomCategory> findUomCategories(int page, int size, String sortAttribute, Direction direction);
 
-    PageInfo<UomCategory> findUomCategoryByKeyword(int page, int size, String sortAttribute, Direction direction, Keyword keyword);
+    PageInfo<UomCategory> searchUomCategories(int page, int size, String sortAttribute, Direction direction, Keyword keyword);
 }

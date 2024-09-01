@@ -38,7 +38,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiSuccessResponse'
+                $ref: '#/components/schemas/CreateUomCategoryViewApiResponse'
         400:
           description: bad operation
           content:
@@ -57,6 +57,81 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - UomCategory
+      operationId: findUomCategories
+      security:
+        - oAuth:
+            - read:uom:category
+      parameters:
+        - $ref: '#/components/parameters/accept-language'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/attribute'
+        - $ref: '#/components/parameters/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindUomCategoriesViewApiResponse'
+  /uom-categories/{uomCategoryId}:
+    get:
+      tags:
+        - UomCategory
+      summary: find category of unit of measure by id
+      operationId: findUomCategoryById
+      security:
+        - oAuth:
+            - read:uom:category
+      parameters:
+        - $ref: '#/components/parameters/accept-language'
+        - $ref: '#/components/parameters/uomCategoryId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindUomCategoryByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /uom-categories/search:
+    get:
+      tags:
+        - UomCategory
+      summary: search category of unit of measure by a keyword
+      operationId: searchUomCategory
+      security:
+        - oAuth:
+            - read:uom:category
+      parameters:
+        - $ref: '#/components/parameters/accept-language'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/attribute'
+        - $ref: '#/components/parameters/direction'
+        - $ref: '#/components/parameters/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchUomCategoriesViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
 components:
   parameters:
     accept-language:
@@ -66,6 +141,46 @@ components:
       schema:
         type: string
         enum: [en, fr]
+    uomCategoryId:
+      in: path
+      name: uomCategoryId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    page:
+      in: path
+      name: page
+      required: true
+      schema:
+        type: integer
+        format: int32
+    size:
+      in: path
+      name: size
+      required: true
+      schema:
+        type: integer
+        format: int32
+    attribute:
+      in: path
+      name: attribute
+      required: true
+      schema:
+        type: string
+    direction:
+      in: path
+      name: direction
+      required: true
+      schema:
+        type: string
+        enum: [ASC, DSC]
+    keyword:
+      in: path
+      name: keyword
+      required: true
+      schema:
+        type: string
   schemas:
     ValidationError:
       type: object
@@ -101,10 +216,6 @@ components:
           properties:
             message:
               type: string
-            data:
-              type: object
-              additionalProperties:
-                $ref: '#/components/schemas/CreateUomCategoryViewResponse'
     ApiErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ApiResponse'
@@ -138,7 +249,7 @@ components:
         parentUomCategoryId:
           type: string
           format: uuid
-    CreateUomCategoryViewResponse:
+    UomCategoryViewResponse:
       type: object
       required:
         - id
@@ -157,3 +268,95 @@ components:
           format: uuid
         active:
           type: boolean
+    CreateUomCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryViewResponse'
+    CreateUomCategoryViewApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateUomCategoryViewResponse'
+    FindUomCategoryByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryViewResponse'
+    FindUomCategoryByIdViewApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindUomCategoryByIdViewResponse'
+    PageInfoViewResponse:
+      type: object
+      required:
+        - first
+        - last
+        - pageSize
+        - totalElement
+        - totalPages
+      properties:
+        first:
+          type: boolean
+        last:
+          type: boolean
+        pageSize:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    FindUomCategoriesViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryViewResponse'
+    FindUomCategoriesPageInfoViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindUomCategoriesViewResponse'
+    FindUomCategoriesViewApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FindUomCategoriesPageInfoViewResponse'
+    SearchUomCategoriesViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryViewResponse'
+    SearchUomCategoriesPageInfoViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchUomCategoriesViewResponse'
+    SearchUomCategoriesViewApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchUomCategoriesPageInfoViewResponse'

@@ -2,13 +2,21 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.CreateUomCategoryViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author bamk
@@ -34,5 +42,23 @@ public class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServic
         return uomCategoryViewMapper.toCreateUomCategoryViewResponse(
                 uomCategoryService.createUomCategory(
                         uomCategoryViewMapper.toUomCategory(createUomCategoryViewRequest)));
+    }
+
+    @Nonnull
+    @Override
+    public FindUomCategoryByIdViewResponse findUomCategoryById(@Nonnull UUID uomCategoryId) {
+        return uomCategoryViewMapper.toFindUomCategoryViewResponse(uomCategoryService.findUomCategoryById(new UomCategoryId(uomCategoryId)));
+    }
+
+    @Nonnull
+    @Override
+    public FindUomCategoriesPageInfoViewResponse findUomCategories(int page, int size, String attribute, Direction direction) {
+        return uomCategoryViewMapper.toFindUomCategoriesPageInfoViewResponse(uomCategoryService.findUomCategories(page, size, attribute, direction));
+    }
+
+    @Nonnull
+    @Override
+    public SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, Direction direction, @Nonnull String keyword) {
+        return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, direction, Keyword.of(Text.of(keyword))));
     }
 }
