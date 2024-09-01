@@ -35,7 +35,7 @@ public final class UomCategoryDomainService implements UomCategoryService {
     @Override
     public UomCategory findUomCategoryById(UomCategoryId uomCategoryId) {
         Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
-        return optionalUomCategory.orElseThrow(() -> new UomCategoryNotFoundException(new String[]{uomCategoryId.toString()}));
+        return optionalUomCategory.orElseThrow(() -> new UomCategoryNotFoundException(new String[]{uomCategoryId.getValue().toString()}));
     }
 
     @Override

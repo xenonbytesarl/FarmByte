@@ -149,36 +149,35 @@ components:
         type: string
         format: uuid
     page:
-      in: path
+      in: header
       name: page
       required: true
       schema:
         type: integer
         format: int32
     size:
-      in: path
+      in: header
       name: size
       required: true
       schema:
         type: integer
         format: int32
     attribute:
-      in: path
+      in: header
       name: attribute
       required: true
       schema:
         type: string
     direction:
-      in: path
+      in: header
       name: direction
       required: true
       schema:
         type: string
         enum: [ASC, DSC]
     keyword:
-      in: path
+      in: header
       name: keyword
-      required: true
       schema:
         type: string
   schemas:
@@ -334,9 +333,7 @@ components:
             data:
               type: object
               additionalProperties:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FindUomCategoriesPageInfoViewResponse'
+                $ref: '#/components/schemas/FindUomCategoriesPageInfoViewResponse'
     SearchUomCategoriesViewResponse:
       allOf:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
@@ -357,6 +354,4 @@ components:
             data:
               type: object
               additionalProperties:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchUomCategoriesPageInfoViewResponse'
+                $ref: '#/components/schemas/SearchUomCategoriesPageInfoViewResponse'

@@ -321,7 +321,7 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
             ArgumentCaptor<Direction> directionArgumentCaptor = ArgumentCaptor.forClass(Direction.class);
 
             //Act
-            FindUomCategoriesPageInfoViewResponse result = uomCategoryApiAdapterService.findUomCategories(page, pageSize, attribute, Direction.ASC);
+            FindUomCategoriesPageInfoViewResponse result = uomCategoryApiAdapterService.findUomCategories(page, pageSize, attribute, "ASC");
 
             //Then
             assertThat(result)
@@ -416,7 +416,7 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
             ArgumentCaptor<Keyword> keywordArgumentCaptor = ArgumentCaptor.forClass(Keyword.class);
 
             //Act
-            SearchUomCategoriesPageInfoViewResponse result = uomCategoryApiAdapterService.searchUomCategories(page, pageSize, attribute, Direction.ASC, keyword);
+            SearchUomCategoriesPageInfoViewResponse result = uomCategoryApiAdapterService.searchUomCategories(page, pageSize, attribute, "ASC", keyword);
 
             //Then
             assertThat(result)

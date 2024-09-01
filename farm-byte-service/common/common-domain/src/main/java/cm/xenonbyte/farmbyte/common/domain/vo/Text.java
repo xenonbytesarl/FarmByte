@@ -17,8 +17,8 @@ public class Text {
         this.value = Objects.requireNonNull(value);
     }
 
-    public static Text of(String value) {
-        return new Text(value);
+    public static Text of(@Nonnull String value) {
+        return new Text(value == null ? "" : value);
     }
 
     public Boolean isEmpty() {
