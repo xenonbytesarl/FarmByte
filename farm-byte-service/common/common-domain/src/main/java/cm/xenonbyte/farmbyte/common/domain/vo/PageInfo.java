@@ -65,7 +65,7 @@ public final class PageInfo<T> {
         return last;
     }
 
-    public Integer getSize() {
+    public Integer getPageSize() {
         return pageSize;
     }
 

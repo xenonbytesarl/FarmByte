@@ -132,12 +132,6 @@
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
-                                <typeMappings>
-                                    <typeMapping>createUomCategoryResponse=CreateUomCategoryResponse</typeMapping>
-                                </typeMappings>
-                                <importMappings>
-                                    <importMapping>CreateUomCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomCategoryViewResponse</importMapping>
-                                </importMappings>
                             </configOptions>
                         </configuration>
                     </execution>

@@ -207,7 +207,7 @@ final class UomCategoryDomainServiceTest {
 
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
-            assertThat(result.getSize()).isEqualTo(pageSize);
+            assertThat(result.getPageSize()).isEqualTo(pageSize);
             assertThat(result.getContent().size()).isEqualTo(contentSize);
         }
 
@@ -262,11 +262,11 @@ final class UomCategoryDomainServiceTest {
                 Integer pageSize,
                 Integer contentSize
         ) {
-            PageInfo<UomCategory> result = uomCategoryService.findUomCategoryByKeyword(page, size, sortAttribute, direction, Keyword.of(Text.of(keyword)));
+            PageInfo<UomCategory> result = uomCategoryService.searchUomCategories(page, size, sortAttribute, direction, Keyword.of(Text.of(keyword)));
             assertThat(result).isNotNull();
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
-            assertThat(result.getSize()).isEqualTo(pageSize);
+            assertThat(result.getPageSize()).isEqualTo(pageSize);
             assertThat(result.getContent().size()).isEqualTo(contentSize);
         }
     }
