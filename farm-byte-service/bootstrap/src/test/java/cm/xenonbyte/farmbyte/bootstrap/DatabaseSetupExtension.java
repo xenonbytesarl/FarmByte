@@ -3,6 +3,7 @@ package cm.xenonbyte.farmbyte.bootstrap;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.support.ModifierSupport;
 
 /**
  * @author bamk
@@ -12,13 +13,29 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public final class DatabaseSetupExtension implements BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
+        if (context.getTestClass().isPresent()) {
+            Class<?> currentClass = context.getTestClass().get();
+            if (isNestedClass(currentClass)) {
+                return;
+            }
+        }
         PostgresContainer.container.start();
         updateDataSourceProps(PostgresContainer.container);
     }
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
+        if (context.getTestClass().isPresent()) {
+            Class<?> currentClass = context.getTestClass().get();
+            if (isNestedClass(currentClass)) {
+                return;
+            }
+        }
         PostgresContainer.container.stop();
+    }
+
+    private boolean isNestedClass(Class<?> currentClass) {
+        return !ModifierSupport.isStatic(currentClass) && currentClass.isMemberClass();
     }
 
     private void updateDataSourceProps(PostgresContainer container) {

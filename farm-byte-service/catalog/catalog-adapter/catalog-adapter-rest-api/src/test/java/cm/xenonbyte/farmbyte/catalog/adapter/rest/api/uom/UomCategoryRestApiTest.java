@@ -252,7 +252,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORY_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isMap())
                     .andExpect(jsonPath("$.data.content").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.id").value(findUomCategoryByIdViewResponse.getId()))
+                    .andExpect(jsonPath("$.data.content.id").value(findUomCategoryByIdViewResponse.getId().toString()))
                     .andExpect(jsonPath("$.data.content.name").value(findUomCategoryByIdViewResponse.getName()));
 
             //Then
