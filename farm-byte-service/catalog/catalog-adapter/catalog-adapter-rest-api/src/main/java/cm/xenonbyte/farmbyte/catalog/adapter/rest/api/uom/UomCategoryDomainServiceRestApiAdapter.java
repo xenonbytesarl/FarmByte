@@ -52,13 +52,13 @@ public class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServic
 
     @Nonnull
     @Override
-    public FindUomCategoriesPageInfoViewResponse findUomCategories(int page, int size, String attribute, Direction direction) {
-        return uomCategoryViewMapper.toFindUomCategoriesPageInfoViewResponse(uomCategoryService.findUomCategories(page, size, attribute, direction));
+    public FindUomCategoriesPageInfoViewResponse findUomCategories(int page, int size, String attribute, String direction) {
+        return uomCategoryViewMapper.toFindUomCategoriesPageInfoViewResponse(uomCategoryService.findUomCategories(page, size, attribute, Direction.valueOf(direction)));
     }
 
     @Nonnull
     @Override
-    public SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, Direction direction, @Nonnull String keyword) {
-        return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, direction, Keyword.of(Text.of(keyword))));
+    public SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword) {
+        return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword ))));
     }
 }

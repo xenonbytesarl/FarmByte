@@ -19,11 +19,11 @@ public final class Keyword {
     }
 
     @Nonnull
-    public static Keyword of(Text value) {
-        if (value == null) {
+    public static Keyword of(Text text) {
+        if (text == null) {
             throw new IllegalArgumentException(NAME_VALUE_IS_REQUIRED);
         }
-        return new Keyword(value);
+        return new Keyword(text);
     }
 
     @Nonnull

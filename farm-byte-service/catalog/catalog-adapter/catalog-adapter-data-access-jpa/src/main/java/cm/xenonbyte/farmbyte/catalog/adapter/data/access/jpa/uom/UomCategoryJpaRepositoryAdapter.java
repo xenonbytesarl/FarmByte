@@ -83,7 +83,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     public PageInfo<UomCategory> findByKeyWord(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        Page<UomCategoryJpa> uomCategoryJpaPage = uomCategoryJpaRepository.findByKeyword(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue().toLowerCase());
+        Page<UomCategoryJpa> uomCategoryJpaPage = uomCategoryJpaRepository.findByKeyword(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());
 
 
         return new PageInfo(

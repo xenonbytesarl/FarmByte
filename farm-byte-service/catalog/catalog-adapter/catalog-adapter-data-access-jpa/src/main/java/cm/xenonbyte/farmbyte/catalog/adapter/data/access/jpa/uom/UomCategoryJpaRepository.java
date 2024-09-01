@@ -18,6 +18,6 @@ import java.util.UUID;
 public interface UomCategoryJpaRepository extends JpaRepository<UomCategoryJpa, UUID> {
     Boolean existsByName(String value);
 
-    @Query("select ucj from UomCategoryJpa ucj where lower(ucj.name) like %:keyword%")
+    @Query("select ucj from UomCategoryJpa ucj where lower(ucj.name) like lower(concat('%',:keyword,'%'))")
     Page<UomCategoryJpa> findByKeyword(Pageable pageable,@Param("keyword") String keyword);
 }

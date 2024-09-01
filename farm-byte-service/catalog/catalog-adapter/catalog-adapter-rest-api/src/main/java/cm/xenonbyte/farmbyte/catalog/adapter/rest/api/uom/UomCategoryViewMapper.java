@@ -55,6 +55,7 @@ public interface UomCategoryViewMapper {
     @Mapping(source = "last", target = "last")
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
+    @Mapping(source = "totalElements", target = "totalElements")
     @Mapping(source = "content", qualifiedByName = "toFindUomCategoriesViewResponses", target = "content")
     @Nonnull @Valid FindUomCategoriesPageInfoViewResponse toFindUomCategoriesPageInfoViewResponse(@Nonnull PageInfo<UomCategory> uomCategoriesPageInfo);
 
@@ -73,6 +74,7 @@ public interface UomCategoryViewMapper {
     @Mapping(source = "last", target = "last")
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
+    @Mapping(source = "totalElements", target = "totalElements")
     @Mapping(source = "content", qualifiedByName = "toSearchUomCategoriesViewResponses", target = "content")
     @Nonnull @Valid SearchUomCategoriesPageInfoViewResponse toSearchUomCategoriesPageInfoViewResponse(@Nonnull @Valid PageInfo<UomCategory> uomCategoriesPageInfo);
 
