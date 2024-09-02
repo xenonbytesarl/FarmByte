@@ -26,7 +26,7 @@ jobs:
       - name: Build project
         run: |
           cd farm-byte-service
-          mvn clean package -DskipTests
+          mvn clean package -DskipTests=true
       - name: Extract project version
         id: extract_version
         run: |
