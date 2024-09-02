@@ -126,9 +126,10 @@ public abstract class UomCategoryRepositoryTest {
             String sortAttribute = "name";
             Direction direction = Direction.ASC;
 
-            //Then
+            //Act
             PageInfo<UomCategory> result = uomCategoryRepository.findAll(page, size, sortAttribute, direction);
 
+            //Then
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
             assertThat(result.getContent().size()).isGreaterThan(0);
