@@ -1,4 +1,4 @@
-name: CI Pipeline for FarmByte-Service 1
+name: CIPipelineFarmByteService
 
 on:
   pull_request:
