@@ -1,5 +1,4 @@
 name: CIPipelineFarmByteService
-
 on:
   pull_request:
     branches:
@@ -12,9 +11,7 @@ on:
   push:
     branches:
       - 'develop'
-
 jobs:
-
   compile:
     runs-on: self-hosted
     name: Compile project
@@ -23,7 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -34,12 +30,10 @@ jobs:
         uses: stCarolas/setup-maven@v5
         with:
           maven-version: 3.9.8
-
       - name: Compile project
         run: |
           cd farm-byte-service
           mvn clean compile
-
   unit-tests:
     runs-on: self-hosted
     name: Unit test project
@@ -48,23 +42,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'corretto'
-
       - name: Set up Maven
         uses: stCarolas/setup-maven@v5
         with:
           maven-version: 3.9.8
-
       - name: Test the project
         run: |
           cd farm-byte-service
           mvn clean test
-
   integration-tests:
     runs-on: self-hosted
     name: Integration test the project
@@ -74,23 +64,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'corretto'
-
       - name: Set up Maven
         uses: stCarolas/setup-maven@v5
         with:
           maven-version: 3.9.8
-
       - name: Test the project
         run: |
           cd farm-byte-service
           mvn clean verify
-
 #  build-image:
 #    runs-on: self-hosted
 #    name: Build docker image

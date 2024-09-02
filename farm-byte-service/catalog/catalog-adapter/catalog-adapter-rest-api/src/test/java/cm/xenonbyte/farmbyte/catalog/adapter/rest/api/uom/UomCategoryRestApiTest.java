@@ -33,7 +33,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FOUND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
@@ -343,7 +343,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.code").value(200))
                     .andExpect(jsonPath("$.status").value("OK"))
-                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.content").isArray());
 
@@ -411,7 +411,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.code").value(200))
                     .andExpect(jsonPath("$.status").value("OK"))
-                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.content").isArray());
 
