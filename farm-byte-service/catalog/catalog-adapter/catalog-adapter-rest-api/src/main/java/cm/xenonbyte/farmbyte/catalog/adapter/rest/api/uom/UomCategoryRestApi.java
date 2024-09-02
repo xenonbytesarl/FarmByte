@@ -35,7 +35,7 @@ public class UomCategoryRestApi implements UomCategoriesApi {
 
     public static final String UOM_CATEGORY_CREATED_SUCCESSFULLY = "UomCategoryApiRest.1";
     public static final String UOM_CATEGORY_FIND_SUCCESSFULLY = "UomCategoryApiRest.2";
-    public static final String UOM_CATEGORIES_FOUND_SUCCESSFULLY = "UomCategoryApiRest.3";
+    public static final String UOM_CATEGORIES_FIND_SUCCESSFULLY = "UomCategoryApiRest.3";
 
     public UomCategoryRestApi(final @Nonnull UomCategoryServiceRestApiAdapter uomCategoryApiAdapterService) {
         this.uomCategoryApiAdapterService = Objects.requireNonNull(uomCategoryApiAdapterService);
@@ -64,7 +64,7 @@ public class UomCategoryRestApi implements UomCategoriesApi {
                         .status(OK.name())
                         .success(true)
                         .timestamp(ZonedDateTime.now().toString())
-                        .message(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .message(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, uomCategoryApiAdapterService.findUomCategories(page, size, attribute, direction)))
         );
     }
@@ -90,7 +90,7 @@ public class UomCategoryRestApi implements UomCategoriesApi {
                         .status(OK.name())
                         .success(true)
                         .timestamp(ZonedDateTime.now().toString())
-                        .message(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .message(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, uomCategoryApiAdapterService.searchUomCategories(page, size, attribute, direction, keyword)))
         );
     }

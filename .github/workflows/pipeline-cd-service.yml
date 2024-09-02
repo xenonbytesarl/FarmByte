@@ -4,7 +4,7 @@ on:
     inputs:
       Environment:
         default: ""
-        description: possible value are(int, rct, prod)
+        description: Env. [Possibles values are(int, rct, prod)]
 jobs:
   build-image:
     runs-on: self-hosted
@@ -82,7 +82,7 @@ jobs:
           script: |
             export DB_SERVER=${{ secrets.DB_SERVER }}
             export ACTIVE_PROFILE=${{ github.event.inputs.Environment }}
-            if [ ${{github.event.inputs.Environment}} == 'int' ]; then
+            if [ ${{github.event.inputs.Environment}} == 'rct' ]; then
               export DB_USER=${{ secrets.DB_USER_RCT }}
               export DB_PASSWORD=${{ secrets.DB_PASSWORD_RCT }}
               export DB_PORT=${{ secrets.DB_PORT_RCT }}

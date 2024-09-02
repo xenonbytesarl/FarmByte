@@ -39,7 +39,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FOUND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
@@ -256,7 +256,7 @@ public class UomCategoryRestApiIT {
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getStatus()).isEqualTo("OK");
             assertThat(response.getBody().getSuccess()).isTrue();
-            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(FindUomCategoriesPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
         }
@@ -285,7 +285,7 @@ public class UomCategoryRestApiIT {
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getStatus()).isEqualTo("OK");
             assertThat(response.getBody().getSuccess()).isTrue();
-            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchUomCategoriesPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
         }
