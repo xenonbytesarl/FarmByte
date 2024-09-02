@@ -1,0 +1,7 @@
+accept-language:
+  name: Accept-Language
+  in: header
+  required: true
+  schema:
+    type: string
+    enum: [en, fr]

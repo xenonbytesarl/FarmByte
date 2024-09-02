@@ -31,14 +31,14 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateUomViewRequest'
       parameters:
-        - $ref: '#/components/parameters/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
       responses:
         201:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiSuccessResponse'
+                $ref: '#/components/schemas/CreateUomViewApiResponse'
         400:
           description: bad operation
           content:
@@ -57,76 +57,92 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - Uom
+      operationId: findUoms
+      security:
+        - oAuth:
+            - read:uom
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindUomsViewApiResponse'
+  /uoms/{uomId}:
+    get:
+      tags:
+        - Uom
+      summary: find unit of measure by id
+      operationId: findUomById
+      security:
+        - oAuth:
+            - read:uom
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/uomId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindUomByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /uoms/search:
+    get:
+      tags:
+        - Uom
+      summary: search unit of measure by a keyword
+      operationId: searchUom
+      security:
+        - oAuth:
+            - read:uom
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/keyword.yaml#/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchUomsViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 components:
   parameters:
-    accept-language:
-      name: Accept-Language
-      in: header
+    uomId:
+      in: path
+      name: uomId
       required: true
       schema:
         type: string
-        enum: [en, fr]
+        format: uuid
   schemas:
-    ValidationError:
-      type: object
-      required:
-        - field
-        - message
-      properties:
-        field:
-          type: string
-        message:
-          type: string
-    ApiResponse:
-      type: object
-      required:
-        - timestamp
-        - code
-        - status
-        - success
-      properties:
-        timestamp:
-          type: string
-        code:
-          type: integer
-          format: int32
-        status:
-          type: string
-        success:
-          type: boolean
-    ApiSuccessResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            message:
-              type: string
-            data:
-              type: object
-              additionalProperties:
-                $ref: '#/components/schemas/CreateUomViewResponse'
     ApiErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          required:
-            - reason
-            - path
-            - trackId
-          properties:
-            reason:
-              type: string
-            developerMessage:
-              type: string
-            path:
-              type: string
-            trackId:
-              type: string
-              format: uuid
-            error:
-              type: array
-              items:
-                $ref: '#/components/schemas/ValidationError'
+      $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-error-response.yaml#/ApiErrorResponse'
     CreateUomViewRequest:
       type: object
       required:
@@ -149,7 +165,7 @@ components:
         ratio:
           type: number
           format: double
-    CreateUomViewResponse:
+    UomViewResponse:
       type: object
       required:
         - id
@@ -179,3 +195,70 @@ components:
           format: double
         active:
           type: boolean
+    CreateUomViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomViewResponse'
+    CreateUomViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateUomViewResponse'
+    FindUomByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomViewResponse'
+    FindUomByIdViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindUomByIdViewResponse'
+    FindUomsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomViewResponse'
+    FindUomsPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindUomsViewResponse'
+    FindUomsViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindUomsPageInfoViewResponse'
+    SearchUomsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomViewResponse'
+    SearchUomsPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchUomsViewResponse'
+    SearchUomsViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SearchUomsPageInfoViewResponse'
+

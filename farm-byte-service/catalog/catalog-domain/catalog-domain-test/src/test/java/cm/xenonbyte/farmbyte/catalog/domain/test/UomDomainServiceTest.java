@@ -257,7 +257,7 @@ final class UomDomainServiceTest {
     }
 
     @Nested
-    class FindUomDomainServiceTest {
+    class FindUomByIdDomainServiceTest {
 
         String uomUUID = "0191b1d0-9874-79ee-a0c4-ef3a5aa7b9c6";
         Uom uom;

@@ -1,10 +1,10 @@
 package cm.xenonbyte.farmbyte.bootstrap.catalog;
 
 import cm.xenonbyte.farmbyte.bootstrap.DatabaseSetupExtension;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ApiSuccessResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.ApiErrorResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
@@ -107,7 +107,7 @@ public class UomRestApiIT {
         HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
         //Act
-        ResponseEntity<ApiSuccessResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiSuccessResponse.class);
+        ResponseEntity<CreateUomViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateUomViewApiResponse.class);
 
         //Then
         assertThat(response.getStatusCode().value()).isEqualTo(201);

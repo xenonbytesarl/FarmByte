@@ -260,7 +260,7 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
             String attribute = "name";
 
             PageInfo<UomCategory> uomCategoriesPageInfo =  new PageInfo<UomCategory>().with(
-                    1, 2,
+                    page, pageSize,
                     List.of(
                             UomCategory.builder()
                                     .name(Name.of(Text.of("Unite")))
