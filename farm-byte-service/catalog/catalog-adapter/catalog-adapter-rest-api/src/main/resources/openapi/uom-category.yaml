@@ -31,7 +31,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateUomCategoryViewRequest'
       parameters:
-        - $ref: '#/components/parameters/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
       responses:
         201:
           description: successful operation
@@ -65,11 +65,11 @@ paths:
         - oAuth:
             - read:uom:category
       parameters:
-        - $ref: '#/components/parameters/accept-language'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/size'
-        - $ref: '#/components/parameters/attribute'
-        - $ref: '#/components/parameters/direction'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
       responses:
         200:
           description: successful operation
@@ -87,7 +87,7 @@ paths:
         - oAuth:
             - read:uom:category
       parameters:
-        - $ref: '#/components/parameters/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
         - $ref: '#/components/parameters/uomCategoryId'
       responses:
         200:
@@ -112,12 +112,12 @@ paths:
         - oAuth:
             - read:uom:category
       parameters:
-        - $ref: '#/components/parameters/accept-language'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/size'
-        - $ref: '#/components/parameters/attribute'
-        - $ref: '#/components/parameters/direction'
-        - $ref: '#/components/parameters/keyword'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/keyword.yaml#/keyword'
       responses:
         200:
           description: successful operation
@@ -134,13 +134,6 @@ paths:
 
 components:
   parameters:
-    accept-language:
-      name: Accept-Language
-      in: header
-      required: true
-      schema:
-        type: string
-        enum: [en, fr]
     uomCategoryId:
       in: path
       name: uomCategoryId
@@ -148,95 +141,9 @@ components:
       schema:
         type: string
         format: uuid
-    page:
-      in: header
-      name: page
-      required: true
-      schema:
-        type: integer
-        format: int32
-    size:
-      in: header
-      name: size
-      required: true
-      schema:
-        type: integer
-        format: int32
-    attribute:
-      in: header
-      name: attribute
-      required: true
-      schema:
-        type: string
-    direction:
-      in: header
-      name: direction
-      required: true
-      schema:
-        type: string
-        enum: [ASC, DSC]
-    keyword:
-      in: header
-      name: keyword
-      schema:
-        type: string
   schemas:
-    ValidationError:
-      type: object
-      required:
-        - field
-        - message
-      properties:
-        field:
-          type: string
-        message:
-          type: string
-    ApiResponse:
-      type: object
-      required:
-        - timestamp
-        - code
-        - status
-        - success
-      properties:
-        timestamp:
-          type: string
-        code:
-          type: integer
-          format: int32
-        status:
-          type: string
-        success:
-          type: boolean
-    ApiSuccessResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            message:
-              type: string
     ApiErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          required:
-            - reason
-            - path
-            - trackId
-          properties:
-            reason:
-              type: string
-            developerMessage:
-              type: string
-            path:
-              type: string
-            trackId:
-              type: string
-              format: uuid
-            error:
-              type: array
-              items:
-                $ref: '#/components/schemas/ValidationError'
+      $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-error-response.yaml#/ApiErrorResponse'
     CreateUomCategoryViewRequest:
       type: object
       required:
@@ -272,7 +179,7 @@ components:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
     CreateUomCategoryViewApiResponse:
       allOf:
-        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -284,41 +191,19 @@ components:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
     FindUomCategoryByIdViewApiResponse:
       allOf:
-        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/FindUomCategoryByIdViewResponse'
-    PageInfoViewResponse:
-      type: object
-      required:
-        - first
-        - last
-        - pageSize
-        - totalElement
-        - totalPages
-      properties:
-        first:
-          type: boolean
-        last:
-          type: boolean
-        pageSize:
-          type: integer
-          format: int32
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
     FindUomCategoriesViewResponse:
       allOf:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
     FindUomCategoriesPageInfoViewResponse:
       allOf:
-        - $ref: '#/components/schemas/PageInfoViewResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
             content:
@@ -327,7 +212,7 @@ components:
                 $ref: '#/components/schemas/FindUomCategoriesViewResponse'
     FindUomCategoriesViewApiResponse:
       allOf:
-        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -339,7 +224,7 @@ components:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
     SearchUomCategoriesPageInfoViewResponse:
       allOf:
-        - $ref: '#/components/schemas/PageInfoViewResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
             content:
@@ -348,7 +233,7 @@ components:
                 $ref: '#/components/schemas/SearchUomCategoriesViewResponse'
     SearchUomCategoriesViewApiResponse:
       allOf:
-        - $ref: '#/components/schemas/ApiSuccessResponse'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:

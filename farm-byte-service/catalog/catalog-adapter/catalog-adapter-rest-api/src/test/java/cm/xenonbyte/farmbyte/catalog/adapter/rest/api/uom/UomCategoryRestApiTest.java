@@ -253,7 +253,8 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.data").isMap())
                     .andExpect(jsonPath("$.data.content").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.id").value(findUomCategoryByIdViewResponse.getId().toString()))
-                    .andExpect(jsonPath("$.data.content.name").value(findUomCategoryByIdViewResponse.getName()));
+                    .andExpect(jsonPath("$.data.content.name").value(findUomCategoryByIdViewResponse.getName()))
+                    .andExpect(jsonPath("$.data.content.active").value(findUomCategoryByIdViewResponse.getActive()));
 
             //Then
             verify(uomCategoryDomainServiceRestApiAdapter, times(1)).findUomCategoryById(uuidArgumentCaptor.capture());
@@ -325,6 +326,8 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                                     .active(true)
                     ));
             when(uomCategoryDomainServiceRestApiAdapter.findUomCategories(page, size, attribute, direction)).thenReturn(findUomCategoriesPageInfoViewResponse);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
             //Act
             mockMvc.perform(get(UOM_CATEGORY_PATH_URI )
                             .accept(APPLICATION_JSON)
@@ -343,6 +346,13 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.content").isArray());
+
+            //Then
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1)).findUomCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(stringArgumentCaptor.getAllValues().get(1)).isEqualTo(direction);
 
         }
     }
@@ -382,6 +392,9 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                                     .active(true)
                     ));
             when(uomCategoryDomainServiceRestApiAdapter.searchUomCategories(page, size, attribute, direction, keyword)).thenReturn(searchUomCategoriesPageInfoViewResponse);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+
             //Act
             mockMvc.perform(get(UOM_CATEGORY_PATH_URI + "/search" )
                             .accept(APPLICATION_JSON)
@@ -401,6 +414,15 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FOUND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.content").isArray());
+
+            //Then
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1)).searchUomCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                    stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(stringArgumentCaptor.getAllValues().get(1)).isEqualTo(direction);
+            assertThat(stringArgumentCaptor.getAllValues().get(2)).isEqualTo(keyword);
 
         }
     }

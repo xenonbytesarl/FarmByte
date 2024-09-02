@@ -100,12 +100,6 @@
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
-                                <typeMappings>
-                                    <typeMapping>createUomResponse=CreateUomResponse</typeMapping>
-                                </typeMappings>
-                                <importMappings>
-                                    <importMapping>CreateUomResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateUomViewResponse</importMapping>
-                                </importMappings>
                             </configOptions>
                         </configuration>
                     </execution>
