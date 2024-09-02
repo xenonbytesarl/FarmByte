@@ -8,9 +8,10 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.constant;
 public final class CatalogDomainCoreConstant {
     public static final String UOM_REFERENCE_CONFLICT_CATEGORY = "UomReferenceConflictException.1";
     public static final String UOM_NAME_CONFLICT_EXCEPTION = "UomNameConflictException.1";
-    public static final String RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE = "Uom.1";
+    public static final String UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE = "Uom.1";
     public static final String UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER = "Uom.2";
     public static final String UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER = "Uom.3";
+    public static final String UOM_NOT_FOUND_EXCEPTION = "UomNotFoundException.1";
 
     public static final String UOM_CATEGORY_NAME_CONFLICT_EXCEPTION = "UomCategoryNameConflictException.1";
     public static final String UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION = "UomParentCategoryNotFoundException.1";

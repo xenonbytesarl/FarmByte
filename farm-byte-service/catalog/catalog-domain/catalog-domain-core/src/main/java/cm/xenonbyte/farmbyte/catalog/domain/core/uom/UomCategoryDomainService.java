@@ -45,7 +45,7 @@ public final class UomCategoryDomainService implements UomCategoryService {
 
     @Override
     public PageInfo<UomCategory> searchUomCategories(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
-        return uomCategoryRepository.findByKeyWord(page, size, sortAttribute, direction, keyword);
+        return uomCategoryRepository.search(page, size, sortAttribute, direction, keyword);
     }
 
     private void validateUomCategory(UomCategory uomCategory) {

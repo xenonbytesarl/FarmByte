@@ -25,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER;
@@ -145,7 +145,7 @@ final class UomDomainServiceRestApiAdapterTest {
                         UomType.GREATER,
                         CreateUomViewRequest.UomTypeEnum.GREATER,
                         IllegalArgumentException.class,
-                        RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE
+                        UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE
                 ),
                 Arguments.of(
                         UUID.randomUUID(),
