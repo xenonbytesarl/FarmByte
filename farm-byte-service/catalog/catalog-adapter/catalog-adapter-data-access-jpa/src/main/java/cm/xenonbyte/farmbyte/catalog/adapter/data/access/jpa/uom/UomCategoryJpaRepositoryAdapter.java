@@ -72,7 +72,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
         return new PageInfo(
                 uomCategoryJpaPage.isFirst(),
                 uomCategoryJpaPage.isLast(),
-                size,
+                uomCategoryJpaPage.getSize(),
                 uomCategoryJpaPage.getTotalElements(),
                 uomCategoryJpaPage.getTotalPages(),
                 uomCategoryJpaPage.getContent().stream().map(uomCategoryJpaMapper::toUomCategory).toList()
