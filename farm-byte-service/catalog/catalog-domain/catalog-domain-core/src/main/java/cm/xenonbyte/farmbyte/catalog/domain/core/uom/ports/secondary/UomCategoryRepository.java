@@ -26,5 +26,5 @@ public interface UomCategoryRepository {
 
     PageInfo<UomCategory> findAll(@Nonnull Integer page, @Nonnull Integer size, @Nonnull String sortAttribute, @Nonnull Direction direction);
 
-    PageInfo<UomCategory> findByKeyWord(int page, int size, String sortAttribute, Direction direction, Keyword keyword);
+    PageInfo<UomCategory> search(int page, int size, String sortAttribute, Direction direction, Keyword keyword);
 }

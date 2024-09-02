@@ -4,6 +4,9 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -31,6 +34,25 @@ public final class UomDomainService implements UomService {
         validateUom(uom);
         uom.initiate();
         return uomRepository.save(uom);
+    }
+
+    @Nonnull
+    @Override
+    public Uom findUomById(@Nonnull UomId uomId) {
+        return uomRepository.findById(uomId)
+                .orElseThrow(() -> new UomNotFoundException(new String[]{uomId.getValue().toString()}));
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<Uom> findUoms(int page, int size, String attribute, Direction direction) {
+        return uomRepository.findAll(page, size, attribute, direction);
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<Uom> searchUoms(int page, int size, String attribute, Direction direction, @Nonnull Keyword keyword) {
+        return uomRepository.search(page, size, attribute, direction, keyword);
     }
 
     private void verifyUomCategory(Uom uom) {

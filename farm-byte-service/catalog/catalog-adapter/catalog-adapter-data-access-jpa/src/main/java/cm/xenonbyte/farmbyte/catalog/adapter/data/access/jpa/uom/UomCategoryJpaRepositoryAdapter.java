@@ -80,7 +80,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     }
 
     @Override
-    public PageInfo<UomCategory> findByKeyWord(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
+    public PageInfo<UomCategory> search(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         Page<UomCategoryJpa> uomCategoryJpaPage = uomCategoryJpaRepository.findByKeyword(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());

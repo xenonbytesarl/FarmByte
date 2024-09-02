@@ -10,7 +10,7 @@ import jakarta.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER;
 
@@ -79,7 +79,7 @@ public final class Uom extends BaseEntity<UomId> {
 
     private void validateRatio() {
         if(ratio == null) {
-            throw new IllegalArgumentException(RATIO_IS_REQUIRED_WHEN_UOM_TYPE_IS_REFERENCE);
+            throw new IllegalArgumentException(UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE);
         }
         if(uomType.equals(UomType.GREATER) && ratio.isEqualOrLowerThanReference()) {
             throw new IllegalArgumentException(UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER);

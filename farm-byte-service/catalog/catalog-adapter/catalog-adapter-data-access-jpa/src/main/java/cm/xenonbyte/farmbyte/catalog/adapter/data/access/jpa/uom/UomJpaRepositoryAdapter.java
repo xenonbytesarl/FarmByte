@@ -4,8 +4,11 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
@@ -57,12 +60,22 @@ public class UomJpaRepositoryAdapter implements UomRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Uom> findByUomId(@Nonnull UomId uomId) {
+    public Optional<Uom> findById(@Nonnull UomId uomId) {
         return uomJpaRepository.findById(uomId.getValue()).map(mapper::fromUomJpa);
     }
 
     @Override
     public boolean existsById(@Nonnull UomId uomId) {
         return uomJpaRepository.existsById(uomId.getValue());
+    }
+
+    @Override
+    public PageInfo<Uom> findAll(int page, int size, String attribute, Direction direction) {
+        return null;
+    }
+
+    @Override
+    public PageInfo<Uom> search(int page, int size, String attribute, Direction direction, Keyword keyword) {
+        return null;
     }
 }

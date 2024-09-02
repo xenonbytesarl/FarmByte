@@ -68,8 +68,8 @@ public final class ProductDomainService implements ProductService {
             throw new ProductUomNotFoundException(new String[] {product.getPurchaseUomId().getValue().toString()});
         }
         if(product.isStorable() && product.getStockUomId() != null && product.getPurchaseUomId() != null) {
-            Optional<Uom> optionalStockUom = uomRepository.findByUomId(product.getStockUomId());
-            Optional<Uom> optionalPurchaseUom = uomRepository.findByUomId(product.getPurchaseUomId());
+            Optional<Uom> optionalStockUom = uomRepository.findById(product.getStockUomId());
+            Optional<Uom> optionalPurchaseUom = uomRepository.findById(product.getPurchaseUomId());
             if(optionalStockUom.isPresent() && optionalPurchaseUom.isPresent() &&
                     !optionalStockUom.get().getUomCategoryId().equals(optionalPurchaseUom.get().getUomCategoryId())) {
                 throw new ProductStockAndPurchaseUomBadException(new String[] {

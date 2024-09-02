@@ -149,7 +149,7 @@ public abstract class UomCategoryRepositoryTest {
             Keyword keyword = Keyword.of(Text.of("m"));
 
             //Then
-            PageInfo<UomCategory> result = uomCategoryRepository.findByKeyWord(page, size, sortAttribute, direction, keyword);
+            PageInfo<UomCategory> result = uomCategoryRepository.search(page, size, sortAttribute, direction, keyword);
 
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
@@ -167,7 +167,7 @@ public abstract class UomCategoryRepositoryTest {
             Keyword keyword = Keyword.of(Text.of("w"));
 
             //Then
-            PageInfo<UomCategory> result = uomCategoryRepository.findByKeyWord(page, size, sortAttribute, direction, keyword);
+            PageInfo<UomCategory> result = uomCategoryRepository.search(page, size, sortAttribute, direction, keyword);
 
             assertThat(result.getTotalElements()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);

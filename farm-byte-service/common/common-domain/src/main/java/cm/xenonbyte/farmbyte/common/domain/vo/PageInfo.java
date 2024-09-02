@@ -86,7 +86,9 @@ public final class PageInfo<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageInfo<?> pageInfo = (PageInfo<?>) o;
-        return Objects.equals(first, pageInfo.first) && Objects.equals(last, pageInfo.last) && Objects.equals(pageSize, pageInfo.pageSize) && Objects.equals(totalElements, pageInfo.totalElements) && Objects.equals(totalPages, pageInfo.totalPages) && Objects.equals(content, pageInfo.content);
+        return Objects.equals(first, pageInfo.first) && Objects.equals(last, pageInfo.last) &&
+                Objects.equals(pageSize, pageInfo.pageSize) && Objects.equals(totalElements, pageInfo.totalElements) &&
+                Objects.equals(totalPages, pageInfo.totalPages) && Objects.equals(content, pageInfo.content);
     }
 
     @Override
