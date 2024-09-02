@@ -9,7 +9,6 @@ jobs:
   build-image:
     runs-on: self-hosted
     name: Build docker image
-    needs: [build-jar]
     steps:
       - name: Build the Project
         uses: actions/checkout@v4
