@@ -1,0 +1,108 @@
+name: CDPipelineFarmByteService
+on:
+  workflow_dispatch:
+    inputs:
+      Environment:
+        default: ""
+        description: possible value are(int, rct, prod)
+jobs:
+  build-image:
+    runs-on: self-hosted
+    name: Build docker image
+    needs: [build-jar]
+    steps:
+      - name: Build the Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'corretto'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.8
+      - name: Build project
+        run: |
+          cd farm-byte-service
+          mvn clean package -DskipTests
+      - name: Extract project version
+        id: extract_version
+        run: |
+          cd farm-byte-service
+          echo "VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get current date in number
+        id: current_date
+        run: |
+          echo "CURRENT_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Build image and push to docker registry
+        uses: docker/build-push-action@v5
+        with:
+          context: farm-byte-service
+          file: docker/service/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}.${{ steps.current_date.outputs.CURRENT_DATE }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
+          build-args: |
+            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
+  deploy-service:
+    name: Deploy FarmByte Service
+    runs-on: self-hosted
+    needs: [build-image]
+    steps:
+      - name: Create deployment folder
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: mkdir -p ci_cd
+      - name: Copy docker compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          rm: true
+          overwrite: true
+          source: docker-compose.yml
+          target: ci_cd
+      - name: Set environment variables and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_PRIVATE_KEY }}
+          script: |
+            export DB_SERVER=${{ secrets.DB_SERVER }}
+            export ACTIVE_PROFILE=${{ github.event.inputs.Environment }}
+            if [ ${{github.event.inputs.Environment}} == 'int' ]; then
+              export DB_USER=${{ secrets.DB_USER_RCT }}
+              export DB_PASSWORD=${{ secrets.DB_PASSWORD_RCT }}
+              export DB_PORT=${{ secrets.DB_PORT_RCT }}
+              export APP_PORT=${{ secrets.APP_PORT_RCT }}
+              export DB_NAME=${{ secrets.DB_NAME_RCT }}
+            elif [ ${{github.event.inputs.Environment}} == 'prod' ]; then
+              export DB_USER=${{ secrets.DB_USER_PROD }}
+              export DB_PASSWORD=${{ secrets.DB_PASSWORD_PROD }}
+              export DB_PORT=${{ secrets.DB_PORT_PROD }}
+              export APP_PORT=${{ secrets.APP_PORT_PROD }}
+              export DB_NAME=${{ secrets.DB_NAME_PROD }}
+            else 
+              export DB_USER=${{ secrets.DB_USER_INT }}
+              export DB_PASSWORD=${{ secrets.DB_PASSWORD_INT }}
+              export DB_PORT=${{ secrets.DB_PORT_INT }}
+              export APP_PORT=${{ secrets.APP_PORT_INT }}
+              export DB_NAME=${{ secrets.DB_NAME_INT }}
+            fi
+            cd ci_cd
+            docker compose -f docker-compose.yml pull -q
+            docker compose down
+            docker compose -f docker-compose.yml up -d
