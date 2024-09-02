@@ -4,7 +4,7 @@ spring:
     show-sql: true
     generate-ddl: true
   flyway:
-    locations: classpath:db/migrations/common,classpath:db/migrations/local
+    locations: classpath:db/migrations/common
 logging:
   level:
     org.springframework.web: DEBUG

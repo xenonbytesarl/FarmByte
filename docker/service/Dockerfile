@@ -4,7 +4,7 @@ FROM maven:3.9.8-amazoncorretto-21 AS build
 WORKDIR /build
 COPY . .
 RUN mvn dependency:go-offline
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests=true
 
 #Runtime Stage
 FROM amazoncorretto:21
