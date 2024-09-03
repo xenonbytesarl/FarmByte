@@ -13,6 +13,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -294,19 +295,24 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                             List.of(
                                     new FindProductCategoriesViewResponse()
                                             .name("Alcohol")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new FindProductCategoriesViewResponse()
                                             .name("Juice")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new FindProductCategoriesViewResponse()
                                             .name("Water")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new FindProductCategoriesViewResponse()
                                             .name("Fresh")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new FindProductCategoriesViewResponse()
                                             .name("Meet")
                                             .id(UUID.randomUUID())
+                                            .active(true)
                             )
                     );
 
@@ -362,22 +368,27 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                             ProductCategory.builder()
                                     .name(Name.of(Text.of("Alcohol")))
                                     .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .active(Active.with(true))
                                     .build(),
                             ProductCategory.builder()
                                     .name(Name.of(Text.of("Juice")))
                                     .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .active(Active.with(true))
                                     .build(),
                             ProductCategory.builder()
                                     .name(Name.of(Text.of("Water")))
                                     .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .active(Active.with(true))
                                     .build(),
                             ProductCategory.builder()
                                     .name(Name.of(Text.of("Fresh")))
                                     .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .active(Active.with(true))
                                     .build(),
                             ProductCategory.builder()
                                     .name(Name.of(Text.of("Meet")))
                                     .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .active(Active.with(true))
                                     .build()
                     )
             );
@@ -392,19 +403,24 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                             List.of(
                                     new SearchProductCategoriesViewResponse()
                                             .name("Alcohol")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new SearchProductCategoriesViewResponse()
                                             .name("Juice")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new SearchProductCategoriesViewResponse()
                                             .name("Water")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new SearchProductCategoriesViewResponse()
                                             .name("Fresh")
-                                            .id(UUID.randomUUID()),
+                                            .id(UUID.randomUUID())
+                                            .active(true),
                                     new SearchProductCategoriesViewResponse()
                                             .name("Meet")
                                             .id(UUID.randomUUID())
+                                            .active(true)
                             )
                     );
 

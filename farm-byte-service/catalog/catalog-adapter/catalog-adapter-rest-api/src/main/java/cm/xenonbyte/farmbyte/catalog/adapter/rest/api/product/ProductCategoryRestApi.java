@@ -3,7 +3,6 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.ProductCategoriesApi;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewRequest;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewApiResponse;
@@ -20,6 +19,7 @@ import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author bamk
@@ -30,6 +30,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class ProductCategoryRestApi implements ProductCategoriesApi {
 
     public static final String PRODUCT_CATEGORY_CREATED_SUCCESSFULLY = "ProductCategoryApiRest.1";
+    public static final String PRODUCT_CATEGORY_FIND_SUCCESSFULLY = "ProductCategoryApiRest.2";
+    public static final String PRODUCT_CATEGORIES_FIND_SUCCESSFULLY = "ProductCategoryApiRest.3";
 
     private final ProductCategoryServiceRestApiAdapter productCategoryApiAdapterService;
 
@@ -39,8 +41,6 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
 
     @Override
     public ResponseEntity<CreateProductCategoryViewApiResponse> createProductCategory(String acceptLanguage, CreateProductCategoryViewRequest createProductCategoryViewRequest) {
-        CreateProductCategoryViewResponse createProductCategoryViewResponse =
-                productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest);
         return ResponseEntity.status(CREATED).body(
                 new CreateProductCategoryViewApiResponse()
                         .code(CREATED.value())
@@ -48,22 +48,46 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .message(MessageUtil.getMessage(PRODUCT_CATEGORY_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(Map.of(BODY, createProductCategoryViewResponse))
+                        .data(Map.of(BODY, productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest)))
         );
     }
 
     @Override
     public ResponseEntity<FindProductCategoriesViewApiResponse> findProductCategories(String acceptLanguage, Integer page, Integer size, String attribute, String direction) {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new FindProductCategoriesViewApiResponse()
+                    .code(OK.value())
+                    .status(OK.name())
+                    .timestamp(ZonedDateTime.now().toString())
+                    .success(true)
+                    .message(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                    .data(Map.of(BODY, productCategoryApiAdapterService.findProductCategories(page, size, attribute, direction)))
+        );
     }
 
     @Override
     public ResponseEntity<FindProductCategoryByIdViewApiResponse> findProductCategoryById(String acceptLanguage, UUID productCategoryId) {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new FindProductCategoryByIdViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .message(MessageUtil.getMessage(PRODUCT_CATEGORY_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(Map.of(BODY, productCategoryApiAdapterService.findProductCategoryById(productCategoryId)))
+        );
     }
 
     @Override
     public ResponseEntity<SearchProductCategoriesViewApiResponse> searchProductCategory(String acceptLanguage, Integer page, Integer size, String attribute, String direction, String keyword) {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new SearchProductCategoriesViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .message(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(Map.of(BODY, productCategoryApiAdapterService.searchProductCategories(page, size, attribute, direction, keyword)))
+        );
     }
 }
