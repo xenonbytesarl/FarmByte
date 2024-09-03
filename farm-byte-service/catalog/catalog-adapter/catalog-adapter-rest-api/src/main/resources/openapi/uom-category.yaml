@@ -61,6 +61,7 @@ paths:
       tags:
         - UomCategory
       operationId: findUomCategories
+      summary: find all categories units of measure
       security:
         - oAuth:
             - read:uom:category

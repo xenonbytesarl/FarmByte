@@ -59,6 +59,6 @@ public class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServic
     @Nonnull
     @Override
     public SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword) {
-        return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword ))));
+        return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword))));
     }
 }
