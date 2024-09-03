@@ -2,13 +2,25 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ParentProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -53,124 +66,380 @@ final class ProductCategoryDomainServiceApiAdapterTest {
         );
     }
 
-    static Stream<Arguments> createProductCategoryMethodSourceArgs() {
-        return Stream.of(
-                Arguments.of(
-                     "Raw of material",
-                     null,
-                     UUID.randomUUID()
-                ),
-                Arguments.of(
-                        "Manufactured",
-                        UUID.randomUUID(),
-                        UUID.randomUUID()
-                )
-        );
+    @Nested
+    class CreateProductCategoryDomainServiceApiAdapterTest {
+
+        static Stream<Arguments> createProductCategoryMethodSourceArgs() {
+            return Stream.of(
+                    Arguments.of(
+                            "Raw of material",
+                            null,
+                            UUID.randomUUID()
+                    ),
+                    Arguments.of(
+                            "Manufactured",
+                            UUID.randomUUID(),
+                            UUID.randomUUID()
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("createProductCategoryMethodSourceArgs")
+        void should_create_root_product_category_or_child_category(
+                String nameAsString,
+                UUID parentProductCategoryUUID,
+                UUID newProductCategoryUUID
+        ) {
+            //Given
+            CreateProductCategoryViewRequest createProductCategoryViewRequest = new CreateProductCategoryViewRequest()
+                    .name(nameAsString)
+                    .parentProductCategoryId(parentProductCategoryUUID);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .name(Name.of(Text.of(nameAsString)))
+                    .build();
+            CreateProductCategoryViewResponse createProductCategoryViewResponse = new CreateProductCategoryViewResponse()
+                    .id(newProductCategoryUUID)
+                    .active(true)
+                    .parentProductCategoryId(parentProductCategoryUUID)
+                    .name(nameAsString);
+
+            when(productCategoryViewMapper.toProductCategory(createProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.createProductCategory(productCategory)).thenReturn(productCategory);
+            when(productCategoryViewMapper.toCreateProductCategoryViewResponse(productCategory)).thenReturn(createProductCategoryViewResponse);
+
+            ArgumentCaptor<CreateProductCategoryViewRequest> createProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(CreateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act
+            CreateProductCategoryViewResponse result = productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest);
+
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(createProductCategoryViewResponse);
+
+            verify(productCategoryViewMapper, times(1))
+                    .toProductCategory(createProductCategoryViewRequestArgumentCaptor.capture());
+            assertThat(createProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(createProductCategoryViewRequest);
+
+            verify(productCategoryService, times(1))
+                    .createProductCategory(productCategoryArgumentCaptor.capture());
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+
+            verify(productCategoryViewMapper, times(1))
+                    .toCreateProductCategoryViewResponse(productCategoryArgumentCaptor.capture());
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+        }
+
+        static Stream<Arguments> createProductCategoryThrowExceptionMethodSourceArgs() {
+            return Stream.of(
+                    Arguments.of(
+                            "Raw of material",
+                            null,
+                            new ProductCategoryNameConflictException(new String[]{PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION}),
+                            PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION
+                    ),
+                    Arguments.of(
+                            "Manufactured",
+                            UUID.randomUUID(),
+                            new ParentProductCategoryNotFoundException(new String[]{PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED}),
+                            PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("createProductCategoryThrowExceptionMethodSourceArgs")
+        void should_throw_exception_when_create_product_category(
+                String nameAsString,
+                UUID parentProductCategoryUUID,
+                RuntimeException exceptionClass,
+                String exceptionMessage
+        ) {
+
+            //Given
+            CreateProductCategoryViewRequest createProductCategoryViewRequest = new CreateProductCategoryViewRequest()
+                    .name(nameAsString)
+                    .parentProductCategoryId(parentProductCategoryUUID);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .name(Name.of(Text.of(nameAsString)))
+                    .build();
+
+            when(productCategoryViewMapper.toProductCategory(createProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.createProductCategory(productCategory)).thenThrow(exceptionClass);
+
+            ArgumentCaptor<CreateProductCategoryViewRequest> createProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(CreateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act
+            assertThatThrownBy(() -> productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest))
+                    .isInstanceOf(exceptionClass.getClass())
+                    .hasMessage(exceptionMessage);
+
+            verify(productCategoryViewMapper, times(1))
+                    .toProductCategory(createProductCategoryViewRequestArgumentCaptor.capture());
+            assertThat(createProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(createProductCategoryViewRequest);
+
+            verify(productCategoryService, times(1))
+                    .createProductCategory(productCategoryArgumentCaptor.capture());
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("createProductCategoryMethodSourceArgs")
-    void should_create_root_product_category_or_child_category(
-            String nameAsString,
-            UUID parentProductCategoryUUID,
-            UUID newProductCategoryUUID
-    ) {
-        //Given
-        CreateProductCategoryViewRequest createProductCategoryViewRequest = new CreateProductCategoryViewRequest()
-                .name(nameAsString)
-                .parentProductCategoryId(parentProductCategoryUUID);
-        ProductCategory productCategory = ProductCategory.builder()
-                .name(Name.of(Text.of(nameAsString)))
-                .build();
-        CreateProductCategoryViewResponse createProductCategoryViewResponse = new CreateProductCategoryViewResponse()
-                .id(newProductCategoryUUID)
-                .active(true)
-                .parentProductCategoryId(parentProductCategoryUUID)
-                .name(nameAsString);
+    @Nested
+    class FindProductCategoryByIdDomainServiceApiAdapterTest {
+        @Test
+        void should_success_when_find_product_category_with_existing_id() {
+            //Given
+            UUID productCategoryIdUUID = UUID.fromString("0191ab3c-1a4b-7202-935e-4eb5d7710981");
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+            String name = "Unite";
+            ProductCategory productCategory = ProductCategory.builder()
+                    .name(Name.of(Text.of(name)))
+                    .id(new ProductCategoryId(productCategoryIdUUID))
+                    .build();
 
-        when(productCategoryViewMapper.toProductCategory(createProductCategoryViewRequest)).thenReturn(productCategory);
-        when(productCategoryService.createProductCategory(productCategory)).thenReturn(productCategory);
-        when(productCategoryViewMapper.toCreateProductCategoryViewResponse(productCategory)).thenReturn(createProductCategoryViewResponse);
+            FindProductCategoryByIdViewResponse findProductCategoryByIdViewResponse = new FindProductCategoryByIdViewResponse()
+                    .id(productCategoryIdUUID)
+                    .name(name);
 
-        ArgumentCaptor<CreateProductCategoryViewRequest> createProductCategoryViewRequestArgumentCaptor =
-                ArgumentCaptor.forClass(CreateProductCategoryViewRequest.class);
-        ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+            when(productCategoryService.findProductCategoryById(productCategoryId)).thenReturn(productCategory);
+            when(productCategoryViewMapper.toFindProductCategoryViewResponse(productCategory)).thenReturn(findProductCategoryByIdViewResponse);
 
-        //Act
-        CreateProductCategoryViewResponse result = productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest);
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
 
-        assertThat(result)
-                .isNotNull()
-                .isEqualTo(createProductCategoryViewResponse);
+            //Act
+            FindProductCategoryByIdViewResponse result = productCategoryApiAdapterService.findProductCategoryById(productCategoryIdUUID);
 
-        verify(productCategoryViewMapper, times(1))
-                .toProductCategory(createProductCategoryViewRequestArgumentCaptor.capture());
-        assertThat(createProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(createProductCategoryViewRequest);
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(findProductCategoryByIdViewResponse);
 
-        verify(productCategoryService, times(1))
-                .createProductCategory(productCategoryArgumentCaptor.capture());
-        assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+            verify(productCategoryService, times(1)).findProductCategoryById(productCategoryIdArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toFindProductCategoryViewResponse(productCategoryArgumentCaptor.capture());
 
-        verify(productCategoryViewMapper, times(1))
-                .toCreateProductCategoryViewResponse(productCategoryArgumentCaptor.capture());
-        assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+
+
+        }
+
+        @Test
+        void should_fail_when_find_product_category_with_non_existing_id() {
+            //Given
+            UUID productCategoryIdUUID = UUID.randomUUID();
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+
+            when(productCategoryService.findProductCategoryById(productCategoryId)).thenThrow(ProductCategoryNotFoundException.class);
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryApiAdapterService.findProductCategoryById(productCategoryIdUUID))
+                    .isInstanceOf(ProductCategoryNotFoundException.class);
+
+            verify(productCategoryService, times(1)).findProductCategoryById(productCategoryIdArgumentCaptor.capture());
+
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+        }
     }
 
-    static Stream<Arguments> createProductCategoryThrowExceptionMethodSourceArgs() {
-        return Stream.of(
-                Arguments.of(
-                        "Raw of material",
-                        null,
-                        new ProductCategoryNameConflictException(new String[]{PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION}),
-                        PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION
-                ),
-                Arguments.of(
-                        "Manufactured",
-                        UUID.randomUUID(),
-                        new ParentProductCategoryNotFoundException(new String[]{PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED}),
-                        PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION
-                )
-        );
+    @Nested
+    class FindProductCategoriesDomainServiceApiAdapterTest {
+        @Test
+        void should_success_when_find_product_category_with_existing_id() {
+            //Given
+
+            int page = 1;
+            int pageSize = 2;
+            String attribute = "name";
+
+            PageInfo<ProductCategory> productCategoriesPageInfo =  new PageInfo<ProductCategory>().with(
+                    page, pageSize,
+                    List.of(
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Alcohol")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Juice")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Water")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Fresh")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Meet")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build()
+                    )
+            );
+
+            FindProductCategoriesPageInfoViewResponse findCategoriesPageInfoViewResponse = new FindProductCategoriesPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(3)
+                    .content(
+                            List.of(
+                                    new FindProductCategoriesViewResponse()
+                                            .name("Alcohol")
+                                            .id(UUID.randomUUID()),
+                                    new FindProductCategoriesViewResponse()
+                                            .name("Juice")
+                                            .id(UUID.randomUUID()),
+                                    new FindProductCategoriesViewResponse()
+                                            .name("Water")
+                                            .id(UUID.randomUUID()),
+                                    new FindProductCategoriesViewResponse()
+                                            .name("Fresh")
+                                            .id(UUID.randomUUID()),
+                                    new FindProductCategoriesViewResponse()
+                                            .name("Meet")
+                                            .id(UUID.randomUUID())
+                            )
+                    );
+
+
+            when(productCategoryService.findProductCategories(page, pageSize, "name", Direction.ASC)).thenReturn(productCategoriesPageInfo);
+            when(productCategoryViewMapper.toFindProductCategoriesPageInfoViewResponse(productCategoriesPageInfo)).thenReturn(findCategoriesPageInfoViewResponse);
+
+            ArgumentCaptor<PageInfo> pageInfoArgumentCaptor = ArgumentCaptor.forClass(PageInfo.class);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Direction> directionArgumentCaptor = ArgumentCaptor.forClass(Direction.class);
+
+            //Act
+            FindProductCategoriesPageInfoViewResponse result = productCategoryApiAdapterService.findProductCategories(page, pageSize, attribute, "ASC");
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(findCategoriesPageInfoViewResponse);
+
+            verify(productCategoryService, times(1))
+                    .findProductCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                            stringArgumentCaptor.capture(), directionArgumentCaptor.capture());
+
+            verify(productCategoryViewMapper, times(1)).toFindProductCategoriesPageInfoViewResponse(pageInfoArgumentCaptor.capture());
+
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(productCategoriesPageInfo);
+
+
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("createProductCategoryThrowExceptionMethodSourceArgs")
-    void should_throw_exception_when_create_product_category(
-            String nameAsString,
-            UUID parentProductCategoryUUID,
-            RuntimeException exceptionClass,
-            String exceptionMessage
-    ) {
 
-        //Given
-        CreateProductCategoryViewRequest createProductCategoryViewRequest = new CreateProductCategoryViewRequest()
-                .name(nameAsString)
-                .parentProductCategoryId(parentProductCategoryUUID);
-        ProductCategory productCategory = ProductCategory.builder()
-                .name(Name.of(Text.of(nameAsString)))
-                .build();
+    @Nested
+    class SearchProductCategoriesDomainServiceRestApiAdapterTest {
 
-        when(productCategoryViewMapper.toProductCategory(createProductCategoryViewRequest)).thenReturn(productCategory);
-        when(productCategoryService.createProductCategory(productCategory)).thenThrow(exceptionClass);
+        @Test
+        void should_success_when_search_product_category_with_existing_keyword() {
+            //Given
 
-        ArgumentCaptor<CreateProductCategoryViewRequest> createProductCategoryViewRequestArgumentCaptor =
-                ArgumentCaptor.forClass(CreateProductCategoryViewRequest.class);
-        ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+            int page = 1;
+            int pageSize = 2;
+            String keyword = "e";
+            String attribute = "name";
 
-        //Act
-        assertThatThrownBy(() -> productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest))
-                .isInstanceOf(exceptionClass.getClass())
-                        .hasMessage(exceptionMessage);
+            PageInfo<ProductCategory> productCategoriesPageInfo =  new PageInfo<ProductCategory>().with(
+                    1, 2,
+                    List.of(
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Alcohol")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Juice")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Water")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Fresh")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build(),
+                            ProductCategory.builder()
+                                    .name(Name.of(Text.of("Meet")))
+                                    .id(new ProductCategoryId(UUID.randomUUID()))
+                                    .build()
+                    )
+            );
 
-        verify(productCategoryViewMapper, times(1))
-                .toProductCategory(createProductCategoryViewRequestArgumentCaptor.capture());
-        assertThat(createProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(createProductCategoryViewRequest);
+            SearchProductCategoriesPageInfoViewResponse searchCategoriesPageInfoViewResponse = new SearchProductCategoriesPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(3)
+                    .content(
+                            List.of(
+                                    new SearchProductCategoriesViewResponse()
+                                            .name("Alcohol")
+                                            .id(UUID.randomUUID()),
+                                    new SearchProductCategoriesViewResponse()
+                                            .name("Juice")
+                                            .id(UUID.randomUUID()),
+                                    new SearchProductCategoriesViewResponse()
+                                            .name("Water")
+                                            .id(UUID.randomUUID()),
+                                    new SearchProductCategoriesViewResponse()
+                                            .name("Fresh")
+                                            .id(UUID.randomUUID()),
+                                    new SearchProductCategoriesViewResponse()
+                                            .name("Meet")
+                                            .id(UUID.randomUUID())
+                            )
+                    );
 
-        verify(productCategoryService, times(1))
-                .createProductCategory(productCategoryArgumentCaptor.capture());
-        assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+
+            when(productCategoryService.searchProductCategories(page, pageSize, "name", Direction.ASC, Keyword.of(Text.of(keyword)))).thenReturn(productCategoriesPageInfo);
+            when(productCategoryViewMapper.toSearchProductCategoriesPageInfoViewResponse(productCategoriesPageInfo)).thenReturn(searchCategoriesPageInfoViewResponse);
+
+            ArgumentCaptor<PageInfo> pageInfoArgumentCaptor = ArgumentCaptor.forClass(PageInfo.class);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Direction> directionArgumentCaptor = ArgumentCaptor.forClass(Direction.class);
+            ArgumentCaptor<Keyword> keywordArgumentCaptor = ArgumentCaptor.forClass(Keyword.class);
+
+            //Act
+            SearchProductCategoriesPageInfoViewResponse result = productCategoryApiAdapterService.searchProductCategories(page, pageSize, attribute, "ASC", keyword);
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(searchCategoriesPageInfoViewResponse);
+            verify(productCategoryService, times(1))
+                    .searchProductCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                            stringArgumentCaptor.capture(), directionArgumentCaptor.capture(), keywordArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toSearchProductCategoriesPageInfoViewResponse(pageInfoArgumentCaptor.capture());
+
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(keywordArgumentCaptor.getValue().getText().getValue()).isEqualTo(keyword);
+            assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(productCategoriesPageInfo);
+
+
+        }
 
     }
-
 
 }

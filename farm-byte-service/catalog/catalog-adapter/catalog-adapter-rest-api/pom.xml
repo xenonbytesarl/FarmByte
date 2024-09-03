@@ -152,12 +152,6 @@
                                 <useResponseEntity>true</useResponseEntity>
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
-                                <typeMappings>
-                                    <typeMapping>createProductCategoryResponse=CreateProductCategoryResponse</typeMapping>
-                                </typeMappings>
-                                <importMappings>
-                                    <importMapping>CreateProductCategoryResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductCategoryViewResponse</importMapping>
-                                </importMappings>
                             </configOptions>
                         </configuration>
                     </execution>

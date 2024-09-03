@@ -31,14 +31,14 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateProductCategoryViewRequest'
       parameters:
-        - $ref: '#/components/parameters/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
       responses:
         201:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiSuccessResponse'
+                $ref: '#/components/schemas/CreateProductCategoryViewApiResponse'
         400:
           description: bad operation
           content:
@@ -57,76 +57,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - ProductCategory
+      operationId: findProductCategories
+      summary: find all category of product
+      security:
+        - oAuth:
+            - read:product:category
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindProductCategoriesViewApiResponse'
+  /product-categories/{productCategoryId}:
+    get:
+      tags:
+        - ProductCategory
+      summary: find category of product by id
+      operationId: findProductCategoryById
+      security:
+        - oAuth:
+            - read:product:category
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/productCategoryId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindProductCategoryByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /product-categories/search:
+    get:
+      tags:
+        - ProductCategory
+      summary: search category of product by a keyword
+      operationId: searchProductCategory
+      security:
+        - oAuth:
+            - read:product:category
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/keyword.yaml#/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchProductCategoriesViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 components:
   parameters:
-    accept-language:
-      name: Accept-Language
-      in: header
+    productCategoryId:
+      in: path
+      name: productCategoryId
       required: true
       schema:
         type: string
-        enum: [en, fr]
+        format: uuid
   schemas:
-    ValidationError:
-      type: object
-      required:
-        - field
-        - message
-      properties:
-        field:
-          type: string
-        message:
-          type: string
-    ApiResponse:
-      type: object
-      required:
-        - timestamp
-        - code
-        - status
-        - success
-      properties:
-        timestamp:
-          type: string
-        code:
-          type: integer
-          format: int32
-        status:
-          type: string
-        success:
-          type: boolean
-    ApiSuccessResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            message:
-              type: string
-            data:
-              type: object
-              additionalProperties:
-                $ref: '#/components/schemas/CreateProductCategoryViewResponse'
     ApiErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          required:
-            - reason
-            - path
-            - trackId
-          properties:
-            reason:
-              type: string
-            developerMessage:
-              type: string
-            path:
-              type: string
-            trackId:
-              type: string
-              format: uuid
-            error:
-              type: array
-              items:
-                $ref: '#/components/schemas/ValidationError'
+      $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-error-response.yaml#/ApiErrorResponse'
     CreateProductCategoryViewRequest:
       type: object
       required:
@@ -138,7 +155,7 @@ components:
         parentProductCategoryId:
           type: string
           format: uuid
-    CreateProductCategoryViewResponse:
+    ProductCategoryViewResponse:
       type: object
       required:
         - id
@@ -157,3 +174,69 @@ components:
           format: uuid
         active:
           type: boolean
+    CreateProductCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryViewResponse'
+    CreateProductCategoryViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateProductCategoryViewResponse'
+    FindProductCategoryByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryViewResponse'
+    FindProductCategoryByIdViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindProductCategoryByIdViewResponse'
+    FindProductCategoriesViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryViewResponse'
+    FindProductCategoriesPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindProductCategoriesViewResponse'
+    FindProductCategoriesViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindProductCategoriesPageInfoViewResponse'
+    SearchProductCategoriesViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryViewResponse'
+    SearchProductCategoriesPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchProductCategoriesViewResponse'
+    SearchProductCategoriesViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SearchProductCategoriesPageInfoViewResponse'

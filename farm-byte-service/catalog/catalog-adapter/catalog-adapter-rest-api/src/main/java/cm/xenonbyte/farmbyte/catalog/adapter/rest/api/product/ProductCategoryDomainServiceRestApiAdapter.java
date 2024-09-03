@@ -2,13 +2,21 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.CreateProductCategoryViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author bamk
@@ -40,5 +48,29 @@ public class ProductCategoryDomainServiceRestApiAdapter implements ProductCatego
                 )
         );
 
+    }
+
+    @Nonnull
+    @Override
+    public FindProductCategoryByIdViewResponse findProductCategoryById(UUID productCategoryIdUUID) {
+        return productCategoryViewMapper.toFindProductCategoryViewResponse(
+                productCategoryService.findProductCategoryById(new ProductCategoryId(productCategoryIdUUID))
+        );
+    }
+
+    @Nonnull
+    @Override
+    public FindProductCategoriesPageInfoViewResponse findProductCategories(int page, int pageSize, String attribute, String direction) {
+        return productCategoryViewMapper.toFindProductCategoriesPageInfoViewResponse(
+                productCategoryService.findProductCategories(page, pageSize, attribute, Direction.valueOf(direction))
+        );
+    }
+
+    @Nonnull
+    @Override
+    public SearchProductCategoriesPageInfoViewResponse searchProductCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword) {
+        return productCategoryViewMapper.toSearchProductCategoriesPageInfoViewResponse(
+                productCategoryService.searchProductCategories(page, pageSize, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))
+        );
     }
 }
