@@ -20,7 +20,7 @@ public class RestApiBeanConfigTest {
     protected UomDomainServiceRestApiAdapter uomDomainServiceRestApiAdapter;
 
     @MockBean
-    protected ProductCategoryDomainServiceRestApiAdapter productCategoryDomainServiceApiAdapter;
+    protected ProductCategoryDomainServiceRestApiAdapter productCategoryDomainServiceRestApiAdapter;
 
     @MockBean
     protected ProductDomainServiceRestApiAdapter productDomainServiceApiAdapter;
