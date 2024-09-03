@@ -3,13 +3,21 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -34,6 +42,49 @@ public class ProductCategoryJpaRepositoryAdapter implements ProductCategoryRepos
     @Transactional(readOnly = true)
     public Boolean existsByName(@Nonnull Name name) {
         return productCategoryJpaRepository.existsByName(name.getText().getValue());
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ProductCategory> findById(@Nonnull ProductCategoryId productCategoryId) {
+        return productCategoryJpaRepository.findById(productCategoryId.getValue())
+                .map(productCategoryJpaMapper::toProductCategory);
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<ProductCategory> findAll(Integer page, Integer size, String attribute, Direction direction) {
+        Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Page<ProductCategoryJpa> productCategoryJpaPage = productCategoryJpaRepository.findAll(PageRequest.of(page, size, sortDirection, attribute));
+
+
+        return new PageInfo<ProductCategory>(
+                productCategoryJpaPage.isFirst(),
+                productCategoryJpaPage.isLast(),
+                productCategoryJpaPage.getSize(),
+                productCategoryJpaPage.getTotalElements(),
+                productCategoryJpaPage.getTotalPages(),
+                productCategoryJpaPage.getContent().stream().map(productCategoryJpaMapper::toProductCategory).toList()
+        );
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<ProductCategory> search(Integer page, Integer size, String attribute, Direction direction, @Nonnull Keyword keyword) {
+        Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Page<ProductCategoryJpa> productCategoryJpaPage = productCategoryJpaRepository.search(PageRequest.of(page, size, sortDirection, attribute), keyword.getText().getValue());
+
+
+        return new PageInfo(
+                productCategoryJpaPage.isFirst(),
+                productCategoryJpaPage.isLast(),
+                productCategoryJpaPage.getSize(),
+                productCategoryJpaPage.getTotalElements(),
+                productCategoryJpaPage.getTotalPages(),
+                productCategoryJpaPage.getContent().stream().map(productCategoryJpaMapper::toProductCategory).toList()
+        );
     }
 
     @Override

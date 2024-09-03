@@ -83,13 +83,13 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     public PageInfo<UomCategory> search(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        Page<UomCategoryJpa> uomCategoryJpaPage = uomCategoryJpaRepository.findByKeyword(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());
+        Page<UomCategoryJpa> uomCategoryJpaPage = uomCategoryJpaRepository.search(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());
 
 
         return new PageInfo(
                 uomCategoryJpaPage.isFirst(),
                 uomCategoryJpaPage.isLast(),
-                size,
+                uomCategoryJpaPage.getSize(),
                 uomCategoryJpaPage.getTotalElements(),
                 uomCategoryJpaPage.getTotalPages(),
                 uomCategoryJpaPage.getContent().stream().map(uomCategoryJpaMapper::toUomCategory).toList()
