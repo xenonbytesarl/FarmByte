@@ -3,6 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -26,6 +29,25 @@ public final class ProductCategoryDomainService implements ProductCategoryServic
         validateUomCategory(productCategory);
         productCategory.initiate();
         return productCategoryRepository.save(productCategory);
+    }
+
+    @Nonnull
+    @Override
+    public ProductCategory findProductCategoryById(@Nonnull ProductCategoryId productCategoryId) {
+        return productCategoryRepository.findById(productCategoryId)
+                .orElseThrow(() -> new ProductCategoryNotFoundException(new String[] {productCategoryId.getValue().toString()}));
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<ProductCategory> findProductCategories(Integer page, Integer size, String attribute, Direction direction) {
+        return productCategoryRepository.findAll(page, size, attribute, direction);
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<ProductCategory> searchProductCategories(Integer page, Integer size, String attribute, Direction direction, @Nonnull Keyword keyword) {
+        return productCategoryRepository.search(page, size, attribute, direction, keyword);
     }
 
     private void validateUomCategory(ProductCategory productCategory) {
