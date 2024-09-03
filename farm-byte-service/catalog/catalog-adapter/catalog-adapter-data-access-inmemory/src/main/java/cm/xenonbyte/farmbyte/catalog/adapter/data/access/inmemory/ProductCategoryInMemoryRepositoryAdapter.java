@@ -64,7 +64,7 @@ public final class ProductCategoryInMemoryRepositoryAdapter implements ProductCa
     @Nonnull
     @Override
     public PageInfo<ProductCategory> search(Integer page, Integer size, String attribute, Direction direction, @Nonnull Keyword keyword) {
-        Predicate<ProductCategory> productCategoryNammePredicate = productCategory -> productCategory.getName().getText().getValue().contains(keyword.getText().getValue());
+        Predicate<ProductCategory> productCategoryNammePredicate = productCategory -> productCategory.getName().getText().getValue().toLowerCase().contains(keyword.getText().getValue().toLowerCase());
         Comparator<ProductCategory> comparing = Comparator.comparing((ProductCategory a) -> a.getName().getText().getValue());
         PageInfo<ProductCategory> productCategoryPageInfo = new PageInfo<>();
         return productCategoryPageInfo.with(

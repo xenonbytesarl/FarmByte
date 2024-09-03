@@ -73,7 +73,7 @@ public class UomInMemoryRepositoryAdapter implements UomRepository {
     public PageInfo<Uom> search(int page, int size, String attribute, Direction direction, Keyword keyword) {
         Comparator<Uom> comparing = Comparator.comparing((Uom uom) -> uom.getName().getText().getValue());
         List<Uom> uomList = uoms.values().stream()
-                .filter(uom -> uom.getName().getText().getValue().contains(keyword.getText().getValue()))
+                .filter(uom -> uom.getName().getText().getValue().toLowerCase().contains(keyword.getText().getValue().toLowerCase()))
                 .sorted(Direction.ASC.equals(direction)? comparing: comparing.reversed())
                 .toList();
         return new PageInfo<Uom>().with(page, size, uomList);

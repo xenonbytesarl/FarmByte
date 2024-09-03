@@ -60,7 +60,7 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
 
     @Override
     public PageInfo<UomCategory> search(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
-        Predicate<UomCategory> uomCategoryNammePredicate = uomCategory -> uomCategory.getName().getText().getValue().contains(keyword.getText().getValue());
+        Predicate<UomCategory> uomCategoryNammePredicate = uomCategory -> uomCategory.getName().getText().getValue().toLowerCase().contains(keyword.getText().getValue().toLowerCase());
         Comparator<UomCategory> comparing = Comparator.comparing((UomCategory a) -> a.getName().getText().getValue());
         PageInfo<UomCategory> uomCategoryPageInfo = new PageInfo<>();
         return uomCategoryPageInfo.with(
