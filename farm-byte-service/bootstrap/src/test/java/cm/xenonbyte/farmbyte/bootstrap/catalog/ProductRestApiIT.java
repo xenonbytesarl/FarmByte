@@ -5,12 +5,19 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Api
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -39,11 +47,14 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCTS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_CREATED_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
@@ -51,6 +62,7 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
@@ -82,181 +94,295 @@ public class ProductRestApiIT {
         BASE_URL = "http://localhost:" + port + "/api/v1/catalog/products";
     }
 
-    @Test
-    void should_create_product() throws Exception {
-        //Given
-        String name = "Product.1";
-        UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+    @Nested
+    class CreateProductRestApiIT {
 
-        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
+        @Test
+        void should_create_product() throws Exception {
+            //Given
+            String name = "Product.1";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
 
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
+            CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-        //Act
-        ResponseEntity<CreateProductViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateProductViewApiResponse.class);
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
 
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(201);
-        assertThat(response.getBody().getSuccess()).isTrue();
-        assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(CreateProductViewResponse.class);
-        assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
-        assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
-        assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CREATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            //Act
+            ResponseEntity<CreateProductViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateProductViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(201);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(CreateProductViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CREATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+        static Stream<Arguments> createProductThrowExceptionMethodSource() {
+            return Stream.of(
+                    Arguments.of(
+                            null,
+                            UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
+                            CreateProductViewRequest.TypeEnum.SERVICE,
+                            "name",
+                            PRODUCT_NAME_IS_REQUIRED
+                    ),
+                    Arguments.of(
+                            "Product.1",
+                            null,
+                            CreateProductViewRequest.TypeEnum.SERVICE,
+                            "categoryId",
+                            PRODUCT_CATEGORY_IS_REQUIRED
+                    ),
+                    Arguments.of(
+                            "Product.1",
+                            UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
+                            null,
+                            "type",
+                            PRODUCT_TYPE_IS_REQUIRED
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("createProductThrowExceptionMethodSource")
+        void should_throw_exception_when_a_least_of_one_attribute_are_missing(
+                String name,
+                UUID categoryId,
+                CreateProductViewRequest.TypeEnum typeRequest,
+                String field,
+                String message
+        ) throws Exception {
+            //Given
+            CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
+                    .name(name)
+                    .categoryId(categoryId)
+                    .type(typeRequest);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(400);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getError()).isNotEmpty();
+            assertThat(response.getBody().getError().getFirst().getField()).isEqualTo(field);
+            assertThat(response.getBody().getError().getFirst().getMessage()).isEqualTo(MessageUtil.getMessage(message, Locale.forLanguageTag(EN_LOCALE), ""));
+
+
+        }
+
+        @Test
+        void should_throw_exception_when_create_product_with_existing_name() throws Exception {
+            //Given
+            String name = "Product.2";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+
+            CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
+        }
+
+        @Test
+        void should_throw_exception_when_create_product_with_un_know_category_id() throws Exception {
+            //Given
+            String name = "Product.1";
+            UUID categoryId = UUID.randomUUID();
+
+            CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString()));
+
+        }
+
+        @Test
+        void should_throw_exception_when_create_product_with_un_know_purchase_or_stock_uom_id() throws Exception {
+            //Given
+            String name = "Product.1";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+
+            UUID stockUomId = UUID.randomUUID();
+            UUID purchaseUomId = UUID.randomUUID();
+            CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
+                    .name(name)
+                    .type(CreateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(stockUomId)
+                    .purchaseUomId(purchaseUomId)
+                    .categoryId(categoryId);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString()));
+        }
+
+        @Test
+        void should_throw_exception_when_create_product_with_purchase_and_stock_uom_id_in_different_uom_category() throws Exception {
+            //Given
+            String name = "Product.6";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            String stockUnitName = "Unite";
+            String purchaseUnitName = "Jour";
+
+            UUID stockUomId = UUID.fromString("01912c2c-b81a-7245-bab1-aee9b97b2afb");
+            UUID purchaseUomId = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
+            CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
+                    .name(name)
+                    .type(CreateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(stockUomId)
+                    .purchaseUomId(purchaseUomId)
+                    .categoryId(categoryId);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(400);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUnitName, purchaseUnitName));
+        }
     }
 
-    static Stream<Arguments> createProductThrowExceptionMethodSource() {
-        return Stream.of(
-                Arguments.of(
-                        null,
-                        UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
-                        CreateProductViewRequest.TypeEnum.SERVICE,
-                        "name",
-                        PRODUCT_NAME_IS_REQUIRED
-                ),
-                Arguments.of(
-                        "Product.1",
-                        null,
-                        CreateProductViewRequest.TypeEnum.SERVICE,
-                        "categoryId",
-                        PRODUCT_CATEGORY_IS_REQUIRED
-                ),
-                Arguments.of(
-                        "Product.1",
-                        UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
-                        null,
-                        "type",
-                        PRODUCT_TYPE_IS_REQUIRED
-                )
-        );
+    @Nested
+    class FindProductByIdRestApiIT {
+        @Test
+        void should_success_when_find_product_with_existing_id() {
+            //Given
+            String productIdUUID = "0191bda4-65e4-73a8-8291-b2870753ad00";
+            HttpEntity<Object> request = new HttpEntity<>(getJsonHttpHeaders());
+
+            FindProductByIdViewResponse findProductByIdViewResponse = new FindProductByIdViewResponse()
+                    .id(UUID.fromString(productIdUUID))
+                    .name("Mac Book Pro M2 Max")
+                    .categoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"))
+                    .active(true)
+                    .type(FindProductByIdViewResponse.TypeEnum.STOCK)
+                    .reference("3254521")
+                    .sellable(true)
+                    .purchasable(true)
+                    .purchasePrice(new BigDecimal("36000"))
+                    .salePrice(new BigDecimal("45000"))
+                    .stockUomId(UUID.fromString("01912c2c-b81a-7245-bab1-aee9b97b2afb"))
+                    .purchaseUomId(UUID.fromString("01912c2e-b52d-7b85-9c12-85af49fc7798"))
+                    .filename("products/product.png");
+
+            //Act
+            ResponseEntity<FindProductByIdViewApiResponse> response = restTemplate.exchange(
+                    BASE_URL + "/" + productIdUUID, GET, request, FindProductByIdViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getData()).isNotEmpty();
+            assertThat(response.getBody().getData().get(BODY).getId().toString()).isEqualTo(findProductByIdViewResponse.getId().toString());
+
+        }
+
+        @Test
+        void should_fail_when_find_product_with_non_existing_id() {
+            //Given
+            String productIdUUID = "0191bf19-fb0a-7e64-88fe-fcbb4e81e8a6";
+            HttpEntity<Object> request = new HttpEntity<>(getJsonHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(
+                    BASE_URL + "/" + productIdUUID, GET, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productIdUUID));
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("createProductThrowExceptionMethodSource")
-    void should_throw_exception_when_a_least_of_one_attribute_are_missing(
-            String name,
-            UUID categoryId,
-            CreateProductViewRequest.TypeEnum typeRequest,
-            String field,
-            String message
-    ) throws Exception {
-        //Given
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .categoryId(categoryId)
-                .type(typeRequest);
+    @Nested
+    class FindProductsRestApiIT{
+        @Test
+        void should_success_when_find_products() {
+            //Given
+            HttpHeaders httpHeaders = getJsonHttpHeaders();
+            httpHeaders.set("page", "0");
+            httpHeaders.set("size", "2");
+            httpHeaders.set("attribute", "name");
+            httpHeaders.set("direction", "DSC");
+            HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
+            //Act
+            ResponseEntity<FindProductsViewApiResponse> response = restTemplate.exchange(BASE_URL , GET, request, FindProductsViewApiResponse.class);
 
-        //Act
-        ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
-
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(400);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getSuccess()).isFalse();
-        assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), ""));
-        assertThat(response.getBody().getError()).isNotEmpty();
-        assertThat(response.getBody().getError().getFirst().getField()).isEqualTo(field);
-        assertThat(response.getBody().getError().getFirst().getMessage()).isEqualTo(MessageUtil.getMessage(message, Locale.forLanguageTag(EN_LOCALE), ""));
-
-
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getData().get(BODY)).isInstanceOf(FindProductsPageInfoViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+        }
     }
 
-    @Test
-    void should_throw_exception_when_create_product_with_existing_name() throws Exception {
-        //Given
-        String name = "Product.2";
-        UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+    @Nested
+    class SearchProductsRestApiIT{
+        @Test
+        void should_success_when_find_products() {
+            //Given
+            HttpHeaders httpHeaders = getJsonHttpHeaders();
+            httpHeaders.set("page", "0");
+            httpHeaders.set("size", "2");
+            httpHeaders.set("attribute", "name");
+            httpHeaders.set("direction", "DSC");
+            httpHeaders.set("keyword", "p");
+            HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
-        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
+            //Act
+            ResponseEntity<SearchProductsViewApiResponse> response = restTemplate.exchange(BASE_URL + "/search" , GET, request, SearchProductsViewApiResponse.class);
 
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
-
-        //Act
-        ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
-
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(409);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getSuccess()).isFalse();
-        assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
-    }
-
-    @Test
-    void should_throw_exception_when_create_product_with_un_know_category_id() throws Exception {
-        //Given
-        String name = "Product.1";
-        UUID categoryId = UUID.randomUUID();
-
-        CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
-
-        //Act
-        ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
-
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(404);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getSuccess()).isFalse();
-        assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString()));
-
-    }
-
-    @Test
-    void should_throw_exception_when_create_product_with_un_know_purchase_or_stock_uom_id() throws Exception {
-        //Given
-        String name = "Product.1";
-        UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
-
-        UUID stockUomId = UUID.randomUUID();
-        UUID purchaseUomId = UUID.randomUUID();
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .type(CreateProductViewRequest.TypeEnum.STOCK)
-                .stockUomId(stockUomId)
-                .purchaseUomId(purchaseUomId)
-                .categoryId(categoryId);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
-
-        //Act
-        ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
-
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(404);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getSuccess()).isFalse();
-        assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString()));
-    }
-
-    @Test
-    void should_throw_exception_when_create_product_with_purchase_and_stock_uom_id_in_different_uom_category() throws Exception {
-        //Given
-        String name = "Product.6";
-        UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
-        String stockUnitName = "Unite";
-        String purchaseUnitName = "Jour";
-
-        UUID stockUomId = UUID.fromString("01912c2c-b81a-7245-bab1-aee9b97b2afb");
-        UUID purchaseUomId = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
-                .name(name)
-                .type(CreateProductViewRequest.TypeEnum.STOCK)
-                .stockUomId(stockUomId)
-                .purchaseUomId(purchaseUomId)
-                .categoryId(categoryId);
-
-        HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
-
-        //Act
-        ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
-
-        //Then
-        assertThat(response.getStatusCode().value()).isEqualTo(400);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getSuccess()).isFalse();
-        assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUnitName, purchaseUnitName));
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchProductsPageInfoViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+        }
     }
 
     private static CreateProductViewRequest getCreateProductViewRequest(String name, UUID categoryId) {
@@ -285,11 +411,19 @@ public class ProductRestApiIT {
         return new ClassPathResource(image);
     }
 
-    private static @Nonnull HttpHeaders getHttpHeaders() {
+    private static @Nonnull HttpHeaders getMultipartHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAcceptLanguageAsLocales(List.of(Locale.forLanguageTag(EN_LOCALE)));
         headers.setAccept(List.of(APPLICATION_JSON));
         headers.setContentType(MULTIPART_FORM_DATA);
+        return headers;
+    }
+
+    private static @Nonnull HttpHeaders getJsonHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAcceptLanguageAsLocales(List.of(Locale.forLanguageTag(EN_LOCALE)));
+        headers.setAccept(List.of(APPLICATION_JSON));
+        headers.setContentType(APPLICATION_JSON);
         return headers;
     }
 }
