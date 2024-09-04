@@ -11,6 +11,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Sea
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
@@ -37,6 +38,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -51,6 +53,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
@@ -466,6 +469,31 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
             verify(productDomainServiceRestApiAdapter, times(1)).findProductById(uuidArgumentCaptor.capture());
             assertThat(uuidArgumentCaptor.getValue()).isEqualTo(productIdUUID);
 
+        }
+
+        @Test
+        void should_fail_when_find_product_by_non_existing_id() throws Exception {
+            //Given
+            UUID productIdUUID = UUID.randomUUID();
+
+            when(productDomainServiceRestApiAdapter.findProductById(productIdUUID))
+                    .thenThrow(ProductNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{productIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+            //Act
+            mockMvc.perform(get(String.format(PRODUCT_PATH_URI + "/%s", productIdUUID))
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productIdUUID.toString())));
         }
     }
 
