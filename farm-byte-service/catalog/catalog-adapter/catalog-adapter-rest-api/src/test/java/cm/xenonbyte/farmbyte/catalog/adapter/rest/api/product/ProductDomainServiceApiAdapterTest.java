@@ -554,7 +554,7 @@ final class ProductDomainServiceApiAdapterTest {
             int page = 0;
             int size = 2;
             String attribute = "name";
-            Direction direction = Direction.ASC;
+            String direction = "ASC";
 
             PageInfo<Product> productPageInfo = new PageInfo<Product>().with(
                     page, size, List.of(
@@ -643,7 +643,7 @@ final class ProductDomainServiceApiAdapterTest {
                         )
                     );
 
-            when(productService.findProducts(page, size, attribute, direction)).thenReturn(productPageInfo);
+            when(productService.findProducts(page, size, attribute, Direction.valueOf(direction))).thenReturn(productPageInfo);
             when(productViewMapper.toFindProductsPageInfoViewResponse(productPageInfo)).thenReturn(findProductsPageInfoViewResponse);
 
             ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -682,7 +682,7 @@ final class ProductDomainServiceApiAdapterTest {
             int page = 0;
             int size = 2;
             String attribute = "name";
-            Direction direction = Direction.ASC;
+            String direction = "ASC";
             String keyword = "p";
 
             PageInfo<Product> productPageInfo = new PageInfo<Product>().with(
@@ -772,7 +772,7 @@ final class ProductDomainServiceApiAdapterTest {
                             )
                     );
 
-            when(productService.searchProducts(page, size, attribute, direction, Keyword.of(Text.of(keyword)))).thenReturn(productPageInfo);
+            when(productService.searchProducts(page, size, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))).thenReturn(productPageInfo);
             when(productViewMapper.toSearchProductsPageInfoViewResponse(productPageInfo)).thenReturn(searchProductsPageInfoViewResponse);
 
             ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);

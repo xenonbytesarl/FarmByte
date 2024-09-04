@@ -23,5 +23,5 @@ public class RestApiBeanConfigTest {
     protected ProductCategoryDomainServiceRestApiAdapter productCategoryDomainServiceRestApiAdapter;
 
     @MockBean
-    protected ProductDomainServiceRestApiAdapter productDomainServiceApiAdapter;
+    protected ProductDomainServiceRestApiAdapter productDomainServiceRestApiAdapter;
 }
