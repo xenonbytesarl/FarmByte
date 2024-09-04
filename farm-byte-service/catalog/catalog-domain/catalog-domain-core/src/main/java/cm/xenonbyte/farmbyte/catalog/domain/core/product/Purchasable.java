@@ -19,7 +19,7 @@ public final class Purchasable {
         this.value = Objects.requireNonNull(value);
     }
 
-    public static Purchasable of(@Nonnull Boolean value) {
+    public static Purchasable with(@Nonnull Boolean value) {
         if (value == null) {
             throw new NullPointerException(PURCHASABLE_VALUE_IS_REQUIRED);
         }

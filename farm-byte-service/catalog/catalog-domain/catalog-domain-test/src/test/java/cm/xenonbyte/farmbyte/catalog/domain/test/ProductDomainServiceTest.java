@@ -7,11 +7,15 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductDomainService;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.Purchasable;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.Sellable;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
@@ -20,11 +24,17 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Money;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Ratio;
+import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -101,283 +111,470 @@ public final class ProductDomainServiceTest {
 
     }
 
-    static Stream<Arguments> createProductMethodSource() {
-        return Stream.of(
-                Arguments.of(
-                    Name.of(Text.of("Chair")),
-                    new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
-                    ProductType.STOCK,
-                    new UomId(UUID.fromString("01918e3e-419f-7042-ade1-c37c03bff951")),
-                    new UomId(UUID.fromString("01918e3e-5ae0-7a23-86e9-64ae98b3aabc"))
-                ),
-                Arguments.of(
-                    Name.of(Text.of("Chair")),
-                    new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
-                    ProductType.CONSUMABLE,
-                    null,
-                    null
-                ),
-                Arguments.of(
-                    Name.of(Text.of("Chair")),
-                    new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
-                    ProductType.SERVICE,
-                    null,
-                    null
-                )
-        );
+    @Nested
+    class CreateProductDomainServiceTest {
+
+        static Stream<Arguments> createProductMethodSource() {
+            return Stream.of(
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
+                            ProductType.STOCK,
+                            new UomId(UUID.fromString("01918e3e-419f-7042-ade1-c37c03bff951")),
+                            new UomId(UUID.fromString("01918e3e-5ae0-7a23-86e9-64ae98b3aabc"))
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
+                            ProductType.CONSUMABLE,
+                            null,
+                            null
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString("01918e3e-18a6-70bd-92c7-9bf1927b50e7")),
+                            ProductType.SERVICE,
+                            null,
+                            null
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("createProductMethodSource")
+        void should_create_product(
+                Name name,
+                ProductCategoryId categoryId,
+                ProductType type,
+                UomId stockUomId,
+                UomId purschaseUomId
+        ) {
+            //Given
+            Product product = Product.builder()
+                    .name(name)
+                    .categoryId(categoryId)
+                    .type(type)
+                    .stockUomId(stockUomId)
+                    .purchaseUomId(purschaseUomId)
+                    .build();
+            //Act
+            Product createdProduct = productService.createProduct(product);
+
+            //Then
+            assertThat(createdProduct).isNotNull();
+            assertThat(createdProduct.getId())
+                    .isNotNull()
+                    .satisfies(cp -> assertThat(cp.getValue()).isInstanceOf(UUID.class));
+            assertThat(createdProduct.getName()).isEqualTo(product.getName());
+            assertThat(createdProduct.getCategoryId()).isEqualTo(product.getCategoryId());
+            assertThat(createdProduct.getStockUomId()).isEqualTo(product.getStockUomId());
+            assertThat(createdProduct.getPurchaseUomId()).isEqualTo(product.getPurchaseUomId());
+            assertThat(createdProduct.getType()).isEqualTo(product.getType());
+            assertThat(createdProduct.getReference()).isEqualTo(product.getReference());
+            assertThat(createdProduct.getImageName()).isEqualTo(product.getImageName());
+            assertThat(createdProduct.getSalePrice()).isEqualTo(product.getSalePrice());
+            assertThat(createdProduct.getPurchasePrice()).isEqualTo(product.getPurchasePrice());
+            assertThat(createdProduct.getActive().getValue()).isTrue();
+            assertThat(createdProduct.getSellable().getValue()).isFalse();
+            assertThat(createdProduct.getPurchasable().getValue()).isFalse();
+        }
+
+        static Stream<Arguments> createProductThrowExceptionMethodSource() {
+            return Stream.of(
+                    Arguments.of(
+                            null,
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            ProductType.CONSUMABLE,
+                            null,
+                            null,
+                            null,
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_NAME_IS_REQUIRED
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            null,
+                            ProductType.CONSUMABLE,
+                            null,
+                            null,
+                            null,
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_CATEGORY_IS_REQUIRED
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_TYPE_IS_REQUIRED
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            ProductType.STOCK,
+                            null,
+                            null,
+                            null,
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            ProductType.STOCK,
+                            new UomId(UUID.fromString(stockUomId)),
+                            null,
+                            null,
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            ProductType.SERVICE,
+                            null,
+                            null,
+                            Money.of(new BigDecimal(-2.0)),
+                            null,
+                            IllegalArgumentException.class,
+                            PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO
+                    ),
+                    Arguments.of(
+                            Name.of(Text.of("Chair")),
+                            new ProductCategoryId(UUID.fromString(categoryId)),
+                            ProductType.SERVICE,
+                            null,
+                            null,
+                            null,
+                            Money.of(new BigDecimal(-1.0)),
+                            IllegalArgumentException.class,
+                            PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("createProductThrowExceptionMethodSource")
+        void should_throw_exception_when_create_product_of_a_least_of_one_missing_required_field(
+                Name name,
+                ProductCategoryId categoryId,
+                ProductType type,
+                UomId stockUomId,
+                UomId purschaseUomId,
+                Money purchasePrice,
+                Money salePrice,
+                Class<? extends IllegalArgumentException> expectedException,
+                String expectedMessage
+        ) {
+            //Given
+            Product product = Product.builder()
+                    .name(name)
+                    .categoryId(categoryId)
+                    .type(type)
+                    .stockUomId(stockUomId)
+                    .purchaseUomId(purschaseUomId)
+                    .purchasePrice(purchasePrice)
+                    .salePrice(salePrice)
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(expectedException)
+                    .hasMessage(expectedMessage);
+        }
+
+        @Test
+        void should_throw_exception_when_two_product_has_same_name() {
+            //Given
+            Name name = Name.of(Text.of("Chair"));
+            saveOneProduct(name);
+            Product product = Product.builder()
+                    .name(name)
+                    .type(ProductType.SERVICE)
+                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .build();
+
+            //act
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(ProductNameConflictException.class)
+                    .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
+
+
+
+        }
+
+        @Test
+        void should_throw_exception_when_product_category_not_found() {
+
+            //Given
+            Product product = Product.builder()
+                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .type(ProductType.SERVICE)
+                    .name(Name.of(Text.of("Product.1")))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(ProductCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_throw_exception_when_stock_uom_not_found() {
+
+            //Given
+            Product product = Product.builder()
+                    .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(UUID.randomUUID()))
+                    .purchaseUomId(new UomId(UUID.fromString(purchaseUomId)))
+                    .name(Name.of(Text.of("Product.1")))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(ProductUomNotFoundException.class)
+                    .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_throw_exception_when_purchase_uom_not_found() {
+
+            //Given
+            Product product = Product.builder()
+                    .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(UUID.fromString(stockUomId)))
+                    .purchaseUomId(new UomId(UUID.randomUUID()))
+                    .name(Name.of(Text.of("Product.1")))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(ProductUomNotFoundException.class)
+                    .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
+        }
+
+
+
+        @Test
+        void should_throw_exception_when_create_product_with_uom_category_is_different() {
+            //Given
+
+            UomId uomId = new UomId(UUID.randomUUID());
+            saveUom(
+                    Uom.builder()
+                            .id(uomId)
+                            .name(Name.of(Text.of("Other Uom")))
+                            .uomType(UomType.REFERENCE)
+                            .uomCategoryId(new UomCategoryId(UUID.randomUUID()))
+                            .build()
+            );
+
+            Product product = Product.builder()
+                    .name(Name.of(Text.of("Chair")))
+                    .type(ProductType.STOCK)
+                    .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
+                    .stockUomId(new UomId(UUID.fromString(stockUomId)))
+                    .purchaseUomId(uomId)
+                    .build();
+
+            //act
+            assertThatThrownBy(() -> productService.createProduct(product))
+                    .isInstanceOf(ProductStockAndPurchaseUomBadException.class)
+                    .hasMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION);
+
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("createProductMethodSource")
-    void should_create_product(
-            Name name,
-            ProductCategoryId categoryId,
-            ProductType type,
-            UomId stockUomId,
-            UomId purschaseUomId
-    ) {
-        //Given
-        Product product = Product.builder()
-                .name(name)
-                .categoryId(categoryId)
-                .type(type)
-                .stockUomId(stockUomId)
-                .purchaseUomId(purschaseUomId)
-                .build();
-        //Act
-        Product createdProduct = productService.createProduct(product);
+    @Nested
+    class FindProductByIdDomainServiceTest {
 
-        //Then
-        assertThat(createdProduct).isNotNull();
-        assertThat(createdProduct.getId())
-                .isNotNull()
-                .satisfies(cp -> assertThat(cp.getValue()).isInstanceOf(UUID.class));
-        assertThat(createdProduct.getName()).isEqualTo(product.getName());
-        assertThat(createdProduct.getCategoryId()).isEqualTo(product.getCategoryId());
-        assertThat(createdProduct.getStockUomId()).isEqualTo(product.getStockUomId());
-        assertThat(createdProduct.getPurchaseUomId()).isEqualTo(product.getPurchaseUomId());
-        assertThat(createdProduct.getType()).isEqualTo(product.getType());
-        assertThat(createdProduct.getReference()).isEqualTo(product.getReference());
-        assertThat(createdProduct.getImageName()).isEqualTo(product.getImageName());
-        assertThat(createdProduct.getSalePrice()).isEqualTo(product.getSalePrice());
-        assertThat(createdProduct.getPurchasePrice()).isEqualTo(product.getPurchasePrice());
-        assertThat(createdProduct.getActive().getValue()).isTrue();
-        assertThat(createdProduct.getSellable().getValue()).isFalse();
-        assertThat(createdProduct.getPurchasable().getValue()).isFalse();
+        private Product product;
+        private ProductId productId;
+
+        @BeforeEach
+        void setUp() {
+            productId = new ProductId(UUID.randomUUID());
+
+            product = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("Mac Book Pro 2023")))
+                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(250.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(475.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+
+            productRepository.save(product);
+        }
+
+        @Test
+        void should_success_when_find_product_with_existing_id() {
+
+            //Act
+            Product result = productService.findProductById(productId);
+
+            //Then
+            assertThat(result).isNotNull();
+            assertThat(result).isEqualTo(product);
+        }
+
+        @Test
+        void should_fail_when_find_product_by_non_existing_id() {
+            assertThatThrownBy(() -> productService.findProductById(new ProductId(UUID.randomUUID())))
+                    .isInstanceOf(ProductNotFoundException.class);
+        }
     }
 
-    static Stream<Arguments> createProductThrowExceptionMethodSource() {
-        return Stream.of(
-                Arguments.of(
-                        null,
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        ProductType.CONSUMABLE,
-                        null,
-                        null,
-                        null,
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_NAME_IS_REQUIRED
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        null,
-                        ProductType.CONSUMABLE,
-                        null,
-                        null,
-                        null,
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_CATEGORY_IS_REQUIRED
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_TYPE_IS_REQUIRED
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        ProductType.STOCK,
-                        null,
-                        null,
-                        null,
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        ProductType.STOCK,
-                        new UomId(UUID.fromString(stockUomId)),
-                        null,
-                        null,
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        ProductType.SERVICE,
-                        null,
-                        null,
-                        Money.of(new BigDecimal(-2.0)),
-                        null,
-                        IllegalArgumentException.class,
-                        PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO
-                ),
-                Arguments.of(
-                        Name.of(Text.of("Chair")),
-                        new ProductCategoryId(UUID.fromString(categoryId)),
-                        ProductType.SERVICE,
-                        null,
-                        null,
-                        null,
-                        Money.of(new BigDecimal(-1.0)),
-                        IllegalArgumentException.class,
-                        PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO
-                )
-        );
+    @Nested
+    class FindProductsDomainServiceTest {
+
+        @BeforeEach
+        void setUp() {
+            productRepository.save(
+                Product.builder()
+                    .id(new ProductId(UUID.randomUUID()))
+                    .name(Name.of(Text.of("Mac Book Pro 2023")))
+                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(250.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(475.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build()
+            );
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.randomUUID()))
+                            .name(Name.of(Text.of("HP Pro")))
+                            .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                            .type(ProductType.CONSUMABLE)
+                            .reference(Reference.of(Text.of("65489456")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(175.47)))
+                            .salePrice(Money.of(BigDecimal.valueOf(350.12)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .active(Active.with(true))
+                            .build()
+            );
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.randomUUID()))
+                            .name(Name.of(Text.of("DELL Pro")))
+                            .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                            .type(ProductType.CONSUMABLE)
+                            .reference(Reference.of(Text.of("159989561")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(223.95)))
+                            .salePrice(Money.of(BigDecimal.valueOf(410.12)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .active(Active.with(true))
+                            .build()
+            );
+        }
+
+        @Test
+        void should_success_when_find_products() {
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+
+            //Act
+            PageInfo<Product> result = productService.findProducts(page, size, attribute, direction);
+
+            //Then
+            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getFirst()).isTrue();
+            assertThat(result.getLast()).isFalse();
+            assertThat(result.getPageSize()).isEqualTo(size);
+            assertThat(result.getTotalElements()).isGreaterThan(0);
+            assertThat(result.getTotalPages()).isGreaterThan(0);
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("createProductThrowExceptionMethodSource")
-    void should_throw_exception_when_create_product_of_a_least_of_one_missing_required_field(
-            Name name,
-            ProductCategoryId categoryId,
-            ProductType type,
-            UomId stockUomId,
-            UomId purschaseUomId,
-            Money purchasePrice,
-            Money salePrice,
-            Class<? extends IllegalArgumentException> expectedException,
-            String expectedMessage
-    ) {
-        //Given
-        Product product = Product.builder()
-                .name(name)
-                .categoryId(categoryId)
-                .type(type)
-                .stockUomId(stockUomId)
-                .purchaseUomId(purschaseUomId)
-                .purchasePrice(purchasePrice)
-                .salePrice(salePrice)
-                .build();
+    @Nested
+    class SearchProductDomainServiceTest {
 
-        //Act + Then
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(expectedException)
-                .hasMessage(expectedMessage);
-    }
+        @BeforeEach
+        void setUp() {
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.randomUUID()))
+                            .name(Name.of(Text.of("Mac Book Pro 2023")))
+                            .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                            .type(ProductType.CONSUMABLE)
+                            .reference(Reference.of(Text.of("20123546")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(250.35)))
+                            .salePrice(Money.of(BigDecimal.valueOf(475.41)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .active(Active.with(true))
+                            .build()
+            );
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.randomUUID()))
+                            .name(Name.of(Text.of("HP Pro")))
+                            .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                            .type(ProductType.CONSUMABLE)
+                            .reference(Reference.of(Text.of("65489456")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(175.47)))
+                            .salePrice(Money.of(BigDecimal.valueOf(350.12)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .active(Active.with(true))
+                            .build()
+            );
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.randomUUID()))
+                            .name(Name.of(Text.of("DELL Pro")))
+                            .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                            .type(ProductType.CONSUMABLE)
+                            .reference(Reference.of(Text.of("159989561")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(223.95)))
+                            .salePrice(Money.of(BigDecimal.valueOf(410.12)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .active(Active.with(true))
+                            .build()
+            );
+        }
 
-    @Test
-    void should_throw_exception_when_two_product_has_same_name() {
-        //Given
-        Name name = Name.of(Text.of("Chair"));
-        saveOneProduct(name);
-        Product product = Product.builder()
-                .name(name)
-                .type(ProductType.SERVICE)
-                .categoryId(new ProductCategoryId(UUID.randomUUID()))
-                .build();
+        @Test
+        void should_success_when_search_product_with_existing_keyword() {
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+            String keyword = "p";
 
-        //act
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(ProductNameConflictException.class)
-                .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
+            //Act
+            PageInfo<Product> result = productService.searchProducts(page, size, attribute, direction, Keyword.of(Text.of(keyword)));
 
-
-
-    }
-
-    @Test
-    void should_throw_exception_when_product_category_not_found() {
-
-        //Given
-        Product product = Product.builder()
-                .categoryId(new ProductCategoryId(UUID.randomUUID()))
-                .type(ProductType.SERVICE)
-                .name(Name.of(Text.of("Product.1")))
-                .build();
-        //Act + Then
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(ProductCategoryNotFoundException.class)
-                .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
-    }
-
-    @Test
-    void should_throw_exception_when_stock_uom_not_found() {
-
-        //Given
-        Product product = Product.builder()
-                .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
-                .type(ProductType.STOCK)
-                .stockUomId(new UomId(UUID.randomUUID()))
-                .purchaseUomId(new UomId(UUID.fromString(purchaseUomId)))
-                .name(Name.of(Text.of("Product.1")))
-                .build();
-        //Act + Then
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(ProductUomNotFoundException.class)
-                .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
-    }
-
-    @Test
-    void should_throw_exception_when_purchase_uom_not_found() {
-
-        //Given
-        Product product = Product.builder()
-                .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
-                .type(ProductType.STOCK)
-                .stockUomId(new UomId(UUID.fromString(stockUomId)))
-                .purchaseUomId(new UomId(UUID.randomUUID()))
-                .name(Name.of(Text.of("Product.1")))
-                .build();
-        //Act + Then
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(ProductUomNotFoundException.class)
-                .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
-    }
-
-
-
-    @Test
-    void should_throw_exception_when_create_product_with_uom_category_is_different() {
-        //Given
-
-        UomId uomId = new UomId(UUID.randomUUID());
-        saveUom(
-            Uom.builder()
-                .id(uomId)
-                .name(Name.of(Text.of("Other Uom")))
-                .uomType(UomType.REFERENCE)
-                .uomCategoryId(new UomCategoryId(UUID.randomUUID()))
-                .build()
-        );
-
-        Product product = Product.builder()
-                .name(Name.of(Text.of("Chair")))
-                .type(ProductType.STOCK)
-                .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
-                .stockUomId(new UomId(UUID.fromString(stockUomId)))
-                .purchaseUomId(uomId)
-                .build();
-
-        //act
-        assertThatThrownBy(() -> productService.createProduct(product))
-                .isInstanceOf(ProductStockAndPurchaseUomBadException.class)
-                .hasMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION);
-
-
-
+            //Then
+            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getFirst()).isTrue();
+            assertThat(result.getLast()).isFalse();
+            assertThat(result.getPageSize()).isEqualTo(size);
+            assertThat(result.getTotalElements()).isGreaterThan(0);
+            assertThat(result.getTotalPages()).isGreaterThan(0);
+        }
     }
 
     private void saveUom(Uom uom) {

@@ -106,11 +106,11 @@ public final class Product extends AggregateRoot<ProductId> {
         }
 
         if(this.purchasable == null) {
-            this.purchasable = Purchasable.of(false);
+            this.purchasable = Purchasable.with(false);
         }
 
         if(this.sellable == null) {
-            this.sellable = Sellable.of(false);
+            this.sellable = Sellable.with(false);
         }
     }
 
