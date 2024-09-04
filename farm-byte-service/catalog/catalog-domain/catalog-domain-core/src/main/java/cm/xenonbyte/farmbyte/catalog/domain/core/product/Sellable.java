@@ -19,7 +19,7 @@ public final class Sellable {
         this.value = Objects.requireNonNull(value);
     }
 
-    public static Sellable of(@Nonnull Boolean value) {
+    public static Sellable with(@Nonnull Boolean value) {
         if (value == null) {
             throw new NullPointerException(SELLABLE_VALUE_IS_REQUIRED);
         }

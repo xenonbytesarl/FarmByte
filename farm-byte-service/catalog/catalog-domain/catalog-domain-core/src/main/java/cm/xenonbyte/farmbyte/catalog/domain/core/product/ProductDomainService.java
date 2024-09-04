@@ -6,7 +6,10 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.Product
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -40,6 +43,25 @@ public final class ProductDomainService implements ProductService {
         product.validate();
         product.initiate();
         return productRepository.save(product);
+    }
+
+    @Nonnull
+    @Override
+    public Product findProductById(@Nonnull ProductId productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(new String[] {productId.getValue().toString()}));
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<Product> findProducts(int page, int size, String attribute, Direction direction) {
+        return productRepository.findAll(page, size, attribute, direction);
+    }
+
+    @Nonnull
+    @Override
+    public PageInfo<Product> searchProducts(int page, int size, String attribute, Direction direction, Keyword keyword) {
+        return productRepository.search(page, size, attribute, direction, keyword);
     }
 
     private void verify(Product product) {
