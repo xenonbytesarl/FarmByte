@@ -5,7 +5,6 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Cre
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import jakarta.annotation.Nonnull;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +23,7 @@ public interface ProductServiceRestApiAdapter {
 
     @Nonnull FindProductByIdViewResponse findProductById(@Nonnull UUID productId);
 
-    @Nonnull FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, Direction direction);
+    @Nonnull FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, String direction);
 
-    @Nonnull SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, Direction direction, String keyword);
+    @Nonnull SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, String direction, String keyword);
 }

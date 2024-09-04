@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author bamk
@@ -30,6 +31,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class ProductRestApi implements ProductsApi {
 
     public static final String PRODUCT_CREATED_SUCCESSFULLY = "ProductApiRest.1";
+    public static final String PRODUCT_FIND_SUCCESSFULLY = "ProductApiRest.2";
+    public static final String PRODUCTS_FIND_SUCCESSFULLY = "ProductApiRest.3";
 
     private final ProductDomainServiceRestApiAdapter productDomainServiceApiAdapter;
 
@@ -52,16 +55,40 @@ public class ProductRestApi implements ProductsApi {
 
     @Override
     public ResponseEntity<FindProductByIdViewApiResponse> findProductById(String acceptLanguage, UUID productId) throws Exception {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new FindProductByIdViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .message(MessageUtil.getMessage(PRODUCT_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(Map.of(BODY, productDomainServiceApiAdapter.findProductById(productId)))
+        );
     }
 
     @Override
     public ResponseEntity<FindProductsViewApiResponse> findProducts(String acceptLanguage, Integer page, Integer size, String attribute, String direction) throws Exception {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new FindProductsViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .message(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(Map.of(BODY, productDomainServiceApiAdapter.findProducts(page, size, attribute, direction)))
+        );
     }
 
     @Override
     public ResponseEntity<SearchProductsViewApiResponse> searchProduct(String acceptLanguage, Integer page, Integer size, String attribute, String direction, String keyword) throws Exception {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new SearchProductsViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .timestamp(ZonedDateTime.now().toString())
+                        .success(true)
+                        .message(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(Map.of(BODY, productDomainServiceApiAdapter.searchProducts(page, size, attribute, direction, keyword)))
+        );
     }
 }

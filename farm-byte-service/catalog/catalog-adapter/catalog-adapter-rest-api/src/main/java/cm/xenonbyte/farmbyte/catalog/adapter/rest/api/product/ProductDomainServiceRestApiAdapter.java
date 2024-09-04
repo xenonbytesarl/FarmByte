@@ -75,17 +75,17 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
 
     @Nonnull
     @Override
-    public FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, Direction direction) {
+    public FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, String direction) {
         return productViewMapper.toFindProductsPageInfoViewResponse(
-                productService.findProducts(page, size, attribute, direction)
+                productService.findProducts(page, size, attribute, Direction.valueOf(direction))
         );
     }
 
     @Nonnull
     @Override
-    public SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, Direction direction, String keyword) {
+    public SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, String direction, String keyword) {
         return productViewMapper.toSearchProductsPageInfoViewResponse(
-                productService.searchProducts(page, size, attribute, direction, Keyword.of(Text.of(keyword)))
+                productService.searchProducts(page, size, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))
         );
     }
 }
