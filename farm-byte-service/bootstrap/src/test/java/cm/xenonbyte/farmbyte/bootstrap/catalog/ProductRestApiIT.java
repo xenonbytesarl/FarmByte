@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.bootstrap.catalog;
 
 import cm.xenonbyte.farmbyte.bootstrap.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.ApiErrorResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.ApiSuccessResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductServiceRestApiAdapter;
@@ -93,7 +93,7 @@ public class ProductRestApiIT {
         HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getHttpHeaders());
 
         //Act
-        ResponseEntity<ApiSuccessResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiSuccessResponse.class);
+        ResponseEntity<CreateProductViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateProductViewApiResponse.class);
 
         //Then
         assertThat(response.getStatusCode().value()).isEqualTo(201);
