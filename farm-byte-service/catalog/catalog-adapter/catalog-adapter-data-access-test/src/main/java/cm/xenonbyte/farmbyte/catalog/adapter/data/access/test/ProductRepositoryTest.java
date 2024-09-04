@@ -1,15 +1,33 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.Purchasable;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.Sellable;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
+import cm.xenonbyte.farmbyte.common.domain.vo.Money;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
+import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.UUID;
+
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author bamk
@@ -22,46 +40,122 @@ public abstract class ProductRepositoryTest {
     protected Name name;
     protected ProductCategoryId categoryId;
     protected Filename imageName;
+    protected ProductId productId;
 
-    @Test
-    protected void should_return_false_when_find_product_with_an_un_existing_name() {
-        //Act
-        Boolean result = productRepository.existsByName(Name.of(Text.of("Product.1")));
+    @Nested
+    class CreateProductRepositoryTest {
+        @Test
+        protected void should_return_false_when_find_product_with_an_un_existing_name() {
+            //Act
+            Boolean result = productRepository.existsByName(Name.of(Text.of("Product.1")));
 
-        //Then
-        assertThat(result).isFalse();
+            //Then
+            assertThat(result).isFalse();
+        }
+
+        @Test
+        protected void should_return_true_when_find_product_with_an_existing_name() {
+            //Act
+            Boolean result = productRepository.existsByName(name);
+
+            //Then
+            assertThat(result).isTrue();
+        }
+
+        @Test
+        protected void should_create_product() {
+            //Given
+            Name name1 = Name.of(Text.of("Product.3"));
+            Product product = Product.builder()
+                    .name(name1)
+                    .categoryId(categoryId)
+                    .type(ProductType.SERVICE)
+                    .imageName(imageName)
+                    .build();
+            product.validate();
+            product.initiate();
+
+            //Act
+            Product result = productRepository.save(product);
+            Boolean isExistByName = productRepository.existsByName(name1);
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(product);
+            assertThat(isExistByName).isTrue();
+        }
     }
 
-    @Test
-    protected void should_return_true_when_find_product_with_an_existing_name() {
-        //Act
-        Boolean result = productRepository.existsByName(name);
+    @Nested
+    class FindProductByIdRepositoryTest {
 
-        //Then
-        assertThat(result).isTrue();
+        @Test
+        void should_success_when_find_product_with_existing_id() {
+            //Given + Act
+            Optional<Product> result = productRepository.findById(productId);
+            //Then
+            assertThat(result.isPresent()).isTrue();
+            assertThat(result.get()).isNotNull();
+        }
+
+        @Test
+        void should_fail_when_find_product_with_non_existing_id() {
+
+            //Given + Act
+            Optional<Product> result = productRepository.findById(new ProductId(UUID.randomUUID()));
+
+            //Then
+            assertThat(result.isEmpty()).isTrue();
+        }
     }
 
-    @Test
-    protected void should_create_product() {
-        //Given
-        Name name1 = Name.of(Text.of("Product.3"));
-        Product product = Product.builder()
-                .name(name1)
-                .categoryId(categoryId)
-                .type(ProductType.SERVICE)
-                .imageName(imageName)
-                .build();
-        product.validate();
-        product.initiate();
+    @Nested
+    class FindProductsRepositoryTest {
+        @Test
+        void should_success_when_find_products() {
 
-        //Act
-        Product result = productRepository.save(product);
-        Boolean isExistByName = productRepository.existsByName(name1);
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
 
-        //Then
-        assertThat(result)
-                .isNotNull()
-                .isEqualTo(product);
-        assertThat(isExistByName).isTrue();
+            //Act
+            PageInfo<Product> result = productRepository.findAll(page, size, attribute, direction);
+
+            //Then
+            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getFirst()).isTrue();
+            assertThat(result.getLast()).isFalse();
+            assertThat(result.getPageSize()).isEqualTo(size);
+            assertThat(result.getTotalElements()).isGreaterThan(0);
+            assertThat(result.getTotalPages()).isGreaterThan(0);
+        }
+    }
+
+    @Nested
+    class SearchProductsRepositoryTest {
+
+        @Test
+        void should_success_when_search_products_by_keyword() {
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+            String keyword = "p";
+
+            //Act
+            PageInfo<Product> result = productRepository.search(page, size, attribute, direction, Keyword.of(Text.of(keyword)));
+
+            //Then
+            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getFirst()).isTrue();
+            assertThat(result.getLast()).isFalse();
+            assertThat(result.getPageSize()).isEqualTo(size);
+            assertThat(result.getTotalElements()).isGreaterThan(0);
+            assertThat(result.getTotalPages()).isGreaterThan(0);
+        }
     }
 }
