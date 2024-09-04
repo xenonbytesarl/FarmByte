@@ -1,8 +1,11 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.ProductsApi;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.ApiSuccessResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewApiResponse;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -34,9 +38,9 @@ public class ProductRestApi implements ProductsApi {
     }
 
     @Override
-    public ResponseEntity<ApiSuccessResponse> createProduct(String acceptLanguage, CreateProductViewRequest createProductViewRequest, MultipartFile image) throws Exception {
+    public ResponseEntity<CreateProductViewApiResponse> createProduct(String acceptLanguage, CreateProductViewRequest createProductViewRequest, MultipartFile image) throws Exception {
         return ResponseEntity.status(CREATED).body(
-                new ApiSuccessResponse()
+                new CreateProductViewApiResponse()
                         .code(CREATED.value())
                         .status(CREATED.name())
                         .timestamp(ZonedDateTime.now().toString())
@@ -44,5 +48,20 @@ public class ProductRestApi implements ProductsApi {
                         .message(MessageUtil.getMessage(PRODUCT_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, productDomainServiceApiAdapter.createProduct(createProductViewRequest, image)))
         );
+    }
+
+    @Override
+    public ResponseEntity<FindProductByIdViewApiResponse> findProductById(String acceptLanguage, UUID productId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<FindProductsViewApiResponse> findProducts(String acceptLanguage, Integer page, Integer size, String attribute, String direction) throws Exception {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<SearchProductsViewApiResponse> searchProduct(String acceptLanguage, Integer page, Integer size, String attribute, String direction, String keyword) throws Exception {
+        return null;
     }
 }

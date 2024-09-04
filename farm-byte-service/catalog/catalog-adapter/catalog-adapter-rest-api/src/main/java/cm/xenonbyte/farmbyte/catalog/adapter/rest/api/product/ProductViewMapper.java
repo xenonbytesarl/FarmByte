@@ -2,12 +2,24 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+import java.util.List;
 
 /**
  * @author bamk
@@ -32,7 +44,7 @@ public interface ProductViewMapper {
     @Mapping(target = "categoryId.value", source = "categoryId")
     @Mapping(target = "stockUomId", expression = "java(createProductViewRequest.getStockUomId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId(createProductViewRequest.getStockUomId()))")
     @Mapping(target = "purchaseUomId", expression = "java(createProductViewRequest.getPurchaseUomId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId(createProductViewRequest.getPurchaseUomId()))")
-    @Nonnull Product toProduct(@Nonnull CreateProductViewRequest createProductViewRequest);
+    @Nonnull Product toProduct(@Nonnull @Valid CreateProductViewRequest createProductViewRequest);
 
 
     @BeanMapping(ignoreByDefault = true)
@@ -49,7 +61,78 @@ public interface ProductViewMapper {
     @Mapping(source = "categoryId.value", target = "categoryId")
     @Mapping(expression = "java(product.getStockUomId() == null? null: product.getStockUomId().getValue())", target = "stockUomId")
     @Mapping(expression = "java(product.getPurchaseUomId() == null? null: product.getPurchaseUomId().getValue())", target = "purchaseUomId")
-    @Nonnull CreateProductViewResponse toCreateProductViewResponse(@Nonnull Product product);
+    @Nonnull @Valid CreateProductViewResponse toCreateProductViewResponse(@Nonnull Product product);
 
 
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(expression = "java(product.getReference() == null? null: product.getReference().getText().getValue())", target = "reference")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "imageName.text.value", target = "filename")
+    @Mapping(source = "purchasePrice.amount", target = "purchasePrice")
+    @Mapping(source = "salePrice.amount", target = "salePrice")
+    @Mapping(source = "purchasable.value", target = "purchasable")
+    @Mapping(source = "sellable.value", target = "sellable")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(expression = "java(FindProductByIdViewResponse.TypeEnum.valueOf(product.getType().name()))", target = "type")
+    @Mapping(source = "categoryId.value", target = "categoryId")
+    @Mapping(expression = "java(product.getStockUomId() == null? null: product.getStockUomId().getValue())", target = "stockUomId")
+    @Mapping(expression = "java(product.getPurchaseUomId() == null? null: product.getPurchaseUomId().getValue())", target = "purchaseUomId")
+    @Nonnull @Valid FindProductByIdViewResponse toFindProductByIdViewResponse(@Nonnull Product product);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "first", target = "first")
+    @Mapping(source = "last", target = "last")
+    @Mapping(source = "pageSize", target = "pageSize")
+    @Mapping(source = "totalPages", target = "totalPages")
+    @Mapping(source = "totalElements", target = "totalElements")
+    @Mapping(source = "content", qualifiedByName = "toFindProductsViewResponses", target = "content")
+    @Nonnull @Valid FindProductsPageInfoViewResponse toFindProductsPageInfoViewResponse(@Nonnull PageInfo<Product> productPageInfo);
+
+    @Named("toFindProductsViewResponses")
+    @Nonnull @Valid List<FindProductsViewResponse> toFindProductsViewResponses(@Nonnull List<Product> product);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(expression = "java(product.getReference() == null? null: product.getReference().getText().getValue())", target = "reference")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "imageName.text.value", target = "filename")
+    @Mapping(source = "purchasePrice.amount", target = "purchasePrice")
+    @Mapping(source = "salePrice.amount", target = "salePrice")
+    @Mapping(source = "purchasable.value", target = "purchasable")
+    @Mapping(source = "sellable.value", target = "sellable")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(expression = "java(FindProductsViewResponse.TypeEnum.valueOf(product.getType().name()))", target = "type")
+    @Mapping(source = "categoryId.value", target = "categoryId")
+    @Mapping(expression = "java(product.getStockUomId() == null? null: product.getStockUomId().getValue())", target = "stockUomId")
+    @Mapping(expression = "java(product.getPurchaseUomId() == null? null: product.getPurchaseUomId().getValue())", target = "purchaseUomId")
+    @Nonnull @Valid FindProductsViewResponse toFindProductsViewResponse(@Nonnull Product product);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "first", target = "first")
+    @Mapping(source = "last", target = "last")
+    @Mapping(source = "pageSize", target = "pageSize")
+    @Mapping(source = "totalPages", target = "totalPages")
+    @Mapping(source = "totalElements", target = "totalElements")
+    @Mapping(source = "content", qualifiedByName = "toSearchProductsViewResponses", target = "content")
+    @Nonnull @Valid SearchProductsPageInfoViewResponse toSearchProductsPageInfoViewResponse(@Nonnull PageInfo<Product> productPageInfo);
+
+    @Named("toSearchProductsViewResponses")
+    @Nonnull @Valid List<SearchProductsViewResponse> toSearchProductsViewResponses(@Nonnull List<Product> product);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(expression = "java(product.getReference() == null? null: product.getReference().getText().getValue())", target = "reference")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "imageName.text.value", target = "filename")
+    @Mapping(source = "purchasePrice.amount", target = "purchasePrice")
+    @Mapping(source = "salePrice.amount", target = "salePrice")
+    @Mapping(source = "purchasable.value", target = "purchasable")
+    @Mapping(source = "sellable.value", target = "sellable")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(expression = "java(SearchProductsViewResponse.TypeEnum.valueOf(product.getType().name()))", target = "type")
+    @Mapping(source = "categoryId.value", target = "categoryId")
+    @Mapping(expression = "java(product.getStockUomId() == null? null: product.getStockUomId().getValue())", target = "stockUomId")
+    @Mapping(expression = "java(product.getPurchaseUomId() == null? null: product.getPurchaseUomId().getValue())", target = "purchaseUomId")
+    @Nonnull @Valid SearchProductsViewResponse toSearchProductsViewResponse(@Nonnull Product product);
 }

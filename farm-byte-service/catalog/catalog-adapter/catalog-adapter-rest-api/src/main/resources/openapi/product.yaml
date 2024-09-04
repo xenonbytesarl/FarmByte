@@ -40,14 +40,14 @@ paths:
                   type: string
                   format: binary
       parameters:
-        - $ref: '#/components/parameters/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
       responses:
         201:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiSuccessResponse'
+                $ref: '#/components/schemas/CreateProductViewApiResponse'
         400:
           description: bad operation
           content:
@@ -66,76 +66,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - Product
+      operationId: findProducts
+      summary: find all products
+      security:
+        - oAuth:
+            - read:product
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindProductsViewApiResponse'
+  /products/{productId}:
+    get:
+      tags:
+        - Product
+      summary: find product by id
+      operationId: findProductById
+      security:
+        - oAuth:
+            - read:product
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/productId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindProductByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /products/search:
+    get:
+      tags:
+        - Product
+      summary: search product by a keyword
+      operationId: searchProduct
+      security:
+        - oAuth:
+            - read:product
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/keyword.yaml#/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchProductsViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 components:
   parameters:
-    accept-language:
-      name: Accept-Language
-      in: header
+    productId:
+      in: path
+      name: productId
       required: true
       schema:
         type: string
-        enum: [en, fr]
+        format: uuid
   schemas:
-    ValidationError:
-      type: object
-      required:
-        - field
-        - message
-      properties:
-        field:
-          type: string
-        message:
-          type: string
-    ApiResponse:
-      type: object
-      required:
-        - timestamp
-        - code
-        - status
-        - success
-      properties:
-        timestamp:
-          type: string
-        code:
-          type: integer
-          format: int32
-        status:
-          type: string
-        success:
-          type: boolean
-    ApiSuccessResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          properties:
-            message:
-              type: string
-            data:
-              type: object
-              additionalProperties:
-                $ref: '#/components/schemas/CreateProductViewResponse'
     ApiErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ApiResponse'
-        - type: object
-          required:
-            - reason
-            - path
-            - trackId
-          properties:
-            reason:
-              type: string
-            developerMessage:
-              type: string
-            path:
-              type: string
-            trackId:
-              type: string
-              format: uuid
-            error:
-              type: array
-              items:
-                $ref: '#/components/schemas/ValidationError'
+      $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-error-response.yaml#/ApiErrorResponse'
     ImageViewRequest:
       type: object
       required:
@@ -183,7 +200,7 @@ components:
           format: uuid
         filename:
           type: string
-    CreateProductViewResponse:
+    ProductViewResponse:
       type: object
       required:
         - id
@@ -234,3 +251,69 @@ components:
           format: uuid
         active:
           type: boolean
+    CreateProductViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductViewResponse'
+    CreateProductViewApiResponse:
+      allOf:
+        - $ref:  '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateProductViewResponse'
+    FindProductByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductViewResponse'
+    FindProductByIdViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindProductByIdViewResponse'
+    FindProductsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductViewResponse'
+    FindProductsPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindProductsViewResponse'
+    FindProductsViewApiResponse:
+      allOf:
+        - $ref:  '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindProductsPageInfoViewResponse'
+    SearchProductsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductViewResponse'
+    SearchProductsPageInfoViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchProductsViewResponse'
+    SearchProductsViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SearchProductsPageInfoViewResponse'

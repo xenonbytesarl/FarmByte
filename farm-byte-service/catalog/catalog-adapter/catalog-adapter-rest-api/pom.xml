@@ -179,12 +179,6 @@
                                 <useBeanValidation>true</useBeanValidation>
                                 <performBeanValidation>true</performBeanValidation>
                                 <unhandledException>true</unhandledException>
-                                <typeMappings>
-                                    <typeMapping>createProductResponse=CreateProductResponse</typeMapping>
-                                </typeMappings>
-                                <importMappings>
-                                    <importMapping>CreateProductResponse=cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse</importMapping>
-                                </importMappings>
                             </configOptions>
                         </configuration>
                     </execution>

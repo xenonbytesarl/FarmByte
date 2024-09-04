@@ -2,9 +2,15 @@ package cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.CreateProductViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductService;
 import cm.xenonbyte.farmbyte.common.domain.ports.primary.StorageManager;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
@@ -16,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author bamk
@@ -56,5 +63,29 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
                 productService.createProduct(productViewMapper.toProduct(createProductViewRequest)));
         storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
         return createProductViewResponse;
+    }
+
+    @Nonnull
+    @Override
+    public FindProductByIdViewResponse findProductById(@Nonnull UUID productId) {
+        return productViewMapper.toFindProductByIdViewResponse(
+                productService.findProductById(new ProductId(productId))
+        );
+    }
+
+    @Nonnull
+    @Override
+    public FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, Direction direction) {
+        return productViewMapper.toFindProductsPageInfoViewResponse(
+                productService.findProducts(page, size, attribute, direction)
+        );
+    }
+
+    @Nonnull
+    @Override
+    public SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, Direction direction, String keyword) {
+        return productViewMapper.toSearchProductsPageInfoViewResponse(
+                productService.searchProducts(page, size, attribute, direction, Keyword.of(Text.of(keyword)))
+        );
     }
 }
