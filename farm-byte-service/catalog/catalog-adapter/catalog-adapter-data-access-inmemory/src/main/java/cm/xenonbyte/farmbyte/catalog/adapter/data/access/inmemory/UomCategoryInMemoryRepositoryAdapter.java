@@ -3,6 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
@@ -71,5 +72,28 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
                         .sorted(Direction.ASC.equals(direction) ? comparing: comparing.reversed())
                         .toList()
         );
+    }
+
+    @Nonnull
+    @Override
+    public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
+        UomCategory updatedUomCategory = UomCategory.builder()
+                .id(oldUomcategory.getId())
+                .name(newUomCategory.getName())
+                .parentUomCategoryId(newUomCategory.getParentUomCategoryId())
+                .active(newUomCategory.getActive())
+                .build();
+        uomCategories.put(
+                oldUomcategory.getId(),
+                updatedUomCategory
+        );
+        return updatedUomCategory;
+    }
+
+    @Override
+    public Optional<UomCategory> findByName(Name name) {
+        return uomCategories.values().stream()
+                .filter(uomCategory -> uomCategory.getName().equals(name))
+                .findFirst();
     }
 }

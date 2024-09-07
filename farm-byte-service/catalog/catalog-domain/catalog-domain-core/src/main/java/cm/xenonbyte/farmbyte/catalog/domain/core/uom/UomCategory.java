@@ -111,4 +111,6 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
             return new UomCategory(this);
         }
     }
+
+
 }
