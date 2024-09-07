@@ -95,4 +95,19 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
                 uomCategoryJpaPage.getContent().stream().map(uomCategoryJpaMapper::toUomCategory).toList()
         );
     }
+
+    @Nonnull
+    @Override
+    public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
+        UomCategoryJpa oldUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(oldUomcategory);
+        UomCategoryJpa newUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(newUomCategory);
+        uomCategoryJpaMapper.copyNewToOldUomCategory(oldUomCategoryJpa, newUomCategoryJpa);
+        return uomCategoryJpaMapper.toUomCategory(uomCategoryJpaRepository.save(oldUomCategoryJpa));
+    }
+
+    @Override
+    public Optional<UomCategory> findByName(Name name) {
+        return uomCategoryJpaRepository.findByName(name.getText().getValue())
+                .map(uomCategoryJpaMapper::toUomCategory);
+    }
 }

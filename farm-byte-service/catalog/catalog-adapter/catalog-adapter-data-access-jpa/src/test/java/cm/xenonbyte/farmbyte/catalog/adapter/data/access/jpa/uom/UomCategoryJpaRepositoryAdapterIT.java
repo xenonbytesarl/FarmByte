@@ -3,7 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.JpaRepositoryAdapterTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.UomCategoryRepositoryTest;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +46,12 @@ class UomCategoryJpaRepositoryAdapterIT extends UomCategoryRepositoryTest {
         name = Name.of(Text.of("Unite"));
 
         parentUomCategoryId = new UomCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+
+        oldUomCategory = UomCategory.builder()
+                .id(new UomCategoryId(UUID.fromString("01912c2e-b52d-7b85-9c12-85af49fc7798")))
+                .name(Name.of(Text.of("Unite")))
+                .active(Active.with(true))
+                .build();
 
     }
 }
