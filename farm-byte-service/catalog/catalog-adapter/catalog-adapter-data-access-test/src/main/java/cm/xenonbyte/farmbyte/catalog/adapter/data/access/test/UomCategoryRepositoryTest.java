@@ -8,6 +8,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,7 @@ public abstract class UomCategoryRepositoryTest {
     protected UomCategoryRepository uomCategoryRepository;
     protected Name name;
     protected UomCategoryId parentUomCategoryId;
+    protected UomCategory oldUomCategory;
 
     @Nested
     class CreateUomCategoryTest {
@@ -174,6 +176,44 @@ public abstract class UomCategoryRepositoryTest {
             assertThat(result.getTotalPages()).isEqualTo(0);
             assertThat(result.getContent().size()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    class UpdateUomCategoryRepositoryTest {
+
+        @Test
+        void should_success_when_update_uom_category() {
+            //Given
+            UomCategory uomCategoryToUpdate = UomCategory.builder()
+                    .id(oldUomCategory.getId())
+                    .name(Name.of(Text.of("New Temps")))
+                    .build();
+
+            //Act
+            UomCategory result = uomCategoryRepository.updateUomCategory(oldUomCategory, uomCategoryToUpdate);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(uomCategoryToUpdate);
+        }
+
+        @Test
+        void should_return_true_when_find_uom_category_with_existing_name() {
+            //Given + Act
+            Optional<UomCategory> result = uomCategoryRepository.findByName(name);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+
+        }
+
+        @Test
+        void should_return_false_when_find_uom_category_with_non_existing_name() {
+            //Given + Act
+            Optional<UomCategory> result = uomCategoryRepository.findByName(Name.of(Text.of("Le temps")));
+
+            //Then
+            assertThat(result.isPresent()).isFalse();
         }
     }
 

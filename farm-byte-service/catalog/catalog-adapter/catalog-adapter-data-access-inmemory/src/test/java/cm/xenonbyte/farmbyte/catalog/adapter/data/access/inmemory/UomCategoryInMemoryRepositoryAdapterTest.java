@@ -20,33 +20,33 @@ public final class UomCategoryInMemoryRepositoryAdapterTest extends UomCategoryR
    void setUp() {
        uomCategoryRepository = new UomCategoryInMemoryRepositoryAdapter();
 
-       name = Name.of(Text.of("Unite"));
+       super.name = Name.of(Text.of("Unite"));
        UomCategory uomCategory = UomCategory.of(name);
        uomCategory.initiate();
-       uomCategoryRepository.save(uomCategory);
-       parentUomCategoryId = uomCategory.getId();
+       super.uomCategoryRepository.save(uomCategory);
+       super.parentUomCategoryId = uomCategory.getId();
 
        UomCategory.of(Name.of(Text.of("Carton")), parentUomCategoryId);
 
-       uomCategoryRepository.save(
+       super.oldUomCategory = uomCategoryRepository.save(
                UomCategory.builder()
                        .id(new UomCategoryId(UUID.fromString("0191a55b-a411-784c-bcd1-c3fc4b9213e5")))
                        .name(Name.of(Text.of("Distance")))
                        .build()
        );
-       uomCategoryRepository.save(
+       super.uomCategoryRepository.save(
                UomCategory.builder()
                        .id(new UomCategoryId(UUID.fromString("0191a55b-c234-75e5-9132-357b7347bfaf")))
                        .name(Name.of(Text.of("Volume")))
                        .build()
        );
-       uomCategoryRepository.save(
+       super.uomCategoryRepository.save(
                UomCategory.builder()
                        .id(new UomCategoryId(UUID.fromString("0191a55b-d972-7f67-a2dd-e88fc0afc484")))
                        .name(Name.of(Text.of("Temps")))
                        .build()
        );
-       uomCategoryRepository.save(
+       super.uomCategoryRepository.save(
                UomCategory.builder()
                        .id(new UomCategoryId(UUID.fromString("0191a55b-f51f-7e83-bc63-55f933ff00ca")))
                        .name(Name.of(Text.of("Poids")))
