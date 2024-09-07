@@ -5,6 +5,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 /**
  * @author bamk
@@ -30,4 +31,6 @@ public interface UomCategoryJpaMapper {
     @Mapping(target = "parentUomCategoryId", expression = "java(uomCategoryJpa.getParentUomCategoryJpa() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId(uomCategoryJpa.getParentUomCategoryJpa().getId()))")
     @Mapping(target = "active.value", source = "active")
     UomCategory toUomCategory(UomCategoryJpa uomCategoryJpa);
+
+    void copyNewToOldUomCategory(@MappingTarget UomCategoryJpa oldUomCategoryJpa, UomCategoryJpa newUomCategoryJpa);
 }

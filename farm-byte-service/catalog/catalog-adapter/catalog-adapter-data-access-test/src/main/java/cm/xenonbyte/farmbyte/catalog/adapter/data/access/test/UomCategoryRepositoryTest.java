@@ -3,6 +3,7 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
@@ -187,7 +188,8 @@ public abstract class UomCategoryRepositoryTest {
             //Given
             UomCategory uomCategoryToUpdate = UomCategory.builder()
                     .id(oldUomCategory.getId())
-                    .name(Name.of(Text.of("New Temps")))
+                    .name(Name.of(Text.of("Nouveau Temps")))
+                    .active(Active.with(true))
                     .build();
 
             //Act
