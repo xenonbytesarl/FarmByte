@@ -48,11 +48,30 @@ public final class UomCategoryDomainService implements UomCategoryService {
         return uomCategoryRepository.search(page, size, sortAttribute, direction, keyword);
     }
 
+    @Nonnull
+    @Override
+    public UomCategory updateUomCategory(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomCategory uomCategoryToUpdate) {
+        Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
+        if (optionalUomCategory.isPresent()) {
+            validateUomCategory(uomCategoryToUpdate);
+            return uomCategoryRepository.updateUomCategory(optionalUomCategory.get(), uomCategoryToUpdate);
+        }
+        throw new UomCategoryNotFoundException(new String[]{uomCategoryId.getValue().toString()});
+    }
+
     private void validateUomCategory(UomCategory uomCategory) {
         if(uomCategory.getParentUomCategoryId() != null && !uomCategoryRepository.existsById(uomCategory.getParentUomCategoryId())) {
             throw new UomParentCategoryNotFoundException(new String[] {uomCategory.getParentUomCategoryId().getValue().toString()});
         }
-        if(uomCategoryRepository.existsByName(uomCategory.getName())) {
+        //We check a unique name in case of creation. at this step, id it's null
+        if(uomCategory.getId() == null && uomCategoryRepository.existsByName(uomCategory.getName())) {
+            throw new UomCategoryNameConflictException(new String[] {uomCategory.getName().getText().getValue()});
+        }
+
+        //We check a unique name in case of update. At this step, id it's not null
+        Optional<UomCategory> existingUomCategoryByName = uomCategoryRepository.findByName(uomCategory.getName());
+        if(existingUomCategoryByName.isPresent() && uomCategory.getId() != null
+                && !existingUomCategoryByName.get().getId().equals(uomCategory.getId())) {
             throw new UomCategoryNameConflictException(new String[] {uomCategory.getName().getText().getValue()});
         }
     }

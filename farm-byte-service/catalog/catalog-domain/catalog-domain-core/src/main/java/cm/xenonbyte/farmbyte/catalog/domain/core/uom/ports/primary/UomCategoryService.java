@@ -20,4 +20,6 @@ public interface UomCategoryService {
     PageInfo<UomCategory> findUomCategories(int page, int size, String sortAttribute, Direction direction);
 
     PageInfo<UomCategory> searchUomCategories(int page, int size, String sortAttribute, Direction direction, Keyword keyword);
+
+    @Nonnull UomCategory updateUomCategory(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomCategory uomCategoryToUpdate);
 }

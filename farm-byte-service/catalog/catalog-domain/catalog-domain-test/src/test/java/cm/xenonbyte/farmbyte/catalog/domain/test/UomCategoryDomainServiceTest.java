@@ -9,6 +9,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundExceptio
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
@@ -267,7 +268,93 @@ final class UomCategoryDomainServiceTest {
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
-            assertThat(result.getContent().size()).isEqualTo(contentSize);
+            assertThat(result.getContent()).hasSize(contentSize);
+        }
+    }
+
+    @Nested
+    class UpdateUomCategoryDomainTest {
+
+        UomCategoryId uomCategoryId;
+        UomCategory uomCategory;
+
+        @BeforeEach
+        void setUp() {
+            uomCategoryId = new UomCategoryId(UUID.fromString("0191c90f-3b30-7528-80dc-40ee9d10cc00"));
+            uomCategory = uomCategoryRepository.save(
+                    UomCategory.builder()
+                            .id(uomCategoryId)
+                            .name(Name.of(Text.of("Temps")))
+                            .active(Active.with(true))
+                            .build()
+            );
+        }
+
+        @Test
+        void should_success_when_update_uom_category() {
+            //Given
+            UomCategory uomCategoryToUpdate = UomCategory.builder()
+                    .id(uomCategoryId)
+                    .name(Name.of(Text.of("Temps")))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act
+            UomCategory result = uomCategoryService.updateUomCategory(uomCategoryId, uomCategoryToUpdate);
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(uomCategoryToUpdate);
+        }
+
+        @Test
+        void should_fail_when_we_update_uom_category_with_duplicate_name() {
+            //Given
+            UomCategory uomCategoryToUpdate = UomCategory.builder()
+                    .id(new UomCategoryId(UUID.randomUUID()))
+                    .name(Name.of(Text.of("Temps")))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> uomCategoryService.updateUomCategory(uomCategoryId, uomCategoryToUpdate))
+                    .isInstanceOf(UomCategoryNameConflictException.class)
+                    .hasMessage(UOM_CATEGORY_NAME_CONFLICT_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_existing_uom_category_id() {
+            //Given
+            UomCategoryId unExistingUomCategoryId = new UomCategoryId(UUID.randomUUID());
+
+            UomCategory uomCategoryToUpdate = UomCategory.builder()
+                    .id(unExistingUomCategoryId)
+                    .name(Name.of(Text.of("Temps")))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomCategoryService.updateUomCategory(unExistingUomCategoryId, uomCategoryToUpdate))
+                    .isInstanceOf(UomCategoryNotFoundException.class)
+                    .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_existing_parent_uom_category() {
+            //Given
+            UomCategoryId unExistingParentUomCategoryId = new UomCategoryId(UUID.randomUUID());
+
+            UomCategory uomCategoryToUpdate = UomCategory.builder()
+                    .id(uomCategoryId)
+                    .name(Name.of(Text.of("Temps")))
+                    .parentUomCategoryId(unExistingParentUomCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomCategoryService.updateUomCategory(uomCategoryId, uomCategoryToUpdate))
+                    .isInstanceOf(UomParentCategoryNotFoundException.class)
+                    .hasMessage(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION);
         }
     }
 
