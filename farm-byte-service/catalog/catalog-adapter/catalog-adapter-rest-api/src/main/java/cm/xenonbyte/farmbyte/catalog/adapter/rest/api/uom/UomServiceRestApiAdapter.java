@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
@@ -24,4 +26,6 @@ public interface UomServiceRestApiAdapter {
 
     @Nonnull @Valid
     SearchUomsPageInfoViewResponse searchUoms(int page, int size, String attribute, String direction, String keyword);
+
+    @Nonnull @Valid UpdateUomViewResponse updateUom(@Nonnull UUID uomIdUUID, @Nonnull UpdateUomViewRequest updateUomViewRequest);
 }

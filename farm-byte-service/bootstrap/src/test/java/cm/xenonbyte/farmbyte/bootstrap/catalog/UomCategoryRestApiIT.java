@@ -11,7 +11,7 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewApiResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryApiViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryServiceRestApiAdapter;
@@ -311,7 +311,7 @@ public class UomCategoryRestApiIT {
             HttpEntity<UpdateUomCategoryViewRequest> request = new HttpEntity<>(updateUomCategoryViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<UpdateUomCategoryApiViewResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, UpdateUomCategoryApiViewResponse.class);
+            ResponseEntity<UpdateUomCategoryViewApiResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, UpdateUomCategoryViewApiResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(200);

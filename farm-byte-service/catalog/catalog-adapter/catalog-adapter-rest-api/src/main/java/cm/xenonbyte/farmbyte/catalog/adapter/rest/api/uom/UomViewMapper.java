@@ -8,6 +8,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUom
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomsViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
@@ -101,4 +103,21 @@ public interface UomViewMapper {
     @Mapping(source = "uomCategoryId.value", target = "uomCategoryId")
     @Mapping(expression = "java(SearchUomsViewResponse.UomTypeEnum.valueOf(uom.getUomType().name()))", target = "uomType")
     @Nonnull @Valid SearchUomsViewResponse toSearchUomsViewResponse(@Nonnull Uom uom);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "ratio", expression = "java(updateUomViewRequest.getRatio() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Ratio.of(updateUomViewRequest.getRatio()))")
+    @Mapping(target = "uomCategoryId.value", source = "uomCategoryId")
+    @Mapping(target = "uomType", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType.valueOf(updateUomViewRequest.getUomType().name()))")
+    @Nonnull Uom toUom(@Nonnull UpdateUomViewRequest updateUomViewRequest);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "ratio.value", target = "ratio")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(source = "uomCategoryId.value", target = "uomCategoryId")
+    @Mapping(expression = "java(UpdateUomViewResponse.UomTypeEnum.valueOf(uom.getUomType().name()))", target = "uomType")
+    @Nonnull @Valid UpdateUomViewResponse toUpdateUomViewResponse(@Nonnull Uom uom);
 }

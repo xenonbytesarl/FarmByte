@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.CreateU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
@@ -58,5 +60,13 @@ public class UomDomainServiceRestApiAdapter implements UomServiceRestApiAdapter 
     @Override
     public SearchUomsPageInfoViewResponse searchUoms(int page, int size, String attribute, String direction, @Nonnull String keyword) {
         return uomViewMapper.toSearchUomsPageInfoViewResponse(uomService.searchUoms(page, size, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword))));
+    }
+
+    @Nonnull
+    @Override
+    public UpdateUomViewResponse updateUom(@Nonnull UUID uomIdUUID, @Nonnull UpdateUomViewRequest updateUomViewRequest) {
+        return uomViewMapper.toUpdateUomViewResponse(
+                uomService.updateUom(new UomId(uomIdUUID), uomViewMapper.toUom(updateUomViewRequest))
+        );
     }
 }

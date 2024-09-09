@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateUomCategoryApiViewResponse'
+                $ref: '#/components/schemas/UpdateUomCategoryViewApiResponse'
         400:
           description: bad operation
           content:
@@ -293,7 +293,7 @@ components:
     UpdateUomCategoryViewResponse:
       allOf:
         - $ref: '#/components/schemas/UomCategoryView'
-    UpdateUomCategoryApiViewResponse:
+    UpdateUomCategoryViewApiResponse:
       allOf:
         - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object

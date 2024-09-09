@@ -102,6 +102,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      tags:
+        - Uom
+      summary: find unit of measure by id
+      operationId: updateUomById
+      security:
+        - oAuth:
+            - update:uom
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/uomId'
+      requestBody:
+        required: true
+        description: uom object to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUomViewRequest'
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUomViewApiResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /uoms/search:
     get:
       tags:
@@ -165,7 +208,7 @@ components:
         ratio:
           type: number
           format: double
-    UomViewResponse:
+    UomView:
       type: object
       required:
         - id
@@ -195,6 +238,9 @@ components:
           format: double
         active:
           type: boolean
+    UomViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomView'
     CreateUomViewResponse:
       allOf:
         - $ref: '#/components/schemas/UomViewResponse'
@@ -261,4 +307,18 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/SearchUomsPageInfoViewResponse'
-
+    UpdateUomViewRequest:
+      allOf:
+        - $ref: '#/components/schemas/UomView'
+    UpdateUomViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomView'
+    UpdateUomViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UpdateUomViewApiResponse'

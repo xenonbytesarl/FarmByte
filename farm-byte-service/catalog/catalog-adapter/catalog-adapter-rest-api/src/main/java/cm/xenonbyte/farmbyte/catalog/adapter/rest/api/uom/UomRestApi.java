@@ -10,6 +10,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUom
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomsViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -97,5 +99,10 @@ public class UomRestApi implements UomsApi {
                         .message(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(BODY, searchUomsViewResponse))
         );
+    }
+
+    @Override
+    public ResponseEntity<UpdateUomViewApiResponse> updateUomById(String acceptLanguage, UUID uomId, UpdateUomViewRequest updateUomViewRequest) {
+        return null;
     }
 }
