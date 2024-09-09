@@ -11,6 +11,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUom
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.FindUomsViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchUomsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
@@ -43,6 +46,8 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOMS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_UPDATED_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
@@ -51,6 +56,8 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
@@ -88,9 +95,9 @@ public class UomRestApiIT {
             return Stream.of(
                     Arguments.of(
                             UUID.fromString("01919905-c273-7aaa-8965-ef4ed404e4b9"),
-                            "Heure",
-                            null,
-                            CreateUomViewRequest.UomTypeEnum.REFERENCE
+                            "Minute",
+                            60.0,
+                            CreateUomViewRequest.UomTypeEnum.GREATER
                     ),
                     Arguments.of(
                             UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"),
@@ -117,12 +124,11 @@ public class UomRestApiIT {
         ) throws Exception {
 
             //Given
-            String message = "UomApiRest.1";
             CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(uomCategoryId, name, ratioRequest, uomTypeEnumRequest);
             HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<CreateUomViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateUomViewApiResponse.class);
+            ResponseEntity<CreateUomViewApiResponse> response = restTemplate.exchange(BASE_URL, POST, request, CreateUomViewApiResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(201);
@@ -179,7 +185,7 @@ public class UomRestApiIT {
             HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(code);
@@ -203,11 +209,13 @@ public class UomRestApiIT {
             HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(409);
             assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getCode()).isEqualTo(409);
             assertThat(response.getBody().getSuccess()).isFalse();
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY, Locale.forLanguageTag(EN_LOCALE), ""));
         }
@@ -227,11 +235,13 @@ public class UomRestApiIT {
             HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(409);
             assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getCode()).isEqualTo(409);
             assertThat(response.getBody().getSuccess()).isFalse();
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
         }
@@ -250,7 +260,7 @@ public class UomRestApiIT {
             HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
 
             //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(400);
@@ -364,6 +374,131 @@ public class UomRestApiIT {
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchUomsPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+        }
+    }
+    
+    @Nested
+    class UpdateUomRestApiIT {
+        @Test
+        void should_success_when_update_uom() {
+            //Given
+            UUID uomIdUUID = UUID.fromString("0191d7ba-6781-7a63-9ec6-f0b99a908619");
+            UUID uomCategoryIdUUID = UUID.fromString("01919905-c273-7aaa-8965-ef4ed404e4b9");
+            String uomType = "REFERENCE";
+            String name = "Nouvelle Heure";
+            boolean active = true;
+            double ratio = 1.0;
+
+            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
+                    .id(uomIdUUID)
+                    .name(name)
+                    .uomCategoryId(uomCategoryIdUUID)
+                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
+                    .ratio(ratio)
+                    .active(active);
+            HttpEntity<UpdateUomViewRequest> request = new HttpEntity<>(updateUomViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<UpdateUomViewApiResponse> response = restTemplate.exchange(BASE_URL + "/" + uomIdUUID, PUT, request, UpdateUomViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(UpdateUomViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+        @Test
+        void should_fail_when_update_uom_with_duplicate_name() {
+            //Given
+            UUID uomIdUUID = UUID.fromString("0191d7ba-6781-7a63-9ec6-f0b99a908619");
+            UUID uomCategoryIdUUID = UUID.fromString("01919905-c273-7aaa-8965-ef4ed404e4b9");
+            String uomType = "REFERENCE";
+            String name = "Jour";
+            boolean active = true;
+            double ratio = 1.0;
+
+            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
+                    .id(uomIdUUID)
+                    .name(name)
+                    .uomCategoryId(uomCategoryIdUUID)
+                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
+                    .ratio(ratio)
+                    .active(active);
+            HttpEntity<UpdateUomViewRequest> request = new HttpEntity<>(updateUomViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getCode()).isEqualTo(409);
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
+        }
+
+        @Test
+        void should_fail_when_update_uom_with_non_existing_category() {
+            //Given
+            UUID uomIdUUID = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
+            UUID uomCategoryIdUUID = UUID.fromString("0191d7f5-81a4-710b-b095-d04acdb50b89");
+            String uomType = "GREATER";
+            String name = "New Jour";
+            boolean active = true;
+            double ratio = 24.0;
+
+            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
+                    .id(uomIdUUID)
+                    .name(name)
+                    .uomCategoryId(uomCategoryIdUUID)
+                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
+                    .ratio(ratio)
+                    .active(active);
+            HttpEntity<UpdateUomViewRequest> request = new HttpEntity<>(updateUomViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getCode()).isEqualTo(404);
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_uom_with_duplicate_reference_and_category_id() {
+            //Given
+            UUID uomIdUUID = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
+            UUID uomCategoryIdUUID = UUID.fromString("01919905-c273-7aaa-8965-ef4ed404e4b9");
+            String uomType = "REFERENCE";
+            String name = "Jour";
+            boolean active = true;
+            double ratio = 1.0;
+
+            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
+                    .id(uomIdUUID)
+                    .name(name)
+                    .uomCategoryId(uomCategoryIdUUID)
+                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
+                    .ratio(ratio)
+                    .active(active);
+            HttpEntity<UpdateUomViewRequest> request = new HttpEntity<>(updateUomViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getCode()).isEqualTo(409);
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY, Locale.forLanguageTag(EN_LOCALE), ""));
         }
     }
 
