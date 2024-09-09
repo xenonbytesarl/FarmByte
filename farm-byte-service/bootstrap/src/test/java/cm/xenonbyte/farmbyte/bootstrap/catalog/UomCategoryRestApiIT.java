@@ -11,6 +11,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryApiViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
@@ -42,6 +45,7 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
@@ -51,6 +55,7 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
@@ -288,6 +293,100 @@ public class UomCategoryRestApiIT {
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchUomCategoriesPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+        }
+    }
+
+    @Nested
+    class UpdateUomCategoryRestApiIT {
+
+        @Test
+        void should_success_when_update_uom_category() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            HttpEntity<UpdateUomCategoryViewRequest> request = new HttpEntity<>(updateUomCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<UpdateUomCategoryApiViewResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, UpdateUomCategoryApiViewResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(UpdateUomCategoryViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_by_non_existing_id() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191d5dd-6ff8-7127-8cac-e7f1e76687d9");
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            HttpEntity<UpdateUomCategoryViewRequest> request = new HttpEntity<>(updateUomCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_existing_parent_uom_category_id() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID parentUomCategoryId = UUID.fromString("0191d5df-35cd-7a26-84ee-4d70133d9b48");
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .parentUomCategoryId(parentUomCategoryId)
+                    .active(true);
+
+            HttpEntity<UpdateUomCategoryViewRequest> request = new HttpEntity<>(updateUomCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), parentUomCategoryId.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_duplicate_name() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            String name = "Distance";
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .active(true);
+
+            HttpEntity<UpdateUomCategoryViewRequest> request = new HttpEntity<>(updateUomCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
         }
     }
 

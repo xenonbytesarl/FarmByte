@@ -467,6 +467,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$").isNotEmpty())
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.content.name").value(updateUomCategoryViewResponse.getName()))
@@ -508,6 +509,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$").isNotEmpty())
                     .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                     .andExpect(jsonPath("$.code").value(404))
                     .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString())));
 
@@ -547,8 +549,50 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(status().isNotFound())
                     .andExpect(jsonPath("$").isNotEmpty())
                     .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                     .andExpect(jsonPath("$.code").value(404))
                     .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString())));
+
+
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateUomCategory(uuidArgumentCaptor.capture(), updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uomCategoryIdUUID);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_id_with_duplicate_name() throws Exception {
+            //Given
+            UUID uomCategoryIdUUID = UUID.randomUUID();
+            String name = "Nouvelle Unite";
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .parentUomCategoryId(UUID.randomUUID())
+                    .active(true);
+
+            when(uomCategoryDomainServiceRestApiAdapter.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .thenThrow(UomCategoryNameConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {name}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(UOM_CATEGORY_PATH_URI + "/" + uomCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(uomCategoryViewRequestToString(updateUomCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("CONFLICT"))
+                    .andExpect(jsonPath("$.code").value(409))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_CATEGORY_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
 
 
             verify(uomCategoryDomainServiceRestApiAdapter, times(1))
