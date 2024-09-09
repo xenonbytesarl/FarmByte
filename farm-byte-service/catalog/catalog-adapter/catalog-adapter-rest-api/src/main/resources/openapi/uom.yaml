@@ -321,4 +321,4 @@ components:
             data:
               type: object
               additionalProperties:
-                $ref: '#/components/schemas/UpdateUomViewApiResponse'
+                $ref: '#/components/schemas/UpdateUomViewResponse'

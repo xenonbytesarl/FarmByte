@@ -38,6 +38,7 @@ public class UomRestApi implements UomsApi {
     public static final String UOM_CREATED_SUCCESSFULLY = "UomApiRest.1";
     public static final String UOM_FIND_SUCCESSFULLY = "UomApiRest.2";
     public static final String UOMS_FIND_SUCCESSFULLY = "UomApiRest.3";
+    public static final String UOM_UPDATED_SUCCESSFULLY = "UomApiRest.4";
 
     private final UomServiceRestApiAdapter uomApiAdapterService;
 
@@ -103,6 +104,14 @@ public class UomRestApi implements UomsApi {
 
     @Override
     public ResponseEntity<UpdateUomViewApiResponse> updateUomById(String acceptLanguage, UUID uomId, UpdateUomViewRequest updateUomViewRequest) {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new UpdateUomViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .success(true)
+                        .timestamp(ZonedDateTime.now().toString())
+                        .message(MessageUtil.getMessage(UOM_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(BODY, uomApiAdapterService.updateUom(uomId, updateUomViewRequest)))
+        );
     }
 }
