@@ -5,6 +5,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -181,6 +182,48 @@ public abstract class UomRepositoryTest {
             assertThat(result.getContent().size()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
+    }
+
+    @Nested
+    class UpdateUomRepositoryTest {
+
+        @Test
+        void should_success_when_find_existing_uom_by_name() {
+            //Given + Act
+            Optional<Uom> result = uomRepository.findByName(name);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+        }
+
+        @Test
+        void should_fail_when_find_non_existing_uom_by_name() {
+            //Given + Act
+            Optional<Uom> result = uomRepository.findByName(Name.of(Text.of("NaN")));
+
+            //Then
+            assertThat(result.isPresent()).isFalse();
+        }
+
+        @Test
+        void should_success_when_update_uom() {
+            //Given
+            Uom uom = Uom.builder()
+                    .id(uomId)
+                    .name(Name.of(Text.of("NaN")))
+                    .uomCategoryId(uomCategoryId)
+                    .uomType(UomType.REFERENCE)
+                    .ratio(Ratio.of(1.0))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act
+            Uom result = uomRepository.save(uom);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(uom);
+        }
+
     }
 
     protected Uom createSomeUom(Name name, UomCategoryId uomCategoryId, UomType uomType, Ratio ratio) {
