@@ -7,12 +7,15 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -30,11 +33,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -336,8 +341,8 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
 
             assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
             assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
-            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
-            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(stringArgumentCaptor.getAllValues().getFirst()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().getFirst()).isEqualTo(Direction.ASC);
             assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(uomCategoriesPageInfo);
 
 
@@ -429,14 +434,147 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
 
             assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
             assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
-            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
-            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(stringArgumentCaptor.getAllValues().getFirst()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().getFirst()).isEqualTo(Direction.ASC);
             assertThat(keywordArgumentCaptor.getValue().getText().getValue()).isEqualTo(keyword);
             assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(uomCategoriesPageInfo);
 
 
         }
 
+    }
+
+    @Nested
+    class UpdateUomCategoryDomainServiceRestApiAdapterTest {
+        @Test
+        void should_success_when_update_uom_category() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191cf1a-82ea-7004-aa19-e8689d480634");
+            String name = "Nouvelle unite";
+            boolean active = true;
+            UomCategoryId uomCategoryId = new UomCategoryId(uomCategoryIdUUID);
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            UomCategory uomCategory = UomCategory.builder()
+                    .id(uomCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .active(Active.with(active))
+                    .build();
+            UpdateUomCategoryViewResponse updateUomCategoryViewResponse = new UpdateUomCategoryViewResponse()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+
+            when(uomCategoryViewMapper.toUomCategory(updateUomCategoryViewRequest)).thenReturn(uomCategory);
+            when(uomCategoryService.updateUomCategory(uomCategoryId, uomCategory)).thenReturn(uomCategory);
+            when(uomCategoryViewMapper.toUpdateUomCategoryViewResponse(uomCategory)).thenReturn(updateUomCategoryViewResponse);
+
+            ArgumentCaptor<UomCategoryId> uomCategoryIdArgumentCaptor = ArgumentCaptor.forClass(UomCategoryId.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+            ArgumentCaptor<UomCategory> uomCategoryArgumentCaptor = ArgumentCaptor.forClass(UomCategory.class);
+
+            //Act
+            UpdateUomCategoryViewResponse result = uomCategoryApiAdapterService.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(updateUomCategoryViewResponse);
+
+            verify(uomCategoryService, times(1)).updateUomCategory(uomCategoryIdArgumentCaptor.capture(), uomCategoryArgumentCaptor.capture());
+            verify(uomCategoryViewMapper, times(1)).toUomCategory(updateUomCategoryViewRequestArgumentCaptor.capture());
+            verify(uomCategoryViewMapper, times(1)).toUpdateUomCategoryViewResponse(uomCategoryArgumentCaptor.capture());
+
+            assertThat(uomCategoryIdArgumentCaptor.getValue()).isEqualTo(uomCategoryId);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+            assertThat(uomCategoryArgumentCaptor.getValue()).isEqualTo(uomCategory);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_existing_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191cf1e-a64e-78d4-9999-a0329b5d78ef");
+            String name = "Nouvelle unite";
+            boolean active = true;
+            UomCategoryId uomCategoryId = new UomCategoryId(uomCategoryIdUUID);
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            UomCategory uomCategory = UomCategory.builder()
+                    .id(uomCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .active(Active.with(active))
+                    .build();
+
+            when(uomCategoryViewMapper.toUomCategory(updateUomCategoryViewRequest)).thenReturn(uomCategory);
+            when(uomCategoryService.updateUomCategory(uomCategoryId, uomCategory))
+                    .thenThrow(UomCategoryNotFoundException.class.getConstructor(Object[].class)
+                    .newInstance(new Object[]{new String[]{uomCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UomCategoryId> uomCategoryIdArgumentCaptor = ArgumentCaptor.forClass(UomCategoryId.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+            ArgumentCaptor<UomCategory> uomCategoryArgumentCaptor = ArgumentCaptor.forClass(UomCategory.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> uomCategoryApiAdapterService.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .isInstanceOf(UomCategoryNotFoundException.class)
+                    .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
+
+            verify(uomCategoryService, times(1)).updateUomCategory(uomCategoryIdArgumentCaptor.capture(), uomCategoryArgumentCaptor.capture());
+            verify(uomCategoryViewMapper, times(1)).toUomCategory(updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uomCategoryIdArgumentCaptor.getValue()).isEqualTo(uomCategoryId);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+            assertThat(uomCategoryArgumentCaptor.getValue()).isEqualTo(uomCategory);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_parent_uom_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191cf1e-a64e-78d4-9999-a0329b5d78ef");
+            String name = "Nouvelle unite";
+            boolean active = true;
+            UUID parentUomCategoryIdUUID = UUID.randomUUID();
+            UomCategoryId uomCategoryId = new UomCategoryId(uomCategoryIdUUID);
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .parentUomCategoryId(parentUomCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            UomCategory uomCategory = UomCategory.builder()
+                    .id(uomCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .parentUomCategoryId(new UomCategoryId(parentUomCategoryIdUUID))
+                    .active(Active.with(active))
+                    .build();
+
+            when(uomCategoryViewMapper.toUomCategory(updateUomCategoryViewRequest)).thenReturn(uomCategory);
+            when(uomCategoryService.updateUomCategory(uomCategoryId, uomCategory))
+                    .thenThrow(UomParentCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{parentUomCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UomCategoryId> uomCategoryIdArgumentCaptor = ArgumentCaptor.forClass(UomCategoryId.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+            ArgumentCaptor<UomCategory> uomCategoryArgumentCaptor = ArgumentCaptor.forClass(UomCategory.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> uomCategoryApiAdapterService.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .isInstanceOf(UomParentCategoryNotFoundException.class)
+                    .hasMessage(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION);
+
+            verify(uomCategoryService, times(1)).updateUomCategory(uomCategoryIdArgumentCaptor.capture(), uomCategoryArgumentCaptor.capture());
+            verify(uomCategoryViewMapper, times(1)).toUomCategory(updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uomCategoryIdArgumentCaptor.getValue()).isEqualTo(uomCategoryId);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+            assertThat(uomCategoryArgumentCaptor.getValue()).isEqualTo(uomCategory);
+
+
+        }
     }
 
 }

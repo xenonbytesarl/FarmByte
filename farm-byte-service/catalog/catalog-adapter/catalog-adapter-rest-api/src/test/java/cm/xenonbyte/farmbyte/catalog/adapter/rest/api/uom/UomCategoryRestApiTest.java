@@ -8,6 +8,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
@@ -28,6 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -36,6 +39,7 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomCategoryRestApi.UOM_CATEGORY_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
@@ -49,6 +53,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -115,7 +120,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createUomCategoryViewRequestAsString(createUomCategoryViewRequest)))
+                            .content(uomCategoryViewRequestToString(createUomCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -189,7 +194,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createUomCategoryViewRequestAsString(createUomCategoryViewRequest)))
+                            .content(uomCategoryViewRequestToString(createUomCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(isStatus)
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -213,7 +218,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createUomCategoryViewRequestAsString(createUomCategoryViewRequest)))
+                            .content(uomCategoryViewRequestToString(createUomCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -427,7 +432,134 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
         }
     }
 
-    private String createUomCategoryViewRequestAsString(CreateUomCategoryViewRequest createUomCategoryViewRequest) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(createUomCategoryViewRequest);
+    @Nested
+    class UpdateUomCategoryRestApiTest {
+
+        @Test
+        void should_success_when_update_uom_category() throws Exception {
+            //Given
+            UUID uomCategoryIdUUID = UUID.randomUUID();
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            UpdateUomCategoryViewResponse updateUomCategoryViewResponse = new UpdateUomCategoryViewResponse()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            when(uomCategoryDomainServiceRestApiAdapter.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .thenReturn(updateUomCategoryViewResponse);
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(UOM_CATEGORY_PATH_URI + "/" + uomCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(uomCategoryViewRequestToString(updateUomCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.name").value(updateUomCategoryViewResponse.getName()))
+                    .andExpect(jsonPath("$.data.content.id").value(updateUomCategoryViewResponse.getId().toString()))
+                    .andExpect(jsonPath("$.data.content.active").value(updateUomCategoryViewResponse.getActive()));
+
+
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateUomCategory(uuidArgumentCaptor.capture(), updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uomCategoryIdUUID);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_id_with_not_existing_id() throws Exception {
+            //Given
+            UUID uomCategoryIdUUID = UUID.randomUUID();
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            when(uomCategoryDomainServiceRestApiAdapter.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .thenThrow(UomCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {uomCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(UOM_CATEGORY_PATH_URI + "/" + uomCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(uomCategoryViewRequestToString(updateUomCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString())));
+
+
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateUomCategory(uuidArgumentCaptor.capture(), updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uomCategoryIdUUID);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_id_with_not_existing_parent_id() throws Exception {
+            //Given
+            UUID uomCategoryIdUUID = UUID.randomUUID();
+            UpdateUomCategoryViewRequest updateUomCategoryViewRequest = new UpdateUomCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .parentUomCategoryId(UUID.randomUUID())
+                    .active(true);
+
+            when(uomCategoryDomainServiceRestApiAdapter.updateUomCategory(uomCategoryIdUUID, updateUomCategoryViewRequest))
+                    .thenThrow(UomParentCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {uomCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateUomCategoryViewRequest> updateUomCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateUomCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(UOM_CATEGORY_PATH_URI + "/" + uomCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(uomCategoryViewRequestToString(updateUomCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString())));
+
+
+            verify(uomCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateUomCategory(uuidArgumentCaptor.capture(), updateUomCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uomCategoryIdUUID);
+            assertThat(updateUomCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomCategoryViewRequest);
+        }
+    }
+
+    private String uomCategoryViewRequestToString(Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 }

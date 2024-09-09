@@ -103,6 +103,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      tags:
+        - UomCategory
+      summary: update category of unit of measure by id
+      operationId: updateUomCategoryById
+      security:
+        - oAuth:
+            - update:uom:category
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/uomCategoryId'
+      requestBody:
+        required: true
+        description: category uom object to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUomCategoryViewRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUomCategoryApiViewResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /uom-categories/search:
     get:
       tags:
@@ -156,7 +199,7 @@ components:
         parentUomCategoryId:
           type: string
           format: uuid
-    UomCategoryViewResponse:
+    UomCategoryView:
       type: object
       required:
         - id
@@ -175,6 +218,9 @@ components:
           format: uuid
         active:
           type: boolean
+    UomCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryView'
     CreateUomCategoryViewResponse:
       allOf:
         - $ref: '#/components/schemas/UomCategoryViewResponse'
@@ -241,3 +287,18 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/SearchUomCategoriesPageInfoViewResponse'
+    UpdateUomCategoryViewRequest:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryView'
+    UpdateUomCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/UomCategoryView'
+    UpdateUomCategoryApiViewResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UpdateUomCategoryViewResponse'
