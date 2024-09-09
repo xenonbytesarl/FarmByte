@@ -49,7 +49,7 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     @Override
     @Transactional
     public Uom save(@Nonnull Uom uom) {
-        return uomJpaMapper.fromUomJpa(uomJpaRepository.save(uomJpaMapper.fromUom(uom)));
+        return uomJpaMapper.toUom(uomJpaRepository.save(uomJpaMapper.toUomJpa(uom)));
     }
 
     @Override
@@ -64,15 +64,17 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public Optional<Uom> findById(@Nonnull UomId uomId) {
-        return uomJpaRepository.findById(uomId.getValue()).map(uomJpaMapper::fromUomJpa);
+        return uomJpaRepository.findById(uomId.getValue()).map(uomJpaMapper::toUom);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsById(@Nonnull UomId uomId) {
         return uomJpaRepository.existsById(uomId.getValue());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageInfo<Uom> findAll(int page, int size, String attribute, Direction direction) {
         Sort.Direction sortDirection = direction == Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<UomJpa> uomJpaPage = uomJpaRepository.findAll(PageRequest.of(page, size, sortDirection, attribute));
@@ -82,11 +84,12 @@ public class UomJpaRepositoryAdapter implements UomRepository {
                 uomJpaPage.getSize(),
                 uomJpaPage.getTotalElements(),
                 uomJpaPage.getTotalPages(),
-                uomJpaPage.getContent().stream().map(uomJpaMapper::fromUomJpa).toList()
+                uomJpaPage.getContent().stream().map(uomJpaMapper::toUom).toList()
         );
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageInfo<Uom> search(int page, int size, String attribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = direction == Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<UomJpa> uomJpaPage = uomJpaRepository.search(PageRequest.of(page, size, sortDirection, attribute), keyword.getText().getValue());
@@ -96,18 +99,24 @@ public class UomJpaRepositoryAdapter implements UomRepository {
                 uomJpaPage.getSize(),
                 uomJpaPage.getTotalElements(),
                 uomJpaPage.getTotalPages(),
-                uomJpaPage.getContent().stream().map(uomJpaMapper::fromUomJpa).toList()
+                uomJpaPage.getContent().stream().map(uomJpaMapper::toUom).toList()
         );
     }
 
     @Nonnull
     @Override
-    public Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated) {
-        return null;
+    @Transactional
+    public Uom update(@Nonnull Uom oldUom, @Nonnull Uom newUom) {
+        UomJpa oldUomJpa = uomJpaMapper.toUomJpa(oldUom);
+        UomJpa newUomJpa = uomJpaMapper.toUomJpa(newUom);
+        uomJpaMapper.copyNewToOldUom(oldUomJpa, newUomJpa);
+        return uomJpaMapper.toUom(oldUomJpa);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Uom> findByName(@Nonnull Name name) {
-        return Optional.empty();
+        return uomJpaRepository.findByName(name.getText().getValue())
+                .map(uomJpaMapper::toUom);
     }
 }

@@ -484,9 +484,9 @@ final class UomDomainServiceTest {
             //Given
             Uom uomToUpdated = Uom.builder()
                 .id(uomId)
-                .name(Name.of(Text.of("Carton de 15")))
+                .name(Name.of(Text.of("Carton de 20")))
                 .uomType(UomType.GREATER)
-                .ratio(Ratio.of(15.0))
+                .ratio(Ratio.of(20.0))
                 .uomCategoryId(parentUomCategoryId)
                 .active(Active.with(true))
                 .build();
