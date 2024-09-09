@@ -5,6 +5,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 
 /**
@@ -25,7 +26,7 @@ public interface UomJpaMapper {
     @Mapping(source = "active.value", target = "active")
     @Mapping(source = "uomCategoryId.value", target = "uomCategoryJpa.id")
     @Mapping(expression = "java(cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom.UomTypeJpa.valueOf(uom.getUomType().name()))", target = "uomTypeJpa")
-    UomJpa fromUom(Uom uom);
+    UomJpa toUomJpa(Uom uom);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
@@ -34,6 +35,7 @@ public interface UomJpaMapper {
     @Mapping(target = "active.value", source = "active")
     @Mapping(target = "uomCategoryId.value",source = "uomCategoryJpa.id")
     @Mapping(target = "uomType", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType.valueOf(uomJpa.getUomTypeJpa().name()))")
-    Uom fromUomJpa(UomJpa uomJpa);
+    Uom toUom(UomJpa uomJpa);
 
+    void copyNewToOldUom(@MappingTarget UomJpa oldUomJpa, UomJpa newUomJpa);
 }

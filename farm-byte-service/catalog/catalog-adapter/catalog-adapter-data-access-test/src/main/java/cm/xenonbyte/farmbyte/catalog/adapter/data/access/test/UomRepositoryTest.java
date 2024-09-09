@@ -202,7 +202,7 @@ public abstract class UomRepositoryTest {
             Optional<Uom> result = uomRepository.findByName(Name.of(Text.of("NaN")));
 
             //Then
-            assertThat(result.isPresent()).isFalse();
+            assertThat(result.isEmpty()).isTrue();
         }
 
         @Test
@@ -210,7 +210,7 @@ public abstract class UomRepositoryTest {
             //Given
             Uom uom = Uom.builder()
                     .id(uomId)
-                    .name(Name.of(Text.of("NaN")))
+                    .name(Name.of(Text.of("Carton de 16")))
                     .uomCategoryId(uomCategoryId)
                     .uomType(UomType.REFERENCE)
                     .ratio(Ratio.of(1.0))

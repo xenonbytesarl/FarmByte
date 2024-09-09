@@ -33,7 +33,7 @@ public interface UomRepository {
 
     @Nonnull PageInfo<Uom> search(int page, int size, String attribute, @Nonnull Direction direction, @Nonnull Keyword keyword);
 
-    @Nonnull Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated);
+    @Nonnull Uom update(@Nonnull Uom oldUom, @Nonnull Uom newUom);
 
     Optional<Uom> findByName(@Nonnull Name name);
 }

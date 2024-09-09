@@ -57,12 +57,14 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UomCategory> findById(UomCategoryId uomCategoryId) {
         return uomCategoryJpaRepository.findById(uomCategoryId.getValue())
                 .map(uomCategoryJpaMapper::toUomCategory);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageInfo<UomCategory> findAll(@Nonnull Integer page, @Nonnull Integer size, @Nonnull String sortAttribute, @Nonnull Direction direction) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
@@ -80,6 +82,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageInfo<UomCategory> search(int page, int size, String sortAttribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
@@ -98,6 +101,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
 
     @Nonnull
     @Override
+    @Transactional
     public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
         UomCategoryJpa oldUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(oldUomcategory);
         UomCategoryJpa newUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(newUomCategory);
@@ -106,6 +110,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UomCategory> findByName(Name name) {
         return uomCategoryJpaRepository.findByName(name.getText().getValue())
                 .map(uomCategoryJpaMapper::toUomCategory);
