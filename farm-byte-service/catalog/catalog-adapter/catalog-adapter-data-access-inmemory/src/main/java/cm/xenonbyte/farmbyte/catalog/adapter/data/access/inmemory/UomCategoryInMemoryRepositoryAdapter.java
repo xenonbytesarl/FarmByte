@@ -93,7 +93,7 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
     @Override
     public Optional<UomCategory> findByName(Name name) {
         return uomCategories.values().stream()
-                .filter(uomCategory -> uomCategory.getName().equals(name))
+                .filter(uomCategory -> uomCategory.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()))
                 .findFirst();
     }
 }
