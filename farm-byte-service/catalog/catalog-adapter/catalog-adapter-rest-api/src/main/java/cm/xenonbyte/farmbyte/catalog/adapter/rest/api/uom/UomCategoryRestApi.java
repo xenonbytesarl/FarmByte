@@ -7,9 +7,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewApiResponse;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryApiViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
-import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -100,9 +99,9 @@ public class UomCategoryRestApi implements UomCategoriesApi {
     }
 
     @Override
-    public ResponseEntity<UpdateUomCategoryApiViewResponse> updateUomCategoryById(String acceptLanguage, UUID uomCategoryId, UpdateUomCategoryViewRequest updateUomCategoryViewRequest) {
+    public ResponseEntity<UpdateUomCategoryViewApiResponse> updateUomCategoryById(String acceptLanguage, UUID uomCategoryId, UpdateUomCategoryViewRequest updateUomCategoryViewRequest) {
         return ResponseEntity.status(OK).body(
-                new UpdateUomCategoryApiViewResponse()
+                new UpdateUomCategoryViewApiResponse()
                     .code(OK.value())
                     .status(OK.name())
                     .success(true)
