@@ -119,4 +119,12 @@ public class UomJpaRepositoryAdapter implements UomRepository {
         return uomJpaRepository.findByName(name.getText().getValue())
                 .map(uomJpaMapper::toUom);
     }
+
+    @Override
+    public Optional<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
+        return uomJpaRepository.findByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(
+                    UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
+                    UomTypeJpa.valueOf(uomType.name()))
+                .map(uomJpaMapper::toUom);
+    }
 }

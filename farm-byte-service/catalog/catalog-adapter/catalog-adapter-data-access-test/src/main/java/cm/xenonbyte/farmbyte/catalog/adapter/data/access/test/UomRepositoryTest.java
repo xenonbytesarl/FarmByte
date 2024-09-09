@@ -224,6 +224,28 @@ public abstract class UomRepositoryTest {
             assertThat(result).isNotNull().isEqualTo(uom);
         }
 
+        @Test
+        void should_success_when_find_uom_by_uom_category_and_uom_type_and_active() {
+
+            //Given + Then
+            Optional<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(uomCategoryId, uomType);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+
+        }
+
+        @Test
+        void should_fail_when_find_uom_by_uom_non_existing_category_and_uom_type_and_active() {
+
+            //Given + Then
+            Optional<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(
+                    new UomCategoryId(UUID.fromString("0191d7e8-4c74-74e9-a0c2-eaa9111795e5")), uomType);
+
+            //Then
+            assertThat(result.isEmpty()).isTrue();
+
+        }
     }
 
     protected Uom createSomeUom(Name name, UomCategoryId uomCategoryId, UomType uomType, Ratio ratio) {

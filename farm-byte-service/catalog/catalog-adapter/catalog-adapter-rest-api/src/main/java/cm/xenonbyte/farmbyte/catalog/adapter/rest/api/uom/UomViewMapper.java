@@ -109,6 +109,7 @@ public interface UomViewMapper {
     @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "ratio", expression = "java(updateUomViewRequest.getRatio() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Ratio.of(updateUomViewRequest.getRatio()))")
     @Mapping(target = "uomCategoryId.value", source = "uomCategoryId")
+    @Mapping(target = "active.value", source = "active")
     @Mapping(target = "uomType", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType.valueOf(updateUomViewRequest.getUomType().name()))")
     @Nonnull Uom toUom(@Nonnull UpdateUomViewRequest updateUomViewRequest);
 

@@ -443,11 +443,13 @@ final class UomDomainServiceTest {
         Uom uom;
         UomId uomId;
         UomCategoryId parentUomCategoryId;
+        UomId uomId1;
 
         @BeforeEach
         void setUp() {
             uomId = new UomId(UUID.fromString("0191d5fe-609b-7105-bb4d-a36eb618e2be"));
             parentUomCategoryId = new UomCategoryId(UUID.fromString("0191d5ff-0b64-7fdb-b93a-6f3a0458d5e5"));
+            uomId1 = new UomId(UUID.fromString("0191d62d-77ff-76b6-b357-c36a17457288"));
 
             uomCategoryRepository.save(
                     UomCategory.builder()
@@ -462,20 +464,20 @@ final class UomDomainServiceTest {
                         .id(uomId)
                         .name(Name.of(Text.of("Carton de 10")))
                         .uomCategoryId(parentUomCategoryId)
-                        .ratio(Ratio.of(10.0))
-                        .uomType(UomType.GREATER)
+                        .ratio(Ratio.of(1.0))
+                        .uomType(UomType.REFERENCE)
                         .active(Active.with(true))
                         .build());
 
             uomRepository.save(
                     Uom.builder()
-                            .id(new UomId(UUID.fromString("0191d62d-77ff-76b6-b357-c36a17457288")))
-                            .name(Name.of(Text.of("Carton de 15")))
-                            .uomCategoryId(parentUomCategoryId)
-                            .ratio(Ratio.of(15.0))
-                            .uomType(UomType.GREATER)
-                            .active(Active.with(true))
-                            .build());
+                        .id(uomId1)
+                        .name(Name.of(Text.of("Carton de 15")))
+                        .uomCategoryId(parentUomCategoryId)
+                        .ratio(Ratio.of(15.0))
+                        .uomType(UomType.GREATER)
+                        .active(Active.with(true))
+                        .build());
         }
 
         @Test
@@ -557,6 +559,25 @@ final class UomDomainServiceTest {
             assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
                     .isInstanceOf(UomNameConflictException.class)
                     .hasMessage(UOM_NAME_CONFLICT_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_with_duplicate_reference_and_uom_category_id() {
+
+            //Given
+            Uom uomToUpdated = Uom.builder()
+                    .id(uomId1)
+                    .name(Name.of(Text.of("Carton de 10")))
+                    .uomType(UomType.REFERENCE)
+                    .ratio(Ratio.of(1.0))
+                    .uomCategoryId(parentUomCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
+                    .isInstanceOf(UomReferenceConflictException.class)
+                    .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
         }
     }
 }

@@ -36,4 +36,6 @@ public interface UomRepository {
     @Nonnull Uom update(@Nonnull Uom oldUom, @Nonnull Uom newUom);
 
     Optional<Uom> findByName(@Nonnull Name name);
+
+    Optional<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType);
 }
