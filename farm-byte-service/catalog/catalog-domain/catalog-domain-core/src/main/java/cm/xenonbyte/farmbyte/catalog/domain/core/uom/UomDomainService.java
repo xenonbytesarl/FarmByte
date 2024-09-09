@@ -10,6 +10,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -55,6 +56,18 @@ public final class UomDomainService implements UomService {
         return uomRepository.search(page, size, attribute, direction, keyword);
     }
 
+    @Nonnull
+    @Override
+    public Uom updateUom(@Nonnull UomId uomId, @Nonnull Uom uomToUpdated) {
+        Optional<Uom> oldUom = uomRepository.findById(uomId);
+        if(oldUom.isPresent()) {
+            verifyUomCategory(uomToUpdated);
+            validateUom(uomToUpdated);
+            return uomRepository.update(oldUom.get(), uomToUpdated);
+        }
+        throw new UomNotFoundException(new String[]{uomId.getValue().toString()});
+    }
+
     private void verifyUomCategory(Uom uom) {
         if(uom.getUomCategoryId() != null && !uomCategoryRepository.existsById(uom.getUomCategoryId())) {
             throw new UomCategoryNotFoundException(new String[] {uom.getUomCategoryId().getValue().toString()});
@@ -66,7 +79,12 @@ public final class UomDomainService implements UomService {
             throw new UomReferenceConflictException();
         }
 
-        if(uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
+        if(uom.getId() == null && uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
+            throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
+        }
+
+        Optional<Uom> existingUomByName =  uomRepository.findByName(uom.getName());
+        if(existingUomByName.isPresent() && uom.getId() != null && !existingUomByName.get().getId().equals(uom.getId())) {
             throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
         }
     }
