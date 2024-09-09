@@ -75,14 +75,23 @@ public final class UomDomainService implements UomService {
     }
 
     private void validateUom(Uom uom) {
-        if (uom.getUomType().equals(UomType.REFERENCE) && uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType())) {
+        //Check unique reference in category on create
+        if (uom.getUomType().equals(UomType.REFERENCE) && uom.getId() == null &&
+                uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType())) {
             throw new UomReferenceConflictException();
         }
-
+        //Check unique reference in category on update
+        Optional<Uom> existingUomByUomCategoryAndUomTypeAndIsActive = uomRepository.findByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType());
+        if (uom.getUomType().equals(UomType.REFERENCE) &&
+                uom.getId() != null && existingUomByUomCategoryAndUomTypeAndIsActive.isPresent() &&
+                    !existingUomByUomCategoryAndUomTypeAndIsActive.get().getId().equals(uom.getId())) {
+            throw new UomReferenceConflictException();
+        }
+        //Check unique name on create
         if(uom.getId() == null && uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
             throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
         }
-
+        //Check unique name on update
         Optional<Uom> existingUomByName =  uomRepository.findByName(uom.getName());
         if(existingUomByName.isPresent() && uom.getId() != null && !existingUomByName.get().getId().equals(uom.getId())) {
             throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});

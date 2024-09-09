@@ -93,4 +93,14 @@ public class UomInMemoryRepositoryAdapter implements UomRepository {
                 .findFirst();
     }
 
+    @Override
+    public Optional<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
+        return uoms.values().stream()
+                .filter(uom ->
+                        uom.getUomCategoryId().equals(uomCategoryId) &&
+                                uom.getUomType().equals(uomType) &&
+                                    uom.getActive().equals(Active.with(true)))
+                .findFirst();
+    }
+
 }

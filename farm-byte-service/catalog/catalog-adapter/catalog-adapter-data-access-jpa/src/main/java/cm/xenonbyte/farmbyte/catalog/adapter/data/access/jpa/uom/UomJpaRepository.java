@@ -28,4 +28,6 @@ public interface UomJpaRepository extends JpaRepository<UomJpa, UUID> {
     Page<UomJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
     Optional<UomJpa> findByName(String name);
+
+    Optional<UomJpa> findByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(UomCategoryJpa uomCategoryJpa, UomTypeJpa uomTypeJpa);
 }
