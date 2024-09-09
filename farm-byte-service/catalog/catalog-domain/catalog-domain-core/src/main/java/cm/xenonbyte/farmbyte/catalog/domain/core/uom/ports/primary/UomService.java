@@ -22,4 +22,6 @@ public interface UomService {
     @Nonnull PageInfo<Uom> findUoms(int page, int size, String attribute, Direction direction);
 
     @Nonnull PageInfo<Uom> searchUoms(int page, int size, String attribute, Direction direction, @Nonnull Keyword keyword);
+
+    @Nonnull Uom updateUom(@Nonnull UomId uomId, @Nonnull Uom uomToUpdated);
 }

@@ -21,7 +21,7 @@ public interface UomRepository {
 
     boolean existsByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType);
 
-    Uom save(@Nonnull Uom uom);
+    @Nonnull Uom save(@Nonnull Uom uom);
 
     boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId);
 
@@ -29,7 +29,11 @@ public interface UomRepository {
 
     boolean existsById(@Nonnull UomId uomId);
 
-    PageInfo<Uom> findAll(int page, int size, String attribute, Direction direction);
+    @Nonnull PageInfo<Uom> findAll(int page, int size, String attribute, @Nonnull Direction direction);
 
-    PageInfo<Uom> search(int page, int size, String attribute, Direction direction, Keyword keyword);
+    @Nonnull PageInfo<Uom> search(int page, int size, String attribute, @Nonnull Direction direction, @Nonnull Keyword keyword);
+
+    @Nonnull Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated);
+
+    Optional<Uom> findByName(@Nonnull Name name);
 }

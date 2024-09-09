@@ -50,10 +50,11 @@ final class UomDomainServiceTest {
     private UomService uomDomainService;
     private UomCategoryId uomCategoryId;
     private UomRepository uomRepository;
+    private UomCategoryRepository uomCategoryRepository;
 
     @BeforeEach
     void setUp() {
-        UomCategoryRepository uomCategoryRepository = new UomCategoryInMemoryRepositoryAdapter();
+        uomCategoryRepository = new UomCategoryInMemoryRepositoryAdapter();
         uomRepository = new UomInMemoryRepositoryAdapter();
         uomDomainService = new UomDomainService(uomRepository, uomCategoryRepository);
 
@@ -433,6 +434,129 @@ final class UomDomainServiceTest {
             assertThat(result.getPageSize()).isEqualTo(size);
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
+        }
+    }
+
+    @Nested
+    class UpdateUomDomainServiceTest {
+
+        Uom uom;
+        UomId uomId;
+        UomCategoryId parentUomCategoryId;
+
+        @BeforeEach
+        void setUp() {
+            uomId = new UomId(UUID.fromString("0191d5fe-609b-7105-bb4d-a36eb618e2be"));
+            parentUomCategoryId = new UomCategoryId(UUID.fromString("0191d5ff-0b64-7fdb-b93a-6f3a0458d5e5"));
+
+            uomCategoryRepository.save(
+                    UomCategory.builder()
+                            .id(parentUomCategoryId)
+                            .name(Name.of(Text.of("Unite")))
+                            .active(Active.with(true))
+                            .build()
+            );
+
+            uom = uomRepository.save(
+                    Uom.builder()
+                        .id(uomId)
+                        .name(Name.of(Text.of("Carton de 10")))
+                        .uomCategoryId(parentUomCategoryId)
+                        .ratio(Ratio.of(10.0))
+                        .uomType(UomType.GREATER)
+                        .active(Active.with(true))
+                        .build());
+
+            uomRepository.save(
+                    Uom.builder()
+                            .id(new UomId(UUID.fromString("0191d62d-77ff-76b6-b357-c36a17457288")))
+                            .name(Name.of(Text.of("Carton de 15")))
+                            .uomCategoryId(parentUomCategoryId)
+                            .ratio(Ratio.of(15.0))
+                            .uomType(UomType.GREATER)
+                            .active(Active.with(true))
+                            .build());
+        }
+
+        @Test
+        void should_success_when_update_uom() {
+
+            //Given
+            Uom uomToUpdated = Uom.builder()
+                .id(uomId)
+                .name(Name.of(Text.of("Carton de 15")))
+                .uomType(UomType.GREATER)
+                .ratio(Ratio.of(15.0))
+                .uomCategoryId(parentUomCategoryId)
+                .active(Active.with(true))
+                .build();
+
+            //Act
+            Uom result = uomDomainService.updateUom(uomId, uomToUpdated);
+
+            //Then
+            assertThat(result)
+                .isNotNull()
+                .isEqualTo(uomToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_uom_non_existing_id() {
+
+            //Given
+            UomId nonExistingUomId = new UomId(UUID.fromString("0191d627-36b4-79ec-9570-315e9d093b7a"));
+            Uom uomToUpdated = Uom.builder()
+                    .id(nonExistingUomId)
+                    .name(Name.of(Text.of("Carton de 15")))
+                    .uomType(UomType.GREATER)
+                    .ratio(Ratio.of(15.0))
+                    .uomCategoryId(parentUomCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomDomainService.updateUom(nonExistingUomId, uomToUpdated))
+                    .isInstanceOf(UomNotFoundException.class)
+                    .hasMessage(UOM_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_with_non_existing_uom_category_id() {
+
+            //Given
+            UomCategoryId nonExistingUomCategoryId = new UomCategoryId(UUID.fromString("0191d627-36b4-79ec-9570-315e9d093b7a"));
+            Uom uomToUpdated = Uom.builder()
+                    .id(uomId)
+                    .name(Name.of(Text.of("Carton de 15")))
+                    .uomType(UomType.GREATER)
+                    .ratio(Ratio.of(15.0))
+                    .uomCategoryId(nonExistingUomCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
+                    .isInstanceOf(UomCategoryNotFoundException.class)
+                    .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_with_duplicate_name() {
+
+            //Given
+            Uom uomToUpdated = Uom.builder()
+                    .id(uomId)
+                    .name(Name.of(Text.of("Carton de 15")))
+                    .uomType(UomType.GREATER)
+                    .ratio(Ratio.of(15.0))
+                    .uomCategoryId(parentUomCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
+                    .isInstanceOf(UomNameConflictException.class)
+                    .hasMessage(UOM_NAME_CONFLICT_EXCEPTION);
         }
     }
 }

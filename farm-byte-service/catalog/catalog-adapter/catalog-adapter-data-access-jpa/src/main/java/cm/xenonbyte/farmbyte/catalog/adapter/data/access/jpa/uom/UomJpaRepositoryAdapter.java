@@ -99,4 +99,15 @@ public class UomJpaRepositoryAdapter implements UomRepository {
                 uomJpaPage.getContent().stream().map(uomJpaMapper::fromUomJpa).toList()
         );
     }
+
+    @Nonnull
+    @Override
+    public Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated) {
+        return null;
+    }
+
+    @Override
+    public Optional<Uom> findByName(@Nonnull Name name) {
+        return Optional.empty();
+    }
 }

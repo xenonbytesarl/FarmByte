@@ -79,4 +79,18 @@ public class UomInMemoryRepositoryAdapter implements UomRepository {
         return new PageInfo<Uom>().with(page, size, uomList);
     }
 
+    @Nonnull
+    @Override
+    public Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated) {
+        uoms.put(uomToUpdated.getId(), uomToUpdated);
+        return uomToUpdated;
+    }
+
+    @Override
+    public Optional<Uom> findByName(@Nonnull Name name) {
+        return uoms.values().stream()
+                .filter(uom -> uom.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()))
+                .findFirst();
+    }
+
 }
