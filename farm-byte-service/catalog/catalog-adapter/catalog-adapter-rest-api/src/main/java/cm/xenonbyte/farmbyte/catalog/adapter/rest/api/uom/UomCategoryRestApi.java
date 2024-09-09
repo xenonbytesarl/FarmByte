@@ -7,6 +7,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryApiViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,7 @@ public class UomCategoryRestApi implements UomCategoriesApi {
     public static final String UOM_CATEGORY_CREATED_SUCCESSFULLY = "UomCategoryApiRest.1";
     public static final String UOM_CATEGORY_FIND_SUCCESSFULLY = "UomCategoryApiRest.2";
     public static final String UOM_CATEGORIES_FIND_SUCCESSFULLY = "UomCategoryApiRest.3";
+    public static final String UOM_CATEGORY_UPDATED_SUCCESSFULLY = "UomCategoryApiRest.4";
 
     public UomCategoryRestApi(final @Nonnull UomCategoryServiceRestApiAdapter uomCategoryApiAdapterService) {
         this.uomCategoryApiAdapterService = Objects.requireNonNull(uomCategoryApiAdapterService);
@@ -92,6 +96,19 @@ public class UomCategoryRestApi implements UomCategoriesApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .message(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, uomCategoryApiAdapterService.searchUomCategories(page, size, attribute, direction, keyword)))
+        );
+    }
+
+    @Override
+    public ResponseEntity<UpdateUomCategoryApiViewResponse> updateUomCategoryById(String acceptLanguage, UUID uomCategoryId, UpdateUomCategoryViewRequest updateUomCategoryViewRequest) {
+        return ResponseEntity.status(OK).body(
+                new UpdateUomCategoryApiViewResponse()
+                    .code(OK.value())
+                    .status(OK.name())
+                    .success(true)
+                    .timestamp(ZonedDateTime.now().toString())
+                    .message(MessageUtil.getMessage(UOM_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                    .data(Map.of(BODY, uomCategoryApiAdapterService.updateUomCategory(uomCategoryId, updateUomCategoryViewRequest)))
         );
     }
 

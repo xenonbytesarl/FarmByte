@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 
@@ -22,4 +24,6 @@ import java.util.UUID;
     @Nonnull @Valid FindUomCategoriesPageInfoViewResponse findUomCategories(int page, int size, String attribute, String direction);
 
     @Nonnull @Valid SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword);
+
+    @Nonnull @Valid UpdateUomCategoryViewResponse updateUomCategory(@Nonnull UUID uomCategoryIdUUID, @Nonnull @Valid UpdateUomCategoryViewRequest updateUomCategoryViewRequest);
 }

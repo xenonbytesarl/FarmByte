@@ -7,6 +7,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
@@ -87,4 +89,18 @@ public interface UomCategoryViewMapper {
     @Mapping(source = "active.value", target = "active")
     @Mapping(expression = "java(uomCategory.getParentUomCategoryId() == null? null: uomCategory.getParentUomCategoryId().getValue())", target = "parentUomCategoryId")
     @Nonnull @Valid SearchUomCategoriesViewResponse toSearchUomCategoriesViewResponse(@Nonnull UomCategory uomCategory);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id.value")
+    @Mapping(source = "name", target = "name.text.value")
+    @Mapping(source = "active", target = "active.value")
+    @Mapping(expression = "java(updateUomCategoryViewRequest.getParentUomCategoryId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId(updateUomCategoryViewRequest.getParentUomCategoryId()))", target = "parentUomCategoryId")
+    @Nonnull UomCategory toUomCategory(@Nonnull @Valid UpdateUomCategoryViewRequest updateUomCategoryViewRequest);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(expression = "java(uomCategory.getParentUomCategoryId() == null? null: uomCategory.getParentUomCategoryId().getValue())", target = "parentUomCategoryId")
+    @Nonnull @Valid UpdateUomCategoryViewResponse toUpdateUomCategoryViewResponse(@Nonnull UomCategory uomCategory);
 }

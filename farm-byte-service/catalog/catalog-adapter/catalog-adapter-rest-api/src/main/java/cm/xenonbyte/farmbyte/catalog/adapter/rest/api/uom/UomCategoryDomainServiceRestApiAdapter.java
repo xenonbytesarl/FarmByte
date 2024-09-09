@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.SearchUomCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.UpdateUomCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
@@ -60,5 +62,13 @@ public class UomCategoryDomainServiceRestApiAdapter implements UomCategoryServic
     @Override
     public SearchUomCategoriesPageInfoViewResponse searchUomCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword) {
         return uomCategoryViewMapper.toSearchUomCategoriesPageInfoViewResponse(uomCategoryService.searchUomCategories(page, pageSize,attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword))));
+    }
+
+    @Nonnull
+    @Override
+    public UpdateUomCategoryViewResponse updateUomCategory(@Nonnull UUID uomCategoryIdUUID, @Nonnull UpdateUomCategoryViewRequest updateUomCategoryViewRequest) {
+        return uomCategoryViewMapper.toUpdateUomCategoryViewResponse(
+                uomCategoryService.updateUomCategory(new UomCategoryId(uomCategoryIdUUID), uomCategoryViewMapper.toUomCategory(updateUomCategoryViewRequest))
+        );
     }
 }
