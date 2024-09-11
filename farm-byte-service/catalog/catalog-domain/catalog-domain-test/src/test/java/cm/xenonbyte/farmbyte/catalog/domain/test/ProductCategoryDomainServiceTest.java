@@ -1,7 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.test;
 
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory.ProductCategoryInMemoryRepositoryAdapter;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ParentProductCategoryNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
@@ -9,11 +9,6 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryDomainSe
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
@@ -30,12 +25,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -118,8 +110,8 @@ public final class ProductCategoryDomainServiceTest {
             ProductCategory productCategory = ProductCategory.of(productCategoryName, new ProductCategoryId(UUID.randomUUID()));
 
             assertThatThrownBy(() -> productCategoryService.createProductCategory(productCategory))
-                    .isInstanceOf(ParentProductCategoryNotFoundException.class)
-                    .hasMessage(PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+                    .isInstanceOf(ProductParentCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
         }
     }
 
@@ -350,8 +342,8 @@ public final class ProductCategoryDomainServiceTest {
 
             //Act + Then
             assertThatThrownBy(() -> productCategoryService.updateProductCategory(productCategoryId, productCategoryToUpdate))
-                    .isInstanceOf(ParentProductCategoryNotFoundException.class)
-                    .hasMessage(PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+                    .isInstanceOf(ProductParentCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
         }
     }
 }

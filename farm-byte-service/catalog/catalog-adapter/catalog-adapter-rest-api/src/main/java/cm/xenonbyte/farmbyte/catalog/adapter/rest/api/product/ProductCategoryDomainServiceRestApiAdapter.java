@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCategoryService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
@@ -52,7 +54,8 @@ public class ProductCategoryDomainServiceRestApiAdapter implements ProductCatego
 
     @Nonnull
     @Override
-    public FindProductCategoryByIdViewResponse findProductCategoryById(UUID productCategoryIdUUID) {
+    @Transactional(readOnly = true)
+    public FindProductCategoryByIdViewResponse findProductCategoryById(@Nonnull UUID productCategoryIdUUID) {
         return productCategoryViewMapper.toFindProductCategoryViewResponse(
                 productCategoryService.findProductCategoryById(new ProductCategoryId(productCategoryIdUUID))
         );
@@ -60,6 +63,7 @@ public class ProductCategoryDomainServiceRestApiAdapter implements ProductCatego
 
     @Nonnull
     @Override
+    @Transactional(readOnly = true)
     public FindProductCategoriesPageInfoViewResponse findProductCategories(int page, int pageSize, String attribute, String direction) {
         return productCategoryViewMapper.toFindProductCategoriesPageInfoViewResponse(
                 productCategoryService.findProductCategories(page, pageSize, attribute, Direction.valueOf(direction))
@@ -68,9 +72,19 @@ public class ProductCategoryDomainServiceRestApiAdapter implements ProductCatego
 
     @Nonnull
     @Override
+    @Transactional(readOnly = true)
     public SearchProductCategoriesPageInfoViewResponse searchProductCategories(int page, int pageSize, String attribute, String direction, @Nonnull String keyword) {
         return productCategoryViewMapper.toSearchProductCategoriesPageInfoViewResponse(
                 productCategoryService.searchProductCategories(page, pageSize, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))
+        );
+    }
+
+    @Nonnull
+    @Override
+    @Transactional
+    public UpdateProductCategoryViewResponse updateProductCategory(@Nonnull UUID productCategoryIdUUID, @Nonnull UpdateProductCategoryViewRequest updateProductCategoryViewRequest) {
+        return productCategoryViewMapper.toUpdateProductCategoryViewResponse(
+                productCategoryService.updateProductCategory(new ProductCategoryId(productCategoryIdUUID), productCategoryViewMapper.toProductCategory(updateProductCategoryViewRequest))
         );
     }
 }

@@ -6,6 +6,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +91,10 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                         .message(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, productCategoryApiAdapterService.searchProductCategories(page, size, attribute, direction, keyword)))
         );
+    }
+
+    @Override
+    public ResponseEntity<UpdateProductCategoryViewApiResponse> updateProductCategoryById(String acceptLanguage, UUID productCategoryId, UpdateProductCategoryViewRequest updateProductCategoryViewRequest) {
+        return null;
     }
 }

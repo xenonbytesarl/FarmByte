@@ -65,7 +65,7 @@ public final class ProductCategoryDomainService implements ProductCategoryServic
     private void validateUomCategory(ProductCategory productCategory) {
 
         if(productCategory.getParentProductCategoryId() != null && !productCategoryRepository.existsById(productCategory.getParentProductCategoryId())) {
-            throw new ParentProductCategoryNotFoundException(new String[] {productCategory.getParentProductCategoryId().getValue().toString()});
+            throw new ProductParentCategoryNotFoundException(new String[] {productCategory.getParentProductCategoryId().getValue().toString()});
         }
 
         //We check unique attribute in case of creation. At this step, id it's null
