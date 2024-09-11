@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -111,7 +111,7 @@ public final class ProductCategoryDomainServiceTest {
 
             assertThatThrownBy(() -> productCategoryService.createProductCategory(productCategory))
                     .isInstanceOf(ProductParentCategoryNotFoundException.class)
-                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION);
         }
     }
 
@@ -343,7 +343,7 @@ public final class ProductCategoryDomainServiceTest {
             //Act + Then
             assertThatThrownBy(() -> productCategoryService.updateProductCategory(productCategoryId, productCategoryToUpdate))
                     .isInstanceOf(ProductParentCategoryNotFoundException.class)
-                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION);
         }
     }
 }

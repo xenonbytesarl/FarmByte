@@ -204,7 +204,6 @@ components:
       required:
         - id
         - name
-        - parenUomCategoryId
         - active
       properties:
         id:

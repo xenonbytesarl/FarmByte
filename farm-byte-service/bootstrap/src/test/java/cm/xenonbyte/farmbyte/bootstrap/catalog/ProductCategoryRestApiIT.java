@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_FIND_SUCCESSFULLY;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
@@ -133,7 +133,7 @@ public class ProductCategoryRestApiIT {
                     Arguments.of(
                             "Raw of material",
                             UUID.fromString("019156f3-0db6-794e-bfe0-f371636cd410"),
-                            PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION,
+                            PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION,
                             "019156f3-0db6-794e-bfe0-f371636cd410",
                             404
                     )

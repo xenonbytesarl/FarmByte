@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED;
@@ -149,7 +149,7 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                             "Manufactured",
                             UUID.randomUUID(),
                             new ProductParentCategoryNotFoundException(new String[]{PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED}),
-                            PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION
+                            PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION
                     )
             );
         }
@@ -582,7 +582,7 @@ final class ProductCategoryDomainServiceApiAdapterTest {
             //Act + Then
             assertThatThrownBy(() -> productCategoryApiAdapterService.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
                     .isInstanceOf(ProductParentCategoryNotFoundException.class)
-                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION);
 
             verify(productCategoryService, times(1)).updateProductCategory(productCategoryIdArgumentCaptor.capture(), productCategoryArgumentCaptor.capture());
             verify(productCategoryViewMapper, times(1)).toProductCategory(updateProductCategoryViewRequestArgumentCaptor.capture());

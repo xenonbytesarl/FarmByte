@@ -8,6 +8,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoriesViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
@@ -36,7 +38,8 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_FIND_SUCCESSFULLY;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
@@ -49,6 +52,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,7 +120,7 @@ public final class ProductCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createProductCategoryViewRequestAsString(createProductCategoryViewRequest)))
+                            .content(productCategoryViewRequestToString(createProductCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -154,7 +158,7 @@ public final class ProductCategoryRestApiTest extends RestApiBeanConfigTest {
                             "Unite",
                             UUID.fromString("019156f3-0db6-794e-bfe0-f371636cd410"),
                             new ProductParentCategoryNotFoundException(new String[] {"019156f3-0db6-794e-bfe0-f371636cd410"}),
-                            PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION,
+                            PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION,
                             "019156f3-0db6-794e-bfe0-f371636cd410",
                             404,
                             "NOT_FOUND",
@@ -190,7 +194,7 @@ public final class ProductCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createProductCategoryViewRequestAsString(createProductCategoryViewRequest)))
+                            .content(productCategoryViewRequestToString(createProductCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(isStatus)
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -214,7 +218,7 @@ public final class ProductCategoryRestApiTest extends RestApiBeanConfigTest {
                             .accept(APPLICATION_JSON)
                             .header(ACCEPT_LANGUAGE, EN_LOCALE)
                             .contentType(APPLICATION_JSON)
-                            .content(createProductCategoryViewRequestAsString(createProductCategoryViewRequest)))
+                            .content(productCategoryViewRequestToString(createProductCategoryViewRequest)))
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$").isNotEmpty())
@@ -435,7 +439,178 @@ public final class ProductCategoryRestApiTest extends RestApiBeanConfigTest {
         }
     }
 
-    private String createProductCategoryViewRequestAsString(CreateProductCategoryViewRequest createProductCategoryViewRequest) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(createProductCategoryViewRequest);
+    @Nested
+    class UpdateProductCategoryRestApiTest {
+
+        @Test
+        void should_success_when_update_product_category() throws Exception {
+            //Given
+            UUID productCategoryIdUUID = UUID.randomUUID();
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            UpdateProductCategoryViewResponse updateProductCategoryViewResponse = new UpdateProductCategoryViewResponse()
+                    .id(productCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            when(productCategoryDomainServiceRestApiAdapter.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .thenReturn(updateProductCategoryViewResponse);
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(PRODUCT_CATEGORY_PATH_URI + "/" + productCategoryIdUUID)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(productCategoryViewRequestToString(updateProductCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.name").value(updateProductCategoryViewResponse.getName()))
+                    .andExpect(jsonPath("$.data.content.id").value(updateProductCategoryViewResponse.getId().toString()))
+                    .andExpect(jsonPath("$.data.content.active").value(updateProductCategoryViewResponse.getActive()));
+
+
+            verify(productCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateProductCategory(uuidArgumentCaptor.capture(), updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(productCategoryIdUUID);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_id_with_not_existing_id() throws Exception {
+            //Given
+            UUID productCategoryIdUUID = UUID.randomUUID();
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            when(productCategoryDomainServiceRestApiAdapter.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {productCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(PRODUCT_CATEGORY_PATH_URI + "/" + productCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(productCategoryViewRequestToString(updateProductCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productCategoryIdUUID.toString())));
+
+
+            verify(productCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateProductCategory(uuidArgumentCaptor.capture(), updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(productCategoryIdUUID);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_id_with_not_existing_parent_id() throws Exception {
+            //Given
+            UUID productCategoryIdUUID = UUID.randomUUID();
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .parentProductCategoryId(UUID.randomUUID())
+                    .active(true);
+
+            when(productCategoryDomainServiceRestApiAdapter.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .thenThrow(ProductParentCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {productCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(PRODUCT_CATEGORY_PATH_URI + "/" + productCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(productCategoryViewRequestToString(updateProductCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productCategoryIdUUID.toString())));
+
+
+            verify(productCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateProductCategory(uuidArgumentCaptor.capture(), updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(productCategoryIdUUID);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_id_with_duplicate_name() throws Exception {
+            //Given
+            UUID productCategoryIdUUID = UUID.randomUUID();
+            String name = "Nouvelle Unite";
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name(name)
+                    .parentProductCategoryId(UUID.randomUUID())
+                    .active(true);
+
+            when(productCategoryDomainServiceRestApiAdapter.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .thenThrow(ProductCategoryNameConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {name}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+
+            //Act + Then
+            mockMvc.perform(put(PRODUCT_CATEGORY_PATH_URI + "/" + productCategoryIdUUID.toString())
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON)
+                            .content(productCategoryViewRequestToString(updateProductCategoryViewRequest)))
+                    .andDo(print())
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.status").value("CONFLICT"))
+                    .andExpect(jsonPath("$.code").value(409))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
+
+
+            verify(productCategoryDomainServiceRestApiAdapter, times(1))
+                    .updateProductCategory(uuidArgumentCaptor.capture(), updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(productCategoryIdUUID);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+        }
+    }
+
+    private String productCategoryViewRequestToString(Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 }
