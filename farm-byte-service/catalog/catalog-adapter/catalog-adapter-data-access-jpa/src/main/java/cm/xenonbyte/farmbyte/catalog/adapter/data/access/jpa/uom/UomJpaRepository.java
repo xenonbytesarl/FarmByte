@@ -22,12 +22,12 @@ import java.util.UUID;
 public interface UomJpaRepository extends JpaRepository<UomJpa, UUID> {
     boolean existsByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(UomCategoryJpa uomCategoryJpa, UomTypeJpa uomTypeJpa);
 
-    boolean existsByNameAndUomCategoryJpaAndActiveIsTrue(String name, UomCategoryJpa uomCategoryJpa);
+    boolean existsByNameIgnoreCaseAndUomCategoryJpaAndActiveIsTrue(String name, UomCategoryJpa uomCategoryJpa);
 
     @Query("select uj from UomJpa uj where lower(concat(uj.name ,'', uj.uomCategoryJpa.name,'',uj.uomTypeJpa)) like lower(concat('%', :keyword, '%'))")
     Page<UomJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
-    Optional<UomJpa> findByName(String name);
+    Optional<UomJpa> findByNameIgnoreCase(String name);
 
     Optional<UomJpa> findByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(UomCategoryJpa uomCategoryJpa, UomTypeJpa uomTypeJpa);
 }

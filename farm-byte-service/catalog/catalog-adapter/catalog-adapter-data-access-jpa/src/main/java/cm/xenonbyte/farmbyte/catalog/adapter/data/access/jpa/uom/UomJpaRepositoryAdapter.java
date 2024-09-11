@@ -55,7 +55,7 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public boolean existsByNameAndCategoryAndActive(@Nonnull Name name, @Nonnull UomCategoryId uomCategoryId) {
-        return uomJpaRepository.existsByNameAndUomCategoryJpaAndActiveIsTrue(
+        return uomJpaRepository.existsByNameIgnoreCaseAndUomCategoryJpaAndActiveIsTrue(
                 name.getText().getValue(),
                 UomCategoryJpa.builder().id(uomCategoryId.getValue()).build()
         );
@@ -116,7 +116,7 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     @Override
     @Transactional(readOnly = true)
     public Optional<Uom> findByName(@Nonnull Name name) {
-        return uomJpaRepository.findByName(name.getText().getValue())
+        return uomJpaRepository.findByNameIgnoreCase(name.getText().getValue())
                 .map(uomJpaMapper::toUom);
     }
 

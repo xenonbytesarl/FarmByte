@@ -26,7 +26,7 @@ public final class UomInMemoryRepositoryAdapterTest extends UomRepositoryTest {
         uomType =  UomType.REFERENCE;
         name = Name.of(Text.of("Unite"));
 
-        super.uomRepository = new UomInMemoryRepositoryAdapter();
+        uomRepository = new UomInMemoryRepositoryAdapter();
 
         //We save some uom in storage for some test case
         Uom uom1 = createSomeUom(

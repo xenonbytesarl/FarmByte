@@ -41,7 +41,7 @@ class UomCategoryJpaRepositoryAdapterIT extends UomCategoryRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        super.uomCategoryRepository = new UomCategoryJpaRepositoryAdapter(uomCategoryJpaRepository, uomCategoryJpaMapper);
+        uomCategoryRepository = new UomCategoryJpaRepositoryAdapter(uomCategoryJpaRepository, uomCategoryJpaMapper);
 
         name = Name.of(Text.of("Unite"));
 

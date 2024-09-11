@@ -164,7 +164,7 @@ public abstract class ProductCategoryRepositoryTest {
             Integer size = 1;
             String sortAttribute = "name";
             Direction direction = Direction.ASC;
-            Keyword keyword = Keyword.of(Text.of("z"));
+            Keyword keyword = Keyword.of(Text.of("x"));
 
             //Then
             PageInfo<ProductCategory> result = productCategoryRepository.search(page, size, sortAttribute, direction, keyword);
