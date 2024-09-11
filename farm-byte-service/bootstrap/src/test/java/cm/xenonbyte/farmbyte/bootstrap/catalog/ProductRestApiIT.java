@@ -11,10 +11,11 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Fin
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -50,11 +51,13 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCTS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_REFERENCE_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
@@ -63,6 +66,7 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
@@ -105,7 +109,7 @@ public class ProductRestApiIT {
 
             CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<CreateProductViewApiResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, CreateProductViewApiResponse.class);
@@ -160,7 +164,7 @@ public class ProductRestApiIT {
                     .categoryId(categoryId)
                     .type(typeRequest);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -169,10 +173,11 @@ public class ProductRestApiIT {
             assertThat(response.getStatusCode().value()).isEqualTo(400);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
-            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getError()).isNotEmpty();
+            assertThat(response.getBody().getStatus()).isEqualTo("BAD_REQUEST");
             assertThat(response.getBody().getError().getFirst().getField()).isEqualTo(field);
             assertThat(response.getBody().getError().getFirst().getMessage()).isEqualTo(MessageUtil.getMessage(message, Locale.forLanguageTag(EN_LOCALE), ""));
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST, Locale.forLanguageTag(EN_LOCALE), ""));
 
 
         }
@@ -185,7 +190,7 @@ public class ProductRestApiIT {
 
             CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -194,6 +199,7 @@ public class ProductRestApiIT {
             assertThat(response.getStatusCode().value()).isEqualTo(409);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
         }
 
@@ -205,7 +211,7 @@ public class ProductRestApiIT {
 
             CreateProductViewRequest createProductViewRequest = getCreateProductViewRequest(name, categoryId);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -214,6 +220,7 @@ public class ProductRestApiIT {
             assertThat(response.getStatusCode().value()).isEqualTo(404);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString()));
 
         }
@@ -233,7 +240,7 @@ public class ProductRestApiIT {
                     .purchaseUomId(purchaseUomId)
                     .categoryId(categoryId);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -242,6 +249,7 @@ public class ProductRestApiIT {
             assertThat(response.getStatusCode().value()).isEqualTo(404);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUomId.toString()));
         }
 
@@ -262,7 +270,7 @@ public class ProductRestApiIT {
                     .purchaseUomId(purchaseUomId)
                     .categoryId(categoryId);
 
-            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest), getMultipartHttpHeaders());
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(createProductViewRequest, "createProductViewRequest"), getMultipartHttpHeaders());
 
             //Act
             ResponseEntity<ApiErrorResponse> response = restTemplate.postForEntity(new URI(BASE_URL), request, ApiErrorResponse.class);
@@ -271,6 +279,7 @@ public class ProductRestApiIT {
             assertThat(response.getStatusCode().value()).isEqualTo(400);
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("BAD_REQUEST");
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), stockUnitName, purchaseUnitName));
         }
     }
@@ -385,26 +394,271 @@ public class ProductRestApiIT {
         }
     }
 
+    @Nested
+    class UpdateProductRestApiIT{
+
+        String filenameToUpdate = System.getProperty("user.home") + "/farmbyte/products/202409112207457910200_product_image.txt";
+
+        @Test
+        void should_success_when_update_product() throws URISyntaxException {
+            //Given
+            String name = "IPhone 15 Pro Max";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .stockUomId(null)
+                    .purchaseUomId(null)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<UpdateProductViewApiResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, UpdateProductViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(UpdateProductViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_not_found_product_id() throws URISyntaxException {
+            //Given
+            String name = "IPhone 15 Pro Max";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191e2c3-62e9-75eb-a3fd-b3f44cd436ba");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .stockUomId(null)
+                    .purchaseUomId(null)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productIdUUID.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_not_found_product_category_id() throws URISyntaxException {
+            //Given
+            String name = "IPhone 15 Pro Max";
+            UUID categoryId = UUID.fromString("0191e2ca-b831-7a1c-b147-f4138aed0772");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .stockUomId(null)
+                    .purchaseUomId(null)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_name() throws URISyntaxException {
+            //Given
+            String name = "Product.2";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .stockUomId(null)
+                    .purchaseUomId(null)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_reference() throws URISyntaxException {
+            //Given
+            String name = "New HP Prolian Pro";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+            String reference = "3254521";
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .reference(reference)
+                    .stockUomId(null)
+                    .purchaseUomId(null)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_REFERENCE_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), reference));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_not_found_uom_id() throws URISyntaxException {
+            //Given
+            String name = "New HP Prolian Pro";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+            String reference = "9282829598";
+
+            UUID uomIdUUID = UUID.fromString("0191e2d0-1411-7f88-b925-cf1883c4a54d");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .reference(reference)
+                    .stockUomId(uomIdUUID)
+                    .purchaseUomId(uomIdUUID)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomIdUUID.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_product_with_invalid_stock_uom_and_purchase_uom_id() throws URISyntaxException {
+            //Given
+            String name = "New HP Prolian Pro";
+            UUID categoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            UUID productIdUUID = UUID.fromString("0191bda9-4b9f-7111-8bac-de8cc467715a");
+            String reference = "9282829598";
+
+            UUID stockUomId = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
+            UUID purchaseUomId = UUID.fromString("01912c2c-b81a-7245-bab1-aee9b97b2afb");
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .reference(reference)
+                    .stockUomId(stockUomId)
+                    .purchaseUomId(purchaseUomId)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(filenameToUpdate)
+                    .active(true);
+
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> request = new HttpEntity<>(getMultiValueMap(updateProductViewRequest, "updateProductViewRequest"), getMultipartHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + productIdUUID, PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(400);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("BAD_REQUEST");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), "Jour", "Unite"));
+        }
+    }
+
     private static CreateProductViewRequest getCreateProductViewRequest(String name, UUID categoryId) {
-        CreateProductViewRequest createProductViewRequest = new CreateProductViewRequest()
+        return new CreateProductViewRequest()
                 .name(name)
                 .type(CreateProductViewRequest.TypeEnum.SERVICE)
                 .categoryId(categoryId);
-        return createProductViewRequest;
     }
 
-    private @Nonnull MultiValueMap getMultiValueMap(CreateProductViewRequest createProductViewRequest) throws URISyntaxException {
+    private @Nonnull MultiValueMap getMultiValueMap(Object object, String attribute) throws URISyntaxException {
         Resource image = getImageResource("product_image.txt");
 
         MultiValueMap body = new LinkedMultiValueMap();
 
         body.add("image", image);
-        body.add("createProductViewRequest", createProductViewRequest);
+        body.add(attribute, object);
         return body;
-    }
-
-    private String createProductViewAsString(@Nonnull CreateProductViewRequest createProductViewRequest) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(createProductViewRequest);
     }
 
     private Resource getImageResource(String image) throws URISyntaxException {
