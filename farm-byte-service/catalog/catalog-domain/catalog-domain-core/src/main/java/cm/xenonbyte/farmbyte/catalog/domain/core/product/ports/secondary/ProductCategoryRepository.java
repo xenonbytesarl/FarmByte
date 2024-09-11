@@ -28,4 +28,8 @@ public interface ProductCategoryRepository {
     @Nonnull PageInfo<ProductCategory> findAll(Integer page, Integer size, String attribute, Direction direction);
 
     @Nonnull PageInfo<ProductCategory> search(Integer page, Integer size, String attribute, Direction direction, @Nonnull Keyword keyword);
+
+    Optional<ProductCategory> findByName(@Nonnull Name name);
+
+    @Nonnull ProductCategory update(@Nonnull ProductCategory oldProductCategory, ProductCategory productCategoryToUpdate);
 }

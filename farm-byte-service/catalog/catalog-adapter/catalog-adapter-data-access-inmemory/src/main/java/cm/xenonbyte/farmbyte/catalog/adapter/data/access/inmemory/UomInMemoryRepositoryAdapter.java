@@ -82,7 +82,7 @@ public class UomInMemoryRepositoryAdapter implements UomRepository {
     @Nonnull
     @Override
     public Uom update(@Nonnull Uom oldUom, @Nonnull Uom uomToUpdated) {
-        uoms.put(uomToUpdated.getId(), uomToUpdated);
+        uoms.replace(uomToUpdated.getId(), uomToUpdated);
         return uomToUpdated;
     }
 

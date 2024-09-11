@@ -9,6 +9,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -50,13 +51,41 @@ public final class ProductCategoryDomainService implements ProductCategoryServic
         return productCategoryRepository.search(page, size, attribute, direction, keyword);
     }
 
+    @Nonnull
+    @Override
+    public ProductCategory updateProductCategory(@Nonnull ProductCategoryId productCategoryId, @Nonnull ProductCategory productCategoryToUpdate) {
+        Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(productCategoryId);
+        if (optionalProductCategory.isPresent()) {
+            validateUomCategory(productCategoryToUpdate);
+            return productCategoryRepository.update(optionalProductCategory.get(), productCategoryToUpdate);
+        }
+        throw new ProductCategoryNotFoundException(new String[] {productCategoryId.getValue().toString()});
+    }
+
     private void validateUomCategory(ProductCategory productCategory) {
 
         if(productCategory.getParentProductCategoryId() != null && !productCategoryRepository.existsById(productCategory.getParentProductCategoryId())) {
             throw new ParentProductCategoryNotFoundException(new String[] {productCategory.getParentProductCategoryId().getValue().toString()});
         }
-        if(productCategoryRepository.existsByName(productCategory.getName())) {
+
+        //We check unique attribute in case of creation. At this step, id it's null
+        if(isProductCategoryCreate(productCategory)) {
             throw new ProductCategoryNameConflictException(new String[] {productCategory.getName().getText().getValue()});
         }
+
+        //We check unique attribute in case of creation. At this step, id it's null
+        Optional<ProductCategory> existingProductCategoryByName =  productCategoryRepository.findByName(productCategory.getName());
+        if(isProductCategoryUpdate(productCategory, existingProductCategoryByName)) {
+            throw new ProductCategoryNameConflictException(new String[] {productCategory.getName().getText().getValue()});
+        }
+    }
+
+    private static boolean isProductCategoryUpdate(ProductCategory productCategory, Optional<ProductCategory> existingProductCategoryByName) {
+        return existingProductCategoryByName.isPresent() && productCategory.getId() != null
+                && !existingProductCategoryByName.get().getId().equals(productCategory.getId());
+    }
+
+    private boolean isProductCategoryCreate(ProductCategory productCategory) {
+        return productCategory.getId() == null && productCategoryRepository.existsByName(productCategory.getName());
     }
 }
