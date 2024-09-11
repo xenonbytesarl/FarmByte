@@ -5,6 +5,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Cre
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductService;
 import cm.xenonbyte.farmbyte.common.domain.ports.primary.StorageManager;
@@ -53,10 +55,9 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
     @Nonnull
     @Override
     @Transactional
-    public CreateProductViewResponse createProduct(@Nonnull CreateProductViewRequest createProductViewRequest,
-                                                   @Nonnull MultipartFile multipartFile) throws IOException {
+    public CreateProductViewResponse createProduct(@Nonnull CreateProductViewRequest createProductViewRequest, @Nonnull MultipartFile multipartFile) throws IOException {
         Image image = Image
-                .with(Text.of(multipartFile.getOriginalFilename()), multipartFile.getInputStream())
+                .with(Text.of(Objects.requireNonNull(multipartFile.getOriginalFilename())), multipartFile.getInputStream())
                 .computeImageName(rootPathStorageProducts);
         createProductViewRequest.setFilename(image.getName().getValue());
         CreateProductViewResponse createProductViewResponse = productViewMapper.toCreateProductViewResponse(
@@ -87,5 +88,16 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
         return productViewMapper.toSearchProductsPageInfoViewResponse(
                 productService.searchProducts(page, size, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))
         );
+    }
+
+    @Nonnull
+    @Override
+    public UpdateProductViewResponse updateProduct(@Nonnull UUID productIdUUID, @Nonnull UpdateProductViewRequest updateProductViewRequest,
+                                                   @Nonnull MultipartFile multipartFile) throws IOException {
+        Image image = Image.with(Text.of(updateProductViewRequest.getFilename()), multipartFile.getInputStream());
+        updateProductViewRequest.setFilename(image.getName().getValue());
+        UpdateProductViewResponse updateProductViewResponse = productViewMapper.toUpdateProductViewResponse(productService.updateProduct(new ProductId(productIdUUID), productViewMapper.toProduct(updateProductViewRequest)));
+        storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
+        return updateProductViewResponse;
     }
 }

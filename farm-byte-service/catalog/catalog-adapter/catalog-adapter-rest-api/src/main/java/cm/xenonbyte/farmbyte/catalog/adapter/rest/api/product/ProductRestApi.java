@@ -6,6 +6,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Cre
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewApiResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
@@ -90,5 +92,10 @@ public class ProductRestApi implements ProductsApi {
                         .message(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(Map.of(BODY, productDomainServiceApiAdapter.searchProducts(page, size, attribute, direction, keyword)))
         );
+    }
+
+    @Override
+    public ResponseEntity<UpdateProductViewApiResponse> updateProductById(String acceptLanguage, UUID productId, UpdateProductViewRequest updateProductViewRequest, MultipartFile image) throws Exception {
+        return null;
     }
 }

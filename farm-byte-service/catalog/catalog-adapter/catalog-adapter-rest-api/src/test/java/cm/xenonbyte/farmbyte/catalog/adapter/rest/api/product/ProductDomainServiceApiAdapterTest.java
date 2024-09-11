@@ -7,12 +7,16 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Fin
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
@@ -20,6 +24,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.Purchasable;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Sellable;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
 import cm.xenonbyte.farmbyte.common.domain.ports.primary.StorageManager;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
@@ -59,10 +64,12 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_REFERENCE_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -89,7 +96,7 @@ final class ProductDomainServiceApiAdapterTest {
 
     MockMultipartFile multipartFile;
     StorageLocation location;
-    Filename fileName;
+    Filename filename;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -100,7 +107,7 @@ final class ProductDomainServiceApiAdapterTest {
             "image/jpeg", "<<image data>>".getBytes(StandardCharsets.UTF_8)
         );
         location = StorageLocation.computeStoragePtah("products");
-        fileName = Filename.of(Text.of(location.getPath().getValue()));
+        filename = Filename.of(Text.of(location.getPath().getValue()));
         ReflectionTestUtils.setField(productApiAdapterService, "rootPathStorageProducts", "products");
     }
 
@@ -185,7 +192,7 @@ final class ProductDomainServiceApiAdapterTest {
                     .purchasable(null)
                     .id(productId);
 
-            when(storageManager.store(any(), any())).thenReturn(fileName);
+            when(storageManager.store(any(), any())).thenReturn(filename);
             when(productViewMapper.toProduct(createProductViewRequest)).thenReturn(productRequest);
             when(productService.createProduct(productRequest)).thenReturn(productResponse);
             when(productViewMapper.toCreateProductViewResponse(productResponse)).thenReturn(createProductViewResponse);
@@ -665,10 +672,10 @@ final class ProductDomainServiceApiAdapterTest {
 
             verify(productViewMapper, times(1)).toFindProductsPageInfoViewResponse(pageInfoArgumentCaptor.capture());
 
-            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().getFirst()).isEqualTo(page);
             assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
-            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
-            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(stringArgumentCaptor.getValue()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getValue()).isEqualTo(Direction.ASC);
             assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(productPageInfo);
         }
     }
@@ -795,11 +802,429 @@ final class ProductDomainServiceApiAdapterTest {
 
             verify(productViewMapper, times(1)).toSearchProductsPageInfoViewResponse(pageInfoArgumentCaptor.capture());
 
-            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().getFirst()).isEqualTo(page);
             assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
-            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
-            assertThat(directionArgumentCaptor.getAllValues().get(0)).isEqualTo(Direction.ASC);
+            assertThat(stringArgumentCaptor.getValue()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getValue()).isEqualTo(Direction.ASC);
             assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(productPageInfo);
+        }
+    }
+
+    @Nested
+    class UpdateProductDomainServiceApiAdapterTest {
+
+        Product oldProduct;
+        UUID oldProductIdUUID;
+        UUID uomIdUUID;
+        UUID categoryIdUUID;
+        UomId uomId;
+
+        @BeforeEach
+        void setUp() {
+            oldProductIdUUID = UUID.fromString("0191e1df-48f0-7382-91d7-0b29d66ace30");
+            uomIdUUID = UUID.fromString("0191e1df-c166-7b2a-9ad8-21bfff7d9395");
+            categoryIdUUID = UUID.fromString("0191e21d-0269-7d67-8934-a3558461c852");
+            uomId = new UomId(uomIdUUID);
+
+            oldProduct = Product.builder()
+                    .id(new ProductId(oldProductIdUUID))
+                    .name(Name.of(Text.of("Mac Book Pro 2023")))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(uomIdUUID))
+                    .purchaseUomId(new UomId(uomIdUUID))
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("45000")))
+                    .purchasePrice(Money.of(new BigDecimal("36000")))
+                    .active(Active.with(true))
+                    .build();
+        }
+
+        @Test
+        void should_success_when_update_product() throws IOException {
+            //Given
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(oldProductIdUUID)
+                    .name("New Mac Book Pro 2023")
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(uomIdUUID)
+                    .purchaseUomId(uomIdUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(oldProductIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(uomId)
+                    .purchaseUomId(uomId)
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            UpdateProductViewResponse updateProductViewResponse = new UpdateProductViewResponse()
+                    .id(oldProductIdUUID)
+                    .name("New Mac Book Pro 2023")
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewResponse.TypeEnum.STOCK)
+                    .stockUomId(uomIdUUID)
+                    .purchaseUomId(uomIdUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            when(storageManager.store(any(), any())).thenReturn(filename);
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated)).thenReturn(productToUpdated);
+            when(productViewMapper.toUpdateProductViewResponse(productToUpdated)).thenReturn(updateProductViewResponse);
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act
+            UpdateProductViewResponse result = productApiAdapterService.updateProduct(oldProductIdUUID, updateProductViewRequest, multipartFile);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(updateProductViewResponse);
+
+            verify(storageManager).store(any(), any());
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+            verify(productViewMapper, times(1)).toUpdateProductViewResponse(productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getAllValues().getFirst()).isEqualTo(productToUpdated);
+            assertThat(productArgumentCaptor.getAllValues().get(1)).isEqualTo(productToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_existing_id() throws IOException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(oldProductIdUUID)
+                    .name("New Mac Book Pro 2023")
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(uomIdUUID)
+                    .purchaseUomId(uomIdUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(oldProductIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(uomId)
+                    .purchaseUomId(uomId)
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated))
+                    .thenThrow(ProductNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {oldProductIdUUID.toString()}}));
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act  + Then
+            assertThatThrownBy(() -> productApiAdapterService.updateProduct(oldProductIdUUID, updateProductViewRequest, multipartFile))
+                    .isInstanceOf(ProductNotFoundException.class)
+                    .hasMessage(PRODUCT_NOT_FOUND_EXCEPTION);
+
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getValue()).isEqualTo(productToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_existing_category_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID nonExistingCategoryUUID = UUID.fromString("0191e225-48a2-7fa3-b9f6-89392ded39e4");
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(oldProductIdUUID)
+                    .name("New Mac Book Pro 2023")
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(uomIdUUID)
+                    .purchaseUomId(uomIdUUID)
+                    .categoryId(nonExistingCategoryUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(oldProductIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(uomId)
+                    .purchaseUomId(uomId)
+                    .categoryId(new ProductCategoryId(nonExistingCategoryUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated))
+                    .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {oldProductIdUUID.toString()}}));
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act  + Then
+            assertThatThrownBy(() -> productApiAdapterService.updateProduct(oldProductIdUUID, updateProductViewRequest, multipartFile))
+                    .isInstanceOf(ProductCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
+
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getValue()).isEqualTo(productToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_existing_uom_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID nonExistingUomUUID = UUID.fromString("0191e225-48a2-7fa3-b9f6-89392ded39e4");
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(oldProductIdUUID)
+                    .name("New Mac Book Pro 2023")
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(nonExistingUomUUID)
+                    .purchaseUomId(nonExistingUomUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(oldProductIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(nonExistingUomUUID))
+                    .purchaseUomId(new UomId(nonExistingUomUUID))
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated))
+                    .thenThrow(UomNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {nonExistingUomUUID.toString()}}));
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act  + Then
+            assertThatThrownBy(() -> productApiAdapterService.updateProduct(oldProductIdUUID, updateProductViewRequest, multipartFile))
+                    .isInstanceOf(UomNotFoundException.class)
+                    .hasMessage(UOM_NOT_FOUND_EXCEPTION);
+
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getValue()).isEqualTo(productToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_name() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID nonExistingUomUUID = UUID.fromString("0191e225-48a2-7fa3-b9f6-89392ded39e4");
+            String name = "Mac Book Pro 2023";
+            UUID productIdUUID = UUID.fromString("0191e22a-13d3-76f8-8129-691bf520aab2");
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .reference("56456486")
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(nonExistingUomUUID)
+                    .purchaseUomId(nonExistingUomUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(productIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of(name)))
+                    .reference(Reference.of(Text.of("56456486")))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(nonExistingUomUUID))
+                    .purchaseUomId(new UomId(nonExistingUomUUID))
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated))
+                    .thenThrow(ProductNameConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {name}}));
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act  + Then
+            assertThatThrownBy(() -> productApiAdapterService.updateProduct(productIdUUID, updateProductViewRequest, multipartFile))
+                    .isInstanceOf(ProductNameConflictException.class)
+                    .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
+
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getValue()).isEqualTo(productToUpdated);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_reference() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID nonExistingUomUUID = UUID.fromString("0191e225-48a2-7fa3-b9f6-89392ded39e4");
+            String name = "Mac Book Pro 2023";
+            UUID productIdUUID = UUID.fromString("0191e22a-13d3-76f8-8129-691bf520aab2");
+            String reference = "56456486";
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productIdUUID)
+                    .name(name)
+                    .reference(reference)
+                    .filename("products/product.png")
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .stockUomId(nonExistingUomUUID)
+                    .purchaseUomId(nonExistingUomUUID)
+                    .categoryId(categoryIdUUID)
+                    .sellable(true)
+                    .purchasable(true)
+                    .salePrice(new BigDecimal("70000"))
+                    .purchasePrice(new BigDecimal("38500"))
+                    .active(true);
+
+            ProductId productIdToUpdated = new ProductId(productIdUUID);
+
+            Product productToUpdated = Product.builder()
+                    .id(productIdToUpdated)
+                    .name(Name.of(Text.of(name)))
+                    .reference(Reference.of(Text.of(reference)))
+                    .imageName(Filename.of(Text.of("products/product.png")))
+                    .type(ProductType.STOCK)
+                    .stockUomId(new UomId(nonExistingUomUUID))
+                    .purchaseUomId(new UomId(nonExistingUomUUID))
+                    .categoryId(new ProductCategoryId(categoryIdUUID))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .salePrice(Money.of(new BigDecimal("70000")))
+                    .purchasePrice(Money.of(new BigDecimal("38500")))
+                    .active(Active.with(true))
+                    .build();
+
+            when(productViewMapper.toProduct(updateProductViewRequest)).thenReturn(productToUpdated);
+            when(productService.updateProduct(productIdToUpdated, productToUpdated))
+                    .thenThrow(ProductReferenceConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {name}}));
+
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<ProductId> productIdArgumentCaptor = ArgumentCaptor.forClass(ProductId.class);
+            ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+            //Act  + Then
+            assertThatThrownBy(() -> productApiAdapterService.updateProduct(productIdUUID, updateProductViewRequest, multipartFile))
+                    .isInstanceOf(ProductReferenceConflictException.class)
+                    .hasMessage(PRODUCT_REFERENCE_CONFLICT_EXCEPTION);
+
+            verify(productViewMapper, times(1)).toProduct(updateProductViewRequestArgumentCaptor.capture());
+            verify(productService, times(1)).updateProduct(productIdArgumentCaptor.capture(), productArgumentCaptor.capture());
+
+            assertThat(productIdArgumentCaptor.getValue()).isEqualTo(productIdToUpdated);
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(productArgumentCaptor.getValue()).isEqualTo(productToUpdated);
         }
     }
 }
