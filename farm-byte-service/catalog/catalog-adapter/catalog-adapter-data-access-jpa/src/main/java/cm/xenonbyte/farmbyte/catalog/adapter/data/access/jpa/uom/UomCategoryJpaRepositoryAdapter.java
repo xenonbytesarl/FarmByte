@@ -102,7 +102,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     @Nonnull
     @Override
     @Transactional
-    public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
+    public UomCategory update(UomCategory oldUomcategory, UomCategory newUomCategory) {
         UomCategoryJpa oldUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(oldUomcategory);
         UomCategoryJpa newUomCategoryJpa = uomCategoryJpaMapper.toUomCategoryJpa(newUomCategory);
         uomCategoryJpaMapper.copyNewToOldUomCategory(oldUomCategoryJpa, newUomCategoryJpa);

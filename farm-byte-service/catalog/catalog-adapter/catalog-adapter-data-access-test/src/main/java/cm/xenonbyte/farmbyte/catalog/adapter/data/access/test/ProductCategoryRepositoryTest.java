@@ -3,6 +3,8 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
@@ -26,6 +28,7 @@ public abstract class ProductCategoryRepositoryTest {
     protected ProductCategoryRepository productCategoryRepository;
     protected Name name;
     protected ProductCategoryId parentProductCategoryId;
+    protected ProductCategory oldProductCategory;
 
     @Nested
     class CreateProductCategoryRepositoryTest {
@@ -170,6 +173,45 @@ public abstract class ProductCategoryRepositoryTest {
             assertThat(result.getTotalPages()).isEqualTo(0);
             assertThat(result.getContent().size()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    class UpdateProductCategoryRepositoryTest {
+
+        @Test
+        void should_success_when_update_product_category() {
+            //Given
+            ProductCategory productCategoryToUpdate = ProductCategory.builder()
+                    .id(oldProductCategory.getId())
+                    .name(Name.of(Text.of("New Raw Material")))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act
+            ProductCategory result = productCategoryRepository.update(oldProductCategory, productCategoryToUpdate);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(productCategoryToUpdate);
+        }
+
+        @Test
+        void should_return_true_when_find_product_category_with_existing_name() {
+            //Given + Act
+            Optional<ProductCategory> result = productCategoryRepository.findByName(name);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+
+        }
+
+        @Test
+        void should_return_false_when_find_product_category_with_non_existing_name() {
+            //Given + Act
+            Optional<ProductCategory> result = productCategoryRepository.findByName(Name.of(Text.of("New Raw Material")));
+
+            //Then
+            assertThat(result.isPresent()).isFalse();
         }
     }
 

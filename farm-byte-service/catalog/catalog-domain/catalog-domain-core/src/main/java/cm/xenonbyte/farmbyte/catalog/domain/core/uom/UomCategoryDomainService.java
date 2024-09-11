@@ -54,7 +54,7 @@ public final class UomCategoryDomainService implements UomCategoryService {
         Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
         if (optionalUomCategory.isPresent()) {
             validateUomCategory(uomCategoryToUpdate);
-            return uomCategoryRepository.updateUomCategory(optionalUomCategory.get(), uomCategoryToUpdate);
+            return uomCategoryRepository.update(optionalUomCategory.get(), uomCategoryToUpdate);
         }
         throw new UomCategoryNotFoundException(new String[]{uomCategoryId.getValue().toString()});
     }

@@ -9,7 +9,6 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -193,7 +192,7 @@ public abstract class UomCategoryRepositoryTest {
                     .build();
 
             //Act
-            UomCategory result = uomCategoryRepository.updateUomCategory(oldUomCategory, uomCategoryToUpdate);
+            UomCategory result = uomCategoryRepository.update(oldUomCategory, uomCategoryToUpdate);
 
             //Then
             assertThat(result).isNotNull().isEqualTo(uomCategoryToUpdate);
