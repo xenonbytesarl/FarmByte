@@ -103,6 +103,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      tags:
+        - ProductCategory
+      summary: update category of product by id
+      operationId: updateProductCategoryById
+      security:
+        - oAuth:
+            - read:product:category
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/productCategoryId'
+      requestBody:
+        required: true
+        description: category product object to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductCategoryViewRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProductCategoryViewApiResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /product-categories/search:
     get:
       tags:
@@ -155,7 +198,7 @@ components:
         parentProductCategoryId:
           type: string
           format: uuid
-    ProductCategoryViewResponse:
+    ProductCategoryView:
       type: object
       required:
         - id
@@ -174,6 +217,9 @@ components:
           format: uuid
         active:
           type: boolean
+    ProductCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryView'
     CreateProductCategoryViewResponse:
       allOf:
         - $ref: '#/components/schemas/ProductCategoryViewResponse'
@@ -240,3 +286,18 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/SearchProductCategoriesPageInfoViewResponse'
+    UpdateProductCategoryViewRequest:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryView'
+    UpdateProductCategoryViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductCategoryView'
+    UpdateProductCategoryViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UpdateProductCategoryViewResponse'

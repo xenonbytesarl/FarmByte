@@ -7,7 +7,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewResponse;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ParentProductCategoryNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNameConflictException;
@@ -31,12 +33,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -144,8 +148,8 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                     Arguments.of(
                             "Manufactured",
                             UUID.randomUUID(),
-                            new ParentProductCategoryNotFoundException(new String[]{PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED}),
-                            PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION
+                            new ProductParentCategoryNotFoundException(new String[]{PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED}),
+                            PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION
                     )
             );
         }
@@ -456,6 +460,180 @@ final class ProductCategoryDomainServiceApiAdapterTest {
 
         }
 
+    }
+
+    @Nested
+    class UpdateProductCategoryDomainServiceRestApiAdapterTest {
+        @Test
+        void should_success_when_update_product_category() {
+            //Given
+            UUID productCategoryIdUUID = UUID.fromString("0191e0c2-91ab-7f43-bbb4-085f715d1136");
+            String name = "New Raw Of Material";
+            boolean active = true;
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .active(Active.with(active))
+                    .build();
+            UpdateProductCategoryViewResponse updateProductCategoryViewResponse = new UpdateProductCategoryViewResponse()
+                    .id(productCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+
+            when(productCategoryViewMapper.toProductCategory(updateProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.updateProductCategory(productCategoryId, productCategory)).thenReturn(productCategory);
+            when(productCategoryViewMapper.toUpdateProductCategoryViewResponse(productCategory)).thenReturn(updateProductCategoryViewResponse);
+
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act
+            UpdateProductCategoryViewResponse result = productCategoryApiAdapterService.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(updateProductCategoryViewResponse);
+
+            verify(productCategoryService, times(1)).updateProductCategory(productCategoryIdArgumentCaptor.capture(), productCategoryArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toProductCategory(updateProductCategoryViewRequestArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toUpdateProductCategoryViewResponse(productCategoryArgumentCaptor.capture());
+
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_with_non_existing_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID productCategoryIdUUID = UUID.fromString("0191e0c2-c8db-7cce-b4d4-9476228bacf4");
+            String name = "New Raw Of Material";
+            boolean active = true;
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .active(Active.with(active))
+                    .build();
+
+            when(productCategoryViewMapper.toProductCategory(updateProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.updateProductCategory(productCategoryId, productCategory))
+                    .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{productCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryApiAdapterService.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .isInstanceOf(ProductCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
+
+            verify(productCategoryService, times(1)).updateProductCategory(productCategoryIdArgumentCaptor.capture(), productCategoryArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toProductCategory(updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_with_non_parent_product_id() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID productCategoryIdUUID = UUID.fromString("0191e0c2-e802-7c33-ab66-6f8e1746ca09");
+            String name = "New Raw Of Material";
+            boolean active = true;
+            UUID parentProductCategoryIdUUID = UUID.randomUUID();
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .parentProductCategoryId(parentProductCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .parentProductCategoryId(new ProductCategoryId(parentProductCategoryIdUUID))
+                    .active(Active.with(active))
+                    .build();
+
+            when(productCategoryViewMapper.toProductCategory(updateProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.updateProductCategory(productCategoryId, productCategory))
+                    .thenThrow(ProductParentCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{parentProductCategoryIdUUID.toString()}}));
+
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryApiAdapterService.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .isInstanceOf(ProductParentCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
+
+            verify(productCategoryService, times(1)).updateProductCategory(productCategoryIdArgumentCaptor.capture(), productCategoryArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toProductCategory(updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_with_duplicate_name() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID productCategoryIdUUID = UUID.fromString("0191e0c3-0f6d-7daf-b1d7-5c073f69bf02");
+            String name = "New Raw Of Material";
+            boolean active = true;
+            UUID parentProductCategoryIdUUID = UUID.randomUUID();
+            ProductCategoryId productCategoryId = new ProductCategoryId(productCategoryIdUUID);
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(productCategoryIdUUID)
+                    .parentProductCategoryId(parentProductCategoryIdUUID)
+                    .name(name)
+                    .active(active);
+            ProductCategory productCategory = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of(name)))
+                    .parentProductCategoryId(new ProductCategoryId(parentProductCategoryIdUUID))
+                    .active(Active.with(active))
+                    .build();
+
+            when(productCategoryViewMapper.toProductCategory(updateProductCategoryViewRequest)).thenReturn(productCategory);
+            when(productCategoryService.updateProductCategory(productCategoryId, productCategory))
+                    .thenThrow(ProductCategoryNameConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{name}}));
+
+            ArgumentCaptor<ProductCategoryId> productCategoryIdArgumentCaptor = ArgumentCaptor.forClass(ProductCategoryId.class);
+            ArgumentCaptor<UpdateProductCategoryViewRequest> updateProductCategoryViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductCategoryViewRequest.class);
+            ArgumentCaptor<ProductCategory> productCategoryArgumentCaptor = ArgumentCaptor.forClass(ProductCategory.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryApiAdapterService.updateProductCategory(productCategoryIdUUID, updateProductCategoryViewRequest))
+                    .isInstanceOf(ProductCategoryNameConflictException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION);
+
+            verify(productCategoryService, times(1)).updateProductCategory(productCategoryIdArgumentCaptor.capture(), productCategoryArgumentCaptor.capture());
+            verify(productCategoryViewMapper, times(1)).toProductCategory(updateProductCategoryViewRequestArgumentCaptor.capture());
+
+            assertThat(productCategoryIdArgumentCaptor.getValue()).isEqualTo(productCategoryId);
+            assertThat(updateProductCategoryViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductCategoryViewRequest);
+            assertThat(productCategoryArgumentCaptor.getValue()).isEqualTo(productCategory);
+        }
     }
 
 }

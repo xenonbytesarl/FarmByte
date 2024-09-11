@@ -7,6 +7,8 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.FindUomCategoriesViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
@@ -100,4 +102,17 @@ public interface ProductCategoryViewMapper {
     @Mapping(expression = "java(productCategory.getParentProductCategoryId() == null? null: productCategory.getParentProductCategoryId().getValue())", target = "parentProductCategoryId")
     @Nonnull @Valid SearchProductCategoriesViewResponse toSearchProductCategoriesViewResponse(@Nonnull ProductCategory productCategory);
 
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "active.value", source = "active")
+    @Mapping(target = "parentProductCategoryId", expression = "java(updateProductCategoryViewRequest.getParentProductCategoryId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId(updateProductCategoryViewRequest.getParentProductCategoryId()))")
+    @Nonnull ProductCategory toProductCategory(@Nonnull @Valid UpdateProductCategoryViewRequest updateProductCategoryViewRequest);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(source = "active.value", target = "active")
+    @Mapping(expression = "java(productCategory.getParentProductCategoryId() == null? null: productCategory.getParentProductCategoryId().getValue())", target = "parentProductCategoryId")
+    @Nonnull @Valid UpdateProductCategoryViewResponse toUpdateProductCategoryViewResponse(@Nonnull ProductCategory productCategory);
 }
