@@ -96,7 +96,7 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
     @Override
     public Optional<Product> findByReference(@Nonnull Reference reference) {
         return products.values().stream()
-                .filter(product -> product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()))
+                .filter(product -> product.getReference() != null && product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()))
                 .findFirst();
     }
 }
