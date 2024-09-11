@@ -20,4 +20,6 @@ public interface ProductService {
     @Nonnull PageInfo<Product> findProducts(int page, int size, String attribute, Direction direction);
 
     @Nonnull PageInfo<Product> searchProducts(int page, int size, String attribute, Direction direction, @Nonnull Keyword keyword);
+
+    @Nonnull Product updateProduct(@Nonnull ProductId productId, @Nonnull Product productToUpdate);
 }

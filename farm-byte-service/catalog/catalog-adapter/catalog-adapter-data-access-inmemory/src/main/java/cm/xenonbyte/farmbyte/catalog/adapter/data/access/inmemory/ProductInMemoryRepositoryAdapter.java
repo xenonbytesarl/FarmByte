@@ -8,6 +8,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
+import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 import jakarta.annotation.Nonnull;
 
 import java.util.Comparator;
@@ -32,7 +33,7 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
     }
 
     @Override
-    public Boolean existsByName(Name name) {
+    public Boolean existsByName(@Nonnull Name name) {
         return products.values().stream()
                 .anyMatch(product -> product.getName().equals(name));
     }
@@ -42,8 +43,9 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
         return Optional.ofNullable(products.get(productId));
     }
 
+    @Nonnull
     @Override
-    public PageInfo<Product> findAll(int page, int size, String attribute, Direction direction) {
+    public PageInfo<Product> findAll(int page, int size, String attribute, @Nonnull Direction direction) {
         PageInfo<Product> productPageInfo = new PageInfo<>();
         Comparator<Product> comparing = Comparator.comparing((Product a) -> a.getName().getText().getValue());
         return productPageInfo.with(
@@ -57,7 +59,7 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
 
     @Nonnull
     @Override
-    public PageInfo<Product> search(int page, int size, String attribute, Direction direction, @Nonnull Keyword keyword) {
+    public PageInfo<Product> search(int page, int size, String attribute, @Nonnull Direction direction, @Nonnull Keyword keyword) {
         PageInfo<Product> productPageInfo = new PageInfo<>();
         Comparator<Product> comparing = Comparator.comparing((Product a) -> a.getName().getText().getValue());
         return productPageInfo.with(
@@ -68,5 +70,33 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
                         .sorted(Direction.ASC.equals(direction) ? comparing : comparing.reversed())
                         .toList()
         );
+    }
+
+    @Nonnull
+    @Override
+    public Product update(@Nonnull Product oldProduct, @Nonnull Product newProduct) {
+        products.replace(oldProduct.getId(), newProduct);
+        return newProduct;
+    }
+
+    @Override
+    public boolean existsByReference(@Nonnull Reference reference) {
+        return products.values().stream()
+                .anyMatch(product ->
+                        product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()));
+    }
+
+    @Override
+    public Optional<Product> findByName(@Nonnull Name name) {
+        return products.values().stream()
+                .filter(product -> product.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Product> findByReference(@Nonnull Reference reference) {
+        return products.values().stream()
+                .filter(product -> product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()))
+                .findFirst();
     }
 }

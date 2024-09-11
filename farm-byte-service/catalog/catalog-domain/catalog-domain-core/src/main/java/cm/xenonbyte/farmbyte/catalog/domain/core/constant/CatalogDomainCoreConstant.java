@@ -36,4 +36,5 @@ public final class CatalogDomainCoreConstant {
     public static final String PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION="ProductCategoryNotFoundException.1";
     public static final String PRODUCT_UOM_NOT_FOUND_EXCEPTION="ProductUomNotFoundException.1";
     public static final String PRODUCT_NOT_FOUND_EXCEPTION = "ProductNotFoundException.1";
+    public static final String PRODUCT_REFERENCE_CONFLICT_EXCEPTION = "ProductReferenceConflictException.1";
 }
