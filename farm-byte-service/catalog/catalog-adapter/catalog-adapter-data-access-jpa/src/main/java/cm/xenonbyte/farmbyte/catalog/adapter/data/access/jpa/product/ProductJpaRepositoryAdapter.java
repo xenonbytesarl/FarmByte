@@ -8,6 +8,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
+import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public Boolean existsByName(Name name) {
+    public Boolean existsByName(@Nonnull Name name) {
         return productJpaRepository.existsByNameIgnoreCase(name.getText().getValue());
     }
 
@@ -57,7 +58,7 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
 
     @Nonnull
     @Override
-    public PageInfo<Product> findAll(int page, int size, String attribute, Direction direction) {
+    public PageInfo<Product> findAll(int page, int size, String attribute, @Nonnull Direction direction) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<ProductJpa> productJpaPage = productJpaRepository.findAll(PageRequest.of(page, size, sortDirection, attribute));
         return new PageInfo<Product>(
@@ -72,7 +73,7 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
 
     @Nonnull
     @Override
-    public PageInfo<Product> search(int page, int size, String attribute, Direction direction, @Nonnull Keyword keyword) {
+    public PageInfo<Product> search(int page, int size, String attribute, @Nonnull Direction direction, @Nonnull Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<ProductJpa> productJpaPage = productJpaRepository.search(PageRequest.of(page, size, sortDirection, attribute), keyword.getText().getValue());
         return new PageInfo<Product>(
@@ -83,5 +84,26 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
                 productJpaPage.getTotalPages(),
                 productJpaPage.getContent().stream().map(productJpaMapper::toProduct).toList()
         );
+    }
+
+    @Nonnull
+    @Override
+    public Product update(@Nonnull Product oldProduct, @Nonnull Product newProduct) {
+        return null;
+    }
+
+    @Override
+    public boolean existsByReference(@Nonnull Reference reference) {
+        return false;
+    }
+
+    @Override
+    public Optional<Product> findByName(@Nonnull Name name) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Product> findByReference(@Nonnull Reference reference) {
+        return Optional.empty();
     }
 }

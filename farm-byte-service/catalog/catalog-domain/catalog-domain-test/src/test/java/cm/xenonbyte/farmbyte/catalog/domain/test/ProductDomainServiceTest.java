@@ -11,6 +11,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
@@ -48,8 +49,10 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_REFERENCE_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
@@ -71,8 +74,8 @@ public final class ProductDomainServiceTest {
     private UomRepository uomRepository;
 
     static String categoryId = "01918e3e-18a6-70bd-92c7-9bf1927b50e7";
-    static String stockUomId = "01918e3e-419f-7042-ade1-c37c03bff951";
-    static String purchaseUomId = "01918e3e-5ae0-7a23-86e9-64ae98b3aabc";
+    static String stockUomIdUUID = "01918e3e-419f-7042-ade1-c37c03bff951";
+    static String purchaseUomIdUUID = "01918e3e-5ae0-7a23-86e9-64ae98b3aabc";
 
     @BeforeEach
     void setUp() {
@@ -92,7 +95,7 @@ public final class ProductDomainServiceTest {
 
         saveUom(
                 Uom.builder()
-                        .id(new UomId(UUID.fromString(stockUomId)))
+                        .id(new UomId(UUID.fromString(stockUomIdUUID)))
                         .name(Name.of(Text.of("Unite")))
                         .uomCategoryId(new UomCategoryId(UUID.fromString("01918e47-0e3d-7d2b-9897-f556fcdca51d")))
                         .uomType(UomType.REFERENCE)
@@ -101,7 +104,7 @@ public final class ProductDomainServiceTest {
 
         saveUom(
                 Uom.builder()
-                        .id(new UomId(UUID.fromString(purchaseUomId)))
+                        .id(new UomId(UUID.fromString(purchaseUomIdUUID)))
                         .name(Name.of(Text.of("Carton 10")))
                         .uomCategoryId(new UomCategoryId(UUID.fromString("01918e47-0e3d-7d2b-9897-f556fcdca51d")))
                         .uomType(UomType.GREATER)
@@ -229,7 +232,7 @@ public final class ProductDomainServiceTest {
                             Name.of(Text.of("Chair")),
                             new ProductCategoryId(UUID.fromString(categoryId)),
                             ProductType.STOCK,
-                            new UomId(UUID.fromString(stockUomId)),
+                            new UomId(UUID.fromString(stockUomIdUUID)),
                             null,
                             null,
                             null,
@@ -334,7 +337,7 @@ public final class ProductDomainServiceTest {
                     .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
                     .type(ProductType.STOCK)
                     .stockUomId(new UomId(UUID.randomUUID()))
-                    .purchaseUomId(new UomId(UUID.fromString(purchaseUomId)))
+                    .purchaseUomId(new UomId(UUID.fromString(purchaseUomIdUUID)))
                     .name(Name.of(Text.of("Product.1")))
                     .build();
             //Act + Then
@@ -350,7 +353,7 @@ public final class ProductDomainServiceTest {
             Product product = Product.builder()
                     .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
                     .type(ProductType.STOCK)
-                    .stockUomId(new UomId(UUID.fromString(stockUomId)))
+                    .stockUomId(new UomId(UUID.fromString(stockUomIdUUID)))
                     .purchaseUomId(new UomId(UUID.randomUUID()))
                     .name(Name.of(Text.of("Product.1")))
                     .build();
@@ -380,7 +383,7 @@ public final class ProductDomainServiceTest {
                     .name(Name.of(Text.of("Chair")))
                     .type(ProductType.STOCK)
                     .categoryId(new ProductCategoryId(UUID.fromString(categoryId)))
-                    .stockUomId(new UomId(UUID.fromString(stockUomId)))
+                    .stockUomId(new UomId(UUID.fromString(stockUomIdUUID)))
                     .purchaseUomId(uomId)
                     .build();
 
@@ -574,6 +577,191 @@ public final class ProductDomainServiceTest {
             assertThat(result.getPageSize()).isEqualTo(size);
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
+        }
+    }
+
+    @Nested
+    class UpdateProductDomainServiceTest {
+        Product product;
+        ProductId productId;
+        ProductCategoryId productCategoryId;
+
+        @BeforeEach
+        void setUp() {
+            productCategoryId = new ProductCategoryId(UUID.fromString("0191e105-e116-7136-b7b8-2e295fc5696a"));
+
+            productId = new ProductId(UUID.fromString("0191e105-fda9-705c-b015-da67f74b981e"));
+
+            productCategoryRepository.save(
+                    ProductCategory.builder()
+                            .id(productCategoryId)
+                            .name(Name.of(Text.of("Computer")))
+                            .active(Active.with(true))
+                            .build()
+            );
+
+            product = productRepository.save(
+                    Product.builder()
+                        .id(productId)
+                        .name(Name.of(Text.of("Mac Book Pro 2023")))
+                        .categoryId(productCategoryId)
+                        .type(ProductType.CONSUMABLE)
+                        .reference(Reference.of(Text.of("20123546")))
+                        .purchasePrice(Money.of(BigDecimal.valueOf(250.35)))
+                        .salePrice(Money.of(BigDecimal.valueOf(475.41)))
+                        .sellable(Sellable.with(true))
+                        .purchasable(Purchasable.with(true))
+                        .active(Active.with(true))
+                        .build()
+            );
+
+            productRepository.save(
+                    Product.builder()
+                            .id(new ProductId(UUID.fromString("0191e126-da9e-724f-af08-c94dd2a0bda8")))
+                            .name(Name.of(Text.of("HP Proliant 2023")))
+                            .categoryId(productCategoryId)
+                            .type(ProductType.STOCK)
+                            .reference(Reference.of(Text.of("2120354")))
+                            .purchasePrice(Money.of(BigDecimal.valueOf(145.87)))
+                            .salePrice(Money.of(BigDecimal.valueOf(378.98)))
+                            .sellable(Sellable.with(true))
+                            .purchasable(Purchasable.with(true))
+                            .stockUomId(new UomId(UUID.fromString(stockUomIdUUID)))
+                            .purchaseUomId(new UomId(UUID.fromString(purchaseUomIdUUID)))
+                            .active(Active.with(true))
+                            .build()
+            );
+        }
+
+        @Test
+        void should_success_when_update_product() {
+            //Given
+            Product productToUpdate = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .categoryId(productCategoryId)
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+            //Act
+            Product result = productService.updateProduct(productId, productToUpdate);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(productToUpdate);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_existing_id() {
+            //Given
+            UUID nonExistingProductIdUUID = UUID.fromString("0191e13a-3fe9-757b-a670-937e2190ff5a");
+
+            Product productToUpdate = Product.builder()
+                    .id(new ProductId(nonExistingProductIdUUID))
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .categoryId(productCategoryId)
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.updateProduct(new ProductId(nonExistingProductIdUUID), productToUpdate))
+                    .isInstanceOf(ProductNotFoundException.class)
+                    .hasMessage(PRODUCT_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_product_category_id() {
+            //Given
+            Product productToUpdate = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .categoryId(new ProductCategoryId(UUID.fromString("0191e14b-9f0d-7812-a411-7061fa7b415f")))
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.updateProduct(productId, productToUpdate))
+                    .isInstanceOf(ProductCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_name() {
+            //Given
+            Product productToUpdate = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("HP Proliant 2023")))
+                    .categoryId(productCategoryId)
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("20123546")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.updateProduct(productId, productToUpdate))
+                    .isInstanceOf(ProductNameConflictException.class)
+                    .hasMessage(PRODUCT_NAME_CONFLICT_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_duplicate_reference() {
+            //Given
+            Product productToUpdate = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .categoryId(productCategoryId)
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("2120354")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.updateProduct(productId, productToUpdate))
+                    .isInstanceOf(ProductReferenceConflictException.class)
+                    .hasMessage(PRODUCT_REFERENCE_CONFLICT_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_with_non_existing_stock_uom_id() {
+            //Given
+            Product productToUpdate = Product.builder()
+                    .id(productId)
+                    .name(Name.of(Text.of("New Mac Book Pro 2023")))
+                    .categoryId(productCategoryId)
+                    .type(ProductType.STOCK)
+                    .reference(Reference.of(Text.of("4569875")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(275.35)))
+                    .salePrice(Money.of(BigDecimal.valueOf(490.41)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .stockUomId(new UomId(UUID.fromString("0191e166-9f7e-7ede-b014-2ff7b97b2e47")))
+                    .purchaseUomId(new UomId(UUID.fromString("0191e167-b5bb-7e93-b6be-008c07c9fda8")))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productService.updateProduct(productId, productToUpdate))
+                    .isInstanceOf(ProductUomNotFoundException.class)
+                    .hasMessage(PRODUCT_UOM_NOT_FOUND_EXCEPTION);
         }
     }
 
