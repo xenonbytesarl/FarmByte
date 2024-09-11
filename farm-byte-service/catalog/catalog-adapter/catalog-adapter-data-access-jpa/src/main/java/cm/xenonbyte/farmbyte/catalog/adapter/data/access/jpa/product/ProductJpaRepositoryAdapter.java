@@ -46,7 +46,7 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
     @Override
     @Transactional(readOnly = true)
     public Boolean existsByName(Name name) {
-        return productJpaRepository.existsByName(name.getText().getValue());
+        return productJpaRepository.existsByNameIgnoreCase(name.getText().getValue());
     }
 
     @Override

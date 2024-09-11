@@ -9,7 +9,6 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,7 +40,7 @@ public class ProductCategoryJpaRepositoryAdapter implements ProductCategoryRepos
     @Override
     @Transactional(readOnly = true)
     public Boolean existsByName(@Nonnull Name name) {
-        return productCategoryJpaRepository.existsByName(name.getText().getValue());
+        return productCategoryJpaRepository.existsByNameIgnoreCase(name.getText().getValue());
     }
 
     @Nonnull
@@ -84,6 +83,23 @@ public class ProductCategoryJpaRepositoryAdapter implements ProductCategoryRepos
                 productCategoryJpaPage.getTotalElements(),
                 productCategoryJpaPage.getTotalPages(),
                 productCategoryJpaPage.getContent().stream().map(productCategoryJpaMapper::toProductCategory).toList()
+        );
+    }
+
+    @Override
+    public Optional<ProductCategory> findByName(@Nonnull Name name) {
+        return productCategoryJpaRepository.findByNameIgnoreCase(name.getText().getValue())
+                .map(productCategoryJpaMapper::toProductCategory);
+    }
+
+    @Nonnull
+    @Override
+    public ProductCategory update(@Nonnull ProductCategory oldProductCategory, ProductCategory newProductCategory) {
+        ProductCategoryJpa oldProductCategoryJpa = productCategoryJpaMapper.toProductCategoryJpa(oldProductCategory);
+        ProductCategoryJpa newProductCategoryJpa = productCategoryJpaMapper.toProductCategoryJpa(newProductCategory);
+        productCategoryJpaMapper.copyNewToOldProductCategory(newProductCategoryJpa, oldProductCategoryJpa);
+        return productCategoryJpaMapper.toProductCategory(
+                productCategoryJpaRepository.save(oldProductCategoryJpa)
         );
     }
 

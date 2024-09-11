@@ -47,7 +47,7 @@ class UomJpaRepositoryAdapterIT extends UomRepositoryTest {
         name = Name.of(Text.of("Carton de 5"));
         uomId = new UomId(UUID.fromString("01912c2c-b81a-7245-bab1-aee9b97b2afb"));
 
-        super.uomRepository = new UomJpaRepositoryAdapter(uomJpaRepository, uomJpaMapper);
+        uomRepository = new UomJpaRepositoryAdapter(uomJpaRepository, uomJpaMapper);
     }
 
 

@@ -23,5 +23,5 @@ public interface UomCategoryJpaRepository extends JpaRepository<UomCategoryJpa, 
     @Query("select ucj from UomCategoryJpa ucj left join ucj.parentUomCategoryJpa pucj where lower(concat(ucj.name, '', coalesce(pucj.name, ''))) like lower(concat('%',:keyword,'%'))")
     Page<UomCategoryJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
-    Optional<UomCategoryJpa> findByName(String name);
+    Optional<UomCategoryJpa> findByNameIgnoreCase(String name);
 }

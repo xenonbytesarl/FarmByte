@@ -40,10 +40,10 @@ class ProductJpaRepositoryAdapterIT extends ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        super.productRepository = new ProductJpaRepositoryAdapter(productJpaRepository, productJpaMapper);
-        super.categoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
-        super.imageName = Filename.of(Text.of("product.png"));
-        super.name = Name.of(Text.of("Product.2"));
-        super.productId = new ProductId(UUID.fromString("0191bda4-65e4-73a8-8291-b2870753ad00"));
+        productRepository = new ProductJpaRepositoryAdapter(productJpaRepository, productJpaMapper);
+        categoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+        imageName = Filename.of(Text.of("product.png"));
+        name = Name.of(Text.of("Product.2"));
+        productId = new ProductId(UUID.fromString("0191bda4-65e4-73a8-8291-b2870753ad00"));
     }
 }

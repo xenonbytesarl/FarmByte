@@ -12,6 +12,7 @@ INSERT INTO t_uom (c_id, c_created_at, c_updated_at, c_name, c_ratio, c_active, 
 -- Insert product_category
 INSERT INTO t_product_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01912c0f-2fcf-705b-ae59-d79d159f3ad0', current_timestamp, null, 'Raw of material', true);
 INSERT INTO t_product_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('01912c2e-b52d-7b85-9c12-85af49fc7798', current_timestamp, null, 'Manufactured', true);
+INSERT INTO t_product_category (c_id, c_created_at, c_updated_at, c_name, c_active) VALUES ('0191e077-b2a1-795e-8584-40e26a5fa850', current_timestamp, null, 'Fertilizer', true);
 
 --Insert t_product
 INSERT INTO t_product (c_id, c_created_at, c_updated_at, c_image,c_name,c_purchasable,c_purchase_price,

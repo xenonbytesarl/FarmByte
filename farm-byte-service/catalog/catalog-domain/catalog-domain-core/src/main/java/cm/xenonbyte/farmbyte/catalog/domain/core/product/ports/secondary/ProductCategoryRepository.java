@@ -31,5 +31,5 @@ public interface ProductCategoryRepository {
 
     Optional<ProductCategory> findByName(@Nonnull Name name);
 
-    @Nonnull ProductCategory update(@Nonnull ProductCategory oldProductCategory, ProductCategory productCategoryToUpdate);
+    @Nonnull ProductCategory update(@Nonnull ProductCategory oldProductCategory, ProductCategory newProductCategory);
 }

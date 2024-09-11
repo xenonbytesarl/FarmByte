@@ -112,7 +112,7 @@ public class UomCategoryJpaRepositoryAdapter implements UomCategoryRepository {
     @Override
     @Transactional(readOnly = true)
     public Optional<UomCategory> findByName(Name name) {
-        return uomCategoryJpaRepository.findByName(name.getText().getValue())
+        return uomCategoryJpaRepository.findByNameIgnoreCase(name.getText().getValue())
                 .map(uomCategoryJpaMapper::toUomCategory);
     }
 }

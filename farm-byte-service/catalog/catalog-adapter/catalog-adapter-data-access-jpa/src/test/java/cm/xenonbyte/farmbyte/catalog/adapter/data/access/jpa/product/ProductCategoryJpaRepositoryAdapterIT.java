@@ -3,7 +3,9 @@ package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.JpaRepositoryAdapterTest;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.catalog.adapter.data.access.test.ProductCategoryRepositoryTest;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +41,17 @@ public class ProductCategoryJpaRepositoryAdapterIT extends ProductCategoryReposi
     @BeforeEach
     void setUp() {
 
-        super.productCategoryRepository = new ProductCategoryJpaRepositoryAdapter(productCategoryJpaRepository, productCategoryJpaMapper);
+        productCategoryRepository = new ProductCategoryJpaRepositoryAdapter(productCategoryJpaRepository, productCategoryJpaMapper);
 
-        name = Name.of(Text.of("Raw Material"));
+        name = Name.of(Text.of("Raw Of Material"));
 
         parentProductCategoryId = new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0"));
+
+        oldProductCategory = ProductCategory.builder()
+                .id(new ProductCategoryId(UUID.fromString("0191e077-b2a1-795e-8584-40e26a5fa850")))
+                .name(Name.of(Text.of("Fertilizer")))
+                .active(Active.with(true))
+                .build();
 
     }
 }
