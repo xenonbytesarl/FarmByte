@@ -76,7 +76,7 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
 
     @Nonnull
     @Override
-    public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
+    public UomCategory update(UomCategory oldUomcategory, UomCategory newUomCategory) {
         uomCategories.replace(oldUomcategory.getId(), newUomCategory);
         return newUomCategory;
     }
