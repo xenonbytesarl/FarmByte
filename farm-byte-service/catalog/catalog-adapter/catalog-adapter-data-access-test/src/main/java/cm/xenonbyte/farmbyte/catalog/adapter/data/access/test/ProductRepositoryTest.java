@@ -1,23 +1,21 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.test;
 
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Purchasable;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Sellable;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductType;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Money;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -25,9 +23,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author bamk

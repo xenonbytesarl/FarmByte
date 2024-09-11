@@ -8,12 +8,16 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Fin
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductStockAndPurchaseUomBadException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductUomNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Image;
@@ -32,13 +36,14 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -49,14 +54,17 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCTS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductRestApi.PRODUCT_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_REFERENCE_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -124,7 +132,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             CreateProductViewResponse createProductViewResponse = new CreateProductViewResponse()
@@ -212,7 +220,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             //Act + Then
@@ -250,7 +258,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             when(productDomainServiceRestApiAdapter.createProduct(createProductViewRequest, imageMultipartFile))
@@ -294,7 +302,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             when(productDomainServiceRestApiAdapter.createProduct(createProductViewRequest, imageMultipartFile))
@@ -342,7 +350,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             when(productDomainServiceRestApiAdapter.createProduct(createProductViewRequest, imageMultipartFile))
@@ -390,7 +398,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     "createProductViewRequest",
                     "createProductViewRequest",
                     APPLICATION_JSON_VALUE,
-                    createProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
+                    updateProductViewAsString(createProductViewRequest).getBytes(StandardCharsets.UTF_8)
             );
 
             when(productDomainServiceRestApiAdapter.createProduct(createProductViewRequest, imageMultipartFile))
@@ -479,8 +487,6 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
             when(productDomainServiceRestApiAdapter.findProductById(productIdUUID))
                     .thenThrow(ProductNotFoundException.class.getConstructor(Object[].class)
                             .newInstance(new Object[]{new String[]{productIdUUID.toString()}}));
-
-            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
 
             //Act
             mockMvc.perform(get(String.format(PRODUCT_PATH_URI + "/%s", productIdUUID))
@@ -682,13 +688,405 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
             assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
             assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
             assertThat(stringArgumentCaptor.getAllValues().get(1)).isEqualTo(direction);
-
-
         }
     }
 
-    private String createProductViewAsString(@Nonnull CreateProductViewRequest createProductViewRequest) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(createProductViewRequest);
+    @Nested
+    class UpdateProductRestApiTest {
+
+        @Test
+        void should_success_when_update_product() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            UpdateProductViewResponse updateProductViewResponse = new UpdateProductViewResponse()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewResponse.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile)).thenReturn(updateProductViewResponse);
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                        .file(imageMultipartFile)
+                        .file(updateProductViewMultipartFile)
+                        .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                        .contentType(MULTIPART_FORM_DATA)
+                        .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(PRODUCT_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.id").value(productId.getValue().toString()))
+                    .andExpect(jsonPath("$.data.content.name").value(name))
+                    .andExpect(jsonPath("$.data.content.categoryId").value(categoryId.toString()));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+
+
+        }
+
+        @Test
+        void should_fail_when_update_with_non_existing_product_id() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile))
+                    .thenThrow(ProductNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {productIdUUID.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                        .file(imageMultipartFile)
+                        .file(updateProductViewMultipartFile)
+                        .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                        .contentType(MULTIPART_FORM_DATA)
+                        .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), productIdUUID.toString())));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+
+
+        }
+
+        @Test
+        void should_fail_when_update_with_non_existing_product_category_id() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile))
+                    .thenThrow(ProductCategoryNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {categoryId.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                            .file(imageMultipartFile)
+                            .file(updateProductViewMultipartFile)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(MULTIPART_FORM_DATA)
+                            .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), categoryId.toString())));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+        }
+
+
+        @Test
+        void should_fail_when_update_with_duplicate_name() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile))
+                    .thenThrow(ProductNameConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {name}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                            .file(imageMultipartFile)
+                            .file(updateProductViewMultipartFile)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(MULTIPART_FORM_DATA)
+                            .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(409))
+                    .andExpect(jsonPath("$.status").value("CONFLICT"))
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+        }
+
+        @Test
+        void should_fail_when_update_with_duplicate_reference() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            String reference = "6546545";
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.SERVICE)
+                    .reference(reference)
+                    .categoryId(categoryId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile))
+                    .thenThrow(ProductReferenceConflictException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {reference}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                            .file(imageMultipartFile)
+                            .file(updateProductViewMultipartFile)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(MULTIPART_FORM_DATA)
+                            .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(409))
+                    .andExpect(jsonPath("$.status").value("CONFLICT"))
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(PRODUCT_REFERENCE_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), reference)));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+        }
+
+        @Test
+        void should_fail_when_update_with_non_existing_uom_id() throws Exception {
+            //Given
+            String name = "Mac Book Pro 2023";
+            UUID categoryId = UUID.fromString("0191e25a-0957-778d-a5ca-7d59d451b531");
+            UUID uomId = UUID.fromString("0191e27d-dccc-7d03-abee-605da7cd0407");
+            UUID productIdUUID = UUID.fromString("0191e25a-6695-727c-9af7-2f44d50e190e");
+            String reference = "6546545";
+            ProductId productId = new ProductId(productIdUUID);
+            UpdateProductViewRequest updateProductViewRequest = new UpdateProductViewRequest()
+                    .id(productId.getValue())
+                    .name(name)
+                    .type(UpdateProductViewRequest.TypeEnum.STOCK)
+                    .reference(reference)
+                    .categoryId(categoryId)
+                    .stockUomId(uomId)
+                    .purchaseUomId(uomId)
+                    .purchasePrice(BigDecimal.ZERO)
+                    .salePrice(BigDecimal.ZERO)
+                    .purchasable(false)
+                    .sellable(false)
+                    .filename(Image.DEFAULT_PRODUCT_IMAGE_URL)
+                    .active(true);
+
+            MockMultipartFile updateProductViewMultipartFile = new MockMultipartFile(
+                    "updateProductViewRequest",
+                    "updateProductViewRequest",
+                    APPLICATION_JSON_VALUE,
+                    updateProductViewAsString(updateProductViewRequest).getBytes(StandardCharsets.UTF_8)
+            );
+
+            when(productDomainServiceRestApiAdapter.updateProduct(productIdUUID, updateProductViewRequest, imageMultipartFile))
+                    .thenThrow(UomNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[] {new String[] {uomId.toString()}}));
+
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+            ArgumentCaptor<UpdateProductViewRequest> updateProductViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateProductViewRequest.class);
+            ArgumentCaptor<MockMultipartFile> mockMultipartFileArgumentCaptor = ArgumentCaptor.forClass(MockMultipartFile.class);
+
+            //Act + Then
+            RequestPostProcessor requestProcessor = getRequestProcessor();
+
+            mockMvc.perform(multipart(PRODUCT_PATH_URI + "/" + productIdUUID)
+                            .file(imageMultipartFile)
+                            .file(updateProductViewMultipartFile)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(MULTIPART_FORM_DATA)
+                            .with(requestProcessor))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomId.toString())));
+
+            verify(productDomainServiceRestApiAdapter, times(1)).updateProduct(uuidArgumentCaptor.capture(),
+                    updateProductViewRequestArgumentCaptor.capture(), mockMultipartFileArgumentCaptor.capture());
+            assertThat(updateProductViewRequestArgumentCaptor.getValue()).isEqualTo(updateProductViewRequest);
+            assertThat(mockMultipartFileArgumentCaptor.getValue()).isEqualTo(imageMultipartFile);
+        }
+    }
+
+    private static RequestPostProcessor getRequestProcessor() {
+        return new RequestPostProcessor() {
+            @Nonnull
+            @Override
+            public MockHttpServletRequest postProcessRequest(@Nonnull MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        };
+    }
+
+    private String updateProductViewAsString(@Nonnull Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 
 }

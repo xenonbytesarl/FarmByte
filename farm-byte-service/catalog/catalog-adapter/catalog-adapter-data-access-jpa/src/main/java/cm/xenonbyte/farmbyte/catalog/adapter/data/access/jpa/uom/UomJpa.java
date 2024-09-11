@@ -1,7 +1,6 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.entity.BaseEntityJpa;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
