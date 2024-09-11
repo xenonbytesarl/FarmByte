@@ -8,7 +8,6 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomReposito
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
-import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 

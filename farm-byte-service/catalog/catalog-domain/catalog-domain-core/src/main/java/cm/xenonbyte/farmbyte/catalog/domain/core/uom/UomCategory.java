@@ -8,8 +8,8 @@ import jakarta.annotation.Nonnull;
 import java.util.Objects;
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_ID_IS_REQUIRED;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_IS_REQUIRED;
 
 /**
  * @author bamk

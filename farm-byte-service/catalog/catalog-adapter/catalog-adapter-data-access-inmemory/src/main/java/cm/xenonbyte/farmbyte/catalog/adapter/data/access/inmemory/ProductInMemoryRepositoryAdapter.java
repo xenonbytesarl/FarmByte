@@ -1,7 +1,6 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.inmemory;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.Product;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductRepository;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;

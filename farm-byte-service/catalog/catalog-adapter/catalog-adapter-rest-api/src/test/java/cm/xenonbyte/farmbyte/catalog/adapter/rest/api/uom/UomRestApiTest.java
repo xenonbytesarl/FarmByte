@@ -12,7 +12,6 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.SearchU
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateUomViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
@@ -33,7 +32,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;

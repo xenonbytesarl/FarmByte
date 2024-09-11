@@ -35,6 +35,7 @@ public class ProductRestApi implements ProductsApi {
     public static final String PRODUCT_CREATED_SUCCESSFULLY = "ProductApiRest.1";
     public static final String PRODUCT_FIND_SUCCESSFULLY = "ProductApiRest.2";
     public static final String PRODUCTS_FIND_SUCCESSFULLY = "ProductApiRest.3";
+    public static final String PRODUCT_UPDATED_SUCCESSFULLY = "ProductApiRest.4";
 
     private final ProductDomainServiceRestApiAdapter productDomainServiceApiAdapter;
 
@@ -96,6 +97,14 @@ public class ProductRestApi implements ProductsApi {
 
     @Override
     public ResponseEntity<UpdateProductViewApiResponse> updateProductById(String acceptLanguage, UUID productId, UpdateProductViewRequest updateProductViewRequest, MultipartFile image) throws Exception {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new UpdateProductViewApiResponse()
+                    .code(OK.value())
+                    .status(OK.name())
+                    .success(true)
+                    .timestamp(ZonedDateTime.now().toString())
+                    .message(MessageUtil.getMessage(PRODUCT_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                    .data(Map.of(BODY, productDomainServiceApiAdapter.updateProduct(productId, updateProductViewRequest, image)))
+        );
     }
 }
