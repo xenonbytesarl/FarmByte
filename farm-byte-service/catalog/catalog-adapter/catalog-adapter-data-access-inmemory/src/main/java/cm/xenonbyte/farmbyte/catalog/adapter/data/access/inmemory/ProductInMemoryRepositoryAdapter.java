@@ -83,7 +83,7 @@ public final class ProductInMemoryRepositoryAdapter implements ProductRepository
     public boolean existsByReference(@Nonnull Reference reference) {
         return products.values().stream()
                 .anyMatch(product ->
-                        product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()));
+                        product.getReference() != null && product.getReference().getText().getValue().equalsIgnoreCase(reference.getText().getValue()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.Uom;
+import jakarta.annotation.Nonnull;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -37,5 +38,5 @@ public interface UomJpaMapper {
     @Mapping(target = "uomType", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType.valueOf(uomJpa.getUomTypeJpa().name()))")
     Uom toUom(UomJpa uomJpa);
 
-    void copyNewToOldUom(@MappingTarget UomJpa oldUomJpa, UomJpa newUomJpa);
+    void copyNewToOldUom(@Nonnull @MappingTarget UomJpa oldUomJpa,  @Nonnull UomJpa newUomJpa);
 }

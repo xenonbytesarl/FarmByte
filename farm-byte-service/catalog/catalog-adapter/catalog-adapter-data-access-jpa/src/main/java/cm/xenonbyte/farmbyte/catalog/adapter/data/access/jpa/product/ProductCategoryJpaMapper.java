@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.product;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
+import jakarta.annotation.Nonnull;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -32,5 +33,5 @@ public interface ProductCategoryJpaMapper {
     @Mapping(target = "active.value", source = "active")
     ProductCategory toProductCategory(ProductCategoryJpa uomCategoryJpa);
 
-    void copyNewToOldProductCategory(ProductCategoryJpa newProductCategoryJpa, @MappingTarget ProductCategoryJpa oldProductCategoryJpa);
+    void copyNewToOldProductCategory(@Nonnull @MappingTarget ProductCategoryJpa oldProductCategoryJpa, @Nonnull ProductCategoryJpa newProductCategoryJpa);
 }
