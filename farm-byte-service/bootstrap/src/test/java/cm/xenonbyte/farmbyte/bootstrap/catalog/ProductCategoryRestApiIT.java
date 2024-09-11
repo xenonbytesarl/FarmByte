@@ -11,6 +11,9 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.FindProductCategoryByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.SearchProductCategoriesViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewApiResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryServiceRestApiAdapter;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import jakarta.annotation.Nonnull;
@@ -41,6 +44,7 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORIES_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.product.ProductCategoryRestApi.PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
@@ -50,6 +54,7 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
@@ -285,6 +290,100 @@ public class ProductCategoryRestApiIT {
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchProductCategoriesPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+        }
+    }
+
+    @Nested
+    class UpdateProductCategoryRestApiIT {
+
+        @Test
+        void should_success_when_update_uom_category() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191e077-b2a1-795e-8584-40e26a5fa850");
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("New Fertilizer")
+                    .active(true);
+
+            HttpEntity<UpdateProductCategoryViewRequest> request = new HttpEntity<>(updateProductCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<UpdateProductCategoryViewApiResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, UpdateProductCategoryViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(UpdateProductCategoryViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_by_non_existing_id() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191e0ea-85fc-71f6-be71-a6df2efa1ba1");
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .active(true);
+
+            HttpEntity<UpdateProductCategoryViewRequest> request = new HttpEntity<>(updateProductCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_non_existing_parent_uom_category_id() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("0191e077-b2a1-795e-8584-40e26a5fa850");
+            UUID parentProductCategoryId = UUID.fromString("0191e0ea-afe9-7268-a396-5b3af7497a7f");
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name("Nouvelle Unite")
+                    .parentProductCategoryId(parentProductCategoryId)
+                    .active(true);
+
+            HttpEntity<UpdateProductCategoryViewRequest> request = new HttpEntity<>(updateProductCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), parentProductCategoryId.toString()));
+        }
+
+        @Test
+        void should_fail_when_update_uom_category_with_duplicate_name() {
+            //Given
+            UUID uomCategoryIdUUID = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
+            String name = "Manufactured";
+            UpdateProductCategoryViewRequest updateProductCategoryViewRequest = new UpdateProductCategoryViewRequest()
+                    .id(uomCategoryIdUUID)
+                    .name(name)
+                    .active(true);
+
+            HttpEntity<UpdateProductCategoryViewRequest> request = new HttpEntity<>(updateProductCategoryViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomCategoryIdUUID, PUT, request, cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory.view.ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name));
         }
     }
 
