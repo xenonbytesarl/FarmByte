@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.adapter.data.access.jpa.uom;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
+import jakarta.annotation.Nonnull;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -32,5 +33,5 @@ public interface UomCategoryJpaMapper {
     @Mapping(target = "active.value", source = "active")
     UomCategory toUomCategory(UomCategoryJpa uomCategoryJpa);
 
-    void copyNewToOldUomCategory(@MappingTarget UomCategoryJpa oldUomCategoryJpa, UomCategoryJpa newUomCategoryJpa);
+    void copyNewToOldUomCategory(@Nonnull @MappingTarget UomCategoryJpa oldUomCategoryJpa,  @Nonnull UomCategoryJpa newUomCategoryJpa);
 }

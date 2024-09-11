@@ -224,6 +224,24 @@ public abstract class ProductRepositoryTest {
             assertThat(result.isEmpty()).isTrue();
         }
 
+        @Test
+        void should_true_when_exists_product_by_reference() {
+            //Given + Act
+            boolean result = productRepository.existsByReference(reference);
+
+            //Then
+            assertThat(result).isTrue();
+        }
+
+        @Test
+        void should_empty_when_exists_product_by_reference() {
+            //Given + Act
+            boolean result = productRepository.existsByReference(Reference.of(Text.of("NaN")));
+
+            //Then
+            assertThat(result).isFalse();
+        }
+
 
     }
 }

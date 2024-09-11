@@ -89,21 +89,30 @@ public class ProductJpaRepositoryAdapter implements ProductRepository {
     @Nonnull
     @Override
     public Product update(@Nonnull Product oldProduct, @Nonnull Product newProduct) {
-        return null;
+        ProductJpa oldProductJpa = productJpaMapper.toProductJpa(oldProduct);
+        ProductJpa newProductJpa = productJpaMapper.toProductJpa(newProduct);
+        productJpaMapper.copyNewToOldProductJpa(newProductJpa, oldProductJpa);
+
+        return productJpaMapper.toProduct(productJpaRepository.save(oldProductJpa));
     }
 
     @Override
     public boolean existsByReference(@Nonnull Reference reference) {
-        return false;
+        return reference!= null && productJpaRepository.existsByReferenceIgnoreCase(reference.getText().getValue());
     }
 
     @Override
     public Optional<Product> findByName(@Nonnull Name name) {
-        return Optional.empty();
+        return productJpaRepository.findByNameIgnoreCase(name.getText().getValue())
+                .map(productJpaMapper::toProduct);
     }
 
     @Override
     public Optional<Product> findByReference(@Nonnull Reference reference) {
-        return Optional.empty();
+        if (reference == null) {
+            return Optional.empty();
+        }
+        return productJpaRepository.findByReferenceIgnoreCase(reference.getText().getValue())
+                .map(productJpaMapper::toProduct);
     }
 }
