@@ -34,6 +34,10 @@ public final class ProductInMemoryRepositoryAdapterTest extends ProductRepositor
 
         productId = new ProductId(UUID.fromString("0191bd85-b58a-7411-95e5-9d99b7747726"));
 
+        oldProductId = new ProductId(UUID.fromString("0191e187-e7b6-7494-9408-9ab3a8a1b236"));
+
+        reference = Reference.of(Text.of("20123546"));
+
         productRepository.save(Product.builder()
                 .id(productId)
                 .name(name)
@@ -41,13 +45,14 @@ public final class ProductInMemoryRepositoryAdapterTest extends ProductRepositor
                 .categoryId(new ProductCategoryId(UUID.randomUUID()))
                 .build());
 
+
         productRepository.save(
                 Product.builder()
                         .id(new ProductId(UUID.randomUUID()))
                         .name(Name.of(Text.of("Mac Book Pro 2023")))
                         .categoryId(new ProductCategoryId(UUID.randomUUID()))
                         .type(ProductType.CONSUMABLE)
-                        .reference(Reference.of(Text.of("20123546")))
+                        .reference(reference)
                         .purchasePrice(Money.of(BigDecimal.valueOf(250.35)))
                         .salePrice(Money.of(BigDecimal.valueOf(475.41)))
                         .sellable(Sellable.with(true))
@@ -55,9 +60,9 @@ public final class ProductInMemoryRepositoryAdapterTest extends ProductRepositor
                         .active(Active.with(true))
                         .build()
         );
-        productRepository.save(
+        oldProduct = productRepository.save(
                 Product.builder()
-                        .id(new ProductId(UUID.randomUUID()))
+                        .id(oldProductId)
                         .name(Name.of(Text.of("HP Pro")))
                         .categoryId(new ProductCategoryId(UUID.randomUUID()))
                         .type(ProductType.CONSUMABLE)
@@ -71,7 +76,7 @@ public final class ProductInMemoryRepositoryAdapterTest extends ProductRepositor
         );
         productRepository.save(
                 Product.builder()
-                        .id(new ProductId(UUID.randomUUID()))
+                        .id(new ProductId(UUID.fromString("0191e187-91da-7e1d-a410-ed260aee1d8d")))
                         .name(Name.of(Text.of("DELL Pro")))
                         .categoryId(new ProductCategoryId(UUID.randomUUID()))
                         .type(ProductType.CONSUMABLE)

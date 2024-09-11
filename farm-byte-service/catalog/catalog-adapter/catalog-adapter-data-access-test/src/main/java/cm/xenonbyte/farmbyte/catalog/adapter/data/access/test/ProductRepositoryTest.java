@@ -41,6 +41,9 @@ public abstract class ProductRepositoryTest {
     protected ProductCategoryId categoryId;
     protected Filename imageName;
     protected ProductId productId;
+    protected ProductId oldProductId;
+    protected Product oldProduct;
+    protected Reference reference;
 
     @Nested
     class CreateProductRepositoryTest {
@@ -157,5 +160,70 @@ public abstract class ProductRepositoryTest {
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
+    }
+
+    @Nested
+    class UpdateProductRepositoryTest {
+
+        @Test
+        void should_success_when_update_product() {
+            //Given
+            Product newProduct = Product.builder()
+                    .id(oldProductId)
+                    .name(Name.of(Text.of("New HP Pro")))
+                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .type(ProductType.CONSUMABLE)
+                    .reference(Reference.of(Text.of("64548968799")))
+                    .purchasePrice(Money.of(BigDecimal.valueOf(175.47)))
+                    .salePrice(Money.of(BigDecimal.valueOf(350.12)))
+                    .sellable(Sellable.with(true))
+                    .purchasable(Purchasable.with(true))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act
+            Product result = productRepository.update(oldProduct, newProduct);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(newProduct);
+        }
+
+        @Test
+        void should_true_when_find_product_by_name() {
+            //Given + Act
+            Optional<Product> result = productRepository.findByName(name);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+        }
+
+        @Test
+        void should_empty_when_find_product_by_name() {
+            //Given + Act
+            Optional<Product> result = productRepository.findByName(Name.of(Text.of("NaN")));
+
+            //Then
+            assertThat(result.isEmpty()).isTrue();
+        }
+
+        @Test
+        void should_true_when_find_product_by_reference() {
+            //Given + Act
+            Optional<Product> result = productRepository.findByReference(reference);
+
+            //Then
+            assertThat(result.isPresent()).isTrue();
+        }
+
+        @Test
+        void should_empty_when_find_product_by_reference() {
+            //Given + Act
+            Optional<Product> result = productRepository.findByReference(Reference.of(Text.of("NaN")));
+
+            //Then
+            assertThat(result.isEmpty()).isTrue();
+        }
+
+
     }
 }
