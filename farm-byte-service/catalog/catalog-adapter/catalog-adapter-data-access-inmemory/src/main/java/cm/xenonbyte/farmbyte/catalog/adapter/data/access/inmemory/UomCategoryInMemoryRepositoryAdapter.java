@@ -77,17 +77,8 @@ public final class UomCategoryInMemoryRepositoryAdapter implements UomCategoryRe
     @Nonnull
     @Override
     public UomCategory updateUomCategory(UomCategory oldUomcategory, UomCategory newUomCategory) {
-        UomCategory updatedUomCategory = UomCategory.builder()
-                .id(oldUomcategory.getId())
-                .name(newUomCategory.getName())
-                .parentUomCategoryId(newUomCategory.getParentUomCategoryId())
-                .active(newUomCategory.getActive())
-                .build();
-        uomCategories.put(
-                oldUomcategory.getId(),
-                updatedUomCategory
-        );
-        return updatedUomCategory;
+        uomCategories.replace(oldUomcategory.getId(), newUomCategory);
+        return newUomCategory;
     }
 
     @Override

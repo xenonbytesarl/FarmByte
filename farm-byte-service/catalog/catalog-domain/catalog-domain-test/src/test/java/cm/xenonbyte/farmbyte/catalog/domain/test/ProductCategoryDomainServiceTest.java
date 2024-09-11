@@ -11,6 +11,9 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.primary.ProductCa
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ports.secondary.ProductCategoryRepository;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategory;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNameConflictException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomParentCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
@@ -30,6 +33,9 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_CONFLICT_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -260,6 +266,92 @@ public final class ProductCategoryDomainServiceTest {
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
             assertThat(result.getContent().size()).isEqualTo(contentSize);
+        }
+    }
+
+    @Nested
+    class UpdateProductCategoryDomainTest {
+
+        ProductCategoryId productCategoryId;
+        ProductCategory productCategory;
+
+        @BeforeEach
+        void setUp() {
+            productCategoryId = new ProductCategoryId(UUID.fromString("0191e046-fc6e-7f2d-b09a-93c4a4e5ba43"));
+            productCategory = productCategoryRepository.save(
+                    ProductCategory.builder()
+                            .id(productCategoryId)
+                            .name(Name.of(Text.of("Raw Material")))
+                            .active(Active.with(true))
+                            .build()
+            );
+        }
+
+        @Test
+        void should_success_when_update_product_category() {
+            //Given
+            ProductCategory productCategoryToUpdate = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of("New Raw Material")))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act
+            ProductCategory result = productCategoryService.updateProductCategory(productCategoryId, productCategoryToUpdate);
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(productCategoryToUpdate);
+        }
+
+        @Test
+        void should_fail_when_we_update_product_category_with_duplicate_name() {
+            //Given
+            ProductCategory productCategoryToUpdate = ProductCategory.builder()
+                    .id(new ProductCategoryId(UUID.randomUUID()))
+                    .name(Name.of(Text.of("Raw Material")))
+                    .active(Active.with(true))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryService.updateProductCategory(productCategoryId, productCategoryToUpdate))
+                    .isInstanceOf(ProductCategoryNameConflictException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_with_non_existing_product_category_id() {
+            //Given
+            ProductCategoryId unExistingProductCategoryId = new ProductCategoryId(UUID.randomUUID());
+
+            ProductCategory productCategoryToUpdate = ProductCategory.builder()
+                    .id(unExistingProductCategoryId)
+                    .name(Name.of(Text.of("Raw Material")))
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryService.updateProductCategory(unExistingProductCategoryId, productCategoryToUpdate))
+                    .isInstanceOf(ProductCategoryNotFoundException.class)
+                    .hasMessage(PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_update_product_category_with_non_existing_parent_product_category() {
+            //Given
+            ProductCategoryId unExistingParentProductCategoryId = new ProductCategoryId(UUID.randomUUID());
+
+            ProductCategory productCategoryToUpdate = ProductCategory.builder()
+                    .id(productCategoryId)
+                    .name(Name.of(Text.of("Raw Material")))
+                    .parentProductCategoryId(unExistingParentProductCategoryId)
+                    .active(Active.with(true))
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> productCategoryService.updateProductCategory(productCategoryId, productCategoryToUpdate))
+                    .isInstanceOf(ParentProductCategoryNotFoundException.class)
+                    .hasMessage(PARENT_PRODUCT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION);
         }
     }
 }

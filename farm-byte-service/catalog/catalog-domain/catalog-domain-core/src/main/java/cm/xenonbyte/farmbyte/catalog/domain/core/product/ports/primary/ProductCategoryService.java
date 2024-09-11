@@ -20,4 +20,6 @@ public interface ProductCategoryService {
     @Nonnull PageInfo<ProductCategory> findProductCategories(Integer page, Integer size, String attribute, Direction direction);
 
     @Nonnull PageInfo<ProductCategory> searchProductCategories(Integer page, Integer size, String sortAttribute, Direction direction, @Nonnull Keyword keyword);
+
+    @Nonnull ProductCategory updateProductCategory(@Nonnull ProductCategoryId productCategoryId, @Nonnull ProductCategory productCategoryToUpdate);
 }

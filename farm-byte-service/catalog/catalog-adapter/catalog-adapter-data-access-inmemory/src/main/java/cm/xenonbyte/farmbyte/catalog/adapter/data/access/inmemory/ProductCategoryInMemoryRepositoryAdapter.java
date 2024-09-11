@@ -76,4 +76,19 @@ public final class ProductCategoryInMemoryRepositoryAdapter implements ProductCa
                         .toList()
         );
     }
+
+    @Override
+    public Optional<ProductCategory> findByName(@Nonnull Name name) {
+        return productCategories.values().stream()
+                .filter(productCategory ->
+                        productCategory.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()))
+                .findFirst();
+    }
+
+    @Nonnull
+    @Override
+    public ProductCategory update(@Nonnull ProductCategory oldProductCategory, ProductCategory newProductCategory) {
+        productCategories.replace(oldProductCategory.getId(), newProductCategory);
+        return newProductCategory;
+    }
 }

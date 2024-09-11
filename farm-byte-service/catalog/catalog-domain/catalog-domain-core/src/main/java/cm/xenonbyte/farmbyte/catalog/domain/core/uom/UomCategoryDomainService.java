@@ -63,7 +63,7 @@ public final class UomCategoryDomainService implements UomCategoryService {
         if(uomCategory.getParentUomCategoryId() != null && !uomCategoryRepository.existsById(uomCategory.getParentUomCategoryId())) {
             throw new UomParentCategoryNotFoundException(new String[] {uomCategory.getParentUomCategoryId().getValue().toString()});
         }
-        //We check a unique name in case of creation. at this step, id it's null
+        //We check a unique name in case of creation. At this step, id it's null
         if(uomCategory.getId() == null && uomCategoryRepository.existsByName(uomCategory.getName())) {
             throw new UomCategoryNameConflictException(new String[] {uomCategory.getName().getText().getValue()});
         }
