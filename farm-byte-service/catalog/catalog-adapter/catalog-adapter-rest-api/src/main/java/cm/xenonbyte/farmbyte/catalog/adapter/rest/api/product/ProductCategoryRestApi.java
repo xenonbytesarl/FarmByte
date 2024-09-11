@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
+import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -34,6 +34,7 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
     public static final String PRODUCT_CATEGORY_CREATED_SUCCESSFULLY = "ProductCategoryApiRest.1";
     public static final String PRODUCT_CATEGORY_FIND_SUCCESSFULLY = "ProductCategoryApiRest.2";
     public static final String PRODUCT_CATEGORIES_FIND_SUCCESSFULLY = "ProductCategoryApiRest.3";
+    public static final String PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY = "ProductCategoryApiRest.4";
 
     private final ProductCategoryServiceRestApiAdapter productCategoryApiAdapterService;
 
@@ -50,7 +51,7 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .message(MessageUtil.getMessage(PRODUCT_CATEGORY_CREATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(Map.of(BODY, productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest)))
+                        .data(of(BODY, productCategoryApiAdapterService.createProductCategory(createProductCategoryViewRequest)))
         );
     }
 
@@ -63,7 +64,7 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                     .timestamp(ZonedDateTime.now().toString())
                     .success(true)
                     .message(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                    .data(Map.of(BODY, productCategoryApiAdapterService.findProductCategories(page, size, attribute, direction)))
+                    .data(of(BODY, productCategoryApiAdapterService.findProductCategories(page, size, attribute, direction)))
         );
     }
 
@@ -76,7 +77,7 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .message(MessageUtil.getMessage(PRODUCT_CATEGORY_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(Map.of(BODY, productCategoryApiAdapterService.findProductCategoryById(productCategoryId)))
+                        .data(of(BODY, productCategoryApiAdapterService.findProductCategoryById(productCategoryId)))
         );
     }
 
@@ -89,12 +90,20 @@ public class ProductCategoryRestApi implements ProductCategoriesApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .success(true)
                         .message(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
-                        .data(Map.of(BODY, productCategoryApiAdapterService.searchProductCategories(page, size, attribute, direction, keyword)))
+                        .data(of(BODY, productCategoryApiAdapterService.searchProductCategories(page, size, attribute, direction, keyword)))
         );
     }
 
     @Override
     public ResponseEntity<UpdateProductCategoryViewApiResponse> updateProductCategoryById(String acceptLanguage, UUID productCategoryId, UpdateProductCategoryViewRequest updateProductCategoryViewRequest) {
-        return null;
+        return ResponseEntity.status(OK).body(
+                new UpdateProductCategoryViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .success(true)
+                        .timestamp(ZonedDateTime.now().toString())
+                        .message(MessageUtil.getMessage(PRODUCT_CATEGORY_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(BODY, productCategoryApiAdapterService.updateProductCategory(productCategoryId, updateProductCategoryViewRequest)))
+        );
     }
 }

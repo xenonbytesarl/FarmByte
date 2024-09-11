@@ -2,7 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainNotFoundException;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION;
 
 /**
  * @author bamk
@@ -11,6 +11,6 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
  */
 public final class ProductParentCategoryNotFoundException extends BaseDomainNotFoundException {
     public ProductParentCategoryNotFoundException(Object[] args) {
-        super(PRODUCT_PARENT_CATEGORY_WITH_ID_NOT_FOUND_EXCEPTION, args);
+        super(PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, args);
     }
 }

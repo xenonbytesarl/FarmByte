@@ -203,7 +203,6 @@ components:
       required:
         - id
         - name
-        - parentProductCategoryId
         - active
       properties:
         id:
