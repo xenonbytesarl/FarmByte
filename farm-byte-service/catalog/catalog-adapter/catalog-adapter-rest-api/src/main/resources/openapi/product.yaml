@@ -112,6 +112,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      tags:
+        - Product
+      summary: update product by id
+      operationId: updateProductById
+      security:
+        - oAuth:
+            - update:product
+      parameters:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/productId'
+      requestBody:
+        required: true
+        description: product object to be updated
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - image
+                - updateProductViewRequest
+              properties:
+                updateProductViewRequest:
+                  $ref: '#/components/schemas/UpdateProductViewRequest'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProductViewApiResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /products/search:
     get:
       tags:
@@ -200,7 +252,7 @@ components:
           format: uuid
         filename:
           type: string
-    ProductViewResponse:
+    ProductView:
       type: object
       required:
         - id
@@ -251,6 +303,9 @@ components:
           format: uuid
         active:
           type: boolean
+    ProductViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductView'
     CreateProductViewResponse:
       allOf:
         - $ref: '#/components/schemas/ProductViewResponse'
@@ -317,3 +372,18 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/SearchProductsPageInfoViewResponse'
+    UpdateProductViewRequest:
+      allOf:
+        - $ref: '#/components/schemas/ProductView'
+    UpdateProductViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProductView'
+    UpdateProductViewApiResponse:
+      allOf:
+        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UpdateProductViewResponse'

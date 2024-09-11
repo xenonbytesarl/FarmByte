@@ -5,7 +5,10 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.Cre
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductByIdViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.FindProductsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.SearchProductsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewRequest;
+import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product.view.UpdateProductViewResponse;
 import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,9 +24,11 @@ public interface ProductServiceRestApiAdapter {
     CreateProductViewResponse createProduct(
             @Nonnull CreateProductViewRequest createProductViewRequest, @Nonnull MultipartFile image) throws IOException;
 
-    @Nonnull FindProductByIdViewResponse findProductById(@Nonnull UUID productId);
+    @Nonnull @Valid FindProductByIdViewResponse findProductById(@Nonnull UUID productId);
 
-    @Nonnull FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, String direction);
+    @Nonnull @Valid FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, String direction);
 
-    @Nonnull SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, String direction, String keyword);
+    @Nonnull @Valid SearchProductsPageInfoViewResponse searchProducts(int page, int size, String attribute, String direction, String keyword);
+
+    @Nonnull @Valid UpdateProductViewResponse updateProduct(@Nonnull UUID productIdUUID, @Nonnull @Valid UpdateProductViewRequest updateProductViewRequest, @Nonnull MultipartFile multipartFile) throws IOException;
 }
