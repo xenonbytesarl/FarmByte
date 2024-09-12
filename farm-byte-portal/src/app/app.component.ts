@@ -1,14 +1,14 @@
-import {Component} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import { Component } from '@angular/core';
 import {LayoutComponent} from "./layout/layout.component";
 
 @Component({
-  selector: 'app-root',
+  selector: 'farmbyte-root',
   standalone: true,
-  imports: [RouterOutlet, LayoutComponent],
+  imports: [
+    LayoutComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'farm-byte-portal';
 }

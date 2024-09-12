@@ -1,7 +1,0 @@
-<div class="w-full text-white">
-  <ul class="flex flex-col items-start px-4 w-full">
-  @for(sidebarMenu of sidebarStore.sidebarMenus(); track sidebarMenu.link; let index=$index;) {
-    <app-sidebar-menu-item class="w-full" [sidebarMenu]="sidebarMenu"/>
-  }
-  </ul>
-</div>
