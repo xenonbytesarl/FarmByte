@@ -1,0 +1,7 @@
+page:
+  in: header
+  name: page
+  required: true
+  schema:
+    type: integer
+    format: int32
