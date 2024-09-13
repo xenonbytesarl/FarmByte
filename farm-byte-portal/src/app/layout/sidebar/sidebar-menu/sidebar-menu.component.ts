@@ -5,12 +5,14 @@ import {NavbarMenu} from "../../navbar-menu.model";
 import {SidebarMenuStore} from "../../sidebar-menu.store";
 import {NgClass} from "@angular/common";
 import {Router} from "@angular/router";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'farmbyte-sidebar-menu',
   standalone: true,
   imports: [
-    NgClass
+    NgClass,
+    TranslateModule
   ],
   templateUrl: './sidebar-menu.component.html',
   styleUrl: './sidebar-menu.component.scss'

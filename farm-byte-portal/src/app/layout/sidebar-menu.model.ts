@@ -10,12 +10,12 @@ export interface SidebarMenu {
 export const sidebarMenuItems: SidebarMenu[] = [
   {
     icon: 'dashboard',
-    label: 'Dashboard',
+    label: 'sidebarMenu_dashboard',
     link: 'dashboard',
   },
   {
     icon: 'inventory',
-    label: 'Inventory',
+    label: 'sidebarMenu_inventory',
     link: 'inventory',
     navbarMenuItems: inventoryNavbarMenus
   }

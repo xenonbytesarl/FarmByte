@@ -3,12 +3,12 @@ import {SidebarMenu, sidebarMenuItems} from "./sidebar-menu.model";
 
 type SidebarMenuState = {
   sidebarMenus: SidebarMenu[];
-  currentSidebarMenu: SidebarMenu | undefined;
+  selectedSidebarMenu: SidebarMenu | undefined;
 }
 
 const initialState: SidebarMenuState = {
   sidebarMenus: [],
-  currentSidebarMenu: undefined
+  selectedSidebarMenu: undefined
 };
 
 export const SidebarMenuStore = signalStore(
@@ -24,7 +24,7 @@ export const SidebarMenuStore = signalStore(
     updateCurrentSidebarMenu(currentSidebarMenu: SidebarMenu): void {
       patchState(store, (state) => ({
         ...state,
-        currentSidebarMenu: currentSidebarMenu
+        selectedSidebarMenu: currentSidebarMenu
       }))
     }
   })),
