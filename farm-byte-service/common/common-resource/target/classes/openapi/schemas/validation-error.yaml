@@ -1,0 +1,10 @@
+ValidationError:
+  type: object
+  required:
+    - field
+    - message
+  properties:
+    field:
+      type: string
+    message:
+      type: string
