@@ -1,14 +1,12 @@
-export interface NavMenu {
+export interface NavbarMenu {
   label: string;
-  icon?: string;
   link?: string;
-  items?: NavMenu[];
+  items?: NavbarMenu[];
 }
 
-export const navMenuItems: NavMenu[] = [
+export const inventoryNavbarMenus: NavbarMenu[] = [
   {
     label: 'Operations',
-    icon: 'keyboard_arrow_down',
     items: [
       {
         label: 'Stock adjustment',
@@ -22,33 +20,31 @@ export const navMenuItems: NavMenu[] = [
   },
   {
     label: 'Products',
-    icon: 'keyboard_arrow_down',
     items: [
       {
         label: 'Products',
-        link:  'products',
+        link:  'inventory/products',
       },
       {
         label: 'Products categories',
-        link:  'product-categories',
+        link:  'inventory/product-categories',
       }
     ]
   },
   {
     label: 'Configuration',
-    icon: 'keyboard_arrow_down',
     items: [
       {
         label: 'Unit of measure',
-        link:  'unit-of-measures',
+        link:  'inventory/unit-of-measures',
       },
       {
         label: 'Category unit of measure',
-        link:  'category-unit-of-measures',
+        link:  'inventory/category-unit-of-measures',
       },
       {
         label: 'Location',
-        link:  'locations',
+        link:  'inventory/locations',
       }
     ]
   }

@@ -1,0 +1,7 @@
+direction:
+  in: header
+  name: direction
+  required: true
+  schema:
+    type: string
+    enum: [ASC, DSC]
