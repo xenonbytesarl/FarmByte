@@ -1,0 +1,22 @@
+<a id="dropDownMenuItem_profile" (click)="toggleDropDown()" class="relative flex text-gray-500 py-1 px-2 cursor-pointer" >
+  <div class="flex flex-row justify-center items-center gap-1">
+    <span class="hover:text-orange-700">
+      <img class="size-8 object-cover rounded-full" src="./images/profile.png" alt="profile">
+    </span>
+  </div>
+  @if(isOpen()) {
+    <div
+      [ngClass]="isOpen()? 'transition ease-out duration-1000 transform opacity-100 scale-100' : 'transition ease-in duration-1000 transform opacity-0 scale-10'"
+      class="absolute top-full right-0 mt-2 w-32 border-2 border-t-orange-700  bg-white shadow-lg z-10">
+
+      <a class="block flex flex-row justify-start items-center text-sm p-2 gap-2 hover:transition hover:duration-300 hover:bg-gray-200 hover:text-black">
+        <span>My Profile</span>
+      </a>
+      <a class="block flex flex-row justify-start items-center text-sm p-2 gap-2 hover:transition hover:duration-300 hover:bg-gray-300 hover:text-black">
+        <span>Logout</span>
+      </a>
+
+    </div>
+  }
+</a>
+

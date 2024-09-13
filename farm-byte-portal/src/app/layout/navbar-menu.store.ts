@@ -1,31 +1,39 @@
-import {NavbarMenu, inventoryNavbarMenus} from "./navbar-menu.model";
-import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
+import {NavbarMenu} from "./navbar-menu.model";
+import {patchState, signalStore, withMethods, withState} from "@ngrx/signals";
+import {inject} from "@angular/core";
+import {TranslateService} from "@ngx-translate/core";
+
+export type Language = 'en' | 'fr';
 
 type NavbarMenuState = {
   navbarMenus: NavbarMenu[];
-  module: string;
+  selectedModule: string;
+  selectedLanguage: Language;
 }
 
 const initialState: NavbarMenuState = {
   navbarMenus: [],
-  module: ''
+  selectedModule: '',
+  selectedLanguage: 'en'
 };
 
 export const NavbarMenuStore = signalStore(
   {providedIn: 'root'},
   withState(initialState),
-  withMethods((store) => ({
-    loadNavbarMenus: (currentNavbarMenu: NavbarMenu[], currentModule: string): void => {
+  withMethods((store, translateService = inject(TranslateService)) => ({
+    loadNavbarMenus: (currentNavbarMenus: NavbarMenu[], currentModule: string): void => {
       patchState(store, (state) => ({
         ...state,
-        navbarMenus: currentNavbarMenu,
-        module: currentModule
-      }))
+        navbarMenus: currentNavbarMenus,
+        selectedModule: currentModule
+      }));
     },
-  }))/*,
-  withHooks({
-    onInit: (store): void => {
-      store.loadNavMenus();
+    changeLanguage: (currentLanguage: Language): void => {
+      translateService.use(currentLanguage);
+      patchState(store, (state) => ({
+        ...state,
+        selectedLanguage: currentLanguage
+      }));
     }
-  })*/
+  }))
 )

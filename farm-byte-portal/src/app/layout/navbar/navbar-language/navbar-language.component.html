@@ -1,0 +1,23 @@
+<a id="dropDownMenuItem_language" (click)="toggleDropDown()" class="relative flex text-gray-500 py-1 px-2 cursor-pointer" >
+  <div class="flex flex-row justify-center items-center gap-1">
+    <span>
+      <img class="size-6 object-cover rounded-full" src="./images/{{navbarMenuStore.selectedLanguage() == 'en'? 'english': 'french'}}.png" alt="french">
+    </span>
+  </div>
+  @if(isOpen()) {
+    <div
+      [ngClass]="isOpen()? 'transition ease-out duration-1000 transform opacity-100 scale-100' : 'transition ease-in duration-1000 transform opacity-0 scale-10'"
+      class="absolute top-full right-0 mt-2 w-32 border-2 border-t-orange-700  bg-white shadow-lg z-10">
+
+        <a (click)="selectLanguage('fr')" class="block flex flex-row justify-start items-center text-sm p-2 gap-2 hover:transition hover:duration-300 hover:bg-gray-200 hover:text-black">
+          <img class="size-6 object-cover rounded-full" src="./images/french.png" alt="french">
+          <span>{{ 'navbarMenu_language_fr' | translate}}</span>
+        </a>
+        <a (click)="selectLanguage('en')" class="block flex flex-row justify-start items-center text-sm p-2 gap-2 hover:transition hover:duration-300 hover:bg-gray-300 hover:text-black">
+          <img class="size-6 object-cover rounded-full" src="./images/english.png" alt="english">
+          <span>{{ 'navbarMenu_language_en' | translate}}</span>
+        </a>
+
+    </div>
+  }
+</a>
