@@ -1,7 +1,7 @@
 <a (click)="onClick(sidebarMenu())"
-   [ngClass]="sidebarMenu().label === sidebarMenuStore.currentSidebarMenu()?.label? 'transition duration-300 bg-orange-900 bg-opacity-20': ''"
+   [ngClass]="sidebarMenu().label === sidebarMenuStore.selectedSidebarMenu()?.label? 'transition duration-300 bg-orange-900 bg-opacity-20': ''"
    class="flex flex-row justify-start items-center text-white gap-2 py-3 pl-3 w-full hover:transition hover:bg-orange-900 hover:duration-300 hover:bg-opacity-20 rounded-lg cursor-pointer">
-  <span class="material-symbols-outlined">{{sidebarMenu()?.icon}}</span>
-  <span class="sm:hidden sm:transition sm:duration-300 sm:ease-in md:block md:transition md:duration-300 md:ease-out">{{sidebarMenu()?.label}}</span>
+  <span class="material-symbols-outlined">{{sidebarMenu().icon || ''}}</span>
+  <span class="sm:hidden sm:transition sm:duration-300 sm:ease-in md:block md:transition md:duration-300 md:ease-out">{{sidebarMenu().label || '' | translate}}</span>
 </a>
 
