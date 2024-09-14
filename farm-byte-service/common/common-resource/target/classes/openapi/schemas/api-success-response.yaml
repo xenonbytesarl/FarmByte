@@ -1,7 +1,0 @@
-ApiSuccessResponse:
-  allOf:
-    - $ref: './base-api-response.yaml#/BaseApiResponse'
-    - type: object
-      properties:
-        message:
-          type: string

@@ -1,6 +1,0 @@
-attribute:
-  in: header
-  name: attribute
-  required: true
-  schema:
-    type: string
