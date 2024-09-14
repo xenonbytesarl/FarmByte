@@ -1,5 +1,5 @@
 attribute:
-  in: header
+  in: query
   name: attribute
   required: true
   schema:

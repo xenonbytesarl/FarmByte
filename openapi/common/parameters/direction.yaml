@@ -1,5 +1,5 @@
 direction:
-  in: header
+  in: query
   name: direction
   required: true
   schema:

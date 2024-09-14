@@ -37,8 +37,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -70,6 +72,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 public class UomRestApiIT {
+
+    public static final String FIND_URL_PARAM = "?page={page}&size={size}&attribute={attribute}&direction={direction}";
+    public static final String SEARCH_URL_PARAM = FIND_URL_PARAM + "&keyword={keyword}";
 
     @LocalServerPort
     private int port;
@@ -327,14 +332,17 @@ public class UomRestApiIT {
             //Given
 
             HttpHeaders httpHeaders = getHttpHeaders();
-            httpHeaders.set("page", "0");
-            httpHeaders.set("size", "2");
-            httpHeaders.set("attribute", "name");
-            httpHeaders.set("direction", "DSC");
+
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put("page", "0");
+            params.put("size", "2");
+            params.put("attribute", "name");
+            params.put("direction", "DSC");
+
             HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
             //Act
-            ResponseEntity<FindUomsViewApiResponse> response = restTemplate.exchange(BASE_URL , GET, request, FindUomsViewApiResponse.class);
+            ResponseEntity<FindUomsViewApiResponse> response = restTemplate.exchange(BASE_URL + FIND_URL_PARAM , GET, request, FindUomsViewApiResponse.class, params);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(200);
@@ -355,15 +363,18 @@ public class UomRestApiIT {
             //Given
 
             HttpHeaders httpHeaders = getHttpHeaders();
-            httpHeaders.set("page", "0");
-            httpHeaders.set("size", "2");
-            httpHeaders.set("attribute", "name");
-            httpHeaders.set("direction", "DSC");
-            httpHeaders.set("keyword", "n");
+
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put("page", "0");
+            params.put("size", "2");
+            params.put("attribute", "name");
+            params.put("direction", "DSC");
+            params.put("keyword", "n");
+
             HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
             //Act
-            ResponseEntity<SearchUomsViewApiResponse> response = restTemplate.exchange(BASE_URL + "/search" , GET, request, SearchUomsViewApiResponse.class);
+            ResponseEntity<SearchUomsViewApiResponse> response = restTemplate.exchange(BASE_URL + "/search" + SEARCH_URL_PARAM, GET, request, SearchUomsViewApiResponse.class, params);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(200);
