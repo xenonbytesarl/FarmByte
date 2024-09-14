@@ -271,7 +271,7 @@ public class UomCategoryRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(FindUomCategoriesPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
 
@@ -303,7 +303,7 @@ public class UomCategoryRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchUomCategoriesPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
 

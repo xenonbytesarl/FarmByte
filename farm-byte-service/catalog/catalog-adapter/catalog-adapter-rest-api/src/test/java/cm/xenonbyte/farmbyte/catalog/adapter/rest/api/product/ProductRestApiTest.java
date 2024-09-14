@@ -521,7 +521,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     .pageSize(size)
                     .totalElements(3L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                 new FindProductsViewResponse()
                                     .id(UUID.randomUUID())
@@ -583,7 +583,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             verify(productDomainServiceRestApiAdapter, times(1)).findProducts(integerArgumentCaptor.capture(),
                     integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
@@ -616,7 +616,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     .pageSize(size)
                     .totalElements(3L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchProductsViewResponse()
                                             .id(UUID.randomUUID())
@@ -679,7 +679,7 @@ public final class ProductRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(PRODUCTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             verify(productDomainServiceRestApiAdapter, times(1)).searchProducts(integerArgumentCaptor.capture(),
                     integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());

@@ -158,7 +158,7 @@ public abstract class UomRepositoryTest {
             //Then
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
     }
@@ -179,7 +179,7 @@ public abstract class UomRepositoryTest {
             //Then
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
     }

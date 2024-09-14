@@ -355,7 +355,7 @@ final class UomDomainServiceTest {
             PageInfo<Uom> result = uomDomainService.findUoms(page, size, attribute, direction);
 
             //Then
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getFirst()).isTrue();
             assertThat(result.getLast()).isFalse();
             assertThat(result.getPageSize()).isEqualTo(size);
@@ -430,7 +430,7 @@ final class UomDomainServiceTest {
             PageInfo<Uom> result = uomDomainService.searchUoms(page, size, attribute, direction, Keyword.of(Text.of(keyword)));
 
             //Then
-            assertThat(result.getContent().size()).isEqualTo(contentSize);
+            assertThat(result.getElements().size()).isEqualTo(contentSize);
             assertThat(result.getPageSize()).isEqualTo(size);
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);

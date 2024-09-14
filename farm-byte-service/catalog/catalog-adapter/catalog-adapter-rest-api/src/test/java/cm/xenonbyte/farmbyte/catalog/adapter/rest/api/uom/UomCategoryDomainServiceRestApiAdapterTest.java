@@ -296,7 +296,7 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new FindUomCategoriesViewResponse()
                                             .name("Unite")
@@ -390,7 +390,7 @@ final class UomCategoryDomainServiceRestApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchUomCategoriesViewResponse()
                                             .name("Unite")

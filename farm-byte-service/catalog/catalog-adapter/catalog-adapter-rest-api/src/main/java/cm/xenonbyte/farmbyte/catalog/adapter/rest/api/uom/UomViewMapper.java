@@ -66,7 +66,7 @@ public interface UomViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toFindUomsViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toFindUomsViewResponses", target = "elements")
     @Nonnull @Valid FindUomsPageInfoViewResponse toFindUomsPageInfoViewResponse(@Nonnull PageInfo<Uom> uomPageInfo);
 
     @Named("toFindUomsViewResponses")
@@ -88,7 +88,7 @@ public interface UomViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toSearchUomsViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toSearchUomsViewResponses", target = "elements")
     @Nonnull @Valid SearchUomsPageInfoViewResponse toSearchUomsPageInfoViewResponse(@Nonnull PageInfo<Uom> uomPageInfo);
 
     @Named("toSearchUomsViewResponses")

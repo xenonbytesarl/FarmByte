@@ -134,7 +134,7 @@ public abstract class UomCategoryRepositoryTest {
             //Then
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
 
@@ -156,7 +156,7 @@ public abstract class UomCategoryRepositoryTest {
 
             assertThat(result.getTotalElements()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getTotalPages()).isGreaterThan(0);
         }
 
@@ -174,7 +174,7 @@ public abstract class UomCategoryRepositoryTest {
 
             assertThat(result.getTotalElements()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);
-            assertThat(result.getContent().size()).isEqualTo(0);
+            assertThat(result.getElements().size()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);
         }
     }

@@ -67,7 +67,7 @@ public interface ProductCategoryViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toFindProductCategoriesViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toFindProductCategoriesViewResponses", target = "elements")
     @Nonnull @Valid FindProductCategoriesPageInfoViewResponse toFindProductCategoriesPageInfoViewResponse(@Nonnull PageInfo<ProductCategory> productCategoriesPageInfo);
 
     @Named("toFindProductCategoriesViewResponses")
@@ -86,7 +86,7 @@ public interface ProductCategoryViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toSearchProductCategoriesViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toSearchProductCategoriesViewResponses", target = "elements")
     @Nonnull @Valid SearchProductCategoriesPageInfoViewResponse toSearchProductCategoriesPageInfoViewResponse(@Nonnull PageInfo<ProductCategory> productCategoriesPageInfo);
 
     @Named("toSearchProductCategoriesViewResponses")
