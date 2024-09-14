@@ -7,17 +7,17 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {ConfigInitService} from "./core/services/config-init.service";
 import {take} from "rxjs";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
-
-const configInit: () => ConfigInitService = () => new ConfigInitService();
 
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideHttpClient(),
+    provideAnimationsAsync(),
     provideRouter(routes),
     importProvidersFrom([
       TranslateModule.forRoot({
@@ -37,6 +37,6 @@ export const appConfig: ApplicationConfig = {
       },
       multi: true,
       deps: [ConfigInitService],
-    }
+    },
   ]
 };
