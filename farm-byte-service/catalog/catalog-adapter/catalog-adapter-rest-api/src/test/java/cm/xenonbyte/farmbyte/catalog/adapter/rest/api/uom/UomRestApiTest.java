@@ -386,7 +386,7 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new FindUomsViewResponse()
                                             .id(UUID.randomUUID())
@@ -437,7 +437,7 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             //Then
             verify(uomDomainServiceRestApiAdapter, times(1)).findUoms(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
@@ -466,7 +466,7 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchUomsViewResponse()
                                             .id(UUID.randomUUID())
@@ -518,7 +518,7 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             //Then
             verify(uomDomainServiceRestApiAdapter, times(1)).searchUoms(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),

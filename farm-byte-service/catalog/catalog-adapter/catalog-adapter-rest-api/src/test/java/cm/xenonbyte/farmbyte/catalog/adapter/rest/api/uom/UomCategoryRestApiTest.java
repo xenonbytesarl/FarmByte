@@ -307,7 +307,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .first(true)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(List.of(
+                    .elements(List.of(
                             new FindUomCategoriesViewResponse()
                                     .id(UUID.randomUUID())
                                     .name("Unite")
@@ -349,7 +349,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             //Then
             verify(uomCategoryDomainServiceRestApiAdapter, times(1)).findUomCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
@@ -377,7 +377,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .first(true)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(List.of(
+                    .elements(List.of(
                             new SearchUomCategoriesViewResponse()
                                     .id(UUID.randomUUID())
                                     .name("Unite")
@@ -417,7 +417,7 @@ public final class UomCategoryRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.status").value("OK"))
                     .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(UOM_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data.content.content").isArray());
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
 
             //Then
             verify(uomCategoryDomainServiceRestApiAdapter, times(1)).searchUomCategories(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),

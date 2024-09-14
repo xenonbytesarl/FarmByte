@@ -124,7 +124,7 @@ public abstract class ProductRepositoryTest {
             PageInfo<Product> result = productRepository.findAll(page, size, attribute, direction);
 
             //Then
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getFirst()).isTrue();
             assertThat(result.getLast()).isFalse();
             assertThat(result.getPageSize()).isEqualTo(size);
@@ -149,7 +149,7 @@ public abstract class ProductRepositoryTest {
             PageInfo<Product> result = productRepository.search(page, size, attribute, direction, Keyword.of(Text.of(keyword)));
 
             //Then
-            assertThat(result.getContent().size()).isGreaterThan(0);
+            assertThat(result.getElements().size()).isGreaterThan(0);
             assertThat(result.getFirst()).isTrue();
             assertThat(result.getLast()).isFalse();
             assertThat(result.getPageSize()).isEqualTo(size);

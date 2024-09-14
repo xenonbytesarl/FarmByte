@@ -295,7 +295,7 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new FindProductCategoriesViewResponse()
                                             .name("Alcohol")
@@ -403,7 +403,7 @@ final class ProductCategoryDomainServiceApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchProductCategoriesViewResponse()
                                             .name("Alcohol")

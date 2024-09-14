@@ -18,19 +18,19 @@ public final class PageInfo<T> {
     private Integer pageSize;
     private Long totalElements;
     private Integer totalPages;
-    private List<T> content;
+    private List<T> elements;
 
     public PageInfo() {
     }
 
     public PageInfo(Boolean first, Boolean last, Integer pageSize, Long totalElements,
-                     Integer totalPages, List<T> content) {
+                     Integer totalPages, List<T> elements) {
         this.first = first;
         this.last = last;
         this.pageSize = pageSize;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
-        this.content = content;
+        this.elements = elements;
     }
 
     public PageInfo<T> with(@Nonnull Integer page, @Nonnull Integer pageSize, @Nonnull List<T> items) {
@@ -77,8 +77,8 @@ public final class PageInfo<T> {
         return totalPages;
     }
 
-    public List<T> getContent() {
-        return content;
+    public List<T> getElements() {
+        return elements;
     }
 
     @Override
@@ -88,11 +88,11 @@ public final class PageInfo<T> {
         PageInfo<?> pageInfo = (PageInfo<?>) o;
         return Objects.equals(first, pageInfo.first) && Objects.equals(last, pageInfo.last) &&
                 Objects.equals(pageSize, pageInfo.pageSize) && Objects.equals(totalElements, pageInfo.totalElements) &&
-                Objects.equals(totalPages, pageInfo.totalPages) && Objects.equals(content, pageInfo.content);
+                Objects.equals(totalPages, pageInfo.totalPages) && Objects.equals(elements, pageInfo.elements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(first, last, pageSize, totalElements, totalPages, content);
+        return Objects.hash(first, last, pageSize, totalElements, totalPages, elements);
     }
 }
