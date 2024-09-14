@@ -43,8 +43,10 @@ import org.springframework.util.MultiValueMap;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -81,6 +83,9 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = {"classpath:application.yml", "classpath:application-test.yml"})
 public class ProductRestApiIT {
+
+    public static final String FIND_URL_PARAM = "?page={page}&size={size}&attribute={attribute}&direction={direction}";
+    public static final String SEARCH_URL_PARAM = FIND_URL_PARAM + "&keyword={keyword}";
 
     @LocalServerPort
     private int port;
@@ -347,14 +352,15 @@ public class ProductRestApiIT {
         void should_success_when_find_products() {
             //Given
             HttpHeaders httpHeaders = getJsonHttpHeaders();
-            httpHeaders.set("page", "0");
-            httpHeaders.set("size", "2");
-            httpHeaders.set("attribute", "name");
-            httpHeaders.set("direction", "DSC");
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put("page", "0");
+            params.put("size", "2");
+            params.put("attribute", "name");
+            params.put("direction", "DSC");
             HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
             //Act
-            ResponseEntity<FindProductsViewApiResponse> response = restTemplate.exchange(BASE_URL , GET, request, FindProductsViewApiResponse.class);
+            ResponseEntity<FindProductsViewApiResponse> response = restTemplate.exchange(BASE_URL + FIND_URL_PARAM, GET, request, FindProductsViewApiResponse.class, params);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(200);
@@ -373,15 +379,17 @@ public class ProductRestApiIT {
         void should_success_when_find_products() {
             //Given
             HttpHeaders httpHeaders = getJsonHttpHeaders();
-            httpHeaders.set("page", "0");
-            httpHeaders.set("size", "2");
-            httpHeaders.set("attribute", "name");
-            httpHeaders.set("direction", "DSC");
-            httpHeaders.set("keyword", "p");
+
+            Map<String, String> params = new LinkedHashMap<>();
+            params.put("page", "0");
+            params.put("size", "2");
+            params.put("attribute", "name");
+            params.put("direction", "DSC");
+            params.put("keyword", "p");
             HttpEntity<Object> request = new HttpEntity<>(httpHeaders);
 
             //Act
-            ResponseEntity<SearchProductsViewApiResponse> response = restTemplate.exchange(BASE_URL + "/search" , GET, request, SearchProductsViewApiResponse.class);
+            ResponseEntity<SearchProductsViewApiResponse> response = restTemplate.exchange(BASE_URL + "/search" + SEARCH_URL_PARAM , GET, request, SearchProductsViewApiResponse.class, params);
 
             //Then
             assertThat(response.getStatusCode().value()).isEqualTo(200);

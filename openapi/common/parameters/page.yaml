@@ -1,5 +1,5 @@
 page:
-  in: header
+  in: query
   name: page
   required: true
   schema:
