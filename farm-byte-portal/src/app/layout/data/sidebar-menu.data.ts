@@ -1,11 +1,5 @@
-import {inventoryNavbarMenus, NavbarMenu} from "./navbar-menu.model";
-
-export interface SidebarMenu {
-  icon: string;
-  label: string;
-  link: string;
-  navbarMenuItems?: NavbarMenu[];
-}
+import {SidebarMenu} from "../models/sidebar-menu.model";
+import {inventoryNavbarMenus} from "./navbar-menus/inventory-menu.data";
 
 export const sidebarMenuItems: SidebarMenu[] = [
   {
@@ -19,4 +13,4 @@ export const sidebarMenuItems: SidebarMenu[] = [
     link: 'inventory',
     navbarMenuItems: inventoryNavbarMenus
   }
-]
+];

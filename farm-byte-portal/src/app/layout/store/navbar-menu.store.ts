@@ -1,4 +1,4 @@
-import {NavbarMenu} from "./navbar-menu.model";
+import {NavbarMenu} from "../models/navbar-menu.model";
 import {patchState, signalStore, withMethods, withState} from "@ngrx/signals";
 import {inject} from "@angular/core";
 import {TranslateService} from "@ngx-translate/core";

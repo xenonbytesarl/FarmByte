@@ -1,9 +1,9 @@
 import {Component, HostListener, inject, input, InputSignal, signal, WritableSignal} from '@angular/core';
 import {NgClass} from "@angular/common";
-import {NavbarMenu} from "../../../navbar-menu.model";
+import {NavbarMenu} from "../../../models/navbar-menu.model";
 import {Router, RouterLink} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";
-import { NavbarMenuStore } from '../../../navbar-menu.store';
+import { NavbarMenuStore } from '../../../store/navbar-menu.store';
 
 @Component({
   selector: 'farmbyte-navbar-menu-item',
