@@ -14,5 +14,7 @@
   "navbarMenu_inventory_location": "Location",
 
   "navbarMenu_language_fr": "French",
-  "navbarMenu_language_en": "English"
+  "navbarMenu_language_en": "English",
+
+  "uomCatoryTree_name": "Name"
 }

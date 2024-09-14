@@ -3,8 +3,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "primeng/resources/themes/lara-light-blue/theme.css";
-@import "primeng/resources/primeng.css";
 
 
 * {
@@ -13,3 +11,6 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
