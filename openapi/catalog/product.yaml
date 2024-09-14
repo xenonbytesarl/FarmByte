@@ -40,7 +40,7 @@ paths:
                   type: string
                   format: binary
       parameters:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
       responses:
         201:
           description: successful operation
@@ -75,11 +75,11 @@ paths:
         - oAuth:
             - read:product
       parameters:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
       responses:
         200:
           description: successful operation
@@ -97,7 +97,7 @@ paths:
         - oAuth:
             - read:product
       parameters:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
         - $ref: '#/components/parameters/productId'
       responses:
         200:
@@ -121,7 +121,7 @@ paths:
         - oAuth:
             - update:product
       parameters:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
         - $ref: '#/components/parameters/productId'
       requestBody:
         required: true
@@ -174,12 +174,12 @@ paths:
         - oAuth:
             - read:product
       parameters:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/accept-language.yaml#/accept-language'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/page.yaml#/page'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/size.yaml#/size'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/attribute.yaml#/attribute'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/direction.yaml#/direction'
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/parameters/keyword.yaml#/keyword'
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
+        - $ref: '../common/parameters/keyword.yaml#/keyword'
       responses:
         200:
           description: successful operation
@@ -204,7 +204,7 @@ components:
         format: uuid
   schemas:
     ApiErrorResponse:
-      $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-error-response.yaml#/ApiErrorResponse'
+      $ref: '../common/schemas/api-error-response.yaml#/ApiErrorResponse'
     ImageViewRequest:
       type: object
       required:
@@ -311,7 +311,7 @@ components:
         - $ref: '#/components/schemas/ProductViewResponse'
     CreateProductViewApiResponse:
       allOf:
-        - $ref:  '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - $ref:  '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -323,7 +323,7 @@ components:
         - $ref: '#/components/schemas/ProductViewResponse'
     FindProductByIdViewApiResponse:
       allOf:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -335,7 +335,7 @@ components:
         - $ref: '#/components/schemas/ProductViewResponse'
     FindProductsPageInfoViewResponse:
       allOf:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
             content:
@@ -344,7 +344,7 @@ components:
                 $ref: '#/components/schemas/FindProductsViewResponse'
     FindProductsViewApiResponse:
       allOf:
-        - $ref:  '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - $ref:  '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -356,7 +356,7 @@ components:
         - $ref: '#/components/schemas/ProductViewResponse'
     SearchProductsPageInfoViewResponse:
       allOf:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
             content:
@@ -365,7 +365,7 @@ components:
                 $ref: '#/components/schemas/SearchProductsViewResponse'
     SearchProductsViewApiResponse:
       allOf:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
@@ -380,7 +380,7 @@ components:
         - $ref: '#/components/schemas/ProductView'
     UpdateProductViewApiResponse:
       allOf:
-        - $ref: '../../../../../../../common/common-resource/src/main/resources/openapi/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
         - type: object
           properties:
             data:
