@@ -14,7 +14,7 @@ type NavbarMenuState = {
 const initialState: NavbarMenuState = {
   navbarMenus: [],
   selectedModule: '',
-  selectedLanguage: 'en'
+  selectedLanguage: 'fr'
 };
 
 export const NavbarMenuStore = signalStore(
