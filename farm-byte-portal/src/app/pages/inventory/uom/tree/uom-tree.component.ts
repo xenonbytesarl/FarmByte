@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'farmbyte-unit-of-measures',
   standalone: true,
   imports: [],
-  templateUrl: './unit-of-measures.component.html',
-  styleUrl: './unit-of-measures.component.scss'
+  templateUrl: './uom-tree.component.html',
+  styleUrl: './uom-tree.component.scss'
 })
-export class UnitOfMeasuresComponent {
+export class UomTreeComponent {
 
 }

@@ -1,8 +1,8 @@
 import {Component, inject, input, InputSignal, OnInit} from '@angular/core';
-import {SidebarMenu} from "../../sidebar-menu.model";
-import {NavbarMenuStore} from "../../navbar-menu.store";
-import {NavbarMenu} from "../../navbar-menu.model";
-import {SidebarMenuStore} from "../../sidebar-menu.store";
+import {SidebarMenu} from "../../models/sidebar-menu.model";
+import {NavbarMenuStore} from "../../store/navbar-menu.store";
+import {NavbarMenu} from "../../models/navbar-menu.model";
+import {SidebarMenuStore} from "../../store/sidebar-menu.store";
 import {NgClass} from "@angular/common";
 import {Router} from "@angular/router";
 import {TranslateModule} from "@ngx-translate/core";

@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {SidebarMenuStore} from "../sidebar-menu.store";
+import {SidebarMenuStore} from "../store/sidebar-menu.store";
 import {SidebarMenuComponent} from "./sidebar-menu/sidebar-menu.component";
 
 @Component({

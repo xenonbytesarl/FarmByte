@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'farmbyte-products',
   standalone: true,
   imports: [],
-  templateUrl: './products.component.html',
-  styleUrl: './products.component.scss'
+  templateUrl: './product-tree.component.html',
+  styleUrl: './product-tree.component.scss'
 })
-export class ProductsComponent {
+export class ProductTreeComponent {
 
 }

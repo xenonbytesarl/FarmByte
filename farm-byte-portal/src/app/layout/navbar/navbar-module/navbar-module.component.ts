@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {NavbarMenuStore} from "../../navbar-menu.store";
+import {NavbarMenuStore} from "../../store/navbar-menu.store";
 import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
