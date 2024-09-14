@@ -1,9 +1,8 @@
 import {Routes} from "@angular/router";
-import {ProductsComponent} from "./products.component";
 
 export const productRoutes: Routes = [
   {
     path: '',
-    component: ProductsComponent
+    loadComponent: () => import('./tree/product-tree.component').then(m => m.ProductTreeComponent)
   }
 ]

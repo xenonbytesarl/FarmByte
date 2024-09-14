@@ -8,22 +8,22 @@ export const inventoryRoutes: Routes = [
   },
   {
     path: 'products',
-    loadChildren: () => import('./products/product.routes').then(m => m.productRoutes)
+    loadChildren: () => import('./product/product.routes').then(m => m.productRoutes)
   },
   {
     path: 'product-categories',
-    loadChildren: () => import('./product-categories/product-category.routes').then(m => m.productCategoryRoutes)
+    loadChildren: () => import('./product-category/product-category.routes').then(m => m.productCategoryRoutes)
   },
   {
-    path: 'category-unit-of-measures',
-    loadChildren: () => import('./category-unit-of-measures/category-unit-of-measure.routes').then(m => m.categoryUnitOfMeasureRoutes)
+    path: 'uom-categories',
+    loadChildren: () => import('./uom-category/uom-category.routes').then(m => m.uomCategoryRoutes)
   },
   {
-    path: 'unit-of-measures',
-    loadChildren: () => import('./unit-of-measures/unit-of-measure.routes').then(m => m.unitOfMeasureRoutes)
+    path: 'uoms',
+    loadChildren: () => import('./uom/uom.routes').then(m => m.uomRoutes)
   },
   {
-    path: 'locations',
-    loadChildren: () => import('./locations/location.routes').then(m => m.locationRoutes)
+    path: 'stock-locations',
+    loadChildren: () => import('./stock-location/stock-location.routes').then(m => m.stockLocationRoutes)
   }
 ]

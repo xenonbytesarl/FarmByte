@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {NavbarMenuItemComponent} from "./navbar-menu-item/navbar-menu-item.component";
-import {NavbarMenuStore} from "../../navbar-menu.store";
+import {NavbarMenuStore} from "../../store/navbar-menu.store";
 
 @Component({
   selector: 'farmbyte-navbar-menu',

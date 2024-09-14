@@ -2,7 +2,7 @@ import {Component, HostListener, inject, OnInit, signal, WritableSignal} from '@
 import {RouterLink} from "@angular/router";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {NgClass} from "@angular/common";
-import {Language, NavbarMenuStore} from "../../navbar-menu.store";
+import {Language, NavbarMenuStore} from "../../store/navbar-menu.store";
 
 @Component({
   selector: 'farmbyte-navbar-language',

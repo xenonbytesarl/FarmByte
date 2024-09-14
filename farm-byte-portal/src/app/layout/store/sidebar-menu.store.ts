@@ -1,5 +1,6 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
-import {SidebarMenu, sidebarMenuItems} from "./sidebar-menu.model";
+import {SidebarMenu} from "../models/sidebar-menu.model";
+import {sidebarMenuItems} from "../data/sidebar-menu.data";
 
 type SidebarMenuState = {
   sidebarMenus: SidebarMenu[];
