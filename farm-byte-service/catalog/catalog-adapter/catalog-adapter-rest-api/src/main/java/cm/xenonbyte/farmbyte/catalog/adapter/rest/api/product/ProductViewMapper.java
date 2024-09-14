@@ -86,7 +86,7 @@ public interface ProductViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toFindProductsViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toFindProductsViewResponses", target = "elements")
     @Nonnull @Valid FindProductsPageInfoViewResponse toFindProductsPageInfoViewResponse(@Nonnull PageInfo<Product> productPageInfo);
 
     @Named("toFindProductsViewResponses")
@@ -114,7 +114,7 @@ public interface ProductViewMapper {
     @Mapping(source = "pageSize", target = "pageSize")
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
-    @Mapping(source = "content", qualifiedByName = "toSearchProductsViewResponses", target = "content")
+    @Mapping(source = "elements", qualifiedByName = "toSearchProductsViewResponses", target = "elements")
     @Nonnull @Valid SearchProductsPageInfoViewResponse toSearchProductsPageInfoViewResponse(@Nonnull PageInfo<Product> productPageInfo);
 
     @Named("toSearchProductsViewResponses")

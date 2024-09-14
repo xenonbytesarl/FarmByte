@@ -609,7 +609,7 @@ final class ProductDomainServiceApiAdapterTest {
                     .pageSize(size)
                     .totalElements(3L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                         List.of(
                             new FindProductsViewResponse()
                                 .id(UUID.randomUUID())
@@ -738,7 +738,7 @@ final class ProductDomainServiceApiAdapterTest {
                     .pageSize(size)
                     .totalElements(3L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchProductsViewResponse()
                                             .id(UUID.randomUUID())

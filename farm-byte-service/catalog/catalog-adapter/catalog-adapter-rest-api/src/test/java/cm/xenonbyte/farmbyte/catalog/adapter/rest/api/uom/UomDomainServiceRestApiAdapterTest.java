@@ -381,7 +381,7 @@ final class UomDomainServiceRestApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new FindUomsViewResponse()
                                             .id(UUID.randomUUID())
@@ -492,7 +492,7 @@ final class UomDomainServiceRestApiAdapterTest {
                     .pageSize(2)
                     .totalElements(5L)
                     .totalPages(3)
-                    .content(
+                    .elements(
                             List.of(
                                     new SearchUomsViewResponse()
                                             .id(UUID.randomUUID())

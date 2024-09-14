@@ -351,7 +351,7 @@ public class UomRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(FindUomsPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
 
@@ -383,7 +383,7 @@ public class UomRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(UOMS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchUomsPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
     

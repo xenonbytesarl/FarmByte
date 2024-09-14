@@ -252,7 +252,7 @@ components:
         - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
-            content:
+            elements:
               type: array
               items:
                 $ref: '#/components/schemas/FindUomCategoriesViewResponse'
@@ -273,7 +273,7 @@ components:
         - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
         - type: object
           properties:
-            content:
+            elements:
               type: array
               items:
                 $ref: '#/components/schemas/SearchUomCategoriesViewResponse'

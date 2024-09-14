@@ -268,7 +268,7 @@ public class ProductCategoryRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(FindProductCategoriesPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
 
@@ -300,7 +300,7 @@ public class ProductCategoryRestApiIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(PRODUCT_CATEGORIES_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchProductCategoriesPageInfoViewResponse.class);
-            assertThat(response.getBody().getData().get(BODY).getContent().size()).isGreaterThan(0);
+            assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
         }
     }
 

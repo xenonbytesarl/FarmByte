@@ -202,7 +202,7 @@ public final class ProductCategoryDomainServiceTest {
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
-            assertThat(result.getContent().size()).isEqualTo(contentSize);
+            assertThat(result.getElements().size()).isEqualTo(contentSize);
         }
     }
 
@@ -257,7 +257,7 @@ public final class ProductCategoryDomainServiceTest {
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
-            assertThat(result.getContent().size()).isEqualTo(contentSize);
+            assertThat(result.getElements().size()).isEqualTo(contentSize);
         }
     }
 
