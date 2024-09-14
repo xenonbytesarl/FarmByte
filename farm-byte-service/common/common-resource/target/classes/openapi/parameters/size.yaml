@@ -1,7 +1,0 @@
-size:
-  in: header
-  name: size
-  required: true
-  schema:
-    type: integer
-    format: int32
