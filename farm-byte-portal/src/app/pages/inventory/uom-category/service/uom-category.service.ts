@@ -10,11 +10,11 @@ import {SuccessResponseModel} from "../../../../core/model/success-response.mode
 @Injectable({
   providedIn: 'root'
 })
-export class UomCategoryService extends GlobalService{
+export class UomCategoryService extends GlobalService {
 
   findUomCategories$ =  (findParamModel: FindParamModel) => <Observable<SuccessResponseModel<PageModel<UomCategoryModel>>>>
 
-    this.http.get<PageModel<UomCategoryModel>>(
+    this.http.get<SuccessResponseModel<PageModel<UomCategoryModel>>>(
       `${this.apiUrl}/catalog/uom-categories`,
       {
           headers: this.getHttpHeader(),
@@ -23,4 +23,13 @@ export class UomCategoryService extends GlobalService{
       )
       .pipe(catchError(this.handleError));
 
+  findUomCategoryById$ =  (id: string) => <Observable<SuccessResponseModel<UomCategoryModel>>>
+
+    this.http.get<SuccessResponseModel<UomCategoryModel>>(
+      `${this.apiUrl}/catalog/uom-categories/${id}`,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
 }
