@@ -16,5 +16,10 @@
   "navbarMenu_language_fr": "French",
   "navbarMenu_language_en": "English",
 
-  "uomCatoryTree_name": "Name"
+  "uom_category_tree_name": "Name",
+
+  "uom_tree_name": "Name",
+  "uom_tree_uom_category_id": "Category",
+  "uom_tree_uom_type": "Type",
+  "uom_tree_ratio": "Ratio"
 }
