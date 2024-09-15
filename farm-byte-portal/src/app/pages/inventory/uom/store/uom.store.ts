@@ -41,13 +41,13 @@ export const UomStore = signalStore(
                 next: (uomPage: SuccessResponseModel<PageModel<UomModel>>) => {
                   patchState(store, (state) => ({
                     ...state,
-                    loading: false,
                     uomPage
                   }))
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error, loading: false}));
-                }
+                  patchState(store, state => ({...state, error}));
+                },
+                finalize: () => patchState(store, (state) => ({...state, loading: false}))
               })
             )
         )
