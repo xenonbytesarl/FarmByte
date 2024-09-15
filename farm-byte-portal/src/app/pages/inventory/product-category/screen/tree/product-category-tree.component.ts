@@ -1,50 +1,71 @@
-import {AfterViewInit, Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
-import {UomCategoryStore} from "../../store/uom-category.store";
-import {MatTableDataSource, MatTableModule} from "@angular/material/table";
-import {UomCategoryModel} from "../../model/uom-category.model";
-import {MatCheckboxModule} from "@angular/material/checkbox";
+import {Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
+import {ProductCategoryStore} from "../../store/product-category.store";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {MatSort, MatSortHeader, Sort} from "@angular/material/sort";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
+import {ProductCategoryModel} from "../../model/product-category.model";
 import {SelectionModel} from "@angular/cdk/collections";
-import {MatPaginator, MatPaginatorModule, PageEvent} from "@angular/material/paginator";
-import {MatSort, MatSortModule, Sort} from "@angular/material/sort";
-import {Direction} from "../../../../../core/enums/direction.enum";
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,
   DEFAULT_PAGE_VALUE,
   DEFAULT_SIZE_VALUE
 } from "../../../../../core/constants/page.constant";
 import {FindParamModel} from "../../../../../core/model/find-param.model";
+import {Direction} from "../../../../../core/enums/direction.enum";
+import {MatCheckbox} from "@angular/material/checkbox";
 import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
-  selector: 'farmbyte-uom-category-tree',
+  selector: 'farmbyte-product-categories',
   standalone: true,
   imports: [
-    MatTableModule, MatCheckboxModule, MatPaginatorModule, MatSortModule, TranslateModule
+    MatCell,
+    MatCellDef,
+    MatCheckbox,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatPaginator,
+    MatRow,
+    MatRowDef,
+    MatSort,
+    MatSortHeader,
+    MatTable,
+    TranslateModule,
+    MatHeaderCellDef
   ],
-  templateUrl: './uom-category-tree.component.html',
-  styleUrl: './uom-category-tree.component.scss'
+  templateUrl: './product-category-tree.component.html',
+  styleUrl: './product-category-tree.component.scss'
 })
-export class UomCategoryTreeComponent implements AfterViewInit {
-  readonly uomCategoryStore = inject(UomCategoryStore);
+export class ProductCategoryTreeComponent {
+  readonly productCategoryStore = inject(ProductCategoryStore);
 
   @ViewChild(MatPaginator, { read: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
 
   dataSource =
-    computed(() => new MatTableDataSource<UomCategoryModel>(this.uomCategoryStore.uomCategoryDataSource()));
+    computed(() => new MatTableDataSource<ProductCategoryModel>(this.productCategoryStore.productCategoryDataSource()));
 
-  totalElements = computed(() => this.uomCategoryStore.uomCategoryTotalElements());
+  totalElements = computed(() => this.productCategoryStore.productCategoryTotalElements());
 
-  pageSize = computed(() => this.uomCategoryStore.uomCategoryTotalPageSize());
+  pageSize = computed(() => this.productCategoryStore.productCategoryTotalPageSize());
 
-  selection: WritableSignal<SelectionModel<UomCategoryModel>> =
-    signal(new SelectionModel<UomCategoryModel>(true, []));
+  selection: WritableSignal<SelectionModel<ProductCategoryModel>> =
+    signal(new SelectionModel<ProductCategoryModel>(true, []));
 
   pageEvent: WritableSignal<PageEvent> = signal({pageSize: DEFAULT_SIZE_VALUE, pageIndex: DEFAULT_PAGE_VALUE, length: this.totalElements() as number});
   sortEvent: WritableSignal<Sort> = signal({active: 'name', direction: 'asc'});
 
-  displayedColumns: string[] = ['select', 'name'];
+  displayedColumns: string[] = ['select', 'name', 'parentProductCategoryId'];
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
 
   ngAfterViewInit() {
@@ -70,7 +91,7 @@ export class UomCategoryTreeComponent implements AfterViewInit {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: UomCategoryModel): string {
+  checkboxLabel(row?: ProductCategoryModel): string {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
@@ -87,7 +108,7 @@ export class UomCategoryTreeComponent implements AfterViewInit {
       attribute: this.sortEvent().active,
       direction: this.sortEvent().direction === "asc"? Direction.DSC: Direction.ASC
     };
-    this.uomCategoryStore.findUomCategories(findParamModel);
+    this.productCategoryStore.findProductCategories(findParamModel);
   }
 
   sortData(sort: Sort): void {
@@ -101,6 +122,6 @@ export class UomCategoryTreeComponent implements AfterViewInit {
       attribute: this.sortEvent().active,
       direction: this.sortEvent().direction === "asc"? Direction.DSC: Direction.ASC
     };
-    this.uomCategoryStore.findUomCategories(findParamModel);
+    this.productCategoryStore.findProductCategories(findParamModel);
   }
 }

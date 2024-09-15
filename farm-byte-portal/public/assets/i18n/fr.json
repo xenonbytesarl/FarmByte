@@ -22,6 +22,9 @@
   "uom_tree_name": "Nom",
   "uom_tree_uom_category_id": "Catégorie",
   "uom_tree_uom_type": "Type",
-  "uom_tree_ratio": "Ratio"
+  "uom_tree_ratio": "Ratio",
+
+  "product_category_tree_name": "Nom",
+  "product_category_tree_parent_category_id": "Parent"
 }
 
