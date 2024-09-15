@@ -42,13 +42,13 @@ export const UomCategoryStore = signalStore(
                 next: (uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
                   patchState(store, (state) => ({
                     ...state,
-                    loading: false,
                     uomCategoryPage
                   }))
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error, loading: false}));
-                }
+                  patchState(store, state => ({...state, error}));
+                },
+                finalize: () => patchState(store, (state) => ({...state, loading: false}))
               })
             )
         )

@@ -42,13 +42,13 @@ export const ProductCategoryStore = signalStore(
                 next: (productCategoryPage: SuccessResponseModel<PageModel<ProductCategoryModel>>) => {
                   patchState(store, (state) => ({
                     ...state,
-                    loading: false,
                     productCategoryPage
                   }))
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error, loading: false}));
-                }
+                  patchState(store, state => ({...state, error}));
+                },
+                finalize: () => patchState(store, (state) => ({...state, loading: false}))
               })
             )
         )
