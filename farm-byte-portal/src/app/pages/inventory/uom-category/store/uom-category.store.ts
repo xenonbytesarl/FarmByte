@@ -1,25 +1,21 @@
-import {patchState, signalStore, type, withComputed, withMethods, withState} from "@ngrx/signals";
-import {addEntity, withEntities} from "@ngrx/signals/entities";
+import {patchState, signalStore, withComputed, withMethods, withState} from "@ngrx/signals";
 import {UomCategoryModel} from "../model/uom-category.model";
 import {PageModel} from "../../../../core/model/page.model";
-import {Direction} from "../../../../core/enums/direction.enum";
-import {computed, inject} from "@angular/core";
+import {computed, inject, Signal, signal, WritableSignal} from "@angular/core";
 import {UomCategoryService} from "../service/uom-category.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {pipe, switchMap, tap} from "rxjs";
+import {map, of, pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 
-type UomCategory = UomCategoryModel;
-
-type UomCategoryPage = {
+type UomCategoryState = {
   uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>> ;
   loading: boolean;
   error: any;
 };
 
-const uomCategoryPageInitialState: UomCategoryPage = {
+const uomCategoryInitialState: UomCategoryState = {
   uomCategoryPage: {
     data: {
       content: {
@@ -34,8 +30,7 @@ const uomCategoryPageInitialState: UomCategoryPage = {
 
 export const UomCategoryStore = signalStore(
   {providedIn: 'root'},
-  withState(uomCategoryPageInitialState),
-  withEntities({entity: type<UomCategory>(), collection: 'uomCategory'}),
+  withState(uomCategoryInitialState),
   withMethods((store, uomCategoryService = inject(UomCategoryService)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(
@@ -58,7 +53,13 @@ export const UomCategoryStore = signalStore(
             )
         )
       )
-    )
+    ),
+    findUomCategoryById(id: string): WritableSignal<UomCategoryModel | undefined> {
+      return signal((store.uomCategoryPage().data.content?.elements as UomCategoryModel[]).find((uomCategory: UomCategoryModel) => uomCategory.id === id));
+    }
+
+
+
   })),
   withComputed((store) => {
     return {

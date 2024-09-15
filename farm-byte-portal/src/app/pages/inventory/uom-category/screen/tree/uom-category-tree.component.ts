@@ -1,18 +1,19 @@
 import {AfterViewInit, Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
-import {UomCategoryStore} from "../store/uom-category.store";
+import {UomCategoryStore} from "../../store/uom-category.store";
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
-import {UomCategoryModel} from "../model/uom-category.model";
+import {UomCategoryModel} from "../../model/uom-category.model";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ActivatedRoute} from "@angular/router";
 import {MatPaginator, MatPaginatorModule, PageEvent} from "@angular/material/paginator";
 import {MatSort, MatSortModule, Sort} from "@angular/material/sort";
-import {Direction} from "../../../../core/enums/direction.enum";
+import {Direction} from "../../../../../core/enums/direction.enum";
 import {
+  DEFAULT_PAGE_SIZE_OPTIONS,
   DEFAULT_PAGE_VALUE,
   DEFAULT_SIZE_VALUE
-} from "../../../../core/constants/page.constant";
-import {FindParamModel} from "../../../../core/model/find-param.model";
+} from "../../../../../core/constants/page.constant";
+import {FindParamModel} from "../../../../../core/model/find-param.model";
 import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
@@ -26,7 +27,6 @@ import {TranslateModule} from "@ngx-translate/core";
 })
 export class UomCategoryTreeComponent implements AfterViewInit {
   readonly uomCategoryStore = inject(UomCategoryStore);
-  readonly activatedRoutes = inject(ActivatedRoute);
 
   @ViewChild(MatPaginator, { read: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -46,6 +46,7 @@ export class UomCategoryTreeComponent implements AfterViewInit {
   sortEvent: WritableSignal<Sort> = signal({active: 'name', direction: 'asc'});
 
   displayedColumns: string[] = ['select', 'name'];
+  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
 
   ngAfterViewInit() {
     this.dataSource().paginator = this.paginator;
