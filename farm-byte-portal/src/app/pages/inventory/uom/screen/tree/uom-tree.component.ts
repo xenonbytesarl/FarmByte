@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, computed, inject, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  Signal,
+  signal,
+  ViewChild,
+  WritableSignal
+} from '@angular/core';
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort, MatSortHeader, Sort} from "@angular/material/sort";
 import {UomStore} from "../../store/uom.store";
@@ -20,6 +30,11 @@ import {TranslateModule} from "@ngx-translate/core";
 import {DecimalPipe, TitleCasePipe} from "@angular/common";
 import {UomCategoryStore} from "../../../uom-category/store/uom-category.store";
 import {UomCategoryModel} from "../../../uom-category/model/uom-category.model";
+import {MatFormField, MatLabel, MatPrefix} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
+import {SearchParamModel} from "../../../../../core/model/search-param.model";
+import {MatButton} from "@angular/material/button";
+import {MatIcon, MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'farmbyte-unit-of-measures',
@@ -41,10 +56,17 @@ import {UomCategoryModel} from "../../../uom-category/model/uom-category.model";
     TranslateModule,
     MatHeaderCellDef,
     DecimalPipe,
-    TitleCasePipe
+    TitleCasePipe,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatButton,
+    MatIconModule,
+    MatPrefix
   ],
   templateUrl: './uom-tree.component.html',
-  styleUrl: './uom-tree.component.scss'
+  styleUrl: './uom-tree.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UomTreeComponent implements AfterViewInit {
 
@@ -130,5 +152,17 @@ export class UomTreeComponent implements AfterViewInit {
 
   getUomCategoryName(uomCategoryId: string): Signal<UomCategoryModel | undefined> {
     return this.uomCategoryStore.findUomCategoryById(uomCategoryId);
+  }
+
+  applyFilter(event: KeyboardEvent) {
+    const keyword = (event.target as HTMLInputElement).value;
+    const searchParamModel: SearchParamModel = {
+      page: this.pageEvent().pageIndex,
+      size: this.pageEvent().pageSize,
+      attribute: this.sortEvent().active,
+      direction: this.sortEvent().direction === "asc"? Direction.ASC: Direction.DSC,
+      keyword: keyword
+    };
+    this.uomStore.searchUoms(searchParamModel);
   }
 }

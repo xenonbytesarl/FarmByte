@@ -5,6 +5,7 @@ import {catchError, Observable} from "rxjs";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {PageModel} from "../../../../core/model/page.model";
 import {UomModel} from "../model/uom.model";
+import {SearchParamModel} from "../../../../core/model/search-param.model";
 
 @Injectable({
   providedIn: 'root'
@@ -19,4 +20,14 @@ export class UomService extends GlobalService {
       }
     )
     .pipe(catchError(this.handleError));
+
+  searchUoms$ = (searchParamModel: SearchParamModel) => <Observable<SuccessResponseModel<PageModel<UomModel>>>>
+    this.http.get<SuccessResponseModel<PageModel<UomModel>>>(
+      `${this.apiUrl}/catalog/uoms/search`,
+      {
+        headers: this.getHttpHeader(),
+        params: {...searchParamModel}
+      }
+    )
+      .pipe(catchError(this.handleError));
 }

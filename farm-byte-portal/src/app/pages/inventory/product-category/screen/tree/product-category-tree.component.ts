@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
 import {ProductCategoryStore} from "../../store/product-category.store";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort, MatSortHeader, Sort} from "@angular/material/sort";
@@ -43,7 +43,8 @@ import {TranslateModule} from "@ngx-translate/core";
     MatHeaderCellDef
   ],
   templateUrl: './product-category-tree.component.html',
-  styleUrl: './product-category-tree.component.scss'
+  styleUrl: './product-category-tree.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductCategoryTreeComponent {
   readonly productCategoryStore = inject(ProductCategoryStore);
