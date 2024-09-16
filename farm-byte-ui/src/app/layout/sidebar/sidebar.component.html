@@ -1,0 +1,5 @@
+<div class="flex flex-column md:w-15rem sm:w-5rem h-screen bg-purple-500 gap-2 py-3">
+  @for(sidebarMenu of sidebarMenuStore.sidebarMenus(); track sidebarMenu.link) {
+    <farmbyte-sidebar-menu [sidebarMenu]="sidebarMenu"/>
+  }
+</div>

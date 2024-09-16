@@ -1,0 +1,37 @@
+{
+
+  "sidebarMenu_dashboard": "Tableau de bord",
+  "sidebarMenu_inventory": "Inventaire",
+
+  "navbarMenu_inventory_operations": "Opérations",
+  "navbarMenu_inventory_stock-adjustment": "Ajustement de stock",
+  "navbarMenu_inventory_transfers": "Transfert",
+  "navbarMenu_inventory_products": "Articles",
+  "navbarMenu_inventory_products-categories": "Categorie d'article",
+  "navbarMenu_inventory_settings": "Configuration",
+  "navbarMenu_inventory_unit-of-measure": "Unité de mesure",
+  "navbarMenu_inventory_category-unit-of-measure": "Categorie d'unité de mesure",
+  "navbarMenu_inventory_location": "Emplacement",
+
+  "navbarMenu_language_fr": "Français",
+  "navbarMenu_language_en": "Anglais",
+
+
+  "uom_category_tree_name": "Nom",
+  "uom_category_tree_title": "Catégorie d'unité de mesure",
+
+  "uom_tree_name": "Nom",
+  "uom_tree_uom_category_id": "Catégorie",
+  "uom_tree_uom_type": "Type",
+  "uom_tree_ratio": "Ratio",
+
+  "product_category_tree_name": "Nom",
+  "product_category_tree_parent_category_id": "Parent",
+  "paginator_page_report": "{first} - {last} de {totalRecords}",
+  "paginator_item_per_page": "Ligne par page",
+
+
+  "tree_button_label_add": "Créer",
+  "tree_search_place_holder": "Rechercher..."
+}
+
