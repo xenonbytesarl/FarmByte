@@ -3,7 +3,7 @@ import {Routes} from "@angular/router";
 export const inventoryRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'uom-categories',
+    redirectTo: 'products',
     pathMatch: 'full',
   },
   {

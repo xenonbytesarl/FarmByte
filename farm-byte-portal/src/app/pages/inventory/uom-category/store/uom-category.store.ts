@@ -8,6 +8,7 @@ import {map, of, pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
+import {withDevtools} from "@angular-architects/ngrx-toolkit";
 
 type UomCategoryState = {
   uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>> ;
@@ -31,6 +32,7 @@ const uomCategoryInitialState: UomCategoryState = {
 export const UomCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(uomCategoryInitialState),
+  withDevtools('uom-category'),
   withMethods((store, uomCategoryService = inject(UomCategoryService)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(

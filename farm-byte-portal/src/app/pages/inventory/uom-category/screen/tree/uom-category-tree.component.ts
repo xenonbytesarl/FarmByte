@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, computed, inject, signal, ViewChild, WritableSignal} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  ViewChild,
+  WritableSignal
+} from '@angular/core';
 import {UomCategoryStore} from "../../store/uom-category.store";
 import {MatTableDataSource, MatTableModule} from "@angular/material/table";
 import {UomCategoryModel} from "../../model/uom-category.model";
@@ -22,7 +31,8 @@ import {TranslateModule} from "@ngx-translate/core";
     MatTableModule, MatCheckboxModule, MatPaginatorModule, MatSortModule, TranslateModule
   ],
   templateUrl: './uom-category-tree.component.html',
-  styleUrl: './uom-category-tree.component.scss'
+  styleUrl: './uom-category-tree.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UomCategoryTreeComponent implements AfterViewInit {
   readonly uomCategoryStore = inject(UomCategoryStore);
