@@ -1,4 +1,27 @@
-<div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-full">
+<div class="p-6 bg-white  rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 w-full">
+  <div class="flex flex-row justify-between items-center mt-2 w-full">
+    <p class="text-lg font-medium pt-8 pb-6">Unite de mesure</p>
+    <div  class="flex flex-row justify-center items-center">
+      <button mat-stroked-button color="primary">
+        <mat-icon class="material-symbols-outlined ">add</mat-icon>Create
+      </button>
+    </div>
+  </div>
+  <div class="flex flex-row justify-between items-center mt-2 w-full">
+    <mat-form-field class="w-4/12">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search..." #input>
+      <mat-icon class="material-symbols-outlined" matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageSize]="pageSize()"
+      [showFirstLastButtons]="true"
+      (page)="handlePageEvent($event)"
+    >
+    </mat-paginator>
+  </div>
   <table mat-table [dataSource]="dataSource()" matSort (matSortChange)="sortData($event)" >
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -47,13 +70,6 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection().toggle(row)"></tr>
 
   </table>
-  <mat-paginator
-    [length]="totalElements()"
-    [pageSizeOptions]="pageSizeOptions"
-    [pageSize]="pageSize()"
-    [showFirstLastButtons]="true"
-    (page)="handlePageEvent($event)"
-  >
-  </mat-paginator>
+
 </div>
 

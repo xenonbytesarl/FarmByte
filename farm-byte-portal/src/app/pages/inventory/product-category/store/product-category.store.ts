@@ -8,6 +8,7 @@ import {pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
+import {withDevtools} from "@angular-architects/ngrx-toolkit";
 
 type ProductCategoryState = {
   productCategoryPage: SuccessResponseModel<PageModel<ProductCategoryModel>> ;
@@ -31,6 +32,7 @@ const productCategoryInitialState: ProductCategoryState = {
 export const ProductCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(productCategoryInitialState),
+  withDevtools('product-category'),
   withMethods((store, productCategoryService = inject(ProductCategoryService)) => ({
     findProductCategories: rxMethod<FindParamModel>(
       pipe(
