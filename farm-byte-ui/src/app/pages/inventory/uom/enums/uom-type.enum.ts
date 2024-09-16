@@ -1,0 +1,3 @@
+export enum UomType {
+  REFERENCE='REFERENCE', GREATER='GREATER', LOWER='LOWER'
+}
