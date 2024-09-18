@@ -9,7 +9,7 @@ RUN npm run build --omit=dev
 FROM nginx:1.26.1-alpine
 
 COPY nginx.conf /etc/ngnix/nginx.conf
-COPY --from=build /app/dist/farm-byte-portal/browser /usr/share/nginx/html
+COPY --from=build /app/dist/farm-byte-ui/browser /usr/share/nginx/html
 
 EXPOSE 80 443 4200
 
