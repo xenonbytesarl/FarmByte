@@ -1,30 +1,27 @@
-import {patchState, signalStore, withComputed, withMethods, withState} from "@ngrx/signals";
+import {patchState, signalStore, type, withMethods, withState} from "@ngrx/signals";
 import {UomCategoryModel} from "../model/uom-category.model";
 import {PageModel} from "../../../../core/model/page.model";
-import {computed, inject, Signal, signal, WritableSignal} from "@angular/core";
+import {inject, signal, WritableSignal} from "@angular/core";
 import {UomCategoryService} from "../service/uom-category.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {map, of, pipe, switchMap, tap} from "rxjs";
+import {pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
+import {addEntities, withEntities} from "@ngrx/signals/entities";
 
 type UomCategoryState = {
-  uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>> ;
+  pageSize: number;
+  totalElements: number;
   loading: boolean;
   error: any;
 };
 
 const uomCategoryInitialState: UomCategoryState = {
-  uomCategoryPage: {
-    data: {
-      content: {
-        elements: []
-      }
-    }
-  },
+  pageSize: 0,
+  totalElements: 0,
   loading: false,
   error: null
 };
@@ -33,7 +30,8 @@ const uomCategoryInitialState: UomCategoryState = {
 export const UomCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(uomCategoryInitialState),
-  withDevtools('uom-category'),
+  withEntities({ entity: type<UomCategoryModel>(), collection: 'uomCategory' }),
+  withDevtools('uomCategoryState'),
   withMethods((store, uomCategoryService = inject(UomCategoryService)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(
@@ -42,11 +40,16 @@ export const UomCategoryStore = signalStore(
           uomCategoryService.findUomCategories$(findParamModel)
             .pipe(
               tapResponse({
-                next: (uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
-                  patchState(store, (state) => ({
-                    ...state,
-                    uomCategoryPage
-                  }))
+                next: (uomCategorySuccessResponse: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
+                  patchState(
+                    store,
+                    addEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
+                    (state) => ({
+                      ...state,
+                      pageSize: uomCategorySuccessResponse.data.content.pageSize,
+                      totalElements: uomCategorySuccessResponse.data.content.totalElements
+                    })
+                  );
                 },
                 error: (error) => {
                   patchState(store, state => ({...state, error}));
@@ -64,11 +67,16 @@ export const UomCategoryStore = signalStore(
           uomCategoryService.searchUomCategories$(searchParamModel)
             .pipe(
               tapResponse({
-                next: (uomCategoryPage: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
-                  patchState(store, (state) => ({
-                    ...state,
-                    uomCategoryPage
-                  }))
+                next: (uomCategorySuccessResponse: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
+                  patchState(
+                    store,
+                    addEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
+                    (state) => ({
+                      ...state,
+                      pageSize: uomCategorySuccessResponse.data.content.pageSize,
+                      totalElements: uomCategorySuccessResponse.data.content.totalElements
+                    })
+                  );
                 },
                 error: (error) => {
                   patchState(store, state => ({...state, error}));
@@ -80,23 +88,7 @@ export const UomCategoryStore = signalStore(
       )
     ),
     findUomCategoryById(id: string): WritableSignal<UomCategoryModel | undefined> {
-      return signal((store.uomCategoryPage().data.content?.elements as UomCategoryModel[]).find((uomCategory: UomCategoryModel) => uomCategory.id === id));
+      return signal(store.uomCategoryEntities().find((uomCategory: UomCategoryModel) => uomCategory.id === id));
     }
-
-
-
-  })),
-  withComputed((store) => {
-    return {
-      uomCategoryDataSource: computed(() =>
-        store.uomCategoryPage()?.data.content?.elements
-      ),
-      uomCategoryTotalElements: computed(() =>
-        store.uomCategoryPage()?.data.content?.totalElements
-      ),
-      uomCategoryTotalPageSize: computed(() =>
-        store.uomCategoryPage()?.data.content?.pageSize
-      )
-    }
-  })
+  }))
 );

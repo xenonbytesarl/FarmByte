@@ -16,20 +16,24 @@
   "navbarMenu_language_fr": "Français",
   "navbarMenu_language_en": "Anglais",
 
-
-  "uom_category_tree_name": "Nom",
   "uom_category_tree_title": "Catégorie d'unité de mesure",
+  "uom_category_tree_no_data_found": "Pas d'unité de catégorie d'unité de mesure. Cliquez sur le bouton Créer pour ajouter une.",
+  "uom_category_tree_name": "Nom",
 
+  "uom_tree_title": "Unités de mesure",
+  "uom_tree_no_data_found": "Pas d'unite de mesure. Cliquer sur le bouton Créer pour ajouter une.",
   "uom_tree_name": "Nom",
   "uom_tree_uom_category_id": "Catégorie",
   "uom_tree_uom_type": "Type",
   "uom_tree_ratio": "Ratio",
 
+  "product_category_tree_title": "Catégorie d'article",
+  "product_category_tree_no_data_found": "Pas de catégorié d'article. Cliquer sur le bouton Créer pour ajouter une.",
   "product_category_tree_name": "Nom",
-  "product_category_tree_parent_category_id": "Parent",
+  "product_category_tree_parent_product_category_id": "Parent",
+
   "paginator_page_report": "{first} - {last} de {totalRecords}",
   "paginator_item_per_page": "Ligne par page",
-
 
   "tree_button_label_add": "Créer",
   "tree_search_place_holder": "Rechercher..."

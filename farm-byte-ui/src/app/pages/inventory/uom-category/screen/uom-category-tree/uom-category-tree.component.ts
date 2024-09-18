@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
 import {DropdownModule} from "primeng/dropdown";
@@ -16,7 +16,6 @@ import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {InputTextModule} from "primeng/inputtext";
 import {SearchParamModel} from "../../../../../core/model/search-param.model";
-import {UomCategoryModel} from "../../model/uom-category.model";
 
 @Component({
   selector: 'farmbyte-uom-category-tree',
@@ -33,12 +32,11 @@ import {UomCategoryModel} from "../../model/uom-category.model";
     InputTextModule
   ],
   templateUrl: './uom-category-tree.component.html',
-  styleUrl: './uom-category-tree.component.scss'
+  styleUrl: './uom-category-tree.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UomCategoryTreeComponent {
   readonly uomCategoryStore = inject(UomCategoryStore);
-  uomCategories = computed(() => this.uomCategoryStore.uomCategoryDataSource());
-  totalElements = 5;
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
   rows = DEFAULT_SIZE_VALUE;
   first = 0;
