@@ -1,7 +1,7 @@
 import {UomType} from "../enums/uom-type.enum";
 
 export interface UomModel {
-  id?: string;
+  id: string;
   name: string;
   uomCategoryId: string;
   uomType: UomType;
