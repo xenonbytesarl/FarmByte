@@ -30,4 +30,15 @@ export class UomService extends GlobalService {
       }
     )
       .pipe(catchError(this.handleError));
+
+
+  findUomById$ =  (id: string) => <Observable<SuccessResponseModel<UomModel>>>
+
+    this.http.get<SuccessResponseModel<UomModel>>(
+      `${this.apiUrl}/catalog/uoms/${id}`,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
 }

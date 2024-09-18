@@ -5,6 +5,7 @@ import {SuccessResponseModel} from "../../../../core/model/success-response.mode
 import {PageModel} from "../../../../core/model/page.model";
 import {ProductCategoryModel} from "../model/product-category.model";
 import {GlobalService} from "../../../../core/services/global.service";
+import {SearchParamModel} from "../../../../core/model/search-param.model";
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,17 @@ export class ProductCategoryService extends GlobalService{
       {
         headers: this.getHttpHeader(),
         params: {...findParamModel}
+      }
+    )
+      .pipe(catchError(this.handleError));
+
+  searchProductCategories$ =  (searchParamModel: SearchParamModel) => <Observable<SuccessResponseModel<PageModel<ProductCategoryModel>>>>
+
+    this.http.get<SuccessResponseModel<PageModel<ProductCategoryModel>>>(
+      `${this.apiUrl}/catalog/product-categories/search`,
+      {
+        headers: this.getHttpHeader(),
+        params: {...searchParamModel}
       }
     )
       .pipe(catchError(this.handleError));
