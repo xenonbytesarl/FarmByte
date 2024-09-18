@@ -19,7 +19,7 @@ import java.util.UUID;
 public interface ProductJpaRepository extends JpaRepository<ProductJpa, UUID> {
     Boolean existsByNameIgnoreCase(String value);
 
-    @Query("select pj from ProductJpa pj left join pj.categoryJpa pjcj left join pj.stockUomJpa pjsuj left join pj.purchaseUomJpa pjpuj where lower(concat(pj.name, '', coalesce(pj.reference, ''), '', pj.typeJpa, '', pjcj.name, '', coalesce(pjsuj.name, ''), coalesce(pjpuj.name, ''))) like lower(concat('%', :keyword, '%'))")
+    @Query("select pj from ProductJpa pj where lower(concat(pj.name, '', coalesce(pj.reference, ''), '', pj.typeJpa, '', pj.categoryJpa.name , '', coalesce(pj.stockUomJpa.name, ''), '', coalesce(pj.purchaseUomJpa.name, ''))) like lower(concat('%', :keyword, '%'))")
     Page<ProductJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
     Boolean existsByReferenceIgnoreCase(String reference);
