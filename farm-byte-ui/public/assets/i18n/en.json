@@ -32,6 +32,14 @@
   "product_category_tree_name": "Name",
   "product_category_tree_parent_product_category_id": "Parent",
 
+  "product_tree_title": "Products",
+  "product_tree_name": "Name",
+  "product_tree_category_id": "Category",
+  "product_tree_type": "Type",
+  "product_tree_reference": "Reference",
+  "product_tree_stock_uom_id": "Stock unit",
+  "product_tree_purchase_uom_id": "Purchase Unit",
+
   "paginator_page_report": "{first} - {last} of {totalRecords}",
   "paginator_item_per_page": "Items per page",
 
