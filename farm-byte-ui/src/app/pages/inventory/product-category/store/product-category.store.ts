@@ -4,13 +4,14 @@ import {PageModel} from "../../../../core/model/page.model";
 import {inject, signal, WritableSignal} from "@angular/core";
 import {ProductCategoryService} from "../service/product-category.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {pipe, switchMap, tap} from "rxjs";
+import {debounceTime, distinctUntilChanged, pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
-import {addEntities, withEntities} from "@ngrx/signals/entities";
+import {addEntities, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 
 type ProductCategoryState = {
   pageSize: number;
@@ -61,6 +62,8 @@ export const ProductCategoryStore = signalStore(
     ),
     searchProductCategories: rxMethod<SearchParamModel>(
       pipe(
+        debounceTime(DEBOUNCE_TIMEOUT),
+        distinctUntilChanged(),
         tap(() => patchState(store, (state) => ({...state, loading: true}))),
         switchMap((searchParamModel: SearchParamModel) =>
           productCategoryService.searchProductCategories$(searchParamModel)
@@ -69,7 +72,7 @@ export const ProductCategoryStore = signalStore(
                 next: (productCategorySuccessResponse: SuccessResponseModel<PageModel<ProductCategoryModel>>) => {
                   patchState(
                     store,
-                    addEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
+                    setAllEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
                     (state) => ({
                       ...state,
                       pageSize: productCategorySuccessResponse.data.content.pageSize,

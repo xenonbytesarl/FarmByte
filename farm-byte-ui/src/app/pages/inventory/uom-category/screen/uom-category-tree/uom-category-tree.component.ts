@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
 import {DropdownModule} from "primeng/dropdown";

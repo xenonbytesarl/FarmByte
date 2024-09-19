@@ -1,4 +1,4 @@
-import { ResolveFn } from '@angular/router';
+import {ResolveFn} from '@angular/router';
 import {inject} from "@angular/core";
 import {ProductCategoryStore} from "../store/product-category.store";
 import {DEFAULT_PAGE_VALUE, DEFAULT_SIZE_VALUE} from "../../../../core/constants/page.constant";

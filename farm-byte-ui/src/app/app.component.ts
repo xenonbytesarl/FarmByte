@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {LayoutComponent} from "./layout/layout.component";
 import {TranslateService} from "@ngx-translate/core";
 

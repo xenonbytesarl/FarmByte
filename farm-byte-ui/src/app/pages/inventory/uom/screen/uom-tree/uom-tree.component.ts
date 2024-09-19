@@ -1,4 +1,4 @@
-import {Component, computed, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {UomStore} from "../../store/uom.store";
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,

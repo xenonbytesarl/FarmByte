@@ -1,4 +1,4 @@
-import { ResolveFn } from '@angular/router';
+import {ResolveFn} from '@angular/router';
 import {inject} from "@angular/core";
 import {UomCategoryStore} from "../store/uom-category.store";
 import {

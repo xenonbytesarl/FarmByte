@@ -12,9 +12,10 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
 import {ProductCategoryModel} from "../../product-category/model/product-category.model";
 import {ProductCategoryStore} from "../../product-category/store/product-category.store";
-import {addEntities, addEntity, withEntities} from "@ngrx/signals/entities";
+import {addEntities, addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {UomStore} from "../../uom/store/uom.store";
 import {UomModel} from "../../uom/model/uom.model";
+import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 
 type ProductState = {
   pageSize: number;
@@ -67,7 +68,7 @@ export const ProductStore = signalStore(
     ),
     searchProducts: rxMethod<SearchParamModel>(
       pipe(
-        debounceTime(300),
+        debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
         tap(() => patchState(store, (state) => ({...state, loading: true}))),
         switchMap((searchParamModel: SearchParamModel) =>
@@ -77,7 +78,7 @@ export const ProductStore = signalStore(
                 next: (productSuccessResponse: SuccessResponseModel<PageModel<ProductModel>>) => {
                   patchState(
                     store,
-                    addEntities(productSuccessResponse.data.content.elements, {collection: 'product'}),
+                    setAllEntities(productSuccessResponse.data.content.elements, {collection: 'product'}),
                     (state) => ({
                       ...state,
                       pageSize: productSuccessResponse.data.content.pageSize,
