@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FindParamModel} from "../../../../core/model/find-param.model";
 import {catchError, Observable} from "rxjs";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";

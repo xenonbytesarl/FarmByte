@@ -17,18 +17,18 @@
   "navbarMenu_language_en": "Anglais",
 
   "uom_category_tree_title": "Catégorie d'unité de mesure",
-  "uom_category_tree_no_data_found": "Pas d'unité de catégorie d'unité de mesure. Cliquez sur le bouton Créer pour ajouter une.",
+  "uom_category_tree_no_data_found": "Aucune catégorie d'unité de mesure trouvée. Cliquez sur le bouton créer pour ajouter une nouvelle catégorie d'unité de mesure.",
   "uom_category_tree_name": "Nom",
 
   "uom_tree_title": "Unités de mesure",
-  "uom_tree_no_data_found": "Pas d'unite de mesure. Cliquer sur le bouton Créer pour ajouter une.",
+  "uom_tree_no_data_found": "Aucune unité de mesure trouvée. Cliquer sur le bouton Créer pour ajouter une nouvelle unité de mesure.",
   "uom_tree_name": "Nom",
   "uom_tree_uom_category_id": "Catégorie",
   "uom_tree_uom_type": "Type",
   "uom_tree_ratio": "Ratio",
 
   "product_category_tree_title": "Catégorie d'article",
-  "product_category_tree_no_data_found": "Pas de catégorié d'article. Cliquer sur le bouton Créer pour ajouter une.",
+  "product_category_tree_no_data_found": "Aucun d'article trouvé. Cliquer sur créer pour ajouter un nouvel article.",
   "product_category_tree_name": "Nom",
   "product_category_tree_parent_product_category_id": "Parent",
 
