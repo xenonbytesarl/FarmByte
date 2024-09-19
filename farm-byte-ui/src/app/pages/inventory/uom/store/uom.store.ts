@@ -12,7 +12,8 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
 import {UomCategoryModel} from "../../uom-category/model/uom-category.model";
 import {UomCategoryStore} from "../../uom-category/store/uom-category.store";
-import {addEntities, addEntity, withEntities} from "@ngrx/signals/entities";
+import {addEntities, addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 
 type UomState = {
   pageSize: number;
@@ -62,7 +63,7 @@ export const UomStore = signalStore(
     ),
     searchUoms: rxMethod<SearchParamModel>(
       pipe(
-        debounceTime(300),
+        debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
         tap(() => patchState(store, (state) => ({...state, loading: true}))),
         switchMap((searchParamModel: SearchParamModel) =>
@@ -72,7 +73,7 @@ export const UomStore = signalStore(
                 next: (uomSuccessResponse: SuccessResponseModel<PageModel<UomModel>>) => {
                   patchState(
                     store,
-                    addEntities(uomSuccessResponse.data.content.elements, {collection: 'uom'}),
+                    setAllEntities(uomSuccessResponse.data.content.elements, {collection: 'uom'}),
                     (state) => ({
                       ...state,
                       pageSize: uomSuccessResponse.data.content.pageSize,

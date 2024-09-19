@@ -1,4 +1,4 @@
-import { ResolveFn } from '@angular/router';
+import {ResolveFn} from '@angular/router';
 import {inject} from "@angular/core";
 import {ProductStore} from "../store/product.store";
 import {

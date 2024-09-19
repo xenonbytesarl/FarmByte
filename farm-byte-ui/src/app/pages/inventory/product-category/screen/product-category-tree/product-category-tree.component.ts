@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {ProductCategoryStore} from "../../store/product-category.store";
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,
