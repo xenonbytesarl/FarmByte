@@ -17,3 +17,15 @@ export const uomCategoriesResolver: ResolveFn<any> = (route, state) => {
     }
   );
 };
+
+export const uomCategoryInitFormResolver: ResolveFn<any> = (route, state) => {
+  return inject(UomCategoryStore).initForm(route.data['mode']);
+}
+
+export const uomCategoryResetSelectUomCategoryResolver: ResolveFn<any> = (route, state) => {
+  return inject(UomCategoryStore).clearSelectedUomCategory();
+}
+
+export const uomCategoryDetailResolver: ResolveFn<any> = (route, state) => {
+  return inject(UomCategoryStore).findUomCategoryById(route.params['uomCategoryId']);
+}

@@ -1,1 +1,46 @@
-<p>uom-category-form works!</p>
+<div class="flex flex-column justify-content-center align-items-center w-full">
+  <p-toast />
+  <p-card class="w-full">
+
+    <form [formGroup]="uomCategoryForm" (ngSubmit)="save()" class="w-full">
+     <div class="flex flex-row justify-content-between align-items-center w-full">
+       <p class="text-2xl w-3/12">{{'uom_category_form_title' | translate}}</p>
+       <div class="flex flex-row justify-content-end align-items-center gap-3 w-9/12">
+         @if(uomCategoryStore.formMode() === FormMode.WRITE.valueOf()) {
+           <p-button type="submit" [loading]="uomCategoryStore.loading()" size="small" class="mr-1" [disabled]="uomCategoryForm.invalid || uomCategoryForm.pending" [rounded]="true" label="{{'form_button_label_save' | translate}}">
+             @if (!uomCategoryStore.loading()) {
+               <i class="material-symbols-outlined text-base">save</i>
+             }
+           </p-button>
+           <p-button type="button" (click)="cancel()" size="small" severity="secondary" [rounded]="true" label="{{'form_button_label_cancel' | translate}}">
+             <i class="material-symbols-outlined text-base">close</i>
+           </p-button>
+         } @else {
+           <p-button type="button" routerLink="/inventory/uom-categories/new" size="small" class="mr-1" [rounded]="true" label="{{'form_button_label_create' | translate}}">
+             <i class="material-symbols-outlined text-base">add</i>
+           </p-button>
+           <p-button type="button" (click)="edit()" size="small" severity="secondary" class="mr-1" [rounded]="true" label="{{'form_button_label_edit' | translate}}">
+             <i class="material-symbols-outlined text-base">edit</i>
+           </p-button>
+         }
+       </div>
+     </div>
+      <div class="flex flex-row justify-content-start align-items-center gap-3 w-full mt-5">
+        <input type="hidden" formControlName="id">
+        <input type="hidden" formControlName="parentUomCategoryId">
+        <input type="hidden" formControlName="active">
+        <div class="w-full">
+          <label for="name">{{'uom_category_form_name_label' | translate}}</label>
+          <input type="text" id="name" pInputText formControlName="name" class="w-full" />
+          @if(name?.invalid && (name?.dirty || !name?.untouched)) {
+            @if(name?.hasError('required')) {
+              <small class="text-red-500">
+                {{ 'uom_category_form_name_required_message' | translate}}
+              </small>
+            }
+          }
+        </div>
+      </div>
+    </form>
+  </p-card>
+</div>

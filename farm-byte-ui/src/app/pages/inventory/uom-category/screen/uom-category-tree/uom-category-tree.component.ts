@@ -17,9 +17,10 @@ import {InputIconModule} from "primeng/inputicon";
 import {InputTextModule} from "primeng/inputtext";
 import {SearchParamModel} from "../../../../../core/model/search-param.model";
 import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
 import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
+import {CardModule} from "primeng/card";
 
 @Component({
   selector: 'farmbyte-uom-category-tree',
@@ -37,7 +38,8 @@ import {TreeSearchComponent} from "../../../../../shared/components/tree-search/
     NoDataFoundComponent,
     RouterLink,
     TreeHeaderComponent,
-    TreeSearchComponent
+    TreeSearchComponent,
+    CardModule
   ],
   templateUrl: './uom-category-tree.component.html',
   styleUrl: './uom-category-tree.component.scss',
@@ -45,6 +47,7 @@ import {TreeSearchComponent} from "../../../../../shared/components/tree-search/
 })
 export class UomCategoryTreeComponent {
   readonly uomCategoryStore = inject(UomCategoryStore);
+  router = inject(Router);
   treeSearch = viewChild.required(TreeSearchComponent);
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
@@ -90,7 +93,7 @@ export class UomCategoryTreeComponent {
   }
 
   edit(id: string) {
-    this.uomCategoryStore.findUomCategoryById(id);
+    this.router.navigateByUrl(`/inventory/uom-categories/details/${id}`);
   }
 
   delete(uomCategory: any) {

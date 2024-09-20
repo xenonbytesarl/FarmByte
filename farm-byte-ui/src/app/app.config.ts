@@ -8,6 +8,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {take} from "rxjs";
 import {ConfigInitService} from "./core/services/config-init.service";
+import {MessageService} from "primeng/api";
 
 const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -37,5 +38,6 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [ConfigInitService],
     },
+    MessageService
   ]
 };

@@ -1,4 +1,4 @@
-<div class="card w-full">
+<p-card class="w-full">
   <farmbyte-tree-header title="uom_category_tree_title" link="/inventory/uom-categories/new"/>
   <farmbyte-tree-search/>
   <p-table [resizableColumns]="true" [value]="uomCategoryStore.uomCategoryEntities()" styleClass="p-datatable-striped">
@@ -49,4 +49,6 @@
                    currentPageReportTemplate="{{'paginator_page_report' | translate}}" [showPageLinks]="false" [showFirstLastIcon]="true" ></p-paginator>
     </div>
   }
-</div>
+</p-card>
+
+
