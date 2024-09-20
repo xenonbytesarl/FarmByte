@@ -20,7 +20,8 @@ public interface ProductCategoryJpaRepository extends JpaRepository<ProductCateg
 
     Boolean existsByNameIgnoreCase(String value);
 
-    @Query("select pcj from ProductCategoryJpa pcj left join pcj.parentProductCategoryJpa ppcj where lower(concat(pcj.name, '', coalesce(ppcj.name, ''))) like lower(concat('%',:keyword,'%'))")
+    @Query("select productCategory from ProductCategoryJpa productCategory left join productCategory.parentProductCategoryJpa " +
+            "parentProductCategory where lower(concat(productCategory.name, '', coalesce(parentProductCategory.name, ''))) like lower(concat('%',:keyword,'%'))")
 
     Page<ProductCategoryJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
