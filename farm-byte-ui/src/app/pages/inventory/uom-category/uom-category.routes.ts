@@ -8,5 +8,12 @@ export const uomCategoryRoutes: Routes = [
     resolve: {
       uomCategories: uomCategoriesResolver
     }
+  },
+  {
+    path: 'new',
+    loadComponent:  () => import('./screen/uom-category-form/uom-category-form.component').then(m => m.UomCategoryFormComponent),
+    resolve: {
+      uomCategories: uomCategoriesResolver
+    }
   }
 ]

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, signal, viewChild} from '@angular/core';
 import {TableModule} from "primeng/table";
 import {PaginatorModule} from "primeng/paginator";
 import {DropdownModule} from "primeng/dropdown";
@@ -16,6 +16,10 @@ import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {InputTextModule} from "primeng/inputtext";
 import {SearchParamModel} from "../../../../../core/model/search-param.model";
+import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
+import {RouterLink} from "@angular/router";
+import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
+import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
 
 @Component({
   selector: 'farmbyte-uom-category-tree',
@@ -29,7 +33,11 @@ import {SearchParamModel} from "../../../../../core/model/search-param.model";
     Button,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    NoDataFoundComponent,
+    RouterLink,
+    TreeHeaderComponent,
+    TreeSearchComponent
   ],
   templateUrl: './uom-category-tree.component.html',
   styleUrl: './uom-category-tree.component.scss',
@@ -37,13 +45,21 @@ import {SearchParamModel} from "../../../../../core/model/search-param.model";
 })
 export class UomCategoryTreeComponent {
   readonly uomCategoryStore = inject(UomCategoryStore);
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
-  rows = DEFAULT_SIZE_VALUE;
-  first = 0;
+  treeSearch = viewChild.required(TreeSearchComponent);
+  pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
+  rows = signal(DEFAULT_SIZE_VALUE);
+  first = signal(0);
+  protected readonly signal = signal;
+
+  constructor() {
+    effect(() => {
+      this.applyFilter(this.treeSearch().keyword());
+    });
+  }
 
   onPageChange(event: any): void {
-    this.first = event.first;
-    this.rows = event.rows;
+    this.first.set(event.first);
+    this.rows.set(event.rows);
     this.uomCategoryStore.findUomCategories({
       page: event.page,
       size: event.rows,
@@ -62,8 +78,7 @@ export class UomCategoryTreeComponent {
     });
   }
 
-  applyFilter(event: KeyboardEvent) {
-    const keyword = (event.target as HTMLInputElement).value;
+  applyFilter(keyword: string) {
     const searchParamModel: SearchParamModel = {
       page: DEFAULT_PAGE_VALUE,
       size: DEFAULT_SIZE_VALUE,
@@ -81,4 +96,5 @@ export class UomCategoryTreeComponent {
   delete(uomCategory: any) {
     //TODO implement later
   }
+
 }

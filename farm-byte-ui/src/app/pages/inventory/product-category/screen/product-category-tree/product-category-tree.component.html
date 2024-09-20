@@ -1,22 +1,6 @@
 <div class="card w-full">
-  <div class="flex flex-row justify-content-between align-items-center  mb-3 w-full">
-    <p class="text-2xl font-bold">{{'product_category_tree_title' | translate}}</p>
-    <p-button size="small" [rounded]="true" label="{{'tree_button_label_add' | translate}}">
-      <i class="material-symbols-outlined">add</i>
-    </p-button>
-  </div>
-  <div class="flex justify-items-end align-items-center mb-3">
-    <p-iconField iconPosition="left" class="ml-auto">
-      <p-inputIcon>
-        <i class="material-symbols-outlined">search</i>
-      </p-inputIcon>
-      <input
-        pInputText
-        type="text"
-        (keyup)="applyFilter($event)"
-        placeholder="{{'tree_search_place_holder' | translate}}"/>
-    </p-iconField>
-  </div>
+  <farmbyte-tree-header title="product_category_tree_title" link="/inventory/product-categories/new"/>
+  <farmbyte-tree-search  />
   <p-table [resizableColumns]="true" [value]="productCategoryStore.productCategoryEntities()" styleClass="p-datatable-striped">
     <ng-template pTemplate="header">
       <tr>
@@ -60,12 +44,12 @@
     </ng-template>
   </p-table>
   @if(productCategoryStore.totalElements() === 0) {
-    <p class="text-gray-400 font-medium mt-5 text-center">{{'product_category_tree_no_data_found' | translate}}</p>
+    <farmbyte-no-data-found message="product_category_tree_no_data_found"/>
   } @else {
     <div class="flex align-items-center justify-content-end">
       <span class="mx-1 text-color">{{'paginator_item_per_page' | translate}}: </span>
-      <p-dropdown [options]="pageSizeOptions" optionLabel="label" optionValue="value" (onChange)="onListChange($event)" [(ngModel)]="rows" (ngModelChange)="first = 0" />
-      <p-paginator [first]="first" [rows]="rows" [totalRecords]="productCategoryStore.totalElements()" (onPageChange)="onPageChange($event)" [showCurrentPageReport]="true"
+      <p-dropdown [options]="pageSizeOptions()" optionLabel="label" optionValue="value" (onChange)="onListChange($event)" [(ngModel)]="rows" (ngModelChange)="first = signal(0)" />
+      <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="productCategoryStore.totalElements()" (onPageChange)="onPageChange($event)" [showCurrentPageReport]="true"
                    currentPageReportTemplate="{{'paginator_page_report' | translate}}" [showPageLinks]="false" [showFirstLastIcon]="true" ></p-paginator>
     </div>
   }
