@@ -44,4 +44,24 @@ export class UomCategoryService extends GlobalService {
       }
     )
       .pipe(catchError(this.handleError));
+
+  createUomCategory$ =  (uomCategory: UomCategoryModel) => <Observable<SuccessResponseModel<UomCategoryModel>>>
+
+    this.http.post<SuccessResponseModel<UomCategoryModel>>(
+      `${this.apiUrl}/catalog/uom-categories`, uomCategory,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
+
+  updateUomCategory$ =  (uomCategory: UomCategoryModel) => <Observable<SuccessResponseModel<UomCategoryModel>>>
+
+    this.http.put<SuccessResponseModel<UomCategoryModel>>(
+      `${this.apiUrl}/catalog/uom-categories/${uomCategory.id}`, uomCategory,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
 }

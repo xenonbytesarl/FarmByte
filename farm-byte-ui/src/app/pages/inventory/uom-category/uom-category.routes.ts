@@ -1,5 +1,10 @@
 import {Routes} from "@angular/router";
-import {uomCategoriesResolver} from "./resolvers/uom-category.resolver";
+import {
+  uomCategoriesResolver,
+  uomCategoryDetailResolver,
+  uomCategoryInitFormResolver, uomCategoryResetSelectUomCategoryResolver
+} from "./resolvers/uom-category.resolver";
+import {FormMode} from "../../../core/enums/form-mode.enum";
 
 export const uomCategoryRoutes: Routes = [
   {
@@ -12,8 +17,23 @@ export const uomCategoryRoutes: Routes = [
   {
     path: 'new',
     loadComponent:  () => import('./screen/uom-category-form/uom-category-form.component').then(m => m.UomCategoryFormComponent),
+    data: {
+      mode: FormMode.WRITE
+    },
     resolve: {
-      uomCategories: uomCategoriesResolver
+      uomCategoryInitForm: uomCategoryInitFormResolver,
+      uomCategoryResetSelectUomCategory: uomCategoryResetSelectUomCategoryResolver
+    }
+  },
+  {
+    path: 'details/:uomCategoryId',
+    loadComponent:  () => import('./screen/uom-category-form/uom-category-form.component').then(m => m.UomCategoryFormComponent),
+    data: {
+      mode: FormMode.READ
+    },
+    resolve: {
+      uomCategoryId: uomCategoryDetailResolver,
+      uomCategoryInitForm: uomCategoryInitFormResolver
     }
   }
 ]

@@ -14,7 +14,7 @@ import {RouterLink} from "@angular/router";
   template: `
     <div class="flex flex-row justify-content-between align-items-center  mb-3 w-full">
       <p class="text-2xl font-bold">{{title() | translate}}</p>
-      <p-button [routerLink]="link()" size="small" [rounded]="true" label="{{'tree_button_label_add' | translate}}">
+      <p-button [routerLink]="link()" size="small" [rounded]="true" label="{{'tree_button_label_save' | translate}}">
         <i class="material-symbols-outlined">add</i>
       </p-button>
     </div>

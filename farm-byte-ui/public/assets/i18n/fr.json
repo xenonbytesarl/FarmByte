@@ -43,7 +43,17 @@
   "paginator_page_report": "{first} - {last} de {totalRecords}",
   "paginator_item_per_page": "Ligne par page",
 
-  "tree_button_label_add": "Créer",
-  "tree_search_place_holder": "Rechercher..."
+  "tree_button_label_save": "Créer",
+  "tree_search_place_holder": "Rechercher...",
+
+  "uom_category_form_title": "Nouvelle catégorie d'unité de mesure",
+  "uom_category_form_name_label": "Nom",
+  "uom_category_form_name_required_message": "Le nom est obligatoire.",
+
+
+  "form_button_label_save": "Enregistrer",
+  "form_button_label_edit": "Modifier",
+  "form_button_label_cancel": "Annuler",
+  "form_button_label_create": "Créer"
 }
 
