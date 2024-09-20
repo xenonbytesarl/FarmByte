@@ -10,5 +10,13 @@ export const uomRoutes: Routes = [
       uoms: uomsResolver,
       uomCategories: uomCategoriesResolver
     }
+  },
+  {
+    path: 'new',
+    loadComponent: () => import('./screen/uom-form/uom-form.component').then(m => m.UomFormComponent),
+    resolve: {
+      uoms: uomsResolver,
+      uomCategories: uomCategoriesResolver
+    }
   }
 ]

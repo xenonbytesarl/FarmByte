@@ -8,5 +8,12 @@ export const productCategoryRoutes: Routes = [
     resolve: {
       productCategories: productCategoriesResolver
     }
+  },
+  {
+    path: 'new',
+    loadComponent: () => import('./screen/product-category-form/product-category-form.component').then(m => m.ProductCategoryFormComponent),
+    resolve: {
+      productCategories: productCategoriesResolver
+    }
   }
 ]

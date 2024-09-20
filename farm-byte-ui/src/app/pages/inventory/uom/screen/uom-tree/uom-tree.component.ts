@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, effect, inject, signal, viewChild} from '@angular/core';
 import {UomStore} from "../../store/uom.store";
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,
@@ -17,6 +17,9 @@ import {PrimeTemplate} from "primeng/api";
 import {TableModule} from "primeng/table";
 import {TranslateModule} from "@ngx-translate/core";
 import {TitleCasePipe} from "@angular/common";
+import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
+import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
+import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
 
 @Component({
   selector: 'farmbyte-uom-tree',
@@ -31,20 +34,31 @@ import {TitleCasePipe} from "@angular/common";
     PrimeTemplate,
     TableModule,
     TranslateModule,
-    TitleCasePipe
+    TitleCasePipe,
+    NoDataFoundComponent,
+    TreeHeaderComponent,
+    TreeSearchComponent
   ],
   templateUrl: './uom-tree.component.html',
   styleUrl: './uom-tree.component.scss'
 })
 export class UomTreeComponent {
   readonly uomStore = inject(UomStore);
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
-  rows = DEFAULT_SIZE_VALUE;
-  first = 0;
+  treeSearch = viewChild.required(TreeSearchComponent);
+  pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
+  rows = signal(DEFAULT_SIZE_VALUE);
+  first = signal(0);
+  protected readonly signal = signal;
+
+  constructor() {
+    effect(() => {
+      this.applyFilter(this.treeSearch().keyword());
+    });
+  }
 
   onPageChange(event: any): void {
-    this.first = event.first;
-    this.rows = event.rows;
+    this.first.set(event.first);
+    this.rows.set(event.rows);
     this.uomStore.findUoms({
       page: event.page,
       size: event.rows,
@@ -63,8 +77,7 @@ export class UomTreeComponent {
     });
   }
 
-  applyFilter(event: KeyboardEvent) {
-    const keyword = (event.target as HTMLInputElement).value;
+  applyFilter(keyword: string) {
     const searchParamModel: SearchParamModel = {
       page: DEFAULT_PAGE_VALUE,
       size: DEFAULT_SIZE_VALUE,
