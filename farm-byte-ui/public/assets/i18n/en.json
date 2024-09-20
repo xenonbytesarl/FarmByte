@@ -44,5 +44,14 @@
   "paginator_item_per_page": "Items per page",
 
   "tree_button_label_add": "New",
-  "tree_search_place_holder": "Search..."
+  "tree_search_place_holder": "Search...",
+
+  "uom_category_form_title": "New category unit of measure",
+  "uom_category_form_name_label": "Name",
+  "uom_category_form_name_required_message": "Name is required",
+
+  "form_button_label_save": "Save",
+  "form_button_label_edit": "Edit",
+  "form_button_label_cancel": "Cancel",
+  "form_button_label_create": "Create"
 }
