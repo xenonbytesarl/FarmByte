@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, signal, Signal, viewChild} from '@angular/core';
 import {ProductCategoryStore} from "../../store/product-category.store";
 import {
   DEFAULT_PAGE_SIZE_OPTIONS,
@@ -17,6 +17,9 @@ import {PrimeTemplate} from "primeng/api";
 import {TableModule} from "primeng/table";
 import {TranslateModule} from "@ngx-translate/core";
 import {ProductCategoryModel} from "../../model/product-category.model";
+import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
+import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
+import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
 
 @Component({
   selector: 'farmbyte-product-category-tree',
@@ -30,25 +33,37 @@ import {ProductCategoryModel} from "../../model/product-category.model";
     PaginatorModule,
     PrimeTemplate,
     TableModule,
-    TranslateModule
+    TranslateModule,
+    NoDataFoundComponent,
+    TreeHeaderComponent,
+    TreeSearchComponent
   ],
   templateUrl: './product-category-tree.component.html',
   styleUrl: './product-category-tree.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductCategoryTreeComponent {
+
   readonly productCategoryStore = inject(ProductCategoryStore);
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
-  rows = DEFAULT_SIZE_VALUE;
-  first = 0;
+  treeSearch = viewChild.required(TreeSearchComponent);
+  pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
+  rows = signal(DEFAULT_SIZE_VALUE);
+  first = signal(0);
+  protected readonly signal = signal;
+
+  constructor() {
+    effect(() => {
+      this.applyFilter(this.treeSearch().keyword());
+    });
+  }
 
   getProductCategoryName(productCategoryId: string): Signal<ProductCategoryModel | undefined> {
     return this.productCategoryStore.findProductCategoryById(productCategoryId);
   }
 
   onPageChange(event: any): void {
-    this.first = event.first;
-    this.rows = event.rows;
+    this.first.set(event.first);
+    this.rows.set(event.rows);
     this.productCategoryStore.findProductCategories({
       page: event.page,
       size: event.rows,
@@ -67,9 +82,8 @@ export class ProductCategoryTreeComponent {
     });
   }
 
-  applyFilter(event: KeyboardEvent) {
-    const keyword = (event.target as HTMLInputElement).value;
-    const searchParamModel: SearchParamModel = {
+  applyFilter(keyword: string) {
+   const searchParamModel: SearchParamModel = {
       page: DEFAULT_PAGE_VALUE,
       size: DEFAULT_SIZE_VALUE,
       attribute: "name",

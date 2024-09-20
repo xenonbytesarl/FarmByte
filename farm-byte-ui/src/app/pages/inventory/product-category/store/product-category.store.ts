@@ -10,7 +10,7 @@ import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
-import {addEntities, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 
 type ProductCategoryState = {
@@ -44,7 +44,7 @@ export const ProductCategoryStore = signalStore(
                 next: (productCategorySuccessResponse: SuccessResponseModel<PageModel<ProductCategoryModel>>) => {
                   patchState(
                     store,
-                    addEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
+                    setAllEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
                     (state) => ({
                     ...state,
                       pageSize: productCategorySuccessResponse.data.content.pageSize,

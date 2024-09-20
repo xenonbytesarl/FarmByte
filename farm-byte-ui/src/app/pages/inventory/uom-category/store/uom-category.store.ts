@@ -10,7 +10,7 @@ import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
-import {addEntities, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 
 type UomCategoryState = {
@@ -44,7 +44,7 @@ export const UomCategoryStore = signalStore(
                 next: (uomCategorySuccessResponse: SuccessResponseModel<PageModel<UomCategoryModel>>) => {
                   patchState(
                     store,
-                    addEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
+                    setAllEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
                     (state) => ({
                       ...state,
                       pageSize: uomCategorySuccessResponse.data.content.pageSize,
