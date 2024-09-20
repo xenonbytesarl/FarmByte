@@ -19,7 +19,8 @@ import java.util.UUID;
 public interface UomCategoryJpaRepository extends JpaRepository<UomCategoryJpa, UUID> {
     Boolean existsByName(String value);
 
-    @Query("select ucj from UomCategoryJpa ucj left join ucj.parentUomCategoryJpa pucj where lower(concat(ucj.name, '', coalesce(pucj.name, ''))) like lower(concat('%',:keyword,'%'))")
+    @Query("select uomCategory from UomCategoryJpa uomCategory left join uomCategory.parentUomCategoryJpa parentUomCategory " +
+            "where lower(concat(uomCategory.name, '', coalesce(parentUomCategory.name, ''))) like lower(concat('%',:keyword,'%'))")
     Page<UomCategoryJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
     Optional<UomCategoryJpa> findByNameIgnoreCase(String name);
