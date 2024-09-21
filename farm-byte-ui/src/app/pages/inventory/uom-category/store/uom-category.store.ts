@@ -1,7 +1,7 @@
 import {patchState, signalStore, type, withMethods, withState} from "@ngrx/signals";
 import {UomCategoryModel} from "../model/uom-category.model";
 import {PageModel} from "../../../../core/model/page.model";
-import {inject, signal, WritableSignal} from "@angular/core";
+import {inject} from "@angular/core";
 import {UomCategoryService} from "../service/uom-category.service";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {debounceTime, distinctUntilChanged, pipe, switchMap, tap} from "rxjs";
@@ -10,7 +10,7 @@ import {FindParamModel} from "../../../../core/model/find-param.model";
 import {SuccessResponseModel} from "../../../../core/model/success-response.model";
 import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
-import {addEntity, setAllEntities, setEntity, updateEntity, withEntities} from "@ngrx/signals/entities";
+import {addEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 import {MessageService} from "primeng/api";
 import {FormMode} from "../../../../core/enums/form-mode.enum";
