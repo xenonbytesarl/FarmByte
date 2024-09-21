@@ -33,6 +33,7 @@
   "product_category_tree_parent_product_category_id": "Parent",
 
   "product_tree_title": "Article",
+  "product_tree_no_data_found": "Aucun article trouvé. Cliquer sur créer pour ajouter un nouvel article.",
   "product_tree_name": "Nom",
   "product_tree_category_id": "Catégorie",
   "product_tree_type": "Type",

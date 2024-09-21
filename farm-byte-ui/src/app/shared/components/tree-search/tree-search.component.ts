@@ -4,6 +4,7 @@ import {InputIconModule} from "primeng/inputicon";
 import {InputTextModule} from "primeng/inputtext";
 import {TranslateModule} from "@ngx-translate/core";
 import {StyleClassModule} from "primeng/styleclass";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'farmbyte-tree-search',
@@ -13,13 +14,14 @@ import {StyleClassModule} from "primeng/styleclass";
     InputIconModule,
     InputTextModule,
     TranslateModule,
-    StyleClassModule
+    StyleClassModule,
+    NgClass
   ],
   template: `
     <div class="flex flex-row justify-content-end align-items-center w-full mb-3">
-      <p-iconField iconPosition="left" class="w-30rem">
+      <p-iconField iconPosition="right" class="w-30rem">
         <p-inputIcon>
-          <i class="pi pi-search"></i>
+          <i (click)="clear()" [ngClass]="searchFilter.value.length? 'pi pi-times cursor-pointer': 'pi pi-search'"></i>
         </p-inputIcon>
         <input
           pInputText
@@ -42,5 +44,10 @@ export class TreeSearchComponent {
 
   applyFilter(event: KeyboardEvent) {
     this.keyword.set((event.target as HTMLInputElement).value);
+  }
+
+  clear() {
+    this.searchFilter().nativeElement.value = '';
+    this.keyword.set('');
   }
 }
