@@ -1,10 +1,9 @@
 <a id="dropDownMenuItem_{{navbarMenu()?.label}}" (click)="toggleDropDown()"
    class="relative flex text-gray-700 py-1 px-2 cursor-pointer">
-  <div class="flex flex-row justify-content-center align-items-center gap-1">
-    <span class="hover:text-purple-700">{{navbarMenu()?.label || '' | translate }}</span>
+  <div class="flex flex-row justify-content-center align-items-center gap-1 hover:text-purple-700">
+    <span>{{navbarMenu()?.label || '' | translate }}</span>
     @if(navbarMenu()?.items?.length) {
-      <span [ngClass]="isOpen()? 'transition duration-300 -rotate-180': 'transition duration-300 rotate-180'" class="material-symbols-outlined">
-        {{isOpen()? 'keyboard_arrow_down' : 'keyboard_arrow_up'}}
+      <span [ngClass]="isOpen()? 'transition duration-300 -rotate-180 pi pi-chevron-down': 'transition duration-300 rotate-180 pi pi-chevron-up'">
       </span>
     }
   </div>

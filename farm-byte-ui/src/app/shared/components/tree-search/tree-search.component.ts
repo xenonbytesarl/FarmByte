@@ -19,7 +19,7 @@ import {StyleClassModule} from "primeng/styleclass";
     <div class="flex flex-row justify-content-end align-items-center w-full mb-3">
       <p-iconField iconPosition="left" class="w-30rem">
         <p-inputIcon>
-          <i class="material-symbols-outlined">search</i>
+          <i class="pi pi-search"></i>
         </p-inputIcon>
         <input
           pInputText
