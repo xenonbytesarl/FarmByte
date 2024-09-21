@@ -23,6 +23,7 @@ import {NoDataFoundComponent} from "../../../../../shared/components/no-data-fou
 import {
   TableColumActionButtonComponent
 } from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
+import {TableColumModel} from "../../../../../core/model/table-colum.model";
 
 @Component({
   selector: 'farmbyte-product-tree',
@@ -52,6 +53,32 @@ export class ProductTreeComponent {
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
   first = signal(0);
+  columns = signal<TableColumModel[]>([
+    {
+      name: 'reference',
+      label: 'product_tree_reference'
+    },
+    {
+      name: 'name',
+      label: 'product_tree_name'
+    },
+    {
+      name: 'type',
+      label: 'product_tree_type'
+    },
+    {
+      name: 'categoryId',
+      label: 'product_tree_category_id'
+    },
+    {
+      name: 'stockUomId',
+      label: 'product_tree_stock_uom_id'
+    },
+    {
+      name: 'purchaseUomId',
+      label: 'product_tree_purchase_uom_id'
+    }
+  ])
   protected readonly signal = signal;
 
   constructor() {

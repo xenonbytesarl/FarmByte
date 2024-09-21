@@ -23,6 +23,7 @@ import {TreeSearchComponent} from "../../../../../shared/components/tree-search/
 import {
   TableColumActionButtonComponent
 } from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
+import {TableColumModel} from "../../../../../core/model/table-colum.model";
 
 @Component({
   selector: 'farmbyte-uom-tree',
@@ -52,6 +53,24 @@ export class UomTreeComponent {
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
   first = signal(0);
+  columns = signal<TableColumModel[]>([
+    {
+      name: 'name',
+      label: 'uom_tree_name'
+    },
+    {
+      name: 'uomCategoryId',
+      label: 'uom_tree_uom_category_id'
+    },
+    {
+      name: 'uomType',
+      label: 'uom_tree_uom_type'
+    },
+    {
+      name: 'ratio',
+      label: 'uom_tree_ratio'
+    }
+  ])
   protected readonly signal = signal;
 
   constructor() {

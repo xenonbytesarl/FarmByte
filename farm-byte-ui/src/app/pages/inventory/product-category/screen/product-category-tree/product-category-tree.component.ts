@@ -23,6 +23,7 @@ import {TreeSearchComponent} from "../../../../../shared/components/tree-search/
 import {
   TableColumActionButtonComponent
 } from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
+import {TableColumModel} from "../../../../../core/model/table-colum.model";
 
 @Component({
   selector: 'farmbyte-product-category-tree',
@@ -53,6 +54,16 @@ export class ProductCategoryTreeComponent {
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
   first = signal(0);
+  columns = signal<TableColumModel[]>([
+    {
+      name: 'name',
+      label: 'product_category_tree_name'
+    },
+    {
+      name: 'Parent',
+      label: 'product_category_tree_parent_product_category_id'
+    }
+  ])
   protected readonly signal = signal;
 
   constructor() {
