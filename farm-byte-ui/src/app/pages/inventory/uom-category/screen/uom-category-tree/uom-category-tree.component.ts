@@ -21,6 +21,9 @@ import {Router, RouterLink} from "@angular/router";
 import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
 import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
 import {CardModule} from "primeng/card";
+import {
+  TableColumActionButtonComponent
+} from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
 
 @Component({
   selector: 'farmbyte-uom-category-tree',
@@ -39,7 +42,8 @@ import {CardModule} from "primeng/card";
     RouterLink,
     TreeHeaderComponent,
     TreeSearchComponent,
-    CardModule
+    CardModule,
+    TableColumActionButtonComponent
   ],
   templateUrl: './uom-category-tree.component.html',
   styleUrl: './uom-category-tree.component.scss',
