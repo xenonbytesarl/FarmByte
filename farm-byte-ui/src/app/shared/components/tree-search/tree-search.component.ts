@@ -1,4 +1,4 @@
-import {Component, ElementRef, signal, viewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, signal, viewChild} from '@angular/core';
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {InputTextModule} from "primeng/inputtext";
@@ -35,7 +35,8 @@ import {NgClass} from "@angular/common";
   `,
   styles: `
 
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeSearchComponent {
 

@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
@@ -10,7 +10,8 @@ import {TranslateModule} from "@ngx-translate/core";
   template: `
     <p class="text-gray-400 font-medium mt-5 text-center">{{ message() | translate}}</p>
   `,
-  styles: ``
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoDataFoundComponent {
   message: InputSignal<string> =  input('');
