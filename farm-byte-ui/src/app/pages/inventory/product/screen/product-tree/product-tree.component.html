@@ -4,31 +4,12 @@
   <p-table [resizableColumns]="true" [value]="productStore.productEntities()" styleClass="p-datatable-striped">
     <ng-template pTemplate="header">
       <tr>
-        <th  pSortableColumn="reference">
-          {{ 'product_tree_reference' | translate }}
-          <p-sortIcon field="reference"/>
-        </th>
-        <th  pSortableColumn="name">
-          {{ 'product_tree_name' | translate }}
-          <p-sortIcon field="name"/>
-        </th>
-        <th  pSortableColumn="type">
-          {{ 'product_tree_type' | translate }}
-          <p-sortIcon field="type"/>
-        </th>
-        <th  pSortableColumn="categoryId">
-          {{ 'product_tree_category_id' | translate }}
-          <p-sortIcon field="categoryId"/>
-        </th>
-        <th  pSortableColumn="stockUomId">
-          {{ 'product_tree_stock_uom_id' | translate }}
-          <p-sortIcon field="stockUomId"/>
-        </th>
-        <th  pSortableColumn="purchaseUomId">
-          {{ 'product_tree_purchase_uom_id' | translate }}
-          <p-sortIcon field="purchaseUomId"/>
-        </th>
-
+        @for(column of columns(); track column.name) {
+          <th  pSortableColumn="{{column.name}}">
+            {{ column.label | translate }}
+            <p-sortIcon field="{{column.name}}"/>
+          </th>
+        }
         <th></th>
       </tr>
     </ng-template>

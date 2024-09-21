@@ -24,6 +24,7 @@ import {CardModule} from "primeng/card";
 import {
   TableColumActionButtonComponent
 } from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
+import {TableColumModel} from "../../../../../core/model/table-colum.model";
 
 @Component({
   selector: 'farmbyte-uom-category-tree',
@@ -56,6 +57,12 @@ export class UomCategoryTreeComponent {
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
   first = signal(0);
+  columns = signal<TableColumModel[]>([
+    {
+      name: 'name',
+      label: 'uom_category_tree_name'
+    }
+  ])
   protected readonly signal = signal;
 
   constructor() {
