@@ -10,6 +10,7 @@ import {UomCategoryModel} from "../../model/uom-category.model";
 import {ToastModule} from "primeng/toast";
 import {FormMode} from "../../../../../core/enums/form-mode.enum";
 import {RouterLink} from "@angular/router";
+import {FormHeaderComponent} from "../../../../../shared/components/form-header/form-header.component";
 
 @Component({
   selector: 'farmbyte-uom-category-form',
@@ -22,7 +23,8 @@ import {RouterLink} from "@angular/router";
     Button,
     CardModule,
     ToastModule,
-    RouterLink
+    RouterLink,
+    FormHeaderComponent
   ],
   templateUrl: './uom-category-form.component.html',
   styleUrl: './uom-category-form.component.scss',
@@ -58,7 +60,7 @@ export class UomCategoryFormComponent {
 
   }
 
-  cancel(): void {
+  onCancel(): void {
     if(this.isCreationMode()) {
       this.uomCategoryForm.reset();
     } else {
@@ -69,7 +71,7 @@ export class UomCategoryFormComponent {
     }
   }
 
-  edit(): void {
+  onEdit(): void {
     this.uomCategoryStore.initForm(FormMode.WRITE);
     this.enableForm();
   }
