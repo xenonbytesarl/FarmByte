@@ -28,7 +28,7 @@ import {NgClass} from "@angular/common";
           type="text"
           #searchFilter
           (keyup)="applyFilter($event)"
-          class="w-full"
+          class="w-full border-round-3xl"
           placeholder="{{'tree_search_place_holder' | translate}}"/>
       </p-iconField>
     </div>
