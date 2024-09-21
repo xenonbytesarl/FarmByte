@@ -14,30 +14,30 @@ import {UomCategoryModel} from "../../uom-category/model/uom-category.model";
 import {UomCategoryStore} from "../../uom-category/store/uom-category.store";
 import {addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
+import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
+import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
+import {withFormModeStatus} from "../../../../core/store/form-mode.store";
 
 type UomState = {
-  pageSize: number;
-  totalElements: number;
-  loading: boolean;
-  error: any;
+  selectedUom: UomModel | undefined
 };
 
 const uomInitialState: UomState= {
-  pageSize: 0,
-  totalElements: 0,
-  loading: false,
-  error: null
+  selectedUom: undefined
 };
 
 export const UomStore = signalStore(
   {providedIn: 'root'},
   withState(uomInitialState),
+  withRequestStatus(),
+  withPageStatus(),
+  withFormModeStatus(),
   withEntities({ entity: type<UomModel>(), collection: 'uom' }),
   withDevtools('uomState'),
   withMethods((store, uomService = inject(UomService), uomCategoryStore =inject(UomCategoryStore))   => ({
     findUoms: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((findParamModel: FindParamModel) =>
           uomService.findUoms$(findParamModel)
             .pipe(
@@ -46,16 +46,14 @@ export const UomStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(uomSuccessResponse.data.content.elements, {collection: 'uom'}),
-                    (state) => ({
-                    ...state,
-                    pageSize: uomSuccessResponse.data.content.pageSize,
-                    totalElements: uomSuccessResponse.data.content.totalElements
-                  }));
+                    setPageSize(uomSuccessResponse.data.content.pageSize as number),
+                    setTotalElements(uomSuccessResponse.data.content.totalElements as number)
+                  );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -65,7 +63,7 @@ export const UomStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((searchParamModel: SearchParamModel) =>
           uomService.searchUoms$(searchParamModel)
             .pipe(
@@ -74,16 +72,14 @@ export const UomStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(uomSuccessResponse.data.content.elements, {collection: 'uom'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: uomSuccessResponse.data.content.pageSize,
-                      totalElements: uomSuccessResponse.data.content.totalElements
-                    }));
+                    setPageSize(uomSuccessResponse.data.content.pageSize as number),
+                    setTotalElements(uomSuccessResponse.data.content.totalElements as number)
+                  );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -91,7 +87,7 @@ export const UomStore = signalStore(
     ),
     findUomById: rxMethod<string>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((id: string) =>
           uomService.findUomById$(id)
             .pipe(
@@ -100,9 +96,9 @@ export const UomStore = signalStore(
                  patchState(store, addEntity(uom.data.content, {collection: 'uom'}));
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
