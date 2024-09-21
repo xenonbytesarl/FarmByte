@@ -2,7 +2,8 @@ import {Routes} from "@angular/router";
 import {
   uomCategoriesResolver,
   uomCategoryDetailResolver,
-  uomCategoryInitFormResolver, uomCategoryResetSelectUomCategoryResolver
+  uomCategoryInitFormResolver,
+  uomCategoryResetSelectUomCategoryResolver
 } from "./resolvers/uom-category.resolver";
 import {FormMode} from "../../../core/enums/form-mode.enum";
 
