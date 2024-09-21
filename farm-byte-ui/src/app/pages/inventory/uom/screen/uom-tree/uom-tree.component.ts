@@ -20,6 +20,9 @@ import {TitleCasePipe} from "@angular/common";
 import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
 import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
 import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
+import {
+  TableColumActionButtonComponent
+} from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
 
 @Component({
   selector: 'farmbyte-uom-tree',
@@ -37,7 +40,8 @@ import {TreeSearchComponent} from "../../../../../shared/components/tree-search/
     TitleCasePipe,
     NoDataFoundComponent,
     TreeHeaderComponent,
-    TreeSearchComponent
+    TreeSearchComponent,
+    TableColumActionButtonComponent
   ],
   templateUrl: './uom-tree.component.html',
   styleUrl: './uom-tree.component.scss'
