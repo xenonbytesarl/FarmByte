@@ -17,15 +17,14 @@ import {FormMode} from "../../../../core/enums/form-mode.enum";
 import {Router} from "@angular/router";
 import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
 import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
+import {setFormMode, withFormModeStatus} from "../../../../core/store/form-mode.store";
 
 type UomCategoryState = {
-  formMode: FormMode | undefined,
   selectedUomCategory: UomCategoryModel | undefined,
 };
 
 const uomCategoryInitialState: UomCategoryState = {
-  formMode: undefined,
-  selectedUomCategory: undefined,
+  selectedUomCategory: undefined
 };
 
 
@@ -34,6 +33,7 @@ export const UomCategoryStore = signalStore(
   withState(uomCategoryInitialState),
   withRequestStatus(),
   withPageStatus(),
+  withFormModeStatus(),
   withEntities({ entity: type<UomCategoryModel>(), collection: 'uomCategory' }),
   withDevtools('uomCategoryState'),
   withMethods((store,
@@ -151,8 +151,8 @@ export const UomCategoryStore = signalStore(
                   patchState(
                     store,
                     setEntity(uomCategorySuccessResponse.data.content, {collection: 'uomCategory'}),
+                    setFormMode(FormMode.READ),
                     (state => ({
-                      formMode: FormMode.READ,
                       selectedUomCategory: uomCategorySuccessResponse.data.content
                     }))
                   );
@@ -169,7 +169,7 @@ export const UomCategoryStore = signalStore(
       )
     ),
     initForm(mode: FormMode): void {
-      patchState(store, state => ({...state, formMode: mode}))
+      patchState(store, setFormMode(mode))
     },
     clearSelectedUomCategory(): void {
       patchState(store, state => ({...state, selectedUomCategory: undefined}))
