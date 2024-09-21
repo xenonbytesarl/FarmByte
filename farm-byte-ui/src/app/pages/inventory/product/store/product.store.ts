@@ -16,24 +16,24 @@ import {addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {UomStore} from "../../uom/store/uom.store";
 import {UomModel} from "../../uom/model/uom.model";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
+import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
+import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
+import {withFormModeStatus} from "../../../../core/store/form-mode.store";
 
 type ProductState = {
-  pageSize: number;
-  totalElements: number;
-  loading: boolean;
-  error: any;
+  selectedProduct: ProductModel | undefined
 };
 
 const productInitialState: ProductState= {
-  pageSize: 0,
-  totalElements: 0,
-  loading: false,
-  error: null
+  selectedProduct: undefined
 };
 
 export const ProductStore = signalStore(
   {providedIn: 'root'},
   withState(productInitialState),
+  withRequestStatus(),
+  withPageStatus(),
+  withFormModeStatus(),
   withEntities({ entity: type<ProductModel>(), collection: 'product' }),
   withDevtools('productState'),
   withMethods((store,
@@ -42,7 +42,7 @@ export const ProductStore = signalStore(
                uomStore = inject(UomStore))   => ({
     findProducts: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((findParamModel: FindParamModel) =>
           productService.findProducts$(findParamModel)
             .pipe(
@@ -51,16 +51,14 @@ export const ProductStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(productSuccessResponse.data.content.elements, {collection: 'product'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: productSuccessResponse.data.content.pageSize,
-                      totalElements: productSuccessResponse.data.content.totalElements
-                    }));
+                    setPageSize(productSuccessResponse.data.content.pageSize as number),
+                    setTotalElements(productSuccessResponse.data.content.totalElements as number)
+                  );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -70,7 +68,7 @@ export const ProductStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((searchParamModel: SearchParamModel) =>
           productService.searchProducts$(searchParamModel)
             .pipe(
@@ -79,16 +77,14 @@ export const ProductStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(productSuccessResponse.data.content.elements, {collection: 'product'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: productSuccessResponse.data.content.pageSize,
-                      totalElements: productSuccessResponse.data.content.totalElements
-                    }));
+                    setPageSize(productSuccessResponse.data.content.pageSize as number),
+                    setTotalElements(productSuccessResponse.data.content.totalElements as number)
+                  );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -96,7 +92,7 @@ export const ProductStore = signalStore(
     ),
     findProductById: rxMethod<string>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((id: string) =>
           productService.findProductById$(id)
             .pipe(
@@ -105,9 +101,9 @@ export const ProductStore = signalStore(
                   patchState(store, addEntity(product.data.content, {collection: 'product'}));
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
