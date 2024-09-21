@@ -10,6 +10,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,5 +38,5 @@ public interface UomRepository {
 
     Optional<Uom> findByName(@Nonnull Name name);
 
-    Optional<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType);
+    List<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType);
 }

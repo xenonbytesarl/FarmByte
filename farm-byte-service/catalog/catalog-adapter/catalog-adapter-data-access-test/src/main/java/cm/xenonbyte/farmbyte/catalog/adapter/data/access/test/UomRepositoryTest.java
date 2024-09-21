@@ -15,6 +15,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -228,10 +229,10 @@ public abstract class UomRepositoryTest {
         void should_success_when_find_uom_by_uom_category_and_uom_type_and_active() {
 
             //Given + Then
-            Optional<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(uomCategoryId, uomType);
+            List<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(uomCategoryId, uomType);
 
             //Then
-            assertThat(result.isPresent()).isTrue();
+            assertThat(result.size()).isGreaterThan(0);
 
         }
 
@@ -239,11 +240,11 @@ public abstract class UomRepositoryTest {
         void should_fail_when_find_uom_by_uom_non_existing_category_and_uom_type_and_active() {
 
             //Given + Then
-            Optional<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(
+            List<Uom> result = uomRepository.findByCategoryIdAndUomTypeAndActive(
                     new UomCategoryId(UUID.fromString("0191d7e8-4c74-74e9-a0c2-eaa9111795e5")), uomType);
 
             //Then
-            assertThat(result.isEmpty()).isTrue();
+            assertThat(result.size()).isEqualTo(0);
 
         }
     }
