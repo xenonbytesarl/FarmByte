@@ -12,31 +12,31 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
 import {setAllEntities, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
+import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
+import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
+import {withFormModeStatus} from "../../../../core/store/form-mode.store";
 
 type ProductCategoryState = {
-  pageSize: number;
-  totalElements: number;
-  loading: boolean;
-  error: any;
+  selectedProductCategory: ProductCategoryModel | undefined;
 };
 
 const productCategoryInitialState: ProductCategoryState = {
-  pageSize: 0,
-  totalElements: 0,
-  loading: false,
-  error: null
+  selectedProductCategory: undefined,
 };
 
 
 export const ProductCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(productCategoryInitialState),
+  withRequestStatus(),
+  withPageStatus(),
+  withFormModeStatus(),
   withEntities({ entity: type<ProductCategoryModel>(), collection: 'productCategory' }),
   withDevtools('productCategoryState'),
   withMethods((store, productCategoryService = inject(ProductCategoryService)) => ({
     findProductCategories: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((findParamModel: FindParamModel) =>
           productCategoryService.findProductCategories$(findParamModel)
             .pipe(
@@ -45,16 +45,14 @@ export const ProductCategoryStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
-                    (state) => ({
-                    ...state,
-                      pageSize: productCategorySuccessResponse.data.content.pageSize,
-                      totalElements: productCategorySuccessResponse.data.content.totalElements
-                  }))
+                    setPageSize(productCategorySuccessResponse.data.content.pageSize as number),
+                    setTotalElements(productCategorySuccessResponse.data.content.totalElements as number)
+                  )
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -64,7 +62,7 @@ export const ProductCategoryStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((searchParamModel: SearchParamModel) =>
           productCategoryService.searchProductCategories$(searchParamModel)
             .pipe(
@@ -73,16 +71,14 @@ export const ProductCategoryStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(productCategorySuccessResponse.data.content.elements, {collection: 'productCategory'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: productCategorySuccessResponse.data.content.pageSize,
-                      totalElements: productCategorySuccessResponse.data.content.totalElements
-                    }))
+                    setPageSize(productCategorySuccessResponse.data.content.pageSize as number),
+                    setTotalElements(productCategorySuccessResponse.data.content.totalElements as number)
+                  )
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
