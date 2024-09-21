@@ -4,10 +4,12 @@
   <p-table [resizableColumns]="true" [value]="uomCategoryStore.uomCategoryEntities()" styleClass="p-datatable-striped">
     <ng-template pTemplate="header">
       <tr>
-        <th  pSortableColumn="name">
-          {{ 'uom_category_tree_name' | translate }}
-          <p-sortIcon field="name"/>
-        </th>
+        @for(column of columns(); track column.name) {
+          <th  pSortableColumn="{{column.name}}">
+            {{ column.label | translate }}
+            <p-sortIcon field="{{column.name}}"/>
+          </th>
+        }
         <th></th>
       </tr>
     </ng-template>

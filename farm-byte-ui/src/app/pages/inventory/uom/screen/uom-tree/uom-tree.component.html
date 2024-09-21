@@ -4,22 +4,12 @@
   <p-table [resizableColumns]="true" [value]="uomStore.uomEntities()" styleClass="p-datatable-striped">
     <ng-template pTemplate="header">
       <tr>
-        <th  pSortableColumn="name">
-          {{ 'uom_tree_name' | translate }}
-          <p-sortIcon field="name"/>
-        </th>
-        <th  pSortableColumn="uomCategoryId">
-          {{ 'uom_tree_uom_category_id' | translate }}
-          <p-sortIcon field="uomCategoryId"/>
-        </th>
-        <th  pSortableColumn="uomType">
-          {{ 'uom_tree_uom_type' | translate }}
-          <p-sortIcon field="uomType"/>
-        </th>
-        <th  pSortableColumn="ratio">
-          {{ 'uom_tree_ratio' | translate }}
-          <p-sortIcon field="ratio"/>
-        </th>
+        @for(column of columns(); track column.name) {
+          <th  pSortableColumn="{{column.name}}">
+            {{ column.label | translate }}
+            <p-sortIcon field="{{column.name}}"/>
+          </th>
+        }
         <th></th>
       </tr>
     </ng-template>

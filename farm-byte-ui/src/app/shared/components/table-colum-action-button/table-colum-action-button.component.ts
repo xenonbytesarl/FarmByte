@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, model} from '@angular/core';
-import {Button} from "primeng/button";
+import {ButtonModule} from "primeng/button";
 
 @Component({
   selector: 'farmbyte-table-colum-action-button',
   standalone: true,
   imports: [
-    Button
+    ButtonModule
   ],
   template: `
     <div class="flex flex-row justify-content-end m-0 mr-2">
@@ -24,7 +24,6 @@ import {Button} from "primeng/button";
         size="small"
         (onClick)="onDelete()"/>
     </div>
-
   `,
   styles: `
   `,
