@@ -20,6 +20,9 @@ import {TranslateModule} from "@ngx-translate/core";
 import {TreeHeaderComponent} from "../../../../../shared/components/tree-header/tree-header.component";
 import {TreeSearchComponent} from "../../../../../shared/components/tree-search/tree-search.component";
 import {NoDataFoundComponent} from "../../../../../shared/components/no-data-found/no-data-found.component";
+import {
+  TableColumActionButtonComponent
+} from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
 
 @Component({
   selector: 'farmbyte-product-tree',
@@ -37,7 +40,8 @@ import {NoDataFoundComponent} from "../../../../../shared/components/no-data-fou
     TranslateModule,
     TreeHeaderComponent,
     TreeSearchComponent,
-    NoDataFoundComponent
+    NoDataFoundComponent,
+    TableColumActionButtonComponent
   ],
   templateUrl: './product-tree.component.html',
   styleUrl: './product-tree.component.scss'

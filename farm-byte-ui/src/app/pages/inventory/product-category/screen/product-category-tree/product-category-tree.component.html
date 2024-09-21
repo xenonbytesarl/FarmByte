@@ -19,22 +19,10 @@
         <td class="w-3 p-0 pl-2">{{ productCategory.name }}</td>
         <td class="w-3 p-0 pl-2">{{ getProductCategoryName(productCategory.parentProductCategoryId)()?.name }}</td>
         <td class="w-6 p-0">
-          <div class="flex flex-row justify-content-end m-0 mr-2">
-            <p-button
-              icon="pi pi-pencil"
-              [rounded]="true"
-              severity="info"
-              [text]="true"
-              size="small"
-              (onClick)="edit(productCategory.id)"/>
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              [rounded]="true"
-              [text]="true"
-              size="small"
-              (onClick)="delete(productCategory)"/>
-          </div>
+          <farmbyte-table-colum-action-button
+            (editChange)="edit(productCategory.id)"
+            (deleteChange)="delete(productCategory.id)"
+          />
         </td>
       </tr>
     </ng-template>
