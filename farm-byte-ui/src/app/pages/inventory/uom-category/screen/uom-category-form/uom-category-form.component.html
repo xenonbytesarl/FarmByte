@@ -1,4 +1,4 @@
-<div class="flex flex-column justify-content-center align-items-center w-full">
+<div class="flex flex-column justify-content-center align-items-center">
   <p-toast />
   <p-card class="w-full">
 
@@ -7,21 +7,11 @@
        <p class="text-2xl w-3/12">{{'uom_category_form_title' | translate}}</p>
        <div class="flex flex-row justify-content-end align-items-center gap-3 w-9/12">
          @if(uomCategoryStore.formMode() === FormMode.WRITE.valueOf()) {
-           <p-button type="submit" [loading]="uomCategoryStore.loading()" size="small" class="mr-1" [disabled]="uomCategoryForm.invalid || uomCategoryForm.pending" [rounded]="true" label="{{'form_button_label_save' | translate}}">
-             @if (!uomCategoryStore.loading()) {
-               <i class="material-symbols-outlined text-base">save</i>
-             }
-           </p-button>
-           <p-button type="button" (click)="cancel()" size="small" severity="secondary" [rounded]="true" label="{{'form_button_label_cancel' | translate}}">
-             <i class="material-symbols-outlined text-base">close</i>
-           </p-button>
+           <p-button type="submit" [icon]="uomCategoryStore.loading()? 'pi pi-spin pip-spinner': 'pi pi-check'"  size="small" class="font-normal mr-1" [disabled]="uomCategoryForm.invalid || uomCategoryForm.pending" [rounded]="true" label="{{'form_button_label_save' | translate}}"/>
+           <p-button type="button" (click)="cancel()" icon="pi pi-times" size="small" severity="secondary" [rounded]="true" label="{{'form_button_label_cancel' | translate}}"/>
          } @else {
-           <p-button type="button" routerLink="/inventory/uom-categories/new" size="small" class="mr-1" [rounded]="true" label="{{'form_button_label_create' | translate}}">
-             <i class="material-symbols-outlined text-base">add</i>
-           </p-button>
-           <p-button type="button" (click)="edit()" size="small" severity="secondary" class="mr-1" [rounded]="true" label="{{'form_button_label_edit' | translate}}">
-             <i class="material-symbols-outlined text-base">edit</i>
-           </p-button>
+           <p-button type="button" icon="pi pi-plus" routerLink="/inventory/uom-categories/new" size="small" class="mr-1" [rounded]="true" label="{{'form_button_label_create' | translate}}"/>
+           <p-button type="button" (click)="edit()" icon="pi pi-pencil" size="small" severity="secondary" class="mr-1" [rounded]="true" label="{{'form_button_label_edit' | translate}}"/>
          }
        </div>
      </div>

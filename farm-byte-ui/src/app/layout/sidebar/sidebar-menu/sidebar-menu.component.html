@@ -1,6 +1,6 @@
 <a (click)="onClick(sidebarMenu())"
-   [ngClass]="sidebarMenu().label === sidebarMenuStore.selectedSidebarMenu()?.label? 'border-round-2xl bg-purple-900 opacity-70': ''"
-   class="flex flex-row justify-content-start align-items-center text-white gap-2 p-3 border-round-2xl w-full  cursor-pointer hover:bg-purple-900 hover:bg-opacity-20 hover:border-round-2xl">
+   [ngClass]="sidebarMenu().label === sidebarMenuStore.selectedSidebarMenu()?.label? 'bg-purple-900 opacity-70': ''"
+   class="flex flex-row justify-content-start align-items-center text-white gap-2 p-3 w-full  cursor-pointer hover:bg-purple-900 hover:bg-opacity-20 hover:border-round-2xl">
   <span class="material-symbols-outlined">{{sidebarMenu().icon || ''}}</span>
   <span class="sm:hidden md:block">{{sidebarMenu().label || '' | translate}}</span>
 </a>
