@@ -15,12 +15,11 @@ import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 import {MessageService} from "primeng/api";
 import {FormMode} from "../../../../core/enums/form-mode.enum";
 import {Router} from "@angular/router";
+import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
 
 type UomCategoryState = {
   pageSize: number;
   totalElements: number;
-  loading: boolean;
-  error: any;
   formMode: FormMode | undefined,
   selectedUomCategory: UomCategoryModel | undefined,
 };
@@ -28,8 +27,6 @@ type UomCategoryState = {
 const uomCategoryInitialState: UomCategoryState = {
   pageSize: 0,
   totalElements: 0,
-  loading: false,
-  error: null,
   formMode: undefined,
   selectedUomCategory: undefined,
 };
@@ -38,6 +35,7 @@ const uomCategoryInitialState: UomCategoryState = {
 export const UomCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(uomCategoryInitialState),
+  withRequestStatus(),
   withEntities({ entity: type<UomCategoryModel>(), collection: 'uomCategory' }),
   withDevtools('uomCategoryState'),
   withMethods((store,
@@ -46,7 +44,7 @@ export const UomCategoryStore = signalStore(
                router = inject(Router)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((findParamModel: FindParamModel) =>
           uomCategoryService.findUomCategories$(findParamModel)
             .pipe(
@@ -63,9 +61,9 @@ export const UomCategoryStore = signalStore(
                   );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -75,7 +73,7 @@ export const UomCategoryStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((searchParamModel: SearchParamModel) =>
           uomCategoryService.searchUomCategories$(searchParamModel)
             .pipe(
@@ -92,9 +90,9 @@ export const UomCategoryStore = signalStore(
                   );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -102,7 +100,7 @@ export const UomCategoryStore = signalStore(
     ),
     findUomCategoryById: rxMethod<string>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((uomCategoryId: string) =>
           uomCategoryService.findUomCategoryById$(uomCategoryId)
             .pipe(
@@ -117,9 +115,9 @@ export const UomCategoryStore = signalStore(
                   );
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
           )
@@ -127,7 +125,7 @@ export const UomCategoryStore = signalStore(
       ),
     createUomCategory: rxMethod<UomCategoryModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((uomCategory: UomCategoryModel) =>
           uomCategoryService.createUomCategory$(uomCategory)
             .pipe(
@@ -142,13 +140,12 @@ export const UomCategoryStore = signalStore(
                     })
                   );
                   messageService.add({severity: 'success', summary: 'Info', detail: uomCategorySuccessResponse.message});
-                  router.navigate([`/inventory/uom-categories/details/${uomCategorySuccessResponse.data.content.id}`]);
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                   messageService.add({severity: 'error', summary: 'Info', detail: error as string});
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
@@ -156,7 +153,7 @@ export const UomCategoryStore = signalStore(
     ),
     updateUomCategory: rxMethod<UomCategoryModel>(
       pipe(
-        tap(() => patchState(store, (state) => ({...state, loading: true}))),
+        tap(() => patchState(store, setLoading())),
         switchMap((uomCategory: UomCategoryModel) =>
           uomCategoryService.updateUomCategory$(uomCategory)
             .pipe(
@@ -173,10 +170,10 @@ export const UomCategoryStore = signalStore(
                   messageService.add({severity: 'info', summary: 'Info', detail: uomCategorySuccessResponse.message});
                 },
                 error: (error) => {
-                  patchState(store, state => ({...state, error}));
+                  patchState(store, setError(error));
                   messageService.add({severity: 'error', summary: 'Info', detail: error as string});
                 },
-                finalize: () => patchState(store, (state) => ({...state, loading: false}))
+                finalize: () => patchState(store, setLoaded())
               })
             )
         )
