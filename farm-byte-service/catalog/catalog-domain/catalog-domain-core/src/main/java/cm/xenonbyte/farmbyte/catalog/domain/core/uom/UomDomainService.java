@@ -9,6 +9,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -81,10 +82,10 @@ public final class UomDomainService implements UomService {
             throw new UomReferenceConflictException();
         }
         //Check unique reference in category on update
-        Optional<Uom> existingUomByUomCategoryAndUomTypeAndIsActive = uomRepository.findByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType());
+        List<Uom> existingUomByUomCategoryAndUomTypeAndIsActive = uomRepository.findByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), uom.getUomType());
         if (uom.getUomType().equals(UomType.REFERENCE) &&
-                uom.getId() != null && existingUomByUomCategoryAndUomTypeAndIsActive.isPresent() &&
-                    !existingUomByUomCategoryAndUomTypeAndIsActive.get().getId().equals(uom.getId())) {
+                uom.getId() != null && existingUomByUomCategoryAndUomTypeAndIsActive.size() > 0 &&
+                    !existingUomByUomCategoryAndUomTypeAndIsActive.stream().filter(dbUom -> dbUom.getId().equals(uom.getId())).findFirst().isPresent()) {
             throw new UomReferenceConflictException();
         }
         //Check unique name on create
