@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -121,10 +122,10 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     }
 
     @Override
-    public Optional<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
+    public List<Uom> findByCategoryIdAndUomTypeAndActive(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomType uomType) {
         return uomJpaRepository.findByUomCategoryJpaAndUomTypeJpaAndActiveIsTrue(
                     UomCategoryJpa.builder().id(uomCategoryId.getValue()).build(),
                     UomTypeJpa.valueOf(uomType.name()))
-                .map(uomJpaMapper::toUom);
+                .stream().map(uomJpaMapper::toUom).toList();
     }
 }
