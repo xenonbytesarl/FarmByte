@@ -42,22 +42,29 @@ export class UomCategoryFormComponent {
   });
 
   constructor() {
+    //run to initialize form with value
     effect(() => {
       if(this.isEditionMode()) {
         this.uomCategoryForm.patchValue(this.uomCategoryStore.selectedUomCategory() as UomCategoryModel);
-        this.disableForm();
+        this.disableControl();
+      }
+    });
+
+    //run when creating new record
+    effect(() => {
+      if(!this.uomCategoryStore.loading() && this.uomCategoryStore.selectedUomCategory() === undefined) {
+        this.enableAndResetControl();
       }
     });
   }
 
   save(): void {
-    this.disableForm();
+    this.disableControl();
     if(this.isCreationMode()) {
       this.uomCategoryStore.createUomCategory({...this.uomCategoryForm.getRawValue() as UomCategoryModel});
     } else {
       this.uomCategoryStore.updateUomCategory({...this.uomCategoryForm.getRawValue() as UomCategoryModel});
     }
-
   }
 
   onCancel(): void {
@@ -67,20 +74,20 @@ export class UomCategoryFormComponent {
       this.uomCategoryForm.reset();
       this.uomCategoryForm.patchValue(this.uomCategoryStore.selectedUomCategory() as UomCategoryModel);
       this.uomCategoryStore.initForm(FormMode.READ);
-      this.disableForm();
+      this.disableControl();
     }
   }
 
   onEdit(): void {
     this.uomCategoryStore.initForm(FormMode.WRITE);
-    this.enableForm();
+    this.enableControl();
   }
 
   get name() {
     return this.uomCategoryForm.get('name');
   }
 
-  private disableForm() {
+  private disableControl() {
     Object.keys(this.uomCategoryForm.controls).forEach((key: string) => {
       const control = this.uomCategoryForm.get(key);
       if(control && control instanceof FormControl) {
@@ -89,11 +96,21 @@ export class UomCategoryFormComponent {
     });
   }
 
-  private enableForm() {
+  private enableControl() {
     Object.keys(this.uomCategoryForm.controls).forEach((key: string) => {
       const control = this.uomCategoryForm.get(key);
       if(control && control instanceof FormControl) {
         control.enable();
+      }
+    });
+  }
+
+  private enableAndResetControl() {
+    Object.keys(this.uomCategoryForm.controls).forEach((key: string) => {
+      const control = this.uomCategoryForm.get(key);
+      if(control && control instanceof FormControl) {
+        control.enable();
+        control.reset();
       }
     });
   }
