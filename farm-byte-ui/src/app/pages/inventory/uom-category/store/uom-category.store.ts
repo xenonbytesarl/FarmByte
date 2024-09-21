@@ -16,17 +16,14 @@ import {MessageService} from "primeng/api";
 import {FormMode} from "../../../../core/enums/form-mode.enum";
 import {Router} from "@angular/router";
 import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
+import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
 
 type UomCategoryState = {
-  pageSize: number;
-  totalElements: number;
   formMode: FormMode | undefined,
   selectedUomCategory: UomCategoryModel | undefined,
 };
 
 const uomCategoryInitialState: UomCategoryState = {
-  pageSize: 0,
-  totalElements: 0,
   formMode: undefined,
   selectedUomCategory: undefined,
 };
@@ -36,6 +33,7 @@ export const UomCategoryStore = signalStore(
   {providedIn: 'root'},
   withState(uomCategoryInitialState),
   withRequestStatus(),
+  withPageStatus(),
   withEntities({ entity: type<UomCategoryModel>(), collection: 'uomCategory' }),
   withDevtools('uomCategoryState'),
   withMethods((store,
@@ -53,11 +51,8 @@ export const UomCategoryStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: uomCategorySuccessResponse.data.content.pageSize,
-                      totalElements: uomCategorySuccessResponse.data.content.totalElements
-                    })
+                    setPageSize(uomCategorySuccessResponse.data.content.pageSize as number),
+                    setTotalElements(uomCategorySuccessResponse.data.content.totalElements as number)
                   );
                 },
                 error: (error) => {
@@ -82,11 +77,8 @@ export const UomCategoryStore = signalStore(
                   patchState(
                     store,
                     setAllEntities(uomCategorySuccessResponse.data.content.elements, {collection: 'uomCategory'}),
-                    (state) => ({
-                      ...state,
-                      pageSize: uomCategorySuccessResponse.data.content.pageSize,
-                      totalElements: uomCategorySuccessResponse.data.content.totalElements
-                    })
+                    setPageSize(uomCategorySuccessResponse.data.content.pageSize as number),
+                    setTotalElements(uomCategorySuccessResponse.data.content.totalElements as number)
                   );
                 },
                 error: (error) => {
@@ -134,10 +126,7 @@ export const UomCategoryStore = signalStore(
                   patchState(
                     store,
                     addEntity(uomCategorySuccessResponse.data.content, {collection: 'uomCategory'}),
-                    (state) => ({
-                      ...state,
-                      totalElements: state.totalElements + 1
-                    })
+                    setTotalElements(store.totalElements() + 1 as number)
                   );
                   messageService.add({severity: 'success', summary: 'Info', detail: uomCategorySuccessResponse.message});
                 },
