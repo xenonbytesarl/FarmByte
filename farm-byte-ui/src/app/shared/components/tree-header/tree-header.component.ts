@@ -1,4 +1,4 @@
-import {Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {Button} from "primeng/button";
 import {TranslateModule} from "@ngx-translate/core";
 import {RouterLink} from "@angular/router";
@@ -17,7 +17,8 @@ import {RouterLink} from "@angular/router";
       <p-button [routerLink]="link()" icon="pi pi-plus" size="small" [rounded]="true" label="{{'tree_button_label_save' | translate}}"/>
     </div>
   `,
-  styles: ``
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeHeaderComponent {
   title: InputSignal<string> =  input('');
