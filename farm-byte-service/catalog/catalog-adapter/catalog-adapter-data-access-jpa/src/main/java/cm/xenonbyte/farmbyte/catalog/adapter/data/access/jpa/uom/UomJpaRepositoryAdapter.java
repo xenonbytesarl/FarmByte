@@ -111,7 +111,7 @@ public class UomJpaRepositoryAdapter implements UomRepository {
         UomJpa oldUomJpa = uomJpaMapper.toUomJpa(oldUom);
         UomJpa newUomJpa = uomJpaMapper.toUomJpa(newUom);
         uomJpaMapper.copyNewToOldUom(oldUomJpa, newUomJpa);
-        return uomJpaMapper.toUom(oldUomJpa);
+        return uomJpaMapper.toUom(uomJpaRepository.save(oldUomJpa));
     }
 
     @Override
