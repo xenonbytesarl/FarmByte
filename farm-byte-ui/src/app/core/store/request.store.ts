@@ -2,11 +2,11 @@ import {signalStoreFeature, withState} from "@ngrx/signals";
 
 type RequestState = {
   loading: boolean;
-  error?: any;
+  error: any;
 }
 
 function withRequestStatus() {
-  return signalStoreFeature(withState<RequestState>({loading: false}));
+  return signalStoreFeature(withState<RequestState>({loading: false, error: undefined}));
 }
 
 function setLoading(): Partial<RequestState> {

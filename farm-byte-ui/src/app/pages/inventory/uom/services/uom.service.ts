@@ -41,4 +41,24 @@ export class UomService extends GlobalService {
       }
     )
       .pipe(catchError(this.handleError));
+
+  createUom$ =  (uom: UomModel) => <Observable<SuccessResponseModel<UomModel>>>
+
+    this.http.post<SuccessResponseModel<UomModel>>(
+      `${this.apiUrl}/catalog/uoms`, uom,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
+
+  updateUom$ =  (uom: UomModel) => <Observable<SuccessResponseModel<UomModel>>>
+
+    this.http.put<SuccessResponseModel<UomModel>>(
+      `${this.apiUrl}/catalog/uoms/${uom.id}`, uom,
+      {
+        headers: this.getHttpHeader()
+      }
+    )
+      .pipe(catchError(this.handleError));
 }

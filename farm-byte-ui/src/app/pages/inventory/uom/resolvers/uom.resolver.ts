@@ -7,6 +7,7 @@ import {
 } from "../../../../core/constants/page.constant";
 import {UomStore} from "../store/uom.store";
 
+
 export const uomsResolver: ResolveFn<any> = (route, state) => {
   return inject(UomStore).findUoms(
     {
@@ -17,3 +18,7 @@ export const uomsResolver: ResolveFn<any> = (route, state) => {
     }
   );
 };
+
+export const uomFindByIdResolver: ResolveFn<any> = (route, state) => {
+  return inject(UomStore).findUomById(route.params['uomId']);
+}

@@ -38,8 +38,7 @@ export const UomCategoryStore = signalStore(
   withDevtools('uomCategoryState'),
   withMethods((store,
                uomCategoryService = inject(UomCategoryService),
-               messageService = inject(MessageService),
-               router = inject(Router)) => ({
+               messageService = inject(MessageService)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(
         tap(() => patchState(store, setLoading())),

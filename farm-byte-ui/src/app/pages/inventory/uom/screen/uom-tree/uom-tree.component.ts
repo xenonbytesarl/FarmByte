@@ -24,6 +24,8 @@ import {
   TableColumActionButtonComponent
 } from "../../../../../shared/components/table-colum-action-button/table-colum-action-button.component";
 import {TableColumModel} from "../../../../../core/model/table-colum.model";
+import {CardModule} from "primeng/card";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'farmbyte-uom-tree',
@@ -42,13 +44,15 @@ import {TableColumModel} from "../../../../../core/model/table-colum.model";
     NoDataFoundComponent,
     TreeHeaderComponent,
     TreeSearchComponent,
-    TableColumActionButtonComponent
+    TableColumActionButtonComponent,
+    CardModule
   ],
   templateUrl: './uom-tree.component.html',
   styleUrl: './uom-tree.component.scss'
 })
 export class UomTreeComponent {
   readonly uomStore = inject(UomStore);
+  readonly router = inject(Router);
   treeSearch = viewChild.required(TreeSearchComponent);
   pageSizeOptions = signal(DEFAULT_PAGE_SIZE_OPTIONS);
   rows = signal(DEFAULT_SIZE_VALUE);
@@ -112,7 +116,7 @@ export class UomTreeComponent {
   }
 
   edit(id: string) {
-    this.uomStore.findUomById(id);
+    this.router.navigateByUrl(`/inventory/uoms/edit/${id}`);
   }
 
   delete(uom: any) {
