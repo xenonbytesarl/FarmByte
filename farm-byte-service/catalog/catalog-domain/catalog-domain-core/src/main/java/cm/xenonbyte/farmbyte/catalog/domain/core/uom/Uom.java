@@ -70,14 +70,12 @@ public final class Uom extends BaseEntity<UomId> {
     public void initiate() {
         if(uomType.equals(UomType.REFERENCE)) {
             ratio = Ratio.of(Ratio.REFERENCE);
-        } else {
-            validateRatio();
         }
         setId(new UomId(UUID.randomUUID()));
         active = Active.with(true);
     }
 
-    private void validateRatio() {
+    public void validate() {
         if(ratio == null) {
             throw new IllegalArgumentException(UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE);
         }
