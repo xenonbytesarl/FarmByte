@@ -32,8 +32,7 @@ import {FormHeaderComponent} from "../../../../../shared/components/form-header/
 })
 export class UomCategoryFormComponent {
 
-  uomCategoryStore = inject(UomCategoryStore);
-  protected readonly FormMode = FormMode;
+  readonly uomCategoryStore = inject(UomCategoryStore);
   uomCategoryForm = inject(FormBuilder).group({
     id: [''],
     name: ['', [Validators.required]],
@@ -116,12 +115,10 @@ export class UomCategoryFormComponent {
   }
 
   private isCreationMode(): boolean {
-    return this.uomCategoryStore.selectedUomCategory() === undefined
-      && this.uomCategoryStore.formMode() === FormMode.WRITE;
+    return this.uomCategoryStore.selectedUomCategory() === undefined;
   }
 
   private isEditionMode(): boolean {
-    return this.uomCategoryStore.selectedUomCategory() !== undefined
-      && this.uomCategoryStore.formMode() === FormMode.READ;
+    return this.uomCategoryStore.selectedUomCategory() !== undefined;
   }
 }
