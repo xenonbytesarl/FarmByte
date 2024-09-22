@@ -51,6 +51,16 @@
   "uom_category_form_name_label": "Name",
   "uom_category_form_name_required_message": "Name is required",
 
+  "uom_form_title": "New unit of measure",
+  "uom_form_name_label": "Name",
+  "uom_form_name_required_message": "Name is required.",
+  "uom_form_uom_category_id_label": "Category",
+  "uom_form_uom_category_id_required_message": "Category is required",
+  "uom_form_uom_type_label": "Type",
+  "uom_form_uom_type_required_message": "Type is required.",
+  "uom_form_ratio_label": "Ratio",
+  "uom_form_active_label": "Active",
+
   "form_button_label_save": "Save",
   "form_button_label_edit": "Edit",
   "form_button_label_cancel": "Cancel",

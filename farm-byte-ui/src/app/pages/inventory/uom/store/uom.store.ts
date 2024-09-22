@@ -12,11 +12,11 @@ import {withDevtools} from "@angular-architects/ngrx-toolkit";
 import {SearchParamModel} from "../../../../core/model/search-param.model";
 import {UomCategoryModel} from "../../uom-category/model/uom-category.model";
 import {UomCategoryStore} from "../../uom-category/store/uom-category.store";
-import {addEntity, setAllEntities, withEntities} from "@ngrx/signals/entities";
+import {addEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/entities";
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
 import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
-import {withFormModeStatus} from "../../../../core/store/form-mode.store";
+import {MessageService} from "primeng/api";
 
 type UomState = {
   selectedUom: UomModel | undefined
@@ -31,13 +31,15 @@ export const UomStore = signalStore(
   withState(uomInitialState),
   withRequestStatus(),
   withPageStatus(),
-  withFormModeStatus(),
   withEntities({ entity: type<UomModel>(), collection: 'uom' }),
   withDevtools('uomState'),
-  withMethods((store, uomService = inject(UomService), uomCategoryStore =inject(UomCategoryStore))   => ({
+  withMethods((store,
+               uomService = inject(UomService),
+               uomCategoryStore = inject(UomCategoryStore),
+               messageService = inject(MessageService))   => ({
     findUoms: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((findParamModel: FindParamModel) =>
           uomService.findUoms$(findParamModel)
             .pipe(
@@ -63,7 +65,7 @@ export const UomStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((searchParamModel: SearchParamModel) =>
           uomService.searchUoms$(searchParamModel)
             .pipe(
@@ -87,16 +89,71 @@ export const UomStore = signalStore(
     ),
     findUomById: rxMethod<string>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((id: string) =>
           uomService.findUomById$(id)
             .pipe(
               tapResponse({
-                next: (uom: SuccessResponseModel<UomModel>) => {
-                 patchState(store, addEntity(uom.data.content, {collection: 'uom'}));
+                next: (uomSuccessResponse: SuccessResponseModel<UomModel>) => {
+                 patchState(store, (state)=>({
+                   ...state,
+                   selectedUom: uomSuccessResponse.data.content
+                 }));
                 },
                 error: (error) => {
                   patchState(store, setError(error));
+                },
+                finalize: () => patchState(store, setLoaded())
+              })
+            )
+        )
+      )
+    ),
+    createUom: rxMethod<UomModel>(
+      pipe(
+        tap(() => patchState(store, setLoading(), setError(undefined))),
+        switchMap((uom: UomModel) =>
+          uomService.createUom$(uom)
+            .pipe(
+              tapResponse({
+                next: (uomSuccessResponse: SuccessResponseModel<UomModel>) => {
+                  patchState(
+                    store,
+                    addEntity(uomSuccessResponse.data.content, {collection: 'uom'}),
+                    setTotalElements(store.totalElements() + 1 as number)
+                  );
+                  messageService.add({severity: 'success', summary: 'Info', detail: uomSuccessResponse.message});
+                },
+                error: (error) => {
+                  patchState(store, setError(error));
+                  messageService.add({severity: 'error', summary: 'Info', detail: error as string});
+                },
+                finalize: () => patchState(store, setLoaded())
+              })
+            )
+        )
+      )
+    ),
+    updateUom: rxMethod<UomModel>(
+      pipe(
+        tap(() => patchState(store, setLoading(), setError(undefined))),
+        switchMap((uom: UomModel) =>
+          uomService.updateUom$(uom)
+            .pipe(
+              tapResponse({
+                next: (uomSuccessResponse: SuccessResponseModel<UomModel>) => {
+                  patchState(
+                    store,
+                    setEntity(uomSuccessResponse.data.content, {collection: 'uom'}),
+                    (state => ({
+                      selectedUom: uomSuccessResponse.data.content
+                    }))
+                  );
+                  messageService.add({severity: 'info', summary: 'Info', detail: uomSuccessResponse.message});
+                },
+                error: (error) => {
+                  patchState(store, setError(error));
+                  messageService.add({severity: 'error', summary: 'Info', detail: error as string});
                 },
                 finalize: () => patchState(store, setLoaded())
               })

@@ -1,5 +1,5 @@
 import {Routes} from "@angular/router";
-import {uomsResolver} from "./resolvers/uom.resolver";
+import {uomFindByIdResolver, uomsResolver} from "./resolvers/uom.resolver";
 import {uomCategoriesResolver} from "../uom-category/resolvers/uom-category.resolver";
 
 export const uomRoutes: Routes = [
@@ -13,10 +13,17 @@ export const uomRoutes: Routes = [
   },
   {
     path: 'new',
-    loadComponent: () => import('./screen/uom-form/uom-form.component').then(m => m.UomFormComponent),
+    loadComponent: () => import('./screen/uom-form-new/uom-form-new.component').then(m => m.UomFormNewComponent),
     resolve: {
-      uoms: uomsResolver,
       uomCategories: uomCategoriesResolver
+    }
+  },
+  {
+    path: 'edit/:uomId',
+    loadComponent: () => import('./screen/uom-form-edit/uom-form-edit.component').then(m => m.UomFormEditComponent),
+    resolve: {
+      uomCategories: uomCategoriesResolver,
+      uomFindById: uomFindByIdResolver
     }
   }
 ]
