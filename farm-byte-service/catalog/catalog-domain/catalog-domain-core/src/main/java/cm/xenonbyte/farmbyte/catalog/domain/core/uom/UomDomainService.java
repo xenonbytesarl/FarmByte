@@ -35,6 +35,7 @@ public final class UomDomainService implements UomService {
         verifyUomCategory(uom);
         validateUom(uom);
         uom.initiate();
+        uom.validate();
         return uomRepository.save(uom);
     }
 
@@ -62,6 +63,7 @@ public final class UomDomainService implements UomService {
     public Uom updateUom(@Nonnull UomId uomId, @Nonnull Uom uomToUpdated) {
         Optional<Uom> oldUom = uomRepository.findById(uomId);
         if(oldUom.isPresent()) {
+            uomToUpdated.validate();
             verifyUomCategory(uomToUpdated);
             validateUom(uomToUpdated);
             return uomRepository.update(oldUom.get(), uomToUpdated);
