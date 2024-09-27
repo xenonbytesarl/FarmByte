@@ -1,14 +1,14 @@
-import WebNav from "@/components/WebNav";
-import MobileNav from "@/components/MobileNav.tsx";
+import WebNavbar from "@/layouts/navbar/WebNavbar.tsx";
+import MobileNavbar from "@/layouts/navbar/MobileNavbar.tsx";
 
 const Navbar = () => {
     return (
         <>
             <div className="hidden md:block">
-                <WebNav/>
+                <WebNavbar/>
             </div>
             <div className="md:hidden">
-                <MobileNav/>
+                <MobileNavbar/>
             </div>
         </>
     );

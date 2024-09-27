@@ -3,9 +3,9 @@
 const Sidebar = () => {
     return (
         <>
-            <div className="flex flex-col bg-amber-800 w-72 min-h-screen py-5 text-white">
+            <div className="flex flex-col bg-amber-800 min-h-screen py-3 w-72 text-white">
                 <div className="flex flex-row justify-between items-center px-3 mb-5 w-full">
-                    <div className=" flex flex-row justify-between items-center  py-5 w-[95%] border-b-2 border-amber-700">
+                    <div className=" flex flex-row justify-between items-center w-[95%]">
                         <p className="text-2xl font-medium">FarmByte.cm</p>
                         <span className="material-symbols-outlined cursor-pointer rounded-full">menu</span>
                     </div>

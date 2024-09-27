@@ -1,4 +1,4 @@
-const MobileNav = () => {
+const MobileNavbar = () => {
     return (
         <>
         <div>MOBILE NAV</div>
@@ -6,4 +6,4 @@ const MobileNav = () => {
     );
 }
 
-export default MobileNav;
+export default MobileNavbar;
