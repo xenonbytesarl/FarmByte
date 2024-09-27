@@ -1,5 +1,5 @@
 import {Routes} from "@angular/router";
-import {uomsResolver} from "../uom/resolvers/uom.resolver";
+import {findUomsResolver} from "../uom/resolvers/uom.resolver";
 import {productsResolver} from "./resolver/product.resolver";
 import {productCategoriesResolver} from "../product-category/resolvers/product-category.resolver";
 
@@ -10,7 +10,7 @@ export const productRoutes: Routes = [
     resolve: {
       products: productsResolver,
       productCategories: productCategoriesResolver,
-      uoms: uomsResolver
+      uoms: findUomsResolver
     }
   }
 ]

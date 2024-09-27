@@ -104,7 +104,7 @@ export class UomCategoryTreeComponent {
   }
 
   edit(id: string) {
-    this.router.navigateByUrl(`/inventory/uom-categories/details/${id}`);
+    this.router.navigateByUrl(`/inventory/uom-categories/edit/${id}`);
   }
 
   delete(uomCategory: any) {

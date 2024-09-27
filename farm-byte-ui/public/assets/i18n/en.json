@@ -1,5 +1,4 @@
 {
-
   "sidebarMenu_dashboard": "Dashboard",
   "sidebarMenu_inventory": "Inventory",
 
@@ -47,11 +46,13 @@
   "tree_button_label_add": "New",
   "tree_search_place_holder": "Search...",
 
-  "uom_category_form_title": "New category unit of measure",
+  "uom_category_form_new_title": "New category unit of measure",
+  "uom_category_form_edit_title": "Category unit of measure",
   "uom_category_form_name_label": "Name",
   "uom_category_form_name_required_message": "Name is required",
 
-  "uom_form_title": "New unit of measure",
+  "uom_form_new_title": "New unit of measure",
+  "uom_form_edit_title": "Unit of measure",
   "uom_form_name_label": "Name",
   "uom_form_name_required_message": "Name is required.",
   "uom_form_uom_category_id_label": "Category",
