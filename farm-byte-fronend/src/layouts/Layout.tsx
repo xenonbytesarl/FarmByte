@@ -1,6 +1,7 @@
 import {ReactNode} from "react";
-import Navbar from "@/layouts/Navbar.tsx";
 import Sidebar from "@/layouts/Sidebar.tsx";
+import WebNav from "@/components/WebNav.tsx";
+import MobileNav from "@/components/MobileNav.tsx";
 
 type Props = {
     children: ReactNode;
@@ -9,13 +10,20 @@ type Props = {
 const Layout = ({ children }: Props) => {
     return (
         <>
-            <div className="flex flex-col min-h-screen">
-                <Navbar/>
-                <div className=" md:hidden container mx-auto flex-1 py-10">
-                    {children}
-                </div>
+            <div className="flex flex-row min-h-screen">
                 <div className="hidden md:block">
-                    <Sidebar/>
+                    <div className="flex flex-row">
+                        <Sidebar/>
+                        <div className="flex flex-col min-h-screen">
+                            <WebNav/>
+                            <div className="container mx-auto flex-1 py-10">
+                                {children}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="md:hidden">
+                    <MobileNav/>
                     <div className="container mx-auto flex-1 py-10">
                         {children}
                     </div>
