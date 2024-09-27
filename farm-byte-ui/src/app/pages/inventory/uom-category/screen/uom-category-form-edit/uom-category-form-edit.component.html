@@ -3,15 +3,15 @@
   <p-card class="w-full">
 
     <form [formGroup]="uomCategoryForm" (ngSubmit)="save()" class="w-full">
-       <farmbyte-form-header
-         [formMode]="uomCategoryStore.formMode()"
-         [loading]="uomCategoryStore.loading()"
-         [disabledSaveBtn]="uomCategoryForm.invalid || uomCategoryForm.pending"
-         [newRecordLink]="'/inventory/uom-categories/new'"
-         [formTitle]="'uom_category_form_title'"
-         (editChange)="onEdit()"
-         (cancelChange)="onCancel()"
-       />
+      <farmbyte-form-header
+        [formMode]="formMode"
+        [loading]="uomCategoryStore.loading()"
+        [disabledSaveBtn]="uomCategoryForm.invalid || uomCategoryForm.pending"
+        [newRecordLink]="'/inventory/uom-categories/new'"
+        [formTitle]="'uom_category_form_edit_title'"
+        (editChange)="onEdit()"
+        (cancelChange)="onCancel()"
+      />
 
       <div class="flex flex-row justify-content-start align-items-center gap-3 w-full mt-5">
         <input type="hidden" formControlName="id">
@@ -32,3 +32,4 @@
     </form>
   </p-card>
 </div>
+

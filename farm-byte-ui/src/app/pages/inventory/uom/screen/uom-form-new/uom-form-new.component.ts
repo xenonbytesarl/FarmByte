@@ -1,6 +1,15 @@
-import {ChangeDetectionStrategy, Component, effect, inject, OnInit} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  viewChild,
+  ViewChild
+} from '@angular/core';
 import {UomStore} from "../../store/uom.store";
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
 import {CardModule} from "primeng/card";
 import {ToastModule} from "primeng/toast";
 import {FormHeaderComponent} from "../../../../../shared/components/form-header/form-header.component";
@@ -13,9 +22,13 @@ import {DropdownModule} from "primeng/dropdown";
 import {UomType} from "../../enums/uom-type.enum";
 import {InputNumberModule} from "primeng/inputnumber";
 import {CheckboxModule} from "primeng/checkbox";
-import {UomModel} from "../../model/uom.model";
 import {AutocompleteEventModel} from "../../../../../core/model/autocomplete-event.model";
 import {FormMode} from "../../../../../core/enums/form-mode.enum";
+import {JsonPipe} from "@angular/common";
+import {UomTreeComponent} from "../uom-tree/uom-tree.component";
+import {concat, concatMap, delayWhen, finalize, flatMap, interval, map, of, switchMap, takeWhile, tap} from "rxjs";
+import {tapResponse} from "@ngrx/operators";
+import {UomCategoryModel} from "../../../uom-category/model/uom-category.model";
 
 @Component({
   selector: 'farmbyte-uom-form',
@@ -32,18 +45,20 @@ import {FormMode} from "../../../../../core/enums/form-mode.enum";
     FloatLabelModule,
     DropdownModule,
     InputNumberModule,
-    CheckboxModule
+    CheckboxModule,
+    JsonPipe
   ],
   templateUrl: './uom-form-new.component.html',
   styleUrl: './uom-form-new.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UomFormNewComponent implements OnInit{
+export class UomFormNewComponent {
+
+  uomForm = viewChild<NgForm>('uomForm');
+
   readonly uomStore = inject(UomStore);
   readonly uomCategoryStore = inject(UomCategoryStore);
-  readonly fb = inject(FormBuilder);
   filteredResults: any[] = [];
-  uomForm!: FormGroup;
   formMode: FormMode = FormMode.WRITE;
 
   uomTypeOptions = [
@@ -52,56 +67,28 @@ export class UomFormNewComponent implements OnInit{
     {value: UomType.REFERENCE, label: 'Reference'}
   ];
 
-  constructor() {
-    effect(() => {
-      //run when form is loading
-      if(this.uomStore.loading()) {
-        this.disableControl();
-      }
-      //run when form is not loading and there is an error
-      if(!this.uomStore.loading() && this.uomStore.error() !== undefined) {
-        this.enableControl();
-      }
-      //run when form is not loading and there is no error
-      if(!this.uomStore.loading() && this.uomStore.error() === undefined) {
-        this.resetControl();
-      }
-    }, );
-  }
-
-  ngOnInit() {
-    this.initForm();
-  }
-
-  initForm(): void {
-    this.uomForm = this.fb.nonNullable.group({
-      id: [''],
-      name: ['', [Validators.required]],
-      uomCategoryId: ['', [Validators.required]],
-      uomType: ['', [Validators.required]],
-      ratio: [0],
-      active: [false]
-    })
-  }
-
   save(): void {
-    this.uomStore.createUom({...this.uomForm.getRawValue() as UomModel});
+    //this.uomStore.createUom({...this.uomForm()?.value})
+
+    of(true)
+      .pipe(
+        switchMap(() => {
+          return of(this.uomStore.createUom({...this.uomForm()?.value}))
+            .pipe(
+              tapResponse({
+                next: (result: any) => {
+                  console.log('Reset The form', result);
+                  this.uomForm()?.resetForm();
+                },
+                error: (error) => {}
+              })
+            )
+        })
+      ).subscribe(() => console.log('Reset the form terminé'));
   }
 
   onCancel() {
-    this.resetControl();
-  }
-
-  get name() {
-    return this.uomForm.get('name');
-  }
-
-  get uomCategoryId() {
-    return this.uomForm.get('uomCategoryId');
-  }
-
-  get uomType() {
-    return this.uomForm.get('uomType');
+    this.uomForm()?.resetForm();
   }
 
   filterUomCategory(event: AutocompleteEventModel) {
@@ -117,29 +104,4 @@ export class UomFormNewComponent implements OnInit{
 
     this.filteredResults = filtered;
   }
-
-  private disableControl() {
-
-    Object.keys(this.uomForm.controls).forEach((key: string) => {
-    const control = this.uomForm.get(key);
-      if(control && control instanceof FormControl) {
-        control.disable();
-      }
-    });
-  }
-
-  private enableControl() {
-
-    Object.keys(this.uomForm.controls).forEach((key: string) => {
-      const control = this.uomForm.get(key);
-      if(control && control instanceof FormControl) {
-        control.enable();
-      }
-    });
-  }
-
-  private resetControl() {
-    this.initForm();
-  }
-
 }

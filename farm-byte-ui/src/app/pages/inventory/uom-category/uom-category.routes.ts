@@ -1,40 +1,25 @@
 import {Routes} from "@angular/router";
 import {
-  uomCategoriesResolver,
-  uomCategoryDetailResolver,
-  uomCategoryInitFormResolver,
-  uomCategoryResetSelectUomCategoryResolver
+  findUomCategoriesResolver, findUomCategoryByIdResolver,
 } from "./resolvers/uom-category.resolver";
-import {FormMode} from "../../../core/enums/form-mode.enum";
 
 export const uomCategoryRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./screen/uom-category-tree/uom-category-tree.component').then(m => m.UomCategoryTreeComponent),
     resolve: {
-      uomCategories: uomCategoriesResolver
+      uomCategories: findUomCategoriesResolver
     }
   },
   {
     path: 'new',
-    loadComponent:  () => import('./screen/uom-category-form/uom-category-form.component').then(m => m.UomCategoryFormComponent),
-    data: {
-      mode: FormMode.WRITE
-    },
-    resolve: {
-      uomCategoryInitForm: uomCategoryInitFormResolver,
-      uomCategoryResetSelectUomCategory: uomCategoryResetSelectUomCategoryResolver
-    }
+    loadComponent:  () => import('./screen/uom-category-form-new/uom-category-form-new.component').then(m => m.UomCategoryFormNewComponent)
   },
   {
-    path: 'details/:uomCategoryId',
-    loadComponent:  () => import('./screen/uom-category-form/uom-category-form.component').then(m => m.UomCategoryFormComponent),
-    data: {
-      mode: FormMode.READ
-    },
+    path: 'edit/:uomCategoryId',
+    loadComponent:  () => import('./screen/uom-category-form-edit/uom-category-form-edit.component').then(m => m.UomCategoryFormEditComponent),
     resolve: {
-      uomCategoryId: uomCategoryDetailResolver,
-      uomCategoryInitForm: uomCategoryInitFormResolver
+      uomCategory: findUomCategoryByIdResolver
     }
   }
 ]

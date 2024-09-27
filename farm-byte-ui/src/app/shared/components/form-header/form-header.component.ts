@@ -39,7 +39,7 @@ export class FormHeaderComponent {
   protected readonly FormMode = FormMode;
   formMode = input<FormMode>();
   loading = input<boolean>();
-  disabledSaveBtn = input<boolean>(false);
+  disabledSaveBtn = input<boolean | null>(false);
   newRecordLink = input<string>('');
   formTitle = input<string>('');
   edit = model<number>(0);

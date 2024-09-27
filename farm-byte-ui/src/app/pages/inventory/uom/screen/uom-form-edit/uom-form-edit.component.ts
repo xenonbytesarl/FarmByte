@@ -1,9 +1,8 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, signal} from '@angular/core';
 import {UomStore} from "../../store/uom.store";
 import {UomCategoryStore} from "../../../uom-category/store/uom-category.store";
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormsModule, NgForm} from "@angular/forms";
 import {UomType} from "../../enums/uom-type.enum";
-import {UomModel} from "../../model/uom.model";
 import {AutocompleteEventModel} from "../../../../../core/model/autocomplete-event.model";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CardModule} from "primeng/card";
@@ -17,6 +16,8 @@ import {ToastModule} from "primeng/toast";
 import {TranslateModule} from "@ngx-translate/core";
 import {FormMode} from "../../../../../core/enums/form-mode.enum";
 import {UomCategoryModel} from "../../../uom-category/model/uom-category.model";
+import {JsonPipe} from "@angular/common";
+
 
 @Component({
   selector: 'farmbyte-uom-form-edit',
@@ -30,88 +31,44 @@ import {UomCategoryModel} from "../../../uom-category/model/uom-category.model";
     InputNumberModule,
     InputTextModule,
     PaginatorModule,
-    ReactiveFormsModule,
     ToastModule,
-    TranslateModule
+    TranslateModule,
+    FormsModule,
+    JsonPipe
   ],
   templateUrl: './uom-form-edit.component.html',
-  styleUrl: './uom-form-edit.component.scss'
+  styleUrl: './uom-form-edit.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UomFormEditComponent implements OnInit {
+export class UomFormEditComponent {
   readonly uomStore = inject(UomStore);
   readonly uomCategoryStore = inject(UomCategoryStore);
-  readonly fb = inject(FormBuilder);
-  filteredResults: UomCategoryModel[] = [];
-  uomForm!: FormGroup;
   formMode: FormMode = FormMode.READ;
-
   uomTypeOptions = [
     {value: UomType.GREATER, label: 'Plus grand'},
     {value: UomType.LOWER, label: 'Plus petit'},
     {value: UomType.REFERENCE, label: 'Reference'}
   ];
 
-  constructor() {
-    this.initForm();
-    effect(() => {
-      //run when form is loading
-      if(this.uomStore.loading()) {
-        this.disableControl();
-      }
-      //run when form is not loading and there is an error
-      if(!this.uomStore.loading() && this.uomStore.error() !== undefined) {
-        this.enableControl();
-      }
-      //run when form is not loading and there is no error
-      if(!this.uomStore.loading() && this.uomStore.error === undefined) {
-        this.disableControl();
-      }
-    }, );
-  }
+  filteredResults: UomCategoryModel[] = [];
 
-  ngOnInit() {
-    if(this.uomStore.selectedUom() !== undefined) {
-      this.uomForm.patchValue(this.uomToUomFormValue(this.uomStore.selectedUom() as UomModel));
-      this.disableControl();
+  readonly disableFormEffect = effect(() => {
+    if(this.uomStore.loading()) {
+      this.formMode = FormMode.READ;
     }
-  }
+  });
 
-  initForm(): void {
-    this.uomForm = this.fb.nonNullable.group({
-      id: [''],
-      name: ['', [Validators.required]],
-      uomCategoryId: ['', [Validators.required]],
-      uomType: ['', [Validators.required]],
-      ratio: [0],
-      active: [false]
-    })
-  }
-
-  save(): void {
-    this.uomStore.updateUom({
-      ...this.uomForm.getRawValue() as UomModel,
-      uomCategoryId: this.uomForm.get('uomCategoryId')?.value.id
-    });
+  save(uomForm: NgForm): void {
+    const {uomCategoryId, ...uom} = uomForm.value;
+    this.uomStore.updateUom({...uom, uomCategoryId: uomCategoryId.id});
   }
 
   onEdit() {
-    this.enableControl();
+    this.formMode = FormMode.WRITE;
   }
+
   onCancel() {
-    this.resetControl();
-    this.disableControl();
-  }
 
-  get name() {
-    return this.uomForm.get('name');
-  }
-
-  get uomCategoryId() {
-    return this.uomForm.get('uomCategoryId');
-  }
-
-  get uomType() {
-    return this.uomForm.get('uomType');
   }
 
   filterUomCategory(event: AutocompleteEventModel): void {
@@ -128,41 +85,5 @@ export class UomFormEditComponent implements OnInit {
     this.filteredResults = filtered;
   }
 
-  private disableControl() {
-    Object.keys(this.uomForm.controls).forEach((key: string) => {
-      const control = this.uomForm.get(key);
-      if(control && control instanceof FormControl) {
-        control.disable();
-      }
-    });
-    this.formMode = FormMode.READ;
-  }
-
-  private enableControl() {
-    Object.keys(this.uomForm.controls).forEach((key: string) => {
-      const control = this.uomForm.get(key);
-      if(control && control instanceof FormControl) {
-        control.enable();
-      }
-    });
-    this.formMode = FormMode.WRITE;
-  }
-
-  private resetControl() {
-    this.initForm();
-    this.uomForm.patchValue(this.uomToUomFormValue(this.uomStore.selectedUom() as UomModel));
-    this.formMode = FormMode.WRITE;
-  }
-
-
-  private uomToUomFormValue(selectedUom: UomModel) {
-   return {
-      id: selectedUom.id,
-      name: selectedUom.name,
-      uomCategoryId: this.uomStore.findUomCategoryById(selectedUom.uomCategoryId)(),
-      uomType: selectedUom.uomType,
-      ratio: selectedUom.ratio,
-      active: selectedUom.active
-    };
-  }
+  protected readonly FormMode = FormMode;
 }

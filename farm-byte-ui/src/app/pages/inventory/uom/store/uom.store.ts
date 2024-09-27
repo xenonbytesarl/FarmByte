@@ -123,6 +123,7 @@ export const UomStore = signalStore(
                     setTotalElements(store.totalElements() + 1 as number)
                   );
                   messageService.add({severity: 'success', summary: 'Info', detail: uomSuccessResponse.message});
+                  return true;
                 },
                 error: (error) => {
                   patchState(store, setError(error));
@@ -161,8 +162,9 @@ export const UomStore = signalStore(
         )
       )
     ),
-    findUomCategoryById(uomCategoryId: string): WritableSignal<UomCategoryModel | undefined> {
-      return signal(uomCategoryStore.uomCategoryEntities().find((uomCategory: UomCategoryModel) => uomCategory.id === uomCategoryId));
+    findUomCategoryById(uomCategoryId: string): WritableSignal<UomCategoryModel> {
+      //return signal(uomCategoryStore.uomCategoryEntities().find((uomCategory: UomCategoryModel) => uomCategory.id === uomCategoryId));
+      return signal(uomCategoryStore.uomCategoryEntityMap()[uomCategoryId]);
     }
   }))
 );

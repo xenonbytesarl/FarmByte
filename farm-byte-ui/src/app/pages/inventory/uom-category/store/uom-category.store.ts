@@ -14,7 +14,6 @@ import {addEntity, setAllEntities, setEntity, withEntities} from "@ngrx/signals/
 import {DEBOUNCE_TIMEOUT} from "../../../../core/constants/app.constant";
 import {MessageService} from "primeng/api";
 import {FormMode} from "../../../../core/enums/form-mode.enum";
-import {Router} from "@angular/router";
 import {setError, setLoaded, setLoading, withRequestStatus} from "../../../../core/store/request.store";
 import {setPageSize, setTotalElements, withPageStatus} from "../../../../core/store/page.store";
 import {setFormMode, withFormModeStatus} from "../../../../core/store/form-mode.store";
@@ -41,7 +40,7 @@ export const UomCategoryStore = signalStore(
                messageService = inject(MessageService)) => ({
     findUomCategories: rxMethod<FindParamModel>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((findParamModel: FindParamModel) =>
           uomCategoryService.findUomCategories$(findParamModel)
             .pipe(
@@ -67,7 +66,7 @@ export const UomCategoryStore = signalStore(
       pipe(
         debounceTime(DEBOUNCE_TIMEOUT),
         distinctUntilChanged(),
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((searchParamModel: SearchParamModel) =>
           uomCategoryService.searchUomCategories$(searchParamModel)
             .pipe(
@@ -91,7 +90,7 @@ export const UomCategoryStore = signalStore(
     ),
     findUomCategoryById: rxMethod<string>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((uomCategoryId: string) =>
           uomCategoryService.findUomCategoryById$(uomCategoryId)
             .pipe(
@@ -116,7 +115,7 @@ export const UomCategoryStore = signalStore(
       ),
     createUomCategory: rxMethod<UomCategoryModel>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((uomCategory: UomCategoryModel) =>
           uomCategoryService.createUomCategory$(uomCategory)
             .pipe(
@@ -141,7 +140,7 @@ export const UomCategoryStore = signalStore(
     ),
     updateUomCategory: rxMethod<UomCategoryModel>(
       pipe(
-        tap(() => patchState(store, setLoading())),
+        tap(() => patchState(store, setLoading(), setError(undefined))),
         switchMap((uomCategory: UomCategoryModel) =>
           uomCategoryService.updateUomCategory$(uomCategory)
             .pipe(
