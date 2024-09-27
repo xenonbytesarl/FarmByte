@@ -1,7 +1,7 @@
 const WebNav = () => {
     return (
         <>
-            <span>WEB NAV</span>
+            <div>WEB NAV</div>
         </>
     );
 }
