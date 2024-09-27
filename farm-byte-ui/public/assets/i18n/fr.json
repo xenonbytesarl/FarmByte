@@ -1,5 +1,4 @@
 {
-
   "sidebarMenu_dashboard": "Tableau de bord",
   "sidebarMenu_inventory": "Inventaire",
 
@@ -47,12 +46,13 @@
   "tree_button_label_save": "Créer",
   "tree_search_place_holder": "Rechercher...",
 
-  "uom_category_form_title": "Nouvelle catégorie d'unité de mesure",
+  "uom_category_form_new_title": "Nouvelle catégorie d'unité de mesure",
+  "uom_category_form_edit_title": "Catégorie d'unité de mesure",
   "uom_category_form_name_label": "Nom",
   "uom_category_form_name_required_message": "Le nom est obligatoire.",
 
   "uom_form_new_title": "Nouvelle unité de mesure",
-  "uom_form_edit_title": "Modifier une unité de mesure",
+  "uom_form_edit_title": "Unité de mesure",
   "uom_form_name_label": "Nom",
   "uom_form_name_required_message": "Le nom est obligatoire.",
   "uom_form_uom_category_id_label": "Catégorie",
@@ -61,7 +61,6 @@
   "uom_form_uom_type_required_message": "Le type est obligatoire",
   "uom_form_ratio_label": "Ratio",
   "uom_form_active_label": "Actif",
-
 
   "form_button_label_save": "Enregistrer",
   "form_button_label_edit": "Modifier",
