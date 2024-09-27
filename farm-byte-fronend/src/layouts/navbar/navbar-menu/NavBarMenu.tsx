@@ -12,7 +12,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const openDropDown = () => {
+    const toggleDropDown = () => {
         setIsOpen(!isOpen);
     }
 
@@ -29,7 +29,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
         <div key={navbarMenu.label} className="relative cursor-pointer">
             <div
                 ref={dropdownRef}
-                onClick={openDropDown}
+                onClick={toggleDropDown}
                 className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700">
                 <span className="font-medium">{navbarMenu.label}</span>
                 {

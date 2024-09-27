@@ -1,6 +1,6 @@
 import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
 
-export const navbarMenus: NavbarMenuModel[] = [
+export const inventoryNavbarMenus: NavbarMenuModel[] = [
     {
         label: 'Opérations',
         items: [
