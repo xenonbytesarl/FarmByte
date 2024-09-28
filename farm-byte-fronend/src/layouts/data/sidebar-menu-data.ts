@@ -1,4 +1,5 @@
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
+import {inventoryNavbarMenus} from "@/layouts/data/inventory-navbar-menu.ts";
 
 export const sidebarMenus :SidebarMenuModel[] = [
     {
@@ -10,6 +11,7 @@ export const sidebarMenus :SidebarMenuModel[] = [
         label: 'Inventory',
         icon: 'inventory',
         link: '/inventory',
+        navbarMenu: inventoryNavbarMenus
     },
     {
         label: 'Sale',

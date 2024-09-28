@@ -1,4 +1,5 @@
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import React from "react";
 import {NavbarMenuItemModel} from "@/layouts/model/navbar-menu-item-model.ts";
 
 type Props = {
@@ -6,8 +7,16 @@ type Props = {
 }
 
 const NavbarMenuItem = ({navbarMenuItem}: Props) => {
+
+    const navigate = useNavigate();
+
+    const handleOnclick = (_event: React.MouseEvent<HTMLDivElement>, navbarMenuItem: NavbarMenuItemModel) => {
+        _event.preventDefault();
+        navigate(navbarMenuItem.link);
+    }
+
     return (
-        <Link to={navbarMenuItem.link} className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">{navbarMenuItem.label}</Link>
+        <div  onClick={(event) => handleOnclick(event, navbarMenuItem)} className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">{navbarMenuItem.label}</div>
     );
 }
 
