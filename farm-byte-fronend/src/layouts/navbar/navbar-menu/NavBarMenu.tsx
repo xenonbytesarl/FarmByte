@@ -29,11 +29,11 @@ const NavBarMenu = ({navbarMenu}: Props) => {
     }, []);
 
     return (
-        <div key={navbarMenu.label} className="relative cursor-pointer">
+        <div key={navbarMenu.label} className="relative">
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700">
+                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
                 <span className="font-medium">{t(navbarMenu.label)}</span>
                 {
                     navbarMenu.items &&
@@ -45,10 +45,10 @@ const NavBarMenu = ({navbarMenu}: Props) => {
                 }
             </div>
 
-                <div className={`absolute top-full -left-0 mt-[1.05rem] w-64 bg-white shadow-2xl z-10 ${isOpen ? 'transition duration-300 ease-in opacity-100 transform scale-110' : 'transition duration-300 ease-out opacity-0 scale-75'}`}>
+                <div className={`absolute top-full -left-0 mt-[1.05rem] w-64 bg-white shadow-2xl z-10 ${isOpen ? 'transition duration-300 ease-in opacity-100 transform scale-110  cursor-pointer' : ' cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
                     {
                         navbarMenu.items && navbarMenu.items.map((navbarMenuItem: NavbarMenuItemModel) => (
-                            <NavbarMenuItem key={navbarMenuItem.label + '_' + navbarMenuItem.link} navbarMenuItem={navbarMenuItem} />
+                            <NavbarMenuItem key={navbarMenuItem.label + '_' + navbarMenuItem.link} navbarMenuItem={navbarMenuItem} isOpenSubMenu={isOpen} />
                         ))
                     }
                 </div>
