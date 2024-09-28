@@ -1,0 +1,69 @@
+{
+  "sidebarMenu_dashboard": "Dashboard",
+  "sidebarMenu_inventory": "Inventory",
+
+  "navbarMenu_inventory_operations": "Operations",
+  "navbarMenu_inventory_stock-adjustment": "Stock adjustment",
+  "navbarMenu_inventory_transfers": "Transfert",
+  "navbarMenu_inventory_products": "Product",
+  "navbarMenu_inventory_products-categories": "Category of product",
+  "navbarMenu_inventory_settings": "Settings",
+  "navbarMenu_inventory_unit-of-measure": "Unit of measure",
+  "navbarMenu_inventory_category-unit-of-measure": "Category unit of measure",
+  "navbarMenu_inventory_location": "Location",
+
+  "navbarMenu_language_fr": "French",
+  "navbarMenu_language_en": "English",
+
+  "uom_category_tree_title": "Category unit of measure",
+  "uom_category_tree_no_data_found": "No category unit of measure found. Click on create button to add a new category unit of measure.",
+  "uom_category_tree_name": "Name",
+
+  "uom_tree_title": "Unit of measure",
+  "uom_tree_category_no_data_found": "No unit of measure found. Click on create button to add a new unit of measure.",
+  "uom_tree_name": "Name",
+  "uom_tree_uom_category_id": "Category",
+  "uom_tree_uom_type": "Type",
+  "uom_tree_ratio": "Ratio",
+
+  "product_category_tree_title": "Category of Product",
+  "product_category_tree_no_data_found": "No category of product found. Click on create to add a new product category of product.",
+  "product_category_tree_name": "Name",
+  "product_category_tree_parent_product_category_id": "Parent",
+
+  "product_tree_title": "Products",
+  "product_tree_no_data_found": "No product found. Click on create to add a new product.",
+  "product_tree_name": "Name",
+  "product_tree_category_id": "Category",
+  "product_tree_type": "Type",
+  "product_tree_reference": "Reference",
+  "product_tree_stock_uom_id": "Stock unit",
+  "product_tree_purchase_uom_id": "Purchase Unit",
+
+  "paginator_page_report": "{first} - {last} of {totalRecords}",
+  "paginator_item_per_page": "Items per page",
+
+  "tree_button_label_add": "New",
+  "tree_search_place_holder": "Search...",
+
+  "uom_category_form_new_title": "New category unit of measure",
+  "uom_category_form_edit_title": "Category unit of measure",
+  "uom_category_form_name_label": "Name",
+  "uom_category_form_name_required_message": "Name is required",
+
+  "uom_form_new_title": "New unit of measure",
+  "uom_form_edit_title": "Unit of measure",
+  "uom_form_name_label": "Name",
+  "uom_form_name_required_message": "Name is required.",
+  "uom_form_uom_category_id_label": "Category",
+  "uom_form_uom_category_id_required_message": "Category is required",
+  "uom_form_uom_type_label": "Type",
+  "uom_form_uom_type_required_message": "Type is required.",
+  "uom_form_ratio_label": "Ratio",
+  "uom_form_active_label": "Active",
+
+  "form_button_label_save": "Save",
+  "form_button_label_edit": "Edit",
+  "form_button_label_cancel": "Cancel",
+  "form_button_label_create": "Create"
+}
