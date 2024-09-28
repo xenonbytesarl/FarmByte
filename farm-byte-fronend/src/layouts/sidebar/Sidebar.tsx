@@ -1,16 +1,19 @@
-import {useState} from "react";
+import React from "react";
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
 import SidebarMenu from "@/layouts/sidebar/SidebarMenu.tsx";
-import {useSelector} from "react-redux";
-import {RootState} from "@/store/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {RootDispatch, RootState} from "@/store/store.ts";
+import {openSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
 
 const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const sidebarMenus = useSelector((state: RootState) => state.sidebar.sidebarMenus);
+    const isOpen = useSelector((state: RootState) => state.sidebar.isOpen);
+    const dispatch = useDispatch<RootDispatch>();
 
 
-    const toggleSidebar =  () => {
-        setIsOpen(!isOpen);
+    const toggleSidebar =  (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        dispatch(openSidebarMenu(isOpen));
     }
 
     return (
@@ -19,7 +22,7 @@ const Sidebar = () => {
                 <div className={`flex flex-row justify-between items-center w-[95%]`}>
                     <p className={` ${isOpen ? 'block text-xl font-medium' : 'hidden text-2xl text-center'}`}>FarmByte.cm</p>
                 </div>
-                <p onClick={toggleSidebar}
+                <p onClick={(event) => toggleSidebar(event)}
                    className={`absolute -right-3.5 material-symbols-outlined text-white cursor-pointer p-1 bg-amber-600 rounded-full ${isOpen ? '' : 'mt-8'}`}>{isOpen ? 'arrow_back' : 'arrow_forward'}</p>
             </div>
             <div className="flex flex-col justify-start items-start text-lg">
