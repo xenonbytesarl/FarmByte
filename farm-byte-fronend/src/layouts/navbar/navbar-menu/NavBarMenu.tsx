@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react";
+import {useTranslation} from "react-i18next";
 import {NavbarMenuItemModel} from "@/layouts/model/navbar-menu-item-model.ts";
 import NavbarMenuItem from "@/layouts/navbar/navbar-menu/NavmenuMenuItem.tsx";
 import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
@@ -9,6 +10,7 @@ type Props = {
 
 const NavBarMenu = ({navbarMenu}: Props) => {
 
+    const {t} = useTranslation(['home']);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +34,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
                 ref={dropdownRef}
                 onClick={toggleDropDown}
                 className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700">
-                <span className="font-medium">{navbarMenu.label}</span>
+                <span className="font-medium">{t(navbarMenu.label)}</span>
                 {
                     navbarMenu.items &&
                     navbarMenu.items.length > 0 &&
