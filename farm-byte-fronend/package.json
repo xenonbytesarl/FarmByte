@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "start-dev": "vite --mode dev",
+    "start-int": "vite --mode int",
+    "build-dev": "tsc -b && vite build --mode dev",
+    "build-int": "tsc -b && vite build --mode int",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -16,6 +18,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "env-cmd": "^10.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",
