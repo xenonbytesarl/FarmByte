@@ -5,7 +5,7 @@ import NavBarMenu from "@/layouts/navbar/navbar-menu/NavBarMenu.tsx";
 const NavbarMenuBar = () => {
 
     return (
-        <div className="flex flex-row justify-start items-center pl-10 gap-3 text-lg">
+        <div className="flex flex-row justify-start items-center pl-10 gap-6 text-lg">
             {
                 inventoryNavbarMenus.map((navbarMenu: NavbarMenuModel) => (
                     <NavBarMenu key={navbarMenu.label} navbarMenu={navbarMenu}/>
