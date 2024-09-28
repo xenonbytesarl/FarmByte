@@ -4,36 +4,36 @@ export const sidebarMenus :SidebarMenuModel[] = [
     {
         label: 'Dashboard',
         icon: 'dashboard',
-        link: 'dashboard',
+        link: '/dashboard',
     },
     {
         label: 'Inventory',
         icon: 'inventory',
-        link: 'inventory',
+        link: '/inventory',
     },
     {
         label: 'Sale',
         icon: 'storefront',
-        link: 'sale',
+        link: '/sale',
     },
     {
         label: 'Purchase',
         icon: 'shopping_bag',
-        link: 'purchase',
+        link: '/purchase',
     },
     {
         label: 'Invoice',
         icon: 'receipt',
-        link: 'invoice',
+        link: '/invoice',
     },
     {
         label: 'Farm',
         icon: 'agriculture',
-        link: 'farm',
+        link: '/farm',
     },
     {
         label: 'Setting',
         icon: 'settings',
-        link: 'setting',
+        link: '/setting',
     }
 ];
