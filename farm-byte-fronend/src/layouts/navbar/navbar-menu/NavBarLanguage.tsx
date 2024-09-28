@@ -1,11 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import {LanguageModel} from "@/layouts/model/language.ts";
-import {changeLanguage} from "@/layouts/state/navbar-menu-slice.ts";
 import {useDispatch, useSelector} from "react-redux";
+import {useTranslation} from "react-i18next";
+import {changeLanguage} from "@/layouts/state/navbar-menu-slice.ts";
 import {RootDispatch, RootState} from "@/store/store.ts";
 
 const NavBarLanguage = () => {
 
+    const {i18n} = useTranslation(['home']);
     const dispatch = useDispatch<RootDispatch>();
     const language = useSelector((state: RootState) => state.navbar.language);
 
@@ -28,6 +30,9 @@ const NavBarLanguage = () => {
 
     const handleChangeLanguage = (event: React.MouseEvent<HTMLDivElement>, language: LanguageModel) => {
         event.preventDefault();
+        console.log(i18n.language);
+        i18n.changeLanguage(language.name).then();
+        console.log(i18n.language);
         dispatch(changeLanguage(language));
     }
 

@@ -9,13 +9,13 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
     return (
-        <div className="flex flex-row min-h-screen">
+        <div className="flex flex-row min-h-screen bg-neutral-50">
             <div className="hidden md:block">
                 <div className="flex flex-row w-screen">
                     <Sidebar/>
                     <div className="flex flex-col w-full">
                         <WebNavbar/>
-                        <div className="container mx-auto flex-1 py-10">
+                        <div className="container grow mx-auto my-8 flex-1 py-10">
                             {children}
                         </div>
                     </div>
