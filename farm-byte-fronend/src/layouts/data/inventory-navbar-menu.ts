@@ -2,45 +2,49 @@ import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
 
 export const inventoryNavbarMenus: NavbarMenuModel[] = [
     {
-        label: 'Opérations',
+        label: 'navbarMenu_inventory_operations',
         items: [
             {
-                label: 'Ajustement d\'inventaire',
+                label: 'navbarMenu_inventory_stock-adjustment',
                 link: '/inventory/inventory-adjustments',
             },
             {
-                label: 'Transfert',
+                label:'navbarMenu_inventory_transfers',
                 link: '/inventory/transfers',
             }
         ]
     } ,
     {
-        label: 'Article',
+        label: 'navbarMenu_inventory_products',
         items: [
             {
-                label: 'Article',
+                label: 'navbarMenu_inventory_products',
                 link: '/inventory/products',
             },
             {
-                label: 'Catégorie de produit',
+                label: 'navbarMenu_inventory_products-categories',
                 link: '/inventory/product-categories',
             }
         ]
     },
     {
-        label: 'Report',
+        label: 'navbarMenu_inventory_report',
         link: '/inventory/reports',
     } ,
     {
-        label: 'Setting',
+        label: 'navbarMenu_inventory_setting',
         items: [
             {
-                label: 'Unit of measure',
+                label: 'navbarMenu_inventory_unit-of-measure',
                 link: '/inventory/uoms',
             },
             {
-                label: 'Catégorie unit of measure',
+                label: 'navbarMenu_inventory_category-unit-of-measure',
                 link: '/inventory/uom-categories',
+            },
+            {
+                label: 'navbarMenu_inventory_location',
+                link:  'inventory/stock-locations',
             }
         ]
     },

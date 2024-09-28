@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const NavBarProfile = () => {
@@ -6,6 +6,16 @@ const NavBarProfile = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isOpenProfileMenu, setIsOpenProfileMenu] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const closeDropDown = (event) => {
+            if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpenProfileMenu(false);
+            }
+        }
+        document.addEventListener("click", closeDropDown);
+        return () => document.body.removeEventListener("click", closeDropDown);
+    }, []);
 
     const toggleDropDown = () => {
         setIsOpenProfileMenu(!isOpenProfileMenu);

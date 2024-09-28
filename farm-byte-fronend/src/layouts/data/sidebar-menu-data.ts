@@ -3,38 +3,38 @@ import {inventoryNavbarMenus} from "@/layouts/data/inventory-navbar-menu.ts";
 
 export const sidebarMenus :SidebarMenuModel[] = [
     {
-        label: 'Dashboard',
+        label: 'sidebarMenu_dashboard',
         icon: 'dashboard',
         link: '/dashboard',
     },
     {
-        label: 'Inventory',
+        label: 'sidebarMenu_inventory',
         icon: 'inventory',
         link: '/inventory',
         navbarMenu: inventoryNavbarMenus
     },
     {
-        label: 'Sale',
+        label: 'sidebarMenu_sale',
         icon: 'storefront',
         link: '/sale',
     },
     {
-        label: 'Purchase',
+        label: 'sidebarMenu_purchase',
         icon: 'shopping_bag',
         link: '/purchase',
     },
     {
-        label: 'Invoice',
+        label: 'sidebarMenu_invoice',
         icon: 'receipt',
         link: '/invoice',
     },
     {
-        label: 'Farm',
+        label: 'sidebarMenu_farm',
         icon: 'agriculture',
         link: '/farm',
     },
     {
-        label: 'Setting',
+        label: 'sidebarMenu_setting',
         icon: 'settings',
         link: '/setting',
     }
