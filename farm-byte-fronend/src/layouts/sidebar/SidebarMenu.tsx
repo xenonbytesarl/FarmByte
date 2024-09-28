@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
 import {RootDispatch, RootState} from "@/store/store.ts";
 import {selectSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
+import {updateNavbarMenus} from "@/layouts/state/navbar-menu-slice.ts";
 
 type Props = {
     sidebarMenu: SidebarMenuModel,
@@ -19,6 +20,9 @@ const SidebarMenu = ({sidebarMenu, isOpen}: Props) => {
     const handleSelectSidebarMenu = (_event: React.MouseEvent<HTMLDivElement>, sidebarMenu: SidebarMenuModel) => {
         _event.preventDefault();
         dispatch(selectSidebarMenu(sidebarMenu));
+        if(sidebarMenu.navbarMenu) {
+            dispatch(updateNavbarMenus(sidebarMenu.navbarMenu));
+        }
         navigate(sidebarMenu.link);
     }
 

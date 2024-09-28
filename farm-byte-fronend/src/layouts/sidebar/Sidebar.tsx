@@ -7,7 +7,7 @@ import {openSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
 
 const Sidebar = () => {
     const sidebarMenus = useSelector((state: RootState) => state.sidebar.sidebarMenus);
-    const isOpen = useSelector((state: RootState) => state.sidebar.isOpen);
+    const isOpen = useSelector((state: RootState) => state.sidebar.isOpenSidebarMenu);
     const dispatch = useDispatch<RootDispatch>();
 
 
