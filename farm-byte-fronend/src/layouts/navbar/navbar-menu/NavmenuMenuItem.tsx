@@ -4,17 +4,21 @@ import {useTranslation} from "react-i18next";
 import {NavbarMenuItemModel} from "@/layouts/model/navbar-menu-item-model.ts";
 
 type Props = {
-    navbarMenuItem: NavbarMenuItemModel
+    navbarMenuItem: NavbarMenuItemModel,
+    isOpenSubMenu: boolean,
 }
 
-const NavbarMenuItem = ({navbarMenuItem}: Props) => {
+const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu}: Props) => {
     const {t} = useTranslation(['home']);
 
     const navigate = useNavigate();
 
-    const handleOnclick = (_event: React.MouseEvent<HTMLDivElement>, navbarMenuItem: NavbarMenuItemModel) => {
-        _event.preventDefault();
-        navigate(navbarMenuItem.link);
+    const handleOnclick = (event: React.MouseEvent<HTMLDivElement>, navbarMenuItem: NavbarMenuItemModel) => {
+        //TODO continue to find how to hide sub menu
+        event.preventDefault();
+       if(isOpenSubMenu) {
+           navigate(navbarMenuItem.link);
+       }
     }
 
     return (

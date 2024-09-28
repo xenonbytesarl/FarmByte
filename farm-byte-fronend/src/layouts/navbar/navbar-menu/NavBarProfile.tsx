@@ -22,24 +22,26 @@ const NavBarProfile = () => {
     }
 
     const handleNavigateTo = (event: React.MouseEvent<HTMLDivElement>, link: string) => {
+        //TODO continue to find how to hide sub menu
         event.preventDefault();
-        navigate(link);
-
+        if(isOpenProfileMenu) {
+            navigate(link);
+        }
     }
 
     return (
-        <div className="relative cursor-pointer">
+        <div className="relative">
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700">
+                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
                 <span className="font-medium">
                     <img src="/images/profile.png" alt="..." className="size-8 object-cover rounded-full"/>
                 </span>
 
             </div>
             <div
-                className={`absolute top-full -right-0 mt-3.5 w-32 bg-white shadow-2xl z-10 ${isOpenProfileMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110' : 'transition duration-300 ease-out opacity-0 scale-75'}`}>
+                className={`absolute top-full -right-0 mt-3.5 w-32 bg-white shadow-2xl z-10 ${isOpenProfileMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
                 <div onClick={(event) => handleNavigateTo(event,'/user/profile')}
                       className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">My profile</div>
                 <div onClick={(event) => handleNavigateTo(event, '/logout')}

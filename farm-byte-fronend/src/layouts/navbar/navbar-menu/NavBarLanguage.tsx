@@ -29,26 +29,27 @@ const NavBarLanguage = () => {
     }
 
     const handleChangeLanguage = (event: React.MouseEvent<HTMLDivElement>, language: LanguageModel) => {
+        //TODO continue to find how to hide sub menu
         event.preventDefault();
-        console.log(i18n.language);
-        i18n.changeLanguage(language.name).then();
-        console.log(i18n.language);
-        dispatch(changeLanguage(language));
+       if(isOpenLanguageMenu) {
+           i18n.changeLanguage(language.name).then();
+           dispatch(changeLanguage(language));
+       }
     }
 
     return (
-        <div className="relative mr-5 cursor-pointer">
+        <div className="relative mr-5">
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700">
-                        <span className="font-medium">
-                            <img src={`/images/${language.name === 'fr' ? 'french' : 'english'}.png`} alt="..."
-                                 className="size-6 object-cover rounded-full"/>
-                        </span>
+                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
+                    <span className="font-medium">
+                        <img src={`/images/${language.name === 'fr' ? 'french' : 'english'}.png`} alt="..."
+                             className="size-6 object-cover rounded-full"/>
+                    </span>
             </div>
             <div
-                className={`absolute top-full -right-0 mt-3.5 w-32 bg-white shadow-2xl z-10 ${isOpenLanguageMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110' : 'transition duration-300 ease-out opacity-0 scale-75'}`}>
+                className={`absolute top-full -right-0 mt-3.5 w-32 bg-white shadow-2xl z-10 ${isOpenLanguageMenu ? 'transition-all duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition-all duration-300 ease-out opacity-0 scale-75'}`}>
                 <div onClick={(event) => handleChangeLanguage(event, {name: 'en'})}
                      className="flex flex-row justify-start items-center gap-2 text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">
                     <img src="/images/english.png" alt="..." className="size-6 object-cover rounded-full"/>
