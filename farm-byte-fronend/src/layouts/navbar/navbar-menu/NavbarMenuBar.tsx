@@ -5,12 +5,12 @@ import {RootState} from "@/store/store.ts";
 
 const NavbarMenuBar = () => {
 
-    const selectedSidebarMenu = useSelector((state: RootState) => state.sidebar.selectedSidebarMenu);
+    const navbarMenus = useSelector((state: RootState) => state.navbar.navbarMenus);
 
     return (
         <div className="flex flex-row justify-start items-center pl-10 gap-6 text-lg">
             {
-                selectedSidebarMenu?.navbarMenu?.map((navbarMenu: NavbarMenuModel) => (
+                navbarMenus.map((navbarMenu: NavbarMenuModel) => (
                     <NavBarMenu key={navbarMenu.label} navbarMenu={navbarMenu}/>
                 ))
             }

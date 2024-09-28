@@ -3,19 +3,19 @@ import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
 import {sidebarMenus} from "@/layouts/data/sidebar-menu-data.ts";
 
 
-interface NavbarMenuState {
+interface SidebarState {
     sidebarMenus: SidebarMenuModel[];
     selectedSidebarMenu?: SidebarMenuModel;
-    isOpen: boolean;
+    isOpenSidebarMenu: boolean;
 }
 
-const initialState: NavbarMenuState = {
+const initialState: SidebarState = {
     sidebarMenus: sidebarMenus,
     selectedSidebarMenu: sidebarMenus[0],
-    isOpen: true
+    isOpenSidebarMenu: true
 };
 
-const sidebarMenuSlice = createSlice({
+const sidebarSlice = createSlice({
     name: "sidebarMenu",
     initialState,
     reducers: {
@@ -23,11 +23,11 @@ const sidebarMenuSlice = createSlice({
             state.selectedSidebarMenu = action.payload;
         },
         openSidebarMenu: (state, action: PayloadAction<boolean>) => {
-            state.isOpen = !action.payload;
+            state.isOpenSidebarMenu = !action.payload;
         }
     }
 });
 
-export const {selectSidebarMenu, openSidebarMenu} = sidebarMenuSlice.actions;
+export const {selectSidebarMenu, openSidebarMenu} = sidebarSlice.actions;
 
-export default sidebarMenuSlice.reducer;
+export default sidebarSlice.reducer;
