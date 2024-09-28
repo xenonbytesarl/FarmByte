@@ -18,7 +18,6 @@ const NavBarMenu = ({navbarMenu}: Props) => {
 
     useEffect(() => {
         const closeDropDown = (event) => {
-            console.log(typeof event)
             if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
