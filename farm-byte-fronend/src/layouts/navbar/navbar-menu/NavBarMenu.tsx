@@ -17,7 +17,8 @@ const NavBarMenu = ({navbarMenu}: Props) => {
     }
 
     useEffect(() => {
-        const closeDropDown = (event: never) => {
+        const closeDropDown = (event) => {
+            console.log(typeof event)
             if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
@@ -25,6 +26,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
         document.addEventListener("click", closeDropDown);
         return () => document.body.removeEventListener("click", closeDropDown);
     }, []);
+
     return (
         <div key={navbarMenu.label} className="relative cursor-pointer">
             <div
@@ -38,7 +40,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
                     <span
                         className={`material-symbols-outlined ${isOpen ? 'transition duration-500 ease-out transform rotate-180' : 'transition duration-500 ease-in transform -rotate-180'}`}>
                                         {isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}
-                                    </span>
+                    </span>
                 }
             </div>
 
