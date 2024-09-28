@@ -24,6 +24,8 @@ const SidebarMenu = ({sidebarMenu, isOpen}: Props) => {
         dispatch(selectSidebarMenu(sidebarMenu));
         if(sidebarMenu.navbarMenu) {
             dispatch(updateNavbarMenus(sidebarMenu.navbarMenu));
+        } else {
+            dispatch(updateNavbarMenus([]));
         }
         navigate(sidebarMenu.link);
     }
