@@ -5,6 +5,7 @@ const NavBarProfile = () => {
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isOpenProfileMenu, setIsOpenProfileMenu] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
