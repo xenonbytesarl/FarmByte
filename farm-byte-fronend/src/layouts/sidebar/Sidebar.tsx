@@ -2,13 +2,13 @@ import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import SidebarMenu from "@/layouts/sidebar/SidebarMenu.tsx";
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
-import {RootDispatch, RootState} from "@/store/store.ts";
-import {openSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
+import {RootDispatch} from "@/store/store.ts";
+import {openSidebarMenu, selectIsOpenSidebarMenu, selectSidebarMenus} from "@/layouts/state/sidebar-menu-slice.ts";
 
 const Sidebar = () => {
 
-    const sidebarMenus = useSelector((state: RootState) => state.sidebar.sidebarMenus);
-    const isOpen = useSelector((state: RootState) => state.sidebar.isOpenSidebarMenu);
+    const sidebarMenus: SidebarMenuModel[] = useSelector(selectSidebarMenus);
+    const isOpen: boolean = useSelector(selectIsOpenSidebarMenu);
     const dispatch = useDispatch<RootDispatch>();
 
 

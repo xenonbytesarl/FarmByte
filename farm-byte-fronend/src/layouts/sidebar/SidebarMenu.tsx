@@ -4,8 +4,8 @@ import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
-import {RootDispatch, RootState} from "@/store/store.ts";
-import {selectSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
+import {RootDispatch} from "@/store/store.ts";
+import {selectSelectedSidebarMenu, selectSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
 import {updateNavbarMenus} from "@/layouts/state/navbar-menu-slice.ts";
 
 type Props = {
@@ -14,9 +14,12 @@ type Props = {
 }
 
 const SidebarMenu = ({sidebarMenu, isOpen}: Props) => {
+
     const {t} = useTranslation(['home']);
+
     const dispatch = useDispatch<RootDispatch>();
-    const selectedSidebarMenu = useSelector((state: RootState) => state.sidebar.selectedSidebarMenu);
+    const selectedSidebarMenu: SidebarMenuModel = useSelector(selectSelectedSidebarMenu);
+
     const navigate = useNavigate();
 
     const handleSelectSidebarMenu = (_event: React.MouseEvent<HTMLDivElement>, sidebarMenu: SidebarMenuModel) => {

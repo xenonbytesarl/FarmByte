@@ -1,6 +1,7 @@
 import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {LanguageModel} from "@/layouts/model/language.ts";
+import {RootState} from "@/store/store.ts";
 
 
 interface NavbarState {
@@ -27,6 +28,9 @@ const navbarSlice = createSlice({
         }
     }
 });
+
+export const selectLanguage = (state: RootState) => state.navbar.language;
+export const selectNavbarMenus = (state: RootState) => state.navbar.navbarMenus;
 
 export const {changeLanguage, updateNavbarMenus} = navbarSlice.actions;
 export default navbarSlice.reducer;
