@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router-dom";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {NavbarMenuItemModel} from "@/layouts/model/navbar-menu-item-model.ts";
+import {NavbarMenuItemModel} from "@/layouts/model/navbarMenuItemModel.ts";
 
 type Props = {
     navbarMenuItem: NavbarMenuItemModel,

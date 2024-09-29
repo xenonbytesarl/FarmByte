@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
+import {NavbarMenuModel} from "@/layouts/model/navbarMenuModel.ts";
 import NavBarMenu from "@/layouts/navbar/navbar-menu/NavBarMenu.tsx";
 import {selectNavbarMenus} from "@/layouts/state/navbar-menu-slice.ts";
 

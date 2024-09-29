@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
-import {sidebarMenus} from "@/layouts/data/sidebar-menu-data.ts";
+import {SidebarMenuModel} from "@/layouts/model/sidebarMenuModel.ts";
+import {sidebarMenus} from "@/layouts/data/sidebarMenuData.ts";
 import {RootState} from "@/store/store.ts";
 
 
