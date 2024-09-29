@@ -1,8 +1,8 @@
 import {useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {NavbarMenuItemModel} from "@/layouts/model/navbar-menu-item-model.ts";
+import {NavbarMenuItemModel} from "@/layouts/model/navbarMenuItemModel.ts";
 import NavbarMenuItem from "@/layouts/navbar/navbar-menu/NavmenuMenuItem.tsx";
-import {NavbarMenuModel} from "@/layouts/model/navbar-menu-model.ts";
+import {NavbarMenuModel} from "@/layouts/model/navbarMenuModel.ts";
 
 type Props = {
     navbarMenu: NavbarMenuModel

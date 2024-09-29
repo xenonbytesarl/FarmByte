@@ -1,7 +1,7 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import SidebarMenu from "@/layouts/sidebar/SidebarMenu.tsx";
-import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
+import {SidebarMenuModel} from "@/layouts/model/sidebarMenuModel.ts";
 import {RootDispatch} from "@/store/store.ts";
 import {openSidebarMenu, selectIsOpenSidebarMenu, selectSidebarMenus} from "@/layouts/state/sidebar-menu-slice.ts";
 
