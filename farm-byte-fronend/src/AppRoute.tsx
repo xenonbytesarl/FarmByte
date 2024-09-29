@@ -7,10 +7,12 @@ import NotFound from "@/pages/not-found/screen/NotFound.tsx";
 const AppRoute = () => {
     return (
         <Routes>
-            <Route path="/" element={<Navigate to="/dashboard"/>}/>
-            <Route path="/dashboard" element={<Layout><Dashboard/></Layout>}/>
-            <Route path="/inventory/*" element={<InventoryRoute/>}/>
-            <Route path="*" element={<Layout><NotFound/></Layout>}/>
+            <Route path="/" element={<Layout/>}>
+                <Route index path="/" element={<Navigate to="/dashboard"/>}/>
+                <Route path="dashboard" element={<Dashboard/>}/>
+                <Route path="inventory/*" element={<InventoryRoute/>}/>
+                <Route path="*" element={<NotFound/>}/>
+            </Route>
         </Routes>
     )
 }
