@@ -1,10 +1,13 @@
 import {useSelector} from "react-redux";
 import {useTranslation} from "react-i18next";
-import {RootState} from "@/store/store.ts";
+import {selectSelectedSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
+import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
 
 const NavBarModule = () => {
+
     const {t} = useTranslation(['home']);
-    const selectedSidebarMenu = useSelector((state: RootState) => state.sidebar.selectedSidebarMenu);
+
+    const selectedSidebarMenu: SidebarMenuModel = useSelector(selectSelectedSidebarMenu);
 
     return (
         <div className="flex flex-row justify-center items-center pl-5">

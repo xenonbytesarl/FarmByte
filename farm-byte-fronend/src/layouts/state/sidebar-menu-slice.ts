@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
 import {sidebarMenus} from "@/layouts/data/sidebar-menu-data.ts";
+import {RootState} from "@/store/store.ts";
 
 
 interface SidebarState {
@@ -27,6 +28,10 @@ const sidebarSlice = createSlice({
         }
     }
 });
+
+export const selectSidebarMenus = (state: RootState) => state.sidebar.sidebarMenus;
+export const selectSelectedSidebarMenu = (state: RootState) => state.sidebar.selectedSidebarMenu;
+export const selectIsOpenSidebarMenu = (state: RootState) => state.sidebar.isOpenSidebarMenu;
 
 export const {selectSidebarMenu, openSidebarMenu} = sidebarSlice.actions;
 

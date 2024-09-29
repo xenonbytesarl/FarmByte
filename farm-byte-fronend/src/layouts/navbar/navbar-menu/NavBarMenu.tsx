@@ -11,12 +11,9 @@ type Props = {
 const NavBarMenu = ({navbarMenu}: Props) => {
 
     const {t} = useTranslation(['home']);
+
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const toggleDropDown = () => {
-        setIsOpen(!isOpen);
-    }
 
     useEffect(() => {
         const closeDropDown = (event) => {
@@ -27,6 +24,12 @@ const NavBarMenu = ({navbarMenu}: Props) => {
         document.addEventListener("click", closeDropDown);
         return () => document.body.removeEventListener("click", closeDropDown);
     }, []);
+
+    const toggleDropDown = () => {
+        setIsOpen(!isOpen);
+    }
+
+
 
     return (
         <div key={navbarMenu.label} className="relative">

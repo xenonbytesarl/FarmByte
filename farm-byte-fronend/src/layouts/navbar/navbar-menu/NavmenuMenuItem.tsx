@@ -9,6 +9,7 @@ type Props = {
 }
 
 const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu}: Props) => {
+
     const {t} = useTranslation(['home']);
 
     const navigate = useNavigate();
