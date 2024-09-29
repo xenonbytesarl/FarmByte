@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {LanguageModel} from "@/layouts/model/language.ts";
+import {LanguageModel} from "@/layouts/model/languageModel.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {useTranslation} from "react-i18next";
 import {changeLanguage, selectLanguage} from "@/layouts/state/navbar-menu-slice.ts";

@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 import {useTranslation} from "react-i18next";
 import {selectSelectedSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
-import {SidebarMenuModel} from "@/layouts/model/sidebar-menu.ts";
+import {SidebarMenuModel} from "@/layouts/model/sidebarMenuModel.ts";
 
 const NavBarModule = () => {
 
