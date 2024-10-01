@@ -42,11 +42,11 @@ const NavBarProfile = () => {
 
             </div>
             <div
-                className={`absolute top-full -right-0 mt-3.5 w-32 bg-white shadow-2xl z-10 ${isOpenProfileMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
+                className={`absolute top-full -right-0 mt-[1.65rem] w-32 bg-white shadow-2xl z-10 rounded-b-lg ${isOpenProfileMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
                 <div onClick={(event) => handleNavigateTo(event,'/user/profile')}
-                      className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">My profile</div>
+                      className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300 ">My profile</div>
                 <div onClick={(event) => handleNavigateTo(event, '/logout')}
-                      className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">Logout</div>
+                      className="block text-gray-500 p-2 text-sm hover:text-white  rounded-b-lg hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400  hover:transition-all hover:ease-in-out hover:duration-300 ">Logout</div>
             </div>
         </div>
     );

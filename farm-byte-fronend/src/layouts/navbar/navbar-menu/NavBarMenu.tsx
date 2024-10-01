@@ -48,10 +48,10 @@ const NavBarMenu = ({navbarMenu}: Props) => {
                 }
             </div>
 
-                <div className={`absolute top-full -left-0 mt-[1.05rem] w-64 bg-white shadow-2xl z-10 ${isOpen ? 'transition duration-300 ease-in opacity-100 transform scale-110  cursor-pointer' : ' cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
+                <div className={`absolute top-full -left-0 mt-[1.85rem] w-64 bg-white shadow-2xl z-10 rounded-b-lg ${isOpen ? 'transition duration-300 ease-in opacity-100 transform scale-110  cursor-pointer' : ' cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
                     {
                         navbarMenu.items && navbarMenu.items.map((navbarMenuItem: NavbarMenuItemModel) => (
-                            <NavbarMenuItem key={navbarMenuItem.label + '_' + navbarMenuItem.link} navbarMenuItem={navbarMenuItem} isOpenSubMenu={isOpen} />
+                            <NavbarMenuItem key={navbarMenuItem.label + '_' + navbarMenuItem.link} navbarMenuItem={navbarMenuItem} isOpenSubMenu={isOpen} lastNavMenuItem={navbarMenu.items[navbarMenu.items.length - 1]} />
                         ))
                     }
                 </div>

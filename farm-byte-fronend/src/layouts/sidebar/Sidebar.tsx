@@ -18,17 +18,19 @@ const Sidebar = () => {
     }
 
     return (
-        <div className={`flex flex-col bg-amber-800 min-h-screen py-3 text-white ${isOpen? 'w-80 transition-all ease-linear duration-300': 'w-20 transition-all ease-linear duration-300'}`}>
-            <div className="relative flex flex-row justify-between items-center px-5 mb-5 w-full">
+        <div className={`flex flex-col bg-gradient-to-r from-amber-800 to-amber-400  min-h-screen py-3 text-white ${isOpen? 'w-80 transition-all ease-linear duration-300': 'w-24 transition-all ease-linear duration-300'}`}>
+            <div className="relative flex flex-row justify-between items-center px-5 pt-4 mb-12 w-full">
                 <div className={`flex flex-row justify-between items-center w-[95%]`}>
-                    <p className={` ${isOpen ? 'block text-xl font-medium' : 'hidden text-2xl text-center'}`}>FarmByte.cm</p>
+                    <p className={` text-center ${isOpen ? 'block text-2xl font-medium' : 'text-xl'}`}>{isOpen? 'FarmByte.cm': 'FB.cm'}</p>
                 </div>
+                <p
+                   className={`absolute -right-3.5 top-[3.2rem] material-symbols-outlined text-white cursor-pointer p-1 bg-white rounded-full ${isOpen ? '' : ''}`}>&nbsp;</p>
                 <p onClick={(event) => toggleSidebar(event)}
-                   className={`absolute -right-3.5 material-symbols-outlined text-white cursor-pointer p-1 bg-amber-600 rounded-full ${isOpen ? '' : 'mt-8'}`}>{isOpen ? 'arrow_back' : 'arrow_forward'}</p>
+                   className={`absolute -right-3 top-[3.35rem] material-symbols-outlined text-white cursor-pointer p-0.5 bg-gradient-to-r from-amber-800 to-amber-400 rounded-full ${isOpen ? '' : ''}`}>{isOpen ? 'arrow_back' : 'arrow_forward'}</p>
             </div>
             <div className="flex flex-col justify-start items-start text-lg">
                 {
-                    sidebarMenus.map((sidebarMenu : SidebarMenuModel) => (
+                    sidebarMenus.map((sidebarMenu: SidebarMenuModel) => (
                         <SidebarMenu key={sidebarMenu.label} isOpen={isOpen} sidebarMenu={sidebarMenu} />
                     ))
                 }
