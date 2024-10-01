@@ -6,6 +6,7 @@
   "scripts": {
     "start-dev": "vite --mode dev",
     "start-int": "vite --mode int",
+    "test:e2e": "cypress open",
     "build-dev": "tsc -b && vite build --mode dev",
     "build-int": "tsc -b && vite build --mode int",
     "lint": "eslint .",
@@ -19,6 +20,7 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cypress": "^13.15.0",
     "env-cmd": "^10.1.0",
     "i18next": "^23.15.1",
     "react": "^18.3.1",
