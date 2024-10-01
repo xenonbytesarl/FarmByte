@@ -6,9 +6,10 @@ import {NavbarMenuItemModel} from "@/layouts/model/navbarMenuItemModel.ts";
 type Props = {
     navbarMenuItem: NavbarMenuItemModel,
     isOpenSubMenu: boolean,
+    lastNavMenuItem: NavbarMenuItemModel,
 }
 
-const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu}: Props) => {
+const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu, lastNavMenuItem}: Props) => {
 
     const {t} = useTranslation(['home']);
 
@@ -23,7 +24,8 @@ const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu}: Props) => {
     }
 
     return (
-        <div  onClick={(event) => handleOnclick(event, navbarMenuItem)} className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-amber-700 hover:transition-all hover:ease-in-out hover:duration-300 ">
+        <div  onClick={(event) => handleOnclick(event, navbarMenuItem)}
+              className={`block text-gray-500 p-2 text-sm rounded-b-lg ${navbarMenuItem.label !== lastNavMenuItem.label? 'rounded-b-none': ''} hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300 `}>
             {t(navbarMenuItem.label)}
         </div>
     );

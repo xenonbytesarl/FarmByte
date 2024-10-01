@@ -6,7 +6,7 @@ import NavBarModule from "@/layouts/navbar/navbar-menu/NavBarModule.tsx";
 const WebNavbar = () => {
 
     return (
-        <div className="flex flex-row justify-between items-center py-3 px-8 w-full bg-white shadow-lg">
+        <div className="flex flex-row justify-between items-center py-6 px-8 w-full bg-white shadow-lg">
             <div className="flex flex-row justify-start items-center">
                 <NavBarModule/>
                 <NavbarMenuBar/>
