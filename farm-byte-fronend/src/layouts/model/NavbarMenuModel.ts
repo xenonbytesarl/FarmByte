@@ -1,4 +1,4 @@
-import {NavbarMenuItemModel} from "@/layouts/model/navbarMenuItemModel.ts";
+import {NavbarMenuItemModel} from "@/layouts/model/NavbarMenuItemModel.ts";
 
 export interface NavbarMenuModel {
     label: string;

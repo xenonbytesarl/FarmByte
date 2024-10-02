@@ -1,4 +1,4 @@
-import {NavbarMenuModel} from "@/layouts/model/navbarMenuModel.ts";
+import {NavbarMenuModel} from "@/layouts/model/NavbarMenuModel.ts";
 
 export const inventoryNavbarMenus: NavbarMenuModel[] = [
     {

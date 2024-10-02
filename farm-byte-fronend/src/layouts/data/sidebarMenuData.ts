@@ -1,4 +1,4 @@
-import {SidebarMenuModel} from "@/layouts/model/sidebarMenuModel.ts";
+import {SidebarMenuModel} from "@/layouts/model/SidebarMenuModel.ts";
 import {inventoryNavbarMenus} from "@/layouts/data/inventoryNavbarMenuData.ts";
 
 export const sidebarMenus :SidebarMenuModel[] = [
