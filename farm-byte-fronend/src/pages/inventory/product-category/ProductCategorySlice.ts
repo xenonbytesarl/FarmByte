@@ -1,11 +1,10 @@
 import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ProductCategoryModel} from "@/pages/inventory/product-category/productCategoryModel.ts";
-import axios from "axios";
+import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
-import {RootState} from "@/store/store.ts";
-import {API_BASE_URL, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
+import {RootState} from "@/Store.ts";
+import productCategoryService from "@/pages/inventory/product-category/ProductCategroyService.ts";
 
 
 const productCategoryAdapter = createEntityAdapter<ProductCategoryModel>({
@@ -22,14 +21,11 @@ const productCategoryInitialState = productCategoryAdapter.getInitialState({
 
 export const findProductCategories = createAsyncThunk('productCategory/findProductCategories', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<ProductCategoryModel>>> => {
 
-    const response = await axios.get(
-        API_BASE_URL + '/catalog/product-categories',
-        {
-            params: {...findParam},
-            headers: API_JSON_HEADER
-        }
-    );
-    return response.data;
+    try {
+        return productCategoryService.findProductCategories(findParam);
+    } catch (error) {
+        console.log('error', error);
+    }
 });
 
 

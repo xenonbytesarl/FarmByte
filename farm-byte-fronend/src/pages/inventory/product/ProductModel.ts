@@ -1,4 +1,4 @@
-import {ProductTypeEnum} from "@/pages/inventory/product/productTypeEnum.ts";
+import {ProductTypeEnum} from "@/pages/inventory/product/ProductTypeEnum.ts";
 
 export interface ProductModel {
   id: string;
