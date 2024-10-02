@@ -1,4 +1,4 @@
-import {UomTypeEnum} from "@/pages/inventory/uom/uomTypeEnum.ts";
+import {UomTypeEnum} from "@/pages/inventory/uom/UomTypeEnum.ts";
 
 
 export interface UomModel {

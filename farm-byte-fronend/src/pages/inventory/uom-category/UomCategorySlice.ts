@@ -1,11 +1,10 @@
 import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {UomCategoryModel} from "@/pages/inventory/uom-category/uomCategoryModel.ts";
-import axios from "axios";
+import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
-import {RootState} from "@/store/store.ts";
-import {API_BASE_URL, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
+import {RootState} from "@/Store.ts";
+import uomCategoryService from "@/pages/inventory/uom-category/UomCategoryService.ts";
 
 
 const uomCategoryAdapter = createEntityAdapter<UomCategoryModel>({
@@ -20,16 +19,13 @@ const uomCategoryInitialState = uomCategoryAdapter.getInitialState({
 });
 
 
-export const findUomCategories = createAsyncThunk('uomCategory/findUomCategories', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<UomCategoryModel>>> => {
-
-    const response = await axios.get(
-        API_BASE_URL + '/catalog/uom-categories',
-        {
-            params: {...findParam},
-            headers: API_JSON_HEADER
-        }
-    );
-    return response.data;
+export const findUomCategories = createAsyncThunk(
+    'uomCategory/findUomCategories', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<UomCategoryModel>>> => {
+    try {
+        return await uomCategoryService.findUomCategories(findParam);
+    } catch (error) {
+        console.log('Error', error);
+    }
 });
 
 

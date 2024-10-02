@@ -1,11 +1,10 @@
 import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import axios from "axios";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
-import {RootState} from "@/store/store.ts";
-import {UomModel} from "@/pages/inventory/uom/uomModel.ts";
-import {API_BASE_URL, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
+import {RootState} from "@/Store.ts";
+import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
+import uomService from "@/pages/inventory/uom/UomService.ts";
 
 
 const uomAdapter = createEntityAdapter<UomModel>({
@@ -21,15 +20,11 @@ const uomInitialState = uomAdapter.getInitialState({
 
 
 export const findUoms = createAsyncThunk('uom/findUoms', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<UomModel>>> => {
-
-    const response = await axios.get(
-        API_BASE_URL + '/catalog/uoms',
-        {
-            params: {...findParam},
-            headers: API_JSON_HEADER
-        }
-    );
-    return response.data;
+    try {
+        return uomService.findUoms(findParam);
+    } catch (error) {
+        console.log('error', error);
+    }
 });
 
 
