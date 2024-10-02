@@ -1,7 +1,7 @@
-import NavbarMenuBar from "@/layouts/navbar/navbar-menu/NavbarMenuBar.tsx";
-import NavBarLanguage from "@/layouts/navbar/navbar-menu/NavBarLanguage.tsx";
-import NavBarProfile from "@/layouts/navbar/navbar-menu/NavBarProfile.tsx";
-import NavBarModule from "@/layouts/navbar/navbar-menu/NavBarModule.tsx";
+import NavbarMenuBar from "@/layouts/navbar/web-navbar/NavbarMenuBar.tsx";
+import NavBarLanguage from "@/layouts/navbar/web-navbar/NavBarLanguage.tsx";
+import NavBarProfile from "@/layouts/navbar/web-navbar/NavBarProfile.tsx";
+import NavBarModule from "@/layouts/navbar/web-navbar/NavBarModule.tsx";
 
 const WebNavbar = () => {
 

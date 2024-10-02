@@ -3,10 +3,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
-import {SidebarMenuModel} from "@/layouts/model/sidebarMenuModel.ts";
-import {RootDispatch} from "@/store/store.ts";
-import {selectSelectedSidebarMenu, selectSidebarMenu} from "@/layouts/state/sidebar-menu-slice.ts";
-import {updateNavbarMenus} from "@/layouts/state/navbar-menu-slice.ts";
+import {SidebarMenuModel} from "@/layouts/model/SidebarMenuModel.ts";
+import {RootDispatch} from "@/Store.ts";
+import {selectSelectedSidebarMenu, selectSidebarMenu} from "@/layouts/sidebar/SidebarMenuSlice.ts";
+import {updateNavbarMenus} from "@/layouts/navbar/NavbarMenuSlice.ts";
 
 type Props = {
     sidebarMenu: SidebarMenuModel,

@@ -1,6 +1,6 @@
 import Sidebar from "@/layouts/sidebar/Sidebar.tsx";
-import WebNavbar from "@/layouts/navbar/WebNavbar.tsx";
-import MobileNavbar from "@/layouts/navbar/MobileNavbar.tsx";
+import WebNavbar from "@/layouts/navbar/web-navbar/WebNavbar.tsx";
+import MobileNavbar from "@/layouts/navbar/mobile-navbar/MobileNavbar.tsx";
 import {Outlet} from "react-router-dom";
 
 const Layout = () => {
