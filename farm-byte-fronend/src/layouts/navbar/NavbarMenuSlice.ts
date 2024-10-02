@@ -1,7 +1,7 @@
-import {NavbarMenuModel} from "@/layouts/model/navbarMenuModel.ts";
+import {NavbarMenuModel} from "@/layouts/model/NavbarMenuModel.ts";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {LanguageModel} from "@/layouts/model/languageModel.ts";
-import {RootState} from "@/store/store.ts";
+import {LanguageModel} from "@/layouts/model/LanguageModel.ts";
+import {RootState} from "@/Store.ts";
 
 
 interface NavbarState {
