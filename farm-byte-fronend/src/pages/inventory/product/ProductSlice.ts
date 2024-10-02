@@ -1,11 +1,10 @@
 import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ProductModel} from "@/pages/inventory/product/productModel.ts";
-import axios from "axios";
+import {ProductModel} from "@/pages/inventory/product/ProductModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
-import {RootState} from "@/store/store.ts";
-import {API_BASE_URL, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
+import {RootState} from "@/Store.ts";
+import productService from "@/pages/inventory/product/ProductService.ts";
 
 
 const productAdapter = createEntityAdapter<ProductModel>({
@@ -21,15 +20,11 @@ const productInitialState = productAdapter.getInitialState({
 
 
 export const findProducts = createAsyncThunk('product/findProducts', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<ProductModel>>> => {
-
-    const response = await axios.get(
-        API_BASE_URL + '/catalog/products',
-        {
-            params: {...findParam},
-            headers: API_JSON_HEADER
-        }
-    );
-    return response.data;
+    try {
+        return productService.findProducts(findParam);
+    } catch (error) {
+        console.log('error', error);
+    }
 });
 
 
