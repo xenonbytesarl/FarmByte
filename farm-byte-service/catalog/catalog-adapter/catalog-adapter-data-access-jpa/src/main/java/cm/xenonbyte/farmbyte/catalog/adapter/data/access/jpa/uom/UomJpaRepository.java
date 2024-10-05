@@ -24,8 +24,8 @@ public interface UomJpaRepository extends JpaRepository<UomJpa, UUID> {
 
     boolean existsByNameIgnoreCaseAndUomCategoryJpaAndActiveIsTrue(String name, UomCategoryJpa uomCategoryJpa);
 
-    @Query("select uom from UomJpa uom left join uom.uomCategoryJpa uomCategory where " +
-            "lower(concat(uom.name ,'', uomCategory.name,'',uom.uomTypeJpa)) like lower(concat('%', :keyword, '%'))")
+    @Query("select uom from UomJpa uom where " +
+            "lower(concat(uom.name ,'', uom.uomCategoryJpa.name,'',uom.uomTypeJpa)) like lower(concat('%', :keyword, '%'))")
     Page<UomJpa> search(Pageable pageable, @Param("keyword") String keyword);
 
     Optional<UomJpa> findByNameIgnoreCase(String name);
