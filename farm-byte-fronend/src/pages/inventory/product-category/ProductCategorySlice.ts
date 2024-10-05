@@ -5,6 +5,8 @@ import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import {RootState} from "@/Store.ts";
 import productCategoryService from "@/pages/inventory/product-category/ProductCategroyService.ts";
+import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
 
 
 const productCategoryAdapter = createEntityAdapter<ProductCategoryModel>({
@@ -12,17 +14,29 @@ const productCategoryAdapter = createEntityAdapter<ProductCategoryModel>({
 
 const productCategoryInitialState = productCategoryAdapter.getInitialState({
     loading: false,
-    pageSize: 0,
+    pageSize: DEFAULT_SIZE_VALUE,
     totalElements: 0,
+    totalPages: 0,
     message: '',
     error: null
 });
 
 
-export const findProductCategories = createAsyncThunk('productCategory/findProductCategories', async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<ProductCategoryModel>>> => {
+export const findProductCategories = createAsyncThunk('productCategory/findProductCategories', async (findParam: FindParamModel) => {
 
     try {
-        return productCategoryService.findProductCategories(findParam);
+        const response = await productCategoryService.findProductCategories(findParam);
+        return response.data;
+    } catch (error) {
+        console.log('error', error);
+    }
+});
+
+export const searchProductCategories = createAsyncThunk('productCategory/searchProductCategories', async (searchParam: SearchParamModel) => {
+
+    try {
+        const response = await productCategoryService.searchProductCategories(searchParam);
+        return response.data;
     } catch (error) {
         console.log('error', error);
     }
@@ -40,14 +54,32 @@ const productCategorySlice = createSlice({
                 state.message = '';
                 state.error = null;
             })
-            .addCase(findProductCategories.fulfilled, (state, action: PayloadAction<SuccessResponseModel<PageModel<ProductCategoryModel>>>) => {
+            .addCase(findProductCategories.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
                 state.loading = false;
-                state.pageSize = action.payload.data.content.pageSize;
-                state.totalElements = action.payload.data.content.totalElements;
-                state.message = action.payload.message;
-                productCategoryAdapter.upsertMany(state, action.payload.data.content.elements)
+                state.pageSize = data.content.pageSize;
+                state.totalElements = data.content.totalElements;
+                state.message = message;
+                productCategoryAdapter.setAll(state, data.content.elements)
             })
             .addCase(findProductCategories.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(searchProductCategories.pending, (state) => {
+                state.loading = true;
+                state.message = '';
+                state.error = null;
+            })
+            .addCase(searchProductCategories.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
+                state.loading = false;
+                state.pageSize = data.content.pageSize;
+                state.totalElements = data.content.totalElements;
+                state.message = message;
+                productCategoryAdapter.setAll(state, data.content.elements)
+            })
+            .addCase(searchProductCategories.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
@@ -56,6 +88,7 @@ const productCategorySlice = createSlice({
 
 export const getPageSize = (state: RootState) => state.inventory.productCategory.pageSize;
 export const getTotalElements = (state: RootState) => state.inventory.productCategory.totalElements;
+export const getTotalPages = (state: RootState) => state.inventory.productCategory.totalPages;
 export const getMessage = (state: RootState) => state.inventory.productCategory.message;
 export const getError = (state: RootState) => state.inventory.productCategory.error;
 export const getLoading = (state: RootState) => state.inventory.productCategory.loading;
