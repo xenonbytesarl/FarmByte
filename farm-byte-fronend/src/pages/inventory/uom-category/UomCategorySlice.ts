@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
@@ -24,9 +24,8 @@ const uomCategoryInitialState = uomCategoryAdapter.getInitialState({
 
 export const findUomCategories = createAsyncThunk(
     'uomCategory/findUomCategories', async (findParam: FindParamModel) => {
-        let response = null;
         try {
-            response = await uomCategoryService.findUomCategories(findParam);
+            const response = await uomCategoryService.findUomCategories(findParam);
             return response.data;
     } catch (error) {
         console.log('Error', error);
