@@ -7,7 +7,6 @@ import './global.css'
 import './i18n';
 
 createRoot(document.getElementById('root')!).render(
-
     <Provider store={store}>
         <Router>
             <AppRoute/>
