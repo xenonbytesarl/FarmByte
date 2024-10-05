@@ -107,7 +107,11 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                                 {
                                     isLoading
                                         ?
-                                            <p className="flex flex-row justify-center items-center w-full mt-8">'Loading...'</p>
+                                            <TableRow>
+                                                <TableCell><p
+                                                    className="flex flex-row justify-center items-center w-full mt-8">'Loading...'</p>
+                                                </TableCell>
+                                            </TableRow>
                                         :
                                             table.getRowModel().rows?.length ? (
                                                 table.getRowModel().rows.map((row) => (

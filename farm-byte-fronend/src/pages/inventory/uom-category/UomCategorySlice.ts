@@ -69,7 +69,6 @@ const uomCategorySlice = createSlice({
             .addCase(findUomCategories.fulfilled, (state, action) => {
                 const {data, message} = action.payload as SuccessResponseModel<PageModel<UomCategoryModel>>;
                 state.loading = false;
-                state.pageSize = data.content.pageSize;
                 state.totalElements = data.content.totalElements;
                 state.totalPages = data.content.totalPages;
                 state.message = message;
