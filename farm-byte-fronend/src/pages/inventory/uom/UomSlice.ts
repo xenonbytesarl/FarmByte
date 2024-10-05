@@ -5,6 +5,7 @@ import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import {RootState} from "@/Store.ts";
 import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
 import uomService from "@/pages/inventory/uom/UomService.ts";
+import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
 
 
 const uomAdapter = createEntityAdapter<UomModel>({
@@ -12,7 +13,7 @@ const uomAdapter = createEntityAdapter<UomModel>({
 
 const uomInitialState = uomAdapter.getInitialState({
     loading: false,
-    pageSize: 0,
+    pageSize: DEFAULT_SIZE_VALUE,
     totalElements: 0,
     message: '',
     error: null
