@@ -99,7 +99,7 @@ const UomTree = () => {
 
     const uomCategoryByName = (uomCategoryId: string): string => {
         const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
-        return uomCategory.name;
+        return uomCategory? uomCategory.name: '';
     }
 
     const handlePageChange = (page: number) => {

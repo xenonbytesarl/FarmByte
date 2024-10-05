@@ -54,7 +54,6 @@ const uomSlice = createSlice({
             .addCase(findUoms.fulfilled, (state, action) => {
                 const {data, message} = action.payload as SuccessResponseModel<PageModel<UomModel>>;
                 state.loading = false;
-                state.pageSize = data.content.pageSize;
                 state.totalElements = data.content.totalElements;
                 state.totalPages = data.content.totalPages;
                 state.message = message;

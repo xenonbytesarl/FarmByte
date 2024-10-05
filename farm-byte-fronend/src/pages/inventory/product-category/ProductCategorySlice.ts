@@ -6,7 +6,7 @@ import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import {RootState} from "@/Store.ts";
 import productCategoryService from "@/pages/inventory/product-category/ProductCategroyService.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
-import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
+import {DEFAULT_PAGE_SIZE_OPTIONS, DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
 
 
 const productCategoryAdapter = createEntityAdapter<ProductCategoryModel>({
@@ -53,11 +53,11 @@ const productCategorySlice = createSlice({
                 state.loading = true;
                 state.message = '';
                 state.error = null;
+                state.pageSize = DEFAULT_SIZE_VALUE;
             })
             .addCase(findProductCategories.fulfilled, (state, action) => {
                 const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
                 state.loading = false;
-                state.pageSize = data.content.pageSize;
                 state.totalElements = data.content.totalElements;
                 state.message = message;
                 productCategoryAdapter.setAll(state, data.content.elements)
