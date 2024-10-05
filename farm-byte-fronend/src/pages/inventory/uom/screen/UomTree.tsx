@@ -8,7 +8,12 @@ import {
     selectUoms
 } from "@/pages/inventory/uom/UomSlice.ts";
 import {useEffect, useState} from "react";
-import {DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
+import {
+    DEFAULT_DIRECTION_VALUE,
+    DEFAULT_PAGE_VALUE,
+    DEFAULT_SIZE_VALUE,
+    MAX_SIZE_VALUE
+} from "@/constants/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {Direction} from "@/constants/directionConstant.ts";
@@ -19,7 +24,7 @@ import {RootState, store} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {
-    findUomCategories,
+    findUomCategories, findUomCategoryById,
     selectUomCategoryById
 } from "@/pages/inventory/uom-category/UomCategorySlice.ts";
 
@@ -41,7 +46,7 @@ const UomTree = () => {
         page: DEFAULT_PAGE_VALUE,
         size: pageSize,
         attribute: "name",
-        direction: Direction.ASC,
+        direction: DEFAULT_DIRECTION_VALUE,
         keyword: keyword
     });
 
@@ -78,13 +83,8 @@ const UomTree = () => {
         }
     ];
 
-    const uomCategoryByName = (uomCategoryId: string): string => {
-        const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
-        return uomCategory.name;
-    }
-
     useEffect(() => {
-        store.dispatch(findUomCategories({...searchParam}));
+        store.dispatch(findUomCategories({...searchParam, size: MAX_SIZE_VALUE}));
     }, [store.dispatch]);
 
     useEffect(() => {
@@ -97,11 +97,27 @@ const UomTree = () => {
         }));
     }, [debounceKeyword, page, size]);
 
-    const handlePaginatorChange = (page: number, size: number) => {
-        setSearchParam({page: page, size: size, attribute: "name", direction: Direction.ASC, keyword: keyword});
+    const uomCategoryByName = (uomCategoryId: string): string => {
+        const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
+        return uomCategory.name;
+    }
+
+    const handlePageChange = (page: number) => {
+        setSearchParam({page: page, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
         //TODO add page in pageInfo in backend and manage page in store
         setPage(page);
+    }
+
+    const handleSizeChange = (size: number) => {
+        setSearchParam({page: DEFAULT_PAGE_VALUE, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
+        //TODO add page in pageInfo in backend and manage page in store
         setSize(size);
+        setPage(DEFAULT_PAGE_VALUE);
+    }
+
+    const handleFilterChange = (keyword: string) => {
+        setKeyword(keyword);
+        setPage(DEFAULT_PAGE_VALUE);
     }
 
     const handleEdit = (row: UomModel) => {
@@ -110,10 +126,6 @@ const UomTree = () => {
 
     const handleNew = () => {
         navigate('/inventory/uoms/new');
-    }
-
-    const handleFilter = (keyword: string) => {
-        setKeyword(keyword);
     }
 
     const handleClear = () => {
@@ -131,9 +143,10 @@ const UomTree = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 keyword={keyword}
-                handlePaginatorChange={handlePaginatorChange}
+                handlePageChange={handlePageChange}
                 handleNew={handleNew}
-                handleFilter={handleFilter}
+                handleFilterChange={handleFilterChange}
+                handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
             />
 

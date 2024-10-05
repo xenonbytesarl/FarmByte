@@ -8,7 +8,7 @@ import {
     selectUomCategories
 } from "@/pages/inventory/uom-category/UomCategorySlice.ts";
 import {useEffect, useState} from "react";
-import {DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
+import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
 import {Direction} from "@/constants/directionConstant.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {useTranslation} from "react-i18next";
@@ -66,16 +66,27 @@ const UomCategoryTree = () => {
             page: page,
             size: size,
             attribute: "name",
-            direction: Direction.ASC,
+            direction: DEFAULT_DIRECTION_VALUE,
             keyword: keyword
         }));
     }, [debounceKeyword, page, size]);
 
-    const handlePaginatorChange = (page: number, size: number) => {
-        setSearchParam({page: page, size: size, attribute: "name", direction: Direction.ASC, keyword: keyword});
+    const handlePageChange = (page: number) => {
+        setSearchParam({page: page, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
         //TODO add page in pageInfo in backend and manage page in store
         setPage(page);
+    }
+
+    const handleSizeChange = (size: number) => {
+        setSearchParam({page: DEFAULT_PAGE_VALUE, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
+        //TODO add page in pageInfo in backend and manage page in store
         setSize(size);
+        setPage(DEFAULT_PAGE_VALUE);
+    }
+
+    const handleFilterChange = (keyword: string) => {
+        setKeyword(keyword);
+        setPage(DEFAULT_PAGE_VALUE);
     }
 
     const handleEdit = (row: UomCategoryModel) => {
@@ -84,10 +95,6 @@ const UomCategoryTree = () => {
 
     const handleNew = () => {
         navigate('/inventory/uom-categories/new');
-    }
-
-    const handleFilter = (keyword: string) => {
-        setKeyword(keyword);
     }
 
     const handleClear = () => {
@@ -105,9 +112,10 @@ const UomCategoryTree = () => {
                 totalPages={totalPages}
                 isLoading={isLoading}
                 keyword={keyword}
-                handlePaginatorChange={handlePaginatorChange}
+                handlePageChange={handlePageChange}
                 handleNew={handleNew}
-                handleFilter={handleFilter}
+                handleFilterChange={handleFilterChange}
+                handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
             />
 

@@ -42,9 +42,18 @@ export const searchUomCategories = createAsyncThunk(
         } catch (error) {
             console.log('Error', error);
         }
+});
 
+export const findUomCategoryById = createAsyncThunk(
+    'uomCategory/findUomCategoryById', async (uomCategoryId: string) => {
+        let response = null;
+        try {
+            response = await uomCategoryService.findUomCategoryById(uomCategoryId);
+            return response.data;
+        } catch (error) {
+            console.log('Error', error);
+        }
     });
-
 
 const uomCategorySlice = createSlice({
     name: "uomCategory",
@@ -64,7 +73,7 @@ const uomCategorySlice = createSlice({
                 state.totalElements = data.content.totalElements;
                 state.totalPages = data.content.totalPages;
                 state.message = message;
-                uomCategoryAdapter.setAll(state, data.content.elements)
+                uomCategoryAdapter.setAll(state, data.content.elements);
             })
             .addCase(findUomCategories.rejected, (state, action) => {
                 state.loading = false;
@@ -82,9 +91,25 @@ const uomCategorySlice = createSlice({
                 state.totalElements = data.content.totalElements;
                 state.totalPages = data.content.totalPages;
                 state.message = message;
-                uomCategoryAdapter.setAll(state, data.content.elements)
+                uomCategoryAdapter.setAll(state, data.content.elements);
             })
             .addCase(searchUomCategories.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(findUomCategoryById.pending, (state) => {
+                state.loading = true;
+                state.message = '';
+                state.error = null;
+            })
+            .addCase(findUomCategoryById.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomCategoryModel>;
+                state.loading = false;
+                state.totalElements = state.totalElements + 1;
+                state.message = message;
+                uomCategoryAdapter.addOne(state, data.content);
+            })
+            .addCase(findUomCategoryById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
