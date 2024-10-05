@@ -2,16 +2,14 @@ import {ColumnDef} from "@tanstack/react-table";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {useSelector} from "react-redux";
 import {
-    findUomCategories,
     getLoading,
     getPageSize,
     getTotalElements, getTotalPages, searchUomCategories,
     selectUomCategories
 } from "@/pages/inventory/uom-category/UomCategorySlice.ts";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
 import {Direction} from "@/constants/directionConstant.ts";
-import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
@@ -24,21 +22,23 @@ import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 const UomCategoryTree = () => {
 
     const uomCategories: Array<UomCategoryModel> = useSelector(selectUomCategories);
-    const size: number = useSelector(getPageSize);
+    const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
     const isLoading = useSelector(getLoading);
     const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(DEFAULT_PAGE_VALUE);
+    const [size, setSize] = useState<number>(pageSize);
     const [keyword, setKeyword] = useState<string>('');
     const debounceKeyword = useDebounce(keyword, DEBOUNCE_TIMEOUT );
 
-    const [findParam, setFindParam] = useState<FindParamModel>({
+    const [searchParam, setSearchParam] = useState<SearchParamModel>({
         page: DEFAULT_PAGE_VALUE,
-        size: size,
+        size: pageSize,
         attribute: "name",
-        direction: Direction.ASC
+        direction: Direction.ASC,
+        keyword: keyword
     });
 
     const {t} = useTranslation(['home']);
@@ -60,34 +60,30 @@ const UomCategoryTree = () => {
         }
     ];
 
-    useEffect(() => {
-        store.dispatch(findUomCategories(findParam));
-    }, [findParam]);
 
     useEffect(() => {
-
-            store.dispatch(searchUomCategories({
-                page: page,
-                size: size,
-                attribute: "name",
-                direction: Direction.ASC,
-                keyword: keyword
-            }));
-
-    }, [debounceKeyword]);
+        store.dispatch(searchUomCategories({
+            page: page,
+            size: size,
+            attribute: "name",
+            direction: Direction.ASC,
+            keyword: keyword
+        }));
+    }, [debounceKeyword, page, size]);
 
     const handlePaginatorChange = (page: number, size: number) => {
-        setFindParam({page: page, size: size, attribute: "name", direction: Direction.ASC});
+        setSearchParam({page: page, size: size, attribute: "name", direction: Direction.ASC, keyword: keyword});
         //TODO add page in pageInfo in backend and manage page in store
         setPage(page);
+        setSize(size);
     }
 
     const handleEdit = (row: UomCategoryModel) => {
         navigate(`/inventory/uom-categories/detail/${row.id}`);
     }
 
-    const handleNew = (link: string) => {
-        navigate(link);
+    const handleNew = () => {
+        navigate('/inventory/uom-categories/new');
     }
 
     const handleFilter = (keyword: string) => {
@@ -101,14 +97,13 @@ const UomCategoryTree = () => {
     return (
         <div className="text-3xl text-amber-700 min-h-full">
             <DataTable
-                title={'uom_category_form_new_title'}
+                title={'uom_category_tree_title'}
                 columns={columns} data={uomCategories}
                 totalElements={totalElements}
                 page={page}
                 size={size}
                 totalPages={totalPages}
                 isLoading={isLoading}
-                newLink={'/inventory/uom-categories/new'}
                 keyword={keyword}
                 handlePaginatorChange={handlePaginatorChange}
                 handleNew={handleNew}

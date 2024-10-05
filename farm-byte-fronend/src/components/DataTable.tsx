@@ -23,7 +23,6 @@ interface DataTableProps<TData, TValue> {
     size: number,
     isLoading?: boolean,
     title: string,
-    newLink: string,
     keyword: string,
     handlePaginatorChange: (page: number, size: number) => void,
     handleNew: (link: string) => void,
@@ -32,7 +31,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, page, size, title,
-       newLink, keyword, handlePaginatorChange, handleNew,  handleFilter, handleClear}: DataTableProps<TData, TValue>) => {
+            keyword, handlePaginatorChange, handleNew,  handleFilter, handleClear}: DataTableProps<TData, TValue>) => {
 
     const {t} = useTranslation(['home']);
 
@@ -64,7 +63,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                 <CardHeader>
                     <CardTitle className=" flex flex-row justify-between items-center text-amber-700">
                         <p className="text-2xl">{t(title)}</p>
-                        <Button onClick={() => handleNew(newLink)} variant="default" className="flex flex-row justify-center items-center">
+                        <Button onClick={() => handleNew} variant="default" className="flex flex-row justify-center items-center">
                             <span className="material-symbols-outlined text-xl">add</span>
                             <span>{t('tree_button_label_add')}</span>
                         </Button>
