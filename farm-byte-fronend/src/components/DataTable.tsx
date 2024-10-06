@@ -63,7 +63,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
         <div>
             <Card>
                 <CardHeader>
-                    <CardTitle className=" flex flex-row justify-between items-center text-amber-700">
+                    <CardTitle className="flex flex-row justify-between items-center text-amber-700">
                         <p className="text-2xl">{t(title)}</p>
                         <Button onClick={() => handleNew()} variant="default" className="flex flex-row justify-center items-center">
                             <span className="material-symbols-outlined text-xl">add</span>

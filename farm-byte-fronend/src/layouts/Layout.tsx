@@ -13,7 +13,7 @@ const Layout = () => {
                     <Sidebar/>
                     <div className="flex flex-col w-full">
                         <WebNavbar/>
-                        <div className="container grow mx-auto min-h-full flex-1 py-10">
+                        <div className="container grow mx-auto min-h-full flex-1 p-10">
                             <Outlet/>
                         </div>
                     </div>

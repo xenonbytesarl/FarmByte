@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSlice, isAnyOf} from "@reduxjs/toolkit";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
@@ -23,37 +23,85 @@ const uomCategoryInitialState = uomCategoryAdapter.getInitialState({
 
 
 export const findUomCategories = createAsyncThunk(
-    'uomCategory/findUomCategories', async (findParam: FindParamModel) => {
+    'uomCategory/findUomCategories', async (findParam: FindParamModel, {rejectWithValue}) => {
         try {
-            const response = await uomCategoryService.findUomCategories(findParam);
+            const response =  await uomCategoryService.findUomCategories(findParam);
             return response.data;
-    } catch (error) {
-        console.log('Error', error);
-    }
-
+        } catch (error) {
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Unknown error - Contact your administrator');
+            }
+        }
 });
 
 export const searchUomCategories = createAsyncThunk(
-    'uomCategory/searchUomCategories', async (searchParam: SearchParamModel) => {
-        let response = null;
+    'uomCategory/searchUomCategories', async (searchParam: SearchParamModel, {rejectWithValue}) => {
         try {
-            response = await uomCategoryService.searchUomCategories(searchParam);
+            const response =  await uomCategoryService.searchUomCategories(searchParam);
             return response.data;
         } catch (error) {
-            console.log('Error', error);
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Unknown error - Contact your administrator');
+            }
         }
 });
 
 export const findUomCategoryById = createAsyncThunk(
-    'uomCategory/findUomCategoryById', async (uomCategoryId: string) => {
-        let response = null;
+    'uomCategory/findUomCategoryById', async (uomCategoryId: string, {rejectWithValue}) => {
         try {
-            response = await uomCategoryService.findUomCategoryById(uomCategoryId);
+            const response =  await uomCategoryService.findUomCategoryById(uomCategoryId);
             return response.data;
         } catch (error) {
-            console.log('Error', error);
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Unknown error - Contact your administrator');
+            }
         }
-    });
+});
+
+export const updateUomCategory = createAsyncThunk(
+    'uomCategory/updateUomCategory', async ({uomCategoryId, uomCategory}: {uomCategoryId: string, uomCategory: UomCategoryModel}, {rejectWithValue}) => {
+    try {
+        const response =  await uomCategoryService.updateUomCategory(uomCategoryId, uomCategory);
+        return response.data;
+    } catch (error) {
+        if(error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if(error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue('Unknown error - Contact your administrator');
+        }
+    }
+});
+
+export const createUomCategory = createAsyncThunk(
+    'uomCategory/createUomCategory', async (uomCategory: UomCategoryModel, {rejectWithValue}) => {
+        try {
+            const response =  await uomCategoryService.createUomCategory(uomCategory);
+            return response.data;
+        } catch (error) {
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue('Unknown error - Contact your administrator');
+            }
+        }
+
+});
 
 const uomCategorySlice = createSlice({
     name: "uomCategory",
@@ -61,46 +109,6 @@ const uomCategorySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(findUomCategories.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-            })
-            .addCase(findUomCategories.fulfilled, (state, action) => {
-                const {data, message} = action.payload as SuccessResponseModel<PageModel<UomCategoryModel>>;
-                state.loading = false;
-                state.totalElements = data.content.totalElements;
-                state.totalPages = data.content.totalPages;
-                state.message = message;
-                uomCategoryAdapter.setAll(state, data.content.elements);
-            })
-            .addCase(findUomCategories.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(searchUomCategories.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-            })
-            .addCase(searchUomCategories.fulfilled, (state, action) => {
-                const {data, message} = action.payload as SuccessResponseModel<PageModel<UomCategoryModel>>;
-                state.loading = false;
-                state.pageSize = data.content.pageSize;
-                state.totalElements = data.content.totalElements;
-                state.totalPages = data.content.totalPages;
-                state.message = message;
-                uomCategoryAdapter.setAll(state, data.content.elements);
-            })
-            .addCase(searchUomCategories.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(findUomCategoryById.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-            })
             .addCase(findUomCategoryById.fulfilled, (state, action) => {
                 const {data, message} = action.payload as SuccessResponseModel<UomCategoryModel>;
                 state.loading = false;
@@ -108,9 +116,54 @@ const uomCategorySlice = createSlice({
                 state.message = message;
                 uomCategoryAdapter.addOne(state, data.content);
             })
-            .addCase(findUomCategoryById.rejected, (state, action) => {
+            .addCase(updateUomCategory.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomCategoryModel>;
                 state.loading = false;
-                state.error = action.payload;
+                state.message = message;
+                uomCategoryAdapter.updateOne(state, {id: data.content.id, changes: data.content});
+            })
+            .addCase(createUomCategory.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomCategoryModel>;
+                state.loading = false;
+                state.totalElements = state.totalElements + 1;
+                state.message = message;
+                uomCategoryAdapter.addOne(state, data.content);
+            })
+            .addMatcher(
+                isAnyOf(
+                    findUomCategories.fulfilled,
+                    searchUomCategories.fulfilled
+                ), (state, action) => {
+                    const {data, message} = action.payload as SuccessResponseModel<PageModel<UomCategoryModel>>;
+                    state.loading = false;
+                    state.totalElements = data.content.totalElements;
+                    state.totalPages = data.content.totalPages;
+                    state.message = message;
+                    uomCategoryAdapter.setAll(state, data.content.elements);
+                })
+            .addMatcher(
+                isAnyOf(
+                    findUomCategories.pending,
+                    searchUomCategories.pending,
+                    findUomCategoryById.pending,
+                    updateUomCategory.pending,
+                    createUomCategory.pending
+                ), (state) => {
+                state.loading = true;
+                state.message = '';
+                state.error = null;
+            })
+            .addMatcher(
+                isAnyOf(
+                    findUomCategories.rejected,
+                    searchUomCategories.rejected,
+                    findUomCategoryById.rejected,
+                    updateUomCategory.rejected,
+                    createUomCategory.rejected
+                ), (state, action) => {
+                    state.loading = false;
+                    state.message = '';
+                    state.error = action.payload;
             })
     }
 });
