@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSlice, isAnyOf} from "@reduxjs/toolkit";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
@@ -7,6 +7,7 @@ import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
 import uomService from "@/pages/inventory/uom/UomService.ts";
 import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {UNKNOWN_ERROR} from "@/shared/constant/globalConstant.ts";
 
 
 const uomAdapter = createEntityAdapter<UomModel>({
@@ -22,21 +23,78 @@ const uomInitialState = uomAdapter.getInitialState({
 });
 
 
-export const findUoms = createAsyncThunk('uom/findUoms', async (findParam: FindParamModel) => {
+export const findUoms = createAsyncThunk('uom/findUoms', async (findParam: FindParamModel, {rejectWithValue}) => {
+     try {
+            const response =  await uomService.findUoms(findParam);
+            return response.data;
+        } catch (error) {
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue(UNKNOWN_ERROR);
+            }
+        }
+});
+
+export const searchUoms = createAsyncThunk('uom/searchUoms', async (searchParam: SearchParamModel, {rejectWithValue}) => {
+     try {
+            const response =  await uomService.searchUoms(searchParam);
+            return response.data;
+        } catch (error) {
+            if (error && error.response && error.response.data) {
+                return rejectWithValue(error.response.data);
+            } else if (error.message) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue(UNKNOWN_ERROR);
+            }
+        }
+});
+
+export const findUomById = createAsyncThunk('uom/findUomById', async (uomId: string, {rejectWithValue}) => {
     try {
-        const response = await uomService.findUoms(findParam);
+        const response =  await uomService.findUomById(uomId);
         return response.data;
     } catch (error) {
-        console.log('error', error);
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
     }
 });
 
-export const searchUoms = createAsyncThunk('uom/searchUoms', async (searchParam: SearchParamModel) => {
+export const updateUom = createAsyncThunk('uom/updateUom', async ({uomId, uom}:{uomId: string, uom: UomModel}, {rejectWithValue}) => {
     try {
-        const response = await uomService.searchUoms(searchParam);
+        const response =  await uomService.updateUom(uomId, uom);
         return response.data;
     } catch (error) {
-        console.log('error', error);
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
+    }
+});
+
+export const createUom = createAsyncThunk('uom/createUom', async ( uom: UomModel, {rejectWithValue}) => {
+    try {
+        const response =  await uomService.createUom(uom);
+        return response.data;
+    } catch (error) {
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
     }
 });
 
@@ -46,29 +104,27 @@ const uomSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(findUoms.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-            })
-            .addCase(findUoms.fulfilled, (state, action) => {
-                const {data, message} = action.payload as SuccessResponseModel<PageModel<UomModel>>;
+            .addCase(findUomById.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomModel>;
                 state.loading = false;
-                state.totalElements = data.content.totalElements;
-                state.totalPages = data.content.totalPages;
+                state.totalElements = state.totalElements + 1;
                 state.message = message;
-                uomAdapter.setAll(state, data.content.elements)
+                uomAdapter.addOne(state, data.content);
             })
-            .addCase(findUoms.rejected, (state, action) => {
+            .addCase(updateUom.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomModel>;
                 state.loading = false;
-                state.error = action.payload;
+                state.message = message;
+                uomAdapter.updateOne(state, {id: data.content.id, changes: data.content});
             })
-            .addCase(searchUoms.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
+            .addCase(createUom.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<UomModel>;
+                state.loading = false;
+                state.totalElements = state.totalElements + 1;
+                state.message = message;
+                uomAdapter.addOne(state, data.content);
             })
-            .addCase(searchUoms.fulfilled, (state, action) => {
+            .addMatcher(isAnyOf(findUoms.fulfilled, searchUoms.fulfilled), (state, action) => {
                 const {data, message} = action.payload as SuccessResponseModel<PageModel<UomModel>>;
                 state.loading = false;
                 state.pageSize = data.content.pageSize;
@@ -77,10 +133,30 @@ const uomSlice = createSlice({
                 state.message = message;
                 uomAdapter.setAll(state, data.content.elements)
             })
-            .addCase(searchUoms.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
+            .addMatcher(
+                isAnyOf(
+                    findUoms.pending,
+                    searchUoms.pending,
+                    findUomById.pending,
+                    updateUom.pending,
+                    createUom.pending,
+                ), (state) => {
+                    state.loading = true;
+                    state.message = '';
+                    state.error = null;
+                })
+            .addMatcher(
+                isAnyOf(
+                    findUoms.rejected,
+                    searchUoms.rejected,
+                    findUomById.rejected,
+                    updateUom.rejected,
+                    createUom.rejected
+                ), (state, action) => {
+                    state.loading = false;
+                    state.message = '';
+                    state.error = action.payload;
+                })
     }
 });
 

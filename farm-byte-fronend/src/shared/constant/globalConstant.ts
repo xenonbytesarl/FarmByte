@@ -6,3 +6,7 @@ export const API_JSON_HEADER = {
     'Content-Type': 'application/json',
     'Accept-Language': i18n.language
 }
+
+export const UNKNOWN_ERROR = 'Unknown error - Contact your administrator';
+
+export type ToastType = "danger" | "info" | "success";
