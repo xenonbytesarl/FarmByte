@@ -1,11 +1,12 @@
 import {FindParamModel} from "@/shared/model/findParamModel.ts";
-import axios from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {API_BASE_URL, API_JSON_HEADER} from "@/shared/constant/globalConstant.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
+import {ErrorResponseModel} from "@/shared/model/errorResponseModel.ts";
 
 const findUomCategories = async (findParam: FindParamModel): Promise<SuccessResponseModel<PageModel<UomCategoryModel>>> => {
     return await axios.get(API_BASE_URL + '/catalog/uom-categories',
@@ -33,10 +34,29 @@ const findUomCategoryById = async (uomCategoryId: string): Promise<SuccessRespon
         }
     );
 }
+
+const updateUomCategory = async (uomCategoryId: string, uomCategory: UomCategoryModel): Promise<SuccessResponseModel<UomCategoryModel>> => {
+    return await axios.put(API_BASE_URL + `/catalog/uom-categories/${uomCategoryId}`, uomCategory,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
+const createUomCategory = async (uomCategory: UomCategoryModel): Promise<SuccessResponseModel<UomCategoryModel>> => {
+    return await axios.post(API_BASE_URL + `/catalog/uom-categories`, uomCategory,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
 const uomCategoryService = {
     findUomCategories,
     searchUomCategories,
-    findUomCategoryById
+    findUomCategoryById,
+    updateUomCategory,
+    createUomCategory
 }
 
 export default uomCategoryService;

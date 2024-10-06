@@ -11,7 +11,6 @@ import {useEffect, useState} from "react";
 import {
     DEFAULT_DIRECTION_VALUE,
     DEFAULT_PAGE_VALUE,
-    DEFAULT_SIZE_VALUE,
     MAX_SIZE_VALUE
 } from "@/constants/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
@@ -24,7 +23,7 @@ import {RootState, store} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {
-    findUomCategories, findUomCategoryById,
+    findUomCategories,
     selectUomCategoryById
 } from "@/pages/inventory/uom-category/UomCategorySlice.ts";
 
