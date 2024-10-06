@@ -7,7 +7,6 @@
   "sidebarMenu_farm": "Agriculture",
   "sidebarMenu_setting": "Configuration",
 
-
   "navbarMenu_inventory_operations": "Opérations",
   "navbarMenu_inventory_stock-adjustment": "Ajustement de stock",
   "navbarMenu_inventory_transfers": "Transfert",
@@ -58,6 +57,8 @@
   "uom_category_form_edit_title": "Catégorie d'unité de mesure",
   "uom_category_form_name_label": "Nom",
   "uom_category_form_name_required_message": "Le nom est obligatoire.",
+  "uom_category_pop_over_not_found":  "Aucune catégorie trouvée",
+  "uom_category_pop_over_place_holder":  "Selectionner une catégorie d'unité de mesure",
 
   "uom_form_new_title": "Nouvelle unité de mesure",
   "uom_form_edit_title": "Unité de mesure",
@@ -69,6 +70,11 @@
   "uom_form_uom_type_required_message": "Le type est obligatoire",
   "uom_form_ratio_label": "Ratio",
   "uom_form_active_label": "Actif",
+  "uom_uom_type_label_reference": "Référence",
+  "uom_uom_type_label_lower": "Plus petit",
+  "uom_uom_type_label_greater": "Plus grand",
+  "uom_pop_over_place_holder": "Selectionner un type d'unité de mesure",
+  "uom_pop_over_not_found": "Aucun type d'unité de mesure trouvé",
 
   "form_button_label_save": "Enregistrer",
   "form_button_label_edit": "Modifier",

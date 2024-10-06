@@ -24,6 +24,7 @@ import {useToast} from "@/hooks/use-toast.ts";
 import {Toaster} from "@/components/ui/toaster.tsx";
 import {cn} from "@/lib/utils.ts";
 import FormCrudButton from "@/components/FormCrudButton.tsx";
+import {ToastType} from "@/shared/constant/globalConstant.ts";
 
 
 const UomCategoryForm = () => {
@@ -34,9 +35,9 @@ const UomCategoryForm = () => {
 
     const {toast} = useToast();
 
-    const uomCategory = useSelector((state:RootState) => selectUomCategoryById(state, uomCategoryId));
-    const isLoading = useSelector(getLoading);
-    const message = useSelector(getMessage);
+    const uomCategory: UomCategoryModel = useSelector((state:RootState) => selectUomCategoryById(state, uomCategoryId));
+    const isLoading: boolean = useSelector(getLoading);
+    const message: string = useSelector(getMessage);
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<FormModeType>(uomCategoryId? FormModeType.READ: FormModeType.CREATE);
@@ -44,20 +45,21 @@ const UomCategoryForm = () => {
     const UomCategorySchema = Zod.object({
         name: Zod.string().min(1, t('uom_category_form_name_required_message')),
     });
-    const defaultValueUomCategoryModel: UomCategoryModel = {
+    const defaultValuesUomCategory: UomCategoryModel = {
       id: "",
       name: "",
       parentUomCategoryId: "",
       active: true
     };
     const { register, handleSubmit, formState, reset, getValues } = useForm<UomCategoryModel>({
-        defaultValues: uomCategoryId? defaultValueUomCategoryModel: {...uomCategory},
+        defaultValues: uomCategoryId? defaultValuesUomCategory: {...uomCategory},
         resolver: zodResolver(UomCategorySchema)
     });
     const {errors, isValid } = formState;
 
     useEffect(() => {
         if(!uomCategory && uomCategoryId) {
+            console.log(uomCategoryId);
             store.dispatch(findUomCategoryById(uomCategoryId));
         }
     }, [store.dispatch, uomCategory]);
@@ -68,60 +70,44 @@ const UomCategoryForm = () => {
         }
     }, [uomCategory, reset]);
 
+    const showToast = (variant: ToastType, message: string) => {
+        toast({
+            className: cn(
+                'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'
+            ),
+            variant: variant,
+            title: "FarmByte",
+            description: t(message),
+        });
+    }
+
 
     const onSubmit = () => {
         const uomCategoryFormValue: UomCategoryModel = getValues();
         if (uomCategoryFormValue.id) {
             store.dispatch(updateUomCategory({uomCategoryId: uomCategoryFormValue.id, uomCategory: uomCategoryFormValue}))
+                .then(unwrapResult)
                 .then(() => {
                     setMode(FormModeType.READ);
-                    toast({
-                        className: cn(
-                            'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'
-                        ),
-                        variant: "info",
-                        title: "FarmByte",
-                        description: t(message),
-                    });
+                    showToast("info", message);
                 })
                 .catch((error) => {
                     setMode(FormModeType.EDIT);
-                    toast({
-                        className: cn(
-                            'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'
-                        ),
-                        variant: "danger",
-                        title: "FarmByte",
-                        description: error !== null && error.reason !== null? t(error.reason) : t(error),
-                    });
+                   showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 })
         } else {
             store.dispatch(createUomCategory(uomCategoryFormValue))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    toast({
-                        className: cn(
-                            'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'
-                        ),
-                        variant: "success",
-                        title: "FarmByte",
-                        description: t(message),
-                    });
+                    showToast("success", message);
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     navigate(`/inventory/uom-categories/detail/${response.data.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);
-                    toast({
-                        className: cn(
-                            'top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'
-                        ),
-                        variant: "danger",
-                        title: "FarmByte",
-                        description: error !== null && error.reason !== null ? t(error.reason) : t(error),
-                    });
+                    showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 });
         }
     }
@@ -142,7 +128,7 @@ const UomCategoryForm = () => {
     const onCreate = () => {
         navigate('/inventory/uom-categories/new');
         setMode(FormModeType.CREATE);
-        reset(defaultValueUomCategoryModel);
+        reset(defaultValuesUomCategory);
     }
 
     return (
