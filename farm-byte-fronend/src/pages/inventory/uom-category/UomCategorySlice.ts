@@ -7,6 +7,7 @@ import {RootState} from "@/Store.ts";
 import uomCategoryService from "@/pages/inventory/uom-category/UomCategoryService.ts";
 import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {UNKNOWN_ERROR} from "@/shared/constant/globalConstant.ts";
 
 
 const uomCategoryAdapter = createEntityAdapter<UomCategoryModel>({
@@ -33,7 +34,7 @@ export const findUomCategories = createAsyncThunk(
             } else if (error.message) {
                 return rejectWithValue(error.message);
             } else {
-                return rejectWithValue('Unknown error - Contact your administrator');
+                return rejectWithValue(UNKNOWN_ERROR);
             }
         }
 });
@@ -49,7 +50,7 @@ export const searchUomCategories = createAsyncThunk(
             } else if (error.message) {
                 return rejectWithValue(error.message);
             } else {
-                return rejectWithValue('Unknown error - Contact your administrator');
+                return rejectWithValue(UNKNOWN_ERROR);
             }
         }
 });
@@ -65,7 +66,7 @@ export const findUomCategoryById = createAsyncThunk(
             } else if (error.message) {
                 return rejectWithValue(error.message);
             } else {
-                return rejectWithValue('Unknown error - Contact your administrator');
+                return rejectWithValue(UNKNOWN_ERROR);
             }
         }
 });
@@ -81,7 +82,7 @@ export const updateUomCategory = createAsyncThunk(
         } else if(error.message) {
             return rejectWithValue(error.message);
         } else {
-            return rejectWithValue('Unknown error - Contact your administrator');
+            return rejectWithValue(UNKNOWN_ERROR);
         }
     }
 });
@@ -97,7 +98,7 @@ export const createUomCategory = createAsyncThunk(
             } else if (error.message) {
                 return rejectWithValue(error.message);
             } else {
-                return rejectWithValue('Unknown error - Contact your administrator');
+                return rejectWithValue(UNKNOWN_ERROR);
             }
         }
 

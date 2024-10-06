@@ -57,6 +57,8 @@
   "uom_category_form_edit_title": "Category unit of measure",
   "uom_category_form_name_label": "Name",
   "uom_category_form_name_required_message": "Name is required",
+  "uom_category_pop_over_not_found": "No category of unit of measure found",
+  "uom_category_pop_over_place_holder":  "Select category unit of measure",
 
   "uom_form_new_title": "New unit of measure",
   "uom_form_edit_title": "Unit of measure",
@@ -68,6 +70,11 @@
   "uom_form_uom_type_required_message": "Type is required.",
   "uom_form_ratio_label": "Ratio",
   "uom_form_active_label": "Active",
+  "uom_uom_type_label_reference": "Reference",
+  "uom_uom_type_label_lower": "Lower",
+  "uom_uom_type_label_greater": "Greater",
+  "uom_pop_over_place_holder": "Select unit of measure type",
+  "uom_pop_over_not_found": "No unit of measure type found",
 
   "form_button_label_save": "Save",
   "form_button_label_edit": "Edit",

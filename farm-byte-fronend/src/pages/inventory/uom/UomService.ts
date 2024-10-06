@@ -23,9 +23,37 @@ const searchUoms = async (searchParam: SearchParamModel): Promise<SuccessRespons
         }
     );
 }
+
+const findUomById = async (uomId: string): Promise<SuccessResponseModel<UomModel>> => {
+    return await axios.get(API_BASE_URL + `/catalog/uoms/${uomId}`,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
+const updateUom = async (uomId: string, uom: UomModel): Promise<SuccessResponseModel<UomModel>> => {
+    return await axios.put(API_BASE_URL + `/catalog/uoms/${uomId}`, uom,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
+const createUom = async (uom: UomModel): Promise<SuccessResponseModel<UomModel>> => {
+    return await axios.post(API_BASE_URL + `/catalog/uoms`, uom,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
 const uomService = {
     findUoms,
-    searchUoms
+    searchUoms,
+    findUomById,
+    updateUom,
+    createUom
 }
 
 export default uomService;
