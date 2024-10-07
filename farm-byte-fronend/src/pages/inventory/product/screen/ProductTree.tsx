@@ -168,7 +168,6 @@ const ProductTree = () => {
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
             />
-
         </div>
     );
 }
