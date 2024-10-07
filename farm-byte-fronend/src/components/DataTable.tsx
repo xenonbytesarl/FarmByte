@@ -65,7 +65,8 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                 <CardHeader>
                     <CardTitle className="flex flex-row justify-between items-center text-amber-700">
                         <p className="text-2xl">{t(title)}</p>
-                        <Button onClick={() => handleNew()} variant="default" className="flex flex-row justify-center items-center">
+                        <Button onClick={() => handleNew()} variant="default"
+                                className="flex flex-row justify-center items-center">
                             <span className="material-symbols-outlined text-xl">add</span>
                             <span>{t('tree_button_label_add')}</span>
                         </Button>
@@ -78,7 +79,8 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                                 onChange={(event) => handleFilterChange(event.target.value)}
                                 className="max-w-sm"
                             />
-                            <span onClick={() => handleClear()} className={`material-symbols-outlined absolute mr-2 cursor-pointer text-2xl}`}>{keyword.length > 0? 'close': 'search'}</span>
+                            <span onClick={() => handleClear()}
+                                  className={`material-symbols-outlined absolute mr-2 cursor-pointer text-2xl}`}>{keyword.length > 0 ? 'close' : 'search'}</span>
                         </span>
                     </CardDescription>
                 </CardHeader>
@@ -88,7 +90,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                             <TableHeader>
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => {
+                                        {headerGroup.headers.map((header) => {
                                             return (
                                                 <TableHead key={header.id}>
                                                     {header.isPlaceholder
@@ -107,35 +109,35 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                                 {
                                     isLoading
                                         ?
+                                        <TableRow>
+                                            <TableCell><p
+                                                className="flex flex-row justify-center items-center w-full mt-8">'Loading...'</p>
+                                            </TableCell>
+                                        </TableRow>
+                                        :
+                                        table.getRowModel().rows?.length ? (
+                                            table.getRowModel().rows.map((row) => (
+                                                <TableRow
+                                                    /*onClick={() => handleEdit(row.original)}*/
+                                                    key={row.id}
+                                                    data-state={row.getIsSelected() && "selected"}
+                                                    className={row.getIsSelected() ? 'selected' : null}
+                                                    onClick={row.getToggleSelectedHandler()}
+                                                >
+                                                    {row.getVisibleCells().map((cell) => (
+                                                        <TableCell key={cell.id}>
+                                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            ))
+                                        ) : (
                                             <TableRow>
-                                                <TableCell><p
-                                                    className="flex flex-row justify-center items-center w-full mt-8">'Loading...'</p>
+                                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                                    No results.
                                                 </TableCell>
                                             </TableRow>
-                                        :
-                                            table.getRowModel().rows?.length ? (
-                                                table.getRowModel().rows.map((row) => (
-                                                    <TableRow
-                                                        /*onClick={() => handleEdit(row.original)}*/
-                                                        key={row.id}
-                                                        data-state={row.getIsSelected() && "selected"}
-                                                        className={row.getIsSelected() ? 'selected' : null}
-                                                        onClick={row.getToggleSelectedHandler()}
-                                                    >
-                                                        {row.getVisibleCells().map((cell) => (
-                                                            <TableCell key={cell.id}>
-                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                ))
-                                            ) : (
-                                                <TableRow>
-                                                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                                                        No results.
-                                                    </TableCell>
-                                                </TableRow>
-                                            )
+                                        )
                                 }
                             </TableBody>
                         </Table>
@@ -144,7 +146,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                 <CardFooter className="flex items-center justify-between space-x-2 py-4">
                     {
                         !isLoading
-                            &&
+                        &&
                         <div className="w-full">
                             <select
                                 className="text-base w-16 text-center"
@@ -197,6 +199,20 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                         </div>
                     }
                 </CardFooter>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
+                <p>Bonjour</p>
             </Card>
 
 
