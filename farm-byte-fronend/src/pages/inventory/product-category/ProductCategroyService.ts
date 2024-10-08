@@ -24,9 +24,36 @@ const searchProductCategories = async (searchParam: SearchParamModel): Promise<S
     );
 }
 
+const findProductCategoryById = async (productCategoryId: string): Promise<SuccessResponseModel<ProductCategoryModel>> => {
+    return await axios.get(API_BASE_URL + `/catalog/product-categories/${productCategoryId}`,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
+const updateProductCategory = async (productCategoryId: string, productCategory: ProductCategoryModel): Promise<SuccessResponseModel<ProductCategoryModel>> => {
+    return await axios.put(API_BASE_URL + `/catalog/product-categories/${productCategoryId}`, productCategory,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
+const createProductCategory = async (productCategory: ProductCategoryModel): Promise<SuccessResponseModel<ProductCategoryModel>> => {
+    return await axios.post(API_BASE_URL + `/catalog/product-categories`, productCategory,
+        {
+            headers: API_JSON_HEADER
+        }
+    );
+}
+
 const productCategoryService = {
     findProductCategories,
-    searchProductCategories
+    searchProductCategories,
+    findProductCategoryById,
+    updateProductCategory,
+    createProductCategory
 }
 
 export default productCategoryService;

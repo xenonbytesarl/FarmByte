@@ -199,20 +199,6 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                         </div>
                     }
                 </CardFooter>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
-                <p>Bonjour</p>
             </Card>
 
 

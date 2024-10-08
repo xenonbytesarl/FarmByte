@@ -22,6 +22,14 @@
   "navbarMenu_language_fr": "Français",
   "navbarMenu_language_en": "Anglais",
 
+  "form_button_label_save": "Enregistrer",
+  "form_button_label_edit": "Modifier",
+  "form_button_label_cancel": "Annuler",
+  "form_button_label_create": "Créer",
+
+  "tree_button_label_add": "Créer",
+  "tree_search_place_holder": "Rechercher...",
+
   "uom_category_tree_title": "Catégorie d'unité de mesure",
   "uom_category_tree_no_data_found": "Aucune catégorie d'unité de mesure trouvée. Cliquez sur le bouton créer pour ajouter une nouvelle catégorie d'unité de mesure.",
   "uom_category_tree_name": "Nom",
@@ -50,9 +58,6 @@
   "paginator_page_report": "{first} - {last} de {totalRecords}",
   "paginator_item_per_page": "Ligne par page",
 
-  "tree_button_label_add": "Créer",
-  "tree_search_place_holder": "Rechercher...",
-
   "uom_category_form_new_title": "Nouvelle catégorie d'unité de mesure",
   "uom_category_form_edit_title": "Catégorie d'unité de mesure",
   "uom_category_form_name_label": "Nom",
@@ -76,9 +81,8 @@
   "uom_pop_over_place_holder": "Selectionner un type d'unité de mesure",
   "uom_pop_over_not_found": "Aucun type d'unité de mesure trouvé",
 
-  "form_button_label_save": "Enregistrer",
-  "form_button_label_edit": "Modifier",
-  "form_button_label_cancel": "Annuler",
-  "form_button_label_create": "Créer"
+  "product_category_form_new_title": "Nouvelle Category d'article",
+  "product_category_form_edit_title": "Catégorie d'article",
+  "product_category_form_name_label": "Nom"
 }
 
