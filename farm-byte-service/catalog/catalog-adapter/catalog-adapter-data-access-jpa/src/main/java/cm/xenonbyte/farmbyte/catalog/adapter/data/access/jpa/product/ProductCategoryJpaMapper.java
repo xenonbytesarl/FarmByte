@@ -33,5 +33,5 @@ public interface ProductCategoryJpaMapper {
     @Mapping(target = "active.value", source = "active")
     ProductCategory toProductCategory(ProductCategoryJpa uomCategoryJpa);
 
-    void copyNewToOldProductCategory(@Nonnull @MappingTarget ProductCategoryJpa oldProductCategoryJpa, @Nonnull ProductCategoryJpa newProductCategoryJpa);
+    void copyNewToOldProductCategory(@Nonnull ProductCategoryJpa newProductCategoryJpa, @Nonnull @MappingTarget ProductCategoryJpa oldProductCategoryJpa);
 }

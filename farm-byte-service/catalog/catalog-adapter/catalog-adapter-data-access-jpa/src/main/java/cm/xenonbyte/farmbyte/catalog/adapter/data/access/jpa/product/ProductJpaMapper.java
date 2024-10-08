@@ -53,5 +53,5 @@ public interface ProductJpaMapper {
     @Mapping(target = "purchaseUomId", expression = "java(productJpa.getStockUomJpa() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId(productJpa.getPurchaseUomJpa().getId()))")
     @Nonnull Product toProduct(@Nonnull ProductJpa productJpa);
 
-    void copyNewToOldProductJpa(@Nonnull @MappingTarget ProductJpa oldProductJpa, @Nonnull ProductJpa newProductJpa);
+    void copyNewToOldProductJpa(@Nonnull ProductJpa newProductJpa, @Nonnull @MappingTarget ProductJpa oldProductJpa);
 }

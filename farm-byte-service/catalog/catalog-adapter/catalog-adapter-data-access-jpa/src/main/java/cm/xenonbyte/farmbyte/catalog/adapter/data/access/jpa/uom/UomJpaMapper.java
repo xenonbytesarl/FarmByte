@@ -38,5 +38,5 @@ public interface UomJpaMapper {
     @Mapping(target = "uomType", expression = "java(cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType.valueOf(uomJpa.getUomTypeJpa().name()))")
     Uom toUom(UomJpa uomJpa);
 
-    void copyNewToOldUom(@Nonnull @MappingTarget UomJpa oldUomJpa,  @Nonnull UomJpa newUomJpa);
+    void copyNewToOldUom(@Nonnull UomJpa newUomJpa, @Nonnull @MappingTarget UomJpa oldUomJpa);
 }
