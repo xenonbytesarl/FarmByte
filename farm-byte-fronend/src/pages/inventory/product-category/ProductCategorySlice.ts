@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSlice, isAnyOf} from "@reduxjs/toolkit";
 import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
 import {SuccessResponseModel} from "@/shared/model/successResponseModel.ts";
 import {PageModel} from "@/shared/model/pageModel.ts";
@@ -6,7 +6,8 @@ import {FindParamModel} from "@/shared/model/findParamModel.ts";
 import {RootState} from "@/Store.ts";
 import productCategoryService from "@/pages/inventory/product-category/ProductCategroyService.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
-import {DEFAULT_PAGE_SIZE_OPTIONS, DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
+import {DEFAULT_SIZE_VALUE} from "@/constants/page.constant.ts";
+import {UNKNOWN_ERROR} from "@/shared/constant/globalConstant.ts";
 
 
 const productCategoryAdapter = createEntityAdapter<ProductCategoryModel>({
@@ -22,26 +23,87 @@ const productCategoryInitialState = productCategoryAdapter.getInitialState({
 });
 
 
-export const findProductCategories = createAsyncThunk('productCategory/findProductCategories', async (findParam: FindParamModel) => {
+export const findProductCategories = createAsyncThunk('productCategory/findProductCategories', async (findParam: FindParamModel, {rejectWithValue}) => {
 
     try {
-        const response = await productCategoryService.findProductCategories(findParam);
+        const response =  await productCategoryService.findProductCategories(findParam);
         return response.data;
     } catch (error) {
-        console.log('error', error);
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
     }
 });
 
-export const searchProductCategories = createAsyncThunk('productCategory/searchProductCategories', async (searchParam: SearchParamModel) => {
+export const searchProductCategories = createAsyncThunk('productCategory/searchProductCategories', async (searchParam: SearchParamModel, {rejectWithValue}) => {
 
     try {
-        const response = await productCategoryService.searchProductCategories(searchParam);
+        const response =  await productCategoryService.searchProductCategories(searchParam);
         return response.data;
     } catch (error) {
-        console.log('error', error);
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
     }
 });
 
+
+export const findProductCategoryById = createAsyncThunk('productCategory/findProductCategoryById', async (productCategoryId: string, {rejectWithValue}) => {
+
+    try {
+        const response =  await productCategoryService.findProductCategoryById(productCategoryId);
+        return response.data;
+    } catch (error) {
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
+    }
+});
+
+export const updateProductCategory = createAsyncThunk('productCategory/updateProductCategory', async ({productCategoryId, productCategory}:{
+                                                                                                          productCategoryId: string,
+                                                                                                          productCategory: ProductCategoryModel
+                                                                                                      }, {rejectWithValue}) => {
+    try {
+        const response =  await productCategoryService.updateProductCategory(productCategoryId, productCategory);
+        return response.data;
+    } catch (error) {
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
+    }
+});
+
+export const createProductCategory = createAsyncThunk('productCategory/createProductCategory', async (productCategory: ProductCategoryModel, {rejectWithValue}) => {
+    try {
+        const response =  await productCategoryService.createProductCategory(productCategory);
+        return response.data;
+    } catch (error) {
+        if (error && error.response && error.response.data) {
+            return rejectWithValue(error.response.data);
+        } else if (error.message) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue(UNKNOWN_ERROR);
+        }
+    }
+});
 
 const productCategorySlice = createSlice({
     name: "productCategory",
@@ -49,40 +111,63 @@ const productCategorySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(findProductCategories.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-                state.pageSize = DEFAULT_SIZE_VALUE;
-            })
-            .addCase(findProductCategories.fulfilled, (state, action) => {
-                const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
+            .addCase(findProductCategoryById.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<ProductCategoryModel>;
                 state.loading = false;
-                state.totalElements = data.content.totalElements;
+                state.totalElements = state.totalElements + 1;
                 state.message = message;
-                productCategoryAdapter.setAll(state, data.content.elements)
+                productCategoryAdapter.addOne(state, data.content);
             })
-            .addCase(findProductCategories.rejected, (state, action) => {
+            .addCase(updateProductCategory.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<ProductCategoryModel>;
                 state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(searchProductCategories.pending, (state) => {
-                state.loading = true;
-                state.message = '';
-                state.error = null;
-            })
-            .addCase(searchProductCategories.fulfilled, (state, action) => {
-                const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
-                state.loading = false;
-                state.pageSize = data.content.pageSize;
-                state.totalElements = data.content.totalElements;
                 state.message = message;
-                productCategoryAdapter.setAll(state, data.content.elements)
+                productCategoryAdapter.updateOne(state, {id: data.content.id, changes: data.content});
             })
-            .addCase(searchProductCategories.rejected, (state, action) => {
+            .addCase(createProductCategory.fulfilled, (state, action) => {
+                const {data, message} = action.payload as SuccessResponseModel<ProductCategoryModel>;
                 state.loading = false;
-                state.error = action.payload;
+                state.totalElements = state.totalElements + 1;
+                state.message = message;
+                productCategoryAdapter.addOne(state, data.content);
             })
+            .addMatcher(
+                isAnyOf(
+                    findProductCategories.fulfilled,
+                    searchProductCategories.fulfilled
+                ), (state, action) => {
+                    const {data, message} = action.payload as SuccessResponseModel<PageModel<ProductCategoryModel>>;
+                    state.loading = false;
+                    state.totalElements = data.content.totalElements;
+                    state.totalPages = data.content.totalPages;
+                    state.message = message;
+                    productCategoryAdapter.setAll(state, data.content.elements);
+                })
+            .addMatcher(
+                isAnyOf(
+                    findProductCategories.pending,
+                    searchProductCategories.pending,
+                    findProductCategoryById.pending,
+                    updateProductCategory.pending,
+                    createProductCategory.pending
+                ), (state) => {
+                    state.loading = true;
+                    state.message = '';
+                    state.error = null;
+                })
+            .addMatcher(
+                isAnyOf(
+                    findProductCategories.rejected,
+                    searchProductCategories.rejected,
+                    findProductCategoryById.rejected,
+                    updateProductCategory.rejected,
+                    createProductCategory.rejected
+                ), (state, action) => {
+                    state.loading = false;
+                    state.message = '';
+                    state.error = action.payload;
+                })
+
     }
 });
 
