@@ -58,7 +58,7 @@ public class ProductCategoryJpaRepositoryAdapter implements ProductCategoryRepos
         Page<ProductCategoryJpa> productCategoryJpaPage = productCategoryJpaRepository.findAll(PageRequest.of(page, size, sortDirection, attribute));
 
 
-        return new PageInfo<ProductCategory>(
+        return new PageInfo<>(
                 productCategoryJpaPage.isFirst(),
                 productCategoryJpaPage.isLast(),
                 productCategoryJpaPage.getSize(),
@@ -76,7 +76,7 @@ public class ProductCategoryJpaRepositoryAdapter implements ProductCategoryRepos
         Page<ProductCategoryJpa> productCategoryJpaPage = productCategoryJpaRepository.search(PageRequest.of(page, size, sortDirection, attribute), keyword.getText().getValue());
 
 
-        return new PageInfo(
+        return new PageInfo<>(
                 productCategoryJpaPage.isFirst(),
                 productCategoryJpaPage.isLast(),
                 productCategoryJpaPage.getSize(),

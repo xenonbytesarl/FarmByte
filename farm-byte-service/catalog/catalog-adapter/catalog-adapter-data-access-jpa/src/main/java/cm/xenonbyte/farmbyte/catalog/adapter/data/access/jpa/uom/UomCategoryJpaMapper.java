@@ -33,5 +33,5 @@ public interface UomCategoryJpaMapper {
     @Mapping(target = "active.value", source = "active")
     UomCategory toUomCategory(UomCategoryJpa uomCategoryJpa);
 
-    void copyNewToOldUomCategory(@Nonnull @MappingTarget UomCategoryJpa oldUomCategoryJpa,  @Nonnull UomCategoryJpa newUomCategoryJpa);
+    void copyNewToOldUomCategory(@Nonnull UomCategoryJpa newUomCategoryJpa, @Nonnull @MappingTarget UomCategoryJpa oldUomCategoryJpa);
 }
