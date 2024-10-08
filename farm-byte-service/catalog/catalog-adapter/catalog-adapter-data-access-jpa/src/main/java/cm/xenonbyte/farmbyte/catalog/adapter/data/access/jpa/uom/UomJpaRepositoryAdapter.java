@@ -110,7 +110,7 @@ public class UomJpaRepositoryAdapter implements UomRepository {
     public Uom update(@Nonnull Uom oldUom, @Nonnull Uom newUom) {
         UomJpa oldUomJpa = uomJpaMapper.toUomJpa(oldUom);
         UomJpa newUomJpa = uomJpaMapper.toUomJpa(newUom);
-        uomJpaMapper.copyNewToOldUom(oldUomJpa, newUomJpa);
+        uomJpaMapper.copyNewToOldUom(newUomJpa, oldUomJpa);
         return uomJpaMapper.toUom(uomJpaRepository.save(oldUomJpa));
     }
 
