@@ -22,6 +22,14 @@
   "navbarMenu_language_fr": "French",
   "navbarMenu_language_en": "English",
 
+  "form_button_label_save": "Save",
+  "form_button_label_edit": "Edit",
+  "form_button_label_cancel": "Cancel",
+  "form_button_label_create": "Create",
+
+  "tree_button_label_add": "New",
+  "tree_search_place_holder": "Search...",
+
   "uom_category_tree_title": "Category unit of measure",
   "uom_category_tree_no_data_found": "No category unit of measure found. Click on create button to add a new category unit of measure.",
   "uom_category_tree_name": "Name",
@@ -50,9 +58,6 @@
   "paginator_page_report": "{first} - {last} of {totalRecords}",
   "paginator_item_per_page": "Items per page",
 
-  "tree_button_label_add": "New",
-  "tree_search_place_holder": "Search...",
-
   "uom_category_form_new_title": "New category unit of measure",
   "uom_category_form_edit_title": "Category unit of measure",
   "uom_category_form_name_label": "Name",
@@ -76,8 +81,7 @@
   "uom_pop_over_place_holder": "Select unit of measure type",
   "uom_pop_over_not_found": "No unit of measure type found",
 
-  "form_button_label_save": "Save",
-  "form_button_label_edit": "Edit",
-  "form_button_label_cancel": "Cancel",
-  "form_button_label_create": "Create"
+  "product_category_form_new_title": "New product category",
+  "product_category_form_edit_title": "Product category",
+  "product_category_form_name_label": "Name"
 }
