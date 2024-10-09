@@ -271,6 +271,7 @@ components:
           format: uuid
         name:
           type: string
+          maxLength: 16
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
         reference:
           type: string
@@ -306,6 +307,13 @@ components:
     ProductViewResponse:
       allOf:
         - $ref: '#/components/schemas/ProductView'
+        - type: object
+          properties:
+            encodedFilename:
+              type: string
+            mime:
+              type: string
+
     CreateProductViewResponse:
       allOf:
         - $ref: '#/components/schemas/ProductViewResponse'
@@ -377,7 +385,7 @@ components:
         - $ref: '#/components/schemas/ProductView'
     UpdateProductViewResponse:
       allOf:
-        - $ref: '#/components/schemas/ProductView'
+        - $ref: '#/components/schemas/ProductViewResponse'
     UpdateProductViewApiResponse:
       allOf:
         - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'

@@ -9,13 +9,9 @@ import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainBadException;
  */
 public final class StorageBadException extends BaseDomainBadException {
     private static final String SAVE_FILE_BAD_EXCEPTION = "StorageBadException.1";
-    public static final String CANNOT_STORE_FILE_OUTSIDE_CURRENT_DIRECTORY = "StorageBadException.2";
 
     public StorageBadException(Object[] args) {
         super(SAVE_FILE_BAD_EXCEPTION, args);
     }
 
-    public StorageBadException(String message) {
-        super(message);
-    }
 }

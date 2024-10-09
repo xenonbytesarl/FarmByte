@@ -24,7 +24,7 @@ public interface ProductServiceRestApiAdapter {
     CreateProductViewResponse createProduct(
             @Nonnull CreateProductViewRequest createProductViewRequest, @Nonnull MultipartFile image) throws IOException;
 
-    @Nonnull @Valid FindProductByIdViewResponse findProductById(@Nonnull UUID productId);
+    @Nonnull @Valid FindProductByIdViewResponse findProductById(@Nonnull UUID productId) throws IOException;
 
     @Nonnull @Valid FindProductsPageInfoViewResponse findProducts(int page, int size, String attribute, String direction);
 
