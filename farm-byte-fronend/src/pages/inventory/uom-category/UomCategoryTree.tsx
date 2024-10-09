@@ -1,27 +1,27 @@
-import {Link, useNavigate} from "react-router-dom";
-import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
+import {ColumnDef} from "@tanstack/react-table";
+import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {useSelector} from "react-redux";
 import {
     getLoading,
     getPageSize,
-    getTotalElements,
-    getTotalPages, searchProductCategories,
-    selectProductCategories
-} from "@/pages/inventory/product-category/ProductCategorySlice.ts";
+    getTotalElements, getTotalPages, searchUomCategories,
+    selectUomCategories
+} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
 import {useEffect, useState} from "react";
 import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
+import {Direction} from "@/constants/directionConstant.ts";
+import DataTable from "@/components/DataTable.tsx";
+import {useTranslation} from "react-i18next";
+import {useNavigate} from "react-router-dom";
+import {store} from "@/Store.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
-import {Direction} from "@/constants/directionConstant.ts";
-import {useTranslation} from "react-i18next";
-import {ColumnDef} from "@tanstack/react-table";
-import {store} from "@/Store.ts";
-import DataTable from "@/components/DataTable.tsx";
 
-const ProductCategoryTree = () => {
 
-    const productCategories: Array<ProductCategoryModel> = useSelector(selectProductCategories);
+const UomCategoryTree = () => {
+
+    const uomCategories: Array<UomCategoryModel> = useSelector(selectUomCategories);
     const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
@@ -43,10 +43,10 @@ const ProductCategoryTree = () => {
 
     const {t} = useTranslation(['home']);
 
-    const columns: ColumnDef<ProductCategoryModel>[] = [
+    const columns: ColumnDef<UomCategoryModel>[] = [
         {
             accessorKey: "name",
-            header: () => (<div className="text-left">{t("product_category_tree_name")}</div>),
+            header: () => (<div className="text-left">{t("uom_category_tree_name")}</div>),
         },
         {
             accessorKey: "action",
@@ -62,7 +62,7 @@ const ProductCategoryTree = () => {
 
 
     useEffect(() => {
-        store.dispatch(searchProductCategories({
+        store.dispatch(searchUomCategories({
             page: page,
             size: size,
             attribute: "name",
@@ -89,12 +89,12 @@ const ProductCategoryTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
-    const handleEdit = (row: ProductCategoryModel) => {
-        navigate(`/inventory/product-categories/detail/${row.id}`);
+    const handleEdit = (row: UomCategoryModel) => {
+        navigate(`/inventory/uom-categories/details/${row.id}`);
     }
 
     const handleNew = () => {
-        navigate('/inventory/product-categories/new');
+        navigate('/inventory/uom-categories/new');
     }
 
     const handleClear = () => {
@@ -104,8 +104,8 @@ const ProductCategoryTree = () => {
     return (
         <div className="text-3xl text-amber-700 min-h-full">
             <DataTable
-                title={'product_category_tree_title'}
-                columns={columns} data={productCategories}
+                title={'uom_category_tree_title'}
+                columns={columns} data={uomCategories}
                 totalElements={totalElements}
                 page={page}
                 size={size}
@@ -123,4 +123,4 @@ const ProductCategoryTree = () => {
     );
 }
 
-export default ProductCategoryTree;
+export default UomCategoryTree;

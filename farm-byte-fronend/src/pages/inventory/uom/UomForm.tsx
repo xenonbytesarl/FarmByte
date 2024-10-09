@@ -10,7 +10,6 @@ import {
     createUom,
     findUomById,
     getLoading,
-    getMessage,
     selectUomById,
     updateUom
 } from "@/pages/inventory/uom/UomSlice.ts";
@@ -27,7 +26,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
 import {Command, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
 import {findUomCategories, selectUomCategories} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
@@ -51,7 +50,6 @@ const UomForm = () => {
     const uom: UomModel = useSelector((state:RootState) => selectUomById(state, uomId));
     const uomCategories: Array<UomCategoryModel> = useSelector(selectUomCategories);
     const isLoading: boolean = useSelector(getLoading);
-    const message: string = useSelector(getMessage);
 
     const [openUomCategoryPopOver, setOpenUomCategoryPopOver] = useState(false);
     const [uomCategoryPopOverLabel, setUomCategoryPopOverLabel] = useState("");
@@ -64,7 +62,7 @@ const UomForm = () => {
     const UomSchema = Zod.object({
         name: Zod.string().min(1, t('uom_form_name_required_message')),
         uomCategoryId: Zod.string().min(1, t('uom_form_uom_category_id_required_message')),
-        uomType: Zod.string().min(1, t('uom_form_uom_type_required_message'))
+        uomType: Zod.string().min(1, t('uom_form_uom_type_required_message')),
     });
     const defaultValuesUom: UomModel = {
         id: "",
@@ -74,11 +72,11 @@ const UomForm = () => {
         ratio: 1.0,
         active: true
     };
-    const { register, handleSubmit, formState, reset, getValues, setValue } = useForm<UomModel>({
-        defaultValues: uomId? defaultValuesUom: {...uom},
-        resolver: zodResolver(UomSchema)
+    const { register, handleSubmit, formState: {errors, isValid}, reset, getValues, setValue } = useForm<UomModel>({
+        defaultValues: defaultValuesUom,
+        resolver: zodResolver(UomSchema),
+        mode: "onTouched"
     });
-    const {errors, isValid } = formState;
 
     useEffect(() => {
         store.dispatch(findUomCategories({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
@@ -130,9 +128,11 @@ const UomForm = () => {
         if (uomFormValue.id) {
             store.dispatch(updateUom({uomId: uomFormValue.id, uom: uomFormValue}))
                 .then(unwrapResult)
-                .then(() => {
+                .then((response) => {
                     setMode(FormModeType.READ);
-                    showToast("info", message);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    showToast("info", response.message);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -144,10 +144,12 @@ const UomForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    showToast("success", message);
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
-                    navigate(`/inventory/uoms/detail/${response.data.content.id}`);
+                    showToast("success", response.message);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    navigate(`/inventory/uoms/details/${response.data.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);
@@ -259,7 +261,7 @@ const UomForm = () => {
                         </div>
                         <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="ratio">{t('uom_form_ratio_label')}</Label>
-                            <Input id="ratio" type="text" {...register("ratio")}
+                            <Input id="ratio" type="number" {...register("ratio")}
                                    disabled={mode === FormModeType.READ || isLoading}/>
                             <small className="text-red-500">{errors.ratio?.message}</small>
                         </div>

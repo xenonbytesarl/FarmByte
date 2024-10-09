@@ -1,32 +1,27 @@
 import {useNavigate} from "react-router-dom";
-import {ProductModel} from "@/pages/inventory/product/ProductModel.ts";
+import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
 import {useSelector} from "react-redux";
 import {
     getLoading,
     getPageSize,
-    getTotalElements, getTotalPages, searchProducts,
-    selectProducts
-} from "@/pages/inventory/product/ProductSlice.ts";
+    getTotalElements,
+    getTotalPages, searchProductCategories,
+    selectProductCategories
+} from "@/pages/inventory/product-category/ProductCategorySlice.ts";
 import {useEffect, useState} from "react";
-import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE, MAX_SIZE_VALUE} from "@/constants/page.constant.ts";
+import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {Direction} from "@/constants/directionConstant.ts";
 import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
-import {RootState, store} from "@/Store.ts";
+import {store} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
-import {findUomCategories, selectUomCategoryById} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
-import {
-    findProductCategories,
-    selectProductCategoryById
-} from "@/pages/inventory/product-category/ProductCategorySlice.ts";
-import {findUoms, selectUomById} from "@/pages/inventory/uom/UomSlice.ts";
 
-const ProductTree = () => {
+const ProductCategoryTree = () => {
 
-    const products: Array<ProductModel> = useSelector(selectProducts);
+    const productCategories: Array<ProductCategoryModel> = useSelector(selectProductCategories);
     const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
@@ -48,35 +43,10 @@ const ProductTree = () => {
 
     const {t} = useTranslation(['home']);
 
-    const columns: ColumnDef<ProductModel>[] = [
-        {
-            accessorKey: "reference",
-            header: () => (<div className="text-left">{t("product_tree_reference")}</div>),
-        },
+    const columns: ColumnDef<ProductCategoryModel>[] = [
         {
             accessorKey: "name",
-            header: () => (<div className="text-left">{t("product_tree_name")}</div>),
-        },
-        {
-            accessorKey: "type",
-            header: () => (<div className="text-left">{t("product_tree_type")}</div>),
-            cell: ({row}) => (
-                <div className="text-left capitalize">{row.original.type.toLocaleLowerCase()}</div>
-            )
-        },
-        {
-            accessorKey: "categoryId",
-            header: () => (<div className="text-left">{t("product_tree_category_id")}</div>),
-            cell: ({row}) => (
-                <div className="text-left capitalize">{productCategoryByName(row.original.categoryId)}</div>
-            )
-        },
-        {
-            accessorKey: "stockUomId",
-            header: () => (<div className="text-left">{t("product_tree_stock_uom_id")}</div>),
-            cell: ({row}) => (
-                <div className="text-left capitalize">{uomName(row.original.stockUomId)}</div>
-            )
+            header: () => (<div className="text-left">{t("product_category_tree_name")}</div>),
         },
         {
             accessorKey: "action",
@@ -90,16 +60,9 @@ const ProductTree = () => {
         }
     ];
 
-    useEffect(() => {
-        store.dispatch(findProductCategories({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
 
     useEffect(() => {
-        store.dispatch(findUoms({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
-
-    useEffect(() => {
-        store.dispatch(searchProducts({
+        store.dispatch(searchProductCategories({
             page: page,
             size: size,
             attribute: "name",
@@ -107,19 +70,6 @@ const ProductTree = () => {
             keyword: keyword
         }));
     }, [debounceKeyword, page, size]);
-
-    const productCategoryByName = (productCategoryId: string): string => {
-        const productCategory =  useSelector((state: RootState) => selectProductCategoryById(state, productCategoryId));
-        return productCategory? productCategory.name: '';
-    }
-
-    const uomName = (uomId: string): string => {
-        if(uomId) {
-            const uom =  useSelector((state: RootState) => selectUomById(state, uomId));
-            return uom? uom.name : '';
-        }
-        return '';
-    }
 
     const handlePageChange = (page: number) => {
         setSearchParam({page: page, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
@@ -139,12 +89,12 @@ const ProductTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
-    const handleEdit = (row: ProductModel) => {
-        navigate(`/inventory/products/detail/${row.id}`);
+    const handleEdit = (row: ProductCategoryModel) => {
+        navigate(`/inventory/product-categories/details/${row.id}`);
     }
 
     const handleNew = () => {
-        navigate('/inventory/products/new');
+        navigate('/inventory/product-categories/new');
     }
 
     const handleClear = () => {
@@ -154,8 +104,8 @@ const ProductTree = () => {
     return (
         <div className="text-3xl text-amber-700 min-h-full">
             <DataTable
-                title={'product_tree_title'}
-                columns={columns} data={products}
+                title={'product_category_tree_title'}
+                columns={columns} data={productCategories}
                 totalElements={totalElements}
                 page={page}
                 size={size}
@@ -168,8 +118,9 @@ const ProductTree = () => {
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
             />
+
         </div>
     );
 }
 
-export default ProductTree;
+export default ProductCategoryTree;

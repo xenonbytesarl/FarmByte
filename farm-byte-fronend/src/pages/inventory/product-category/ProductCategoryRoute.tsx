@@ -1,6 +1,6 @@
 import {Route, Routes} from "react-router-dom";
-import ProductCategoryTree from "@/pages/inventory/product-category/screen/ProductCategoryTree.tsx";
-import ProductCategoryForm from "@/pages/inventory/product-category/screen/ProductCategoryForm.tsx";
+import ProductCategoryTree from "@/pages/inventory/product-category/ProductCategoryTree.tsx";
+import ProductCategoryForm from "@/pages/inventory/product-category/ProductCategoryForm.tsx";
 import NotFound from "@/pages/not-found/screen/NotFound.tsx";
 
 const ProductCategoryRoute = () => {
@@ -9,7 +9,7 @@ const ProductCategoryRoute = () => {
             <Route>
                 <Route index  element={<ProductCategoryTree/>}/>
                 <Route path="new"  element={<ProductCategoryForm/>}/>
-                <Route path="detail/:productCategoryId"  element={<ProductCategoryForm/>}/>
+                <Route path="details/:productCategoryId"  element={<ProductCategoryForm/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>

@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {getImageUrl} from "@/utils/imageUtils.ts";
 
 const NavBarProfile = () => {
 
@@ -9,6 +10,8 @@ const NavBarProfile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const closeDropDown = (event) => {
             if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpenProfileMenu(false);
@@ -37,7 +40,7 @@ const NavBarProfile = () => {
                 onClick={toggleDropDown}
                 className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
                 <span className="font-medium">
-                    <img src="/images/profile.png" alt="..." className="size-8 object-cover rounded-full"/>
+                    <img src={getImageUrl('/images/profile.png')} alt="..." className="size-8 object-cover rounded-full"/>
                 </span>
 
             </div>

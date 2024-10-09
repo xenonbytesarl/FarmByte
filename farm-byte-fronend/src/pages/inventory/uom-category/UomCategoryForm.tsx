@@ -1,72 +1,72 @@
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
 import {useTranslation} from "react-i18next";
-import {useNavigate, useParams} from "react-router-dom";
-import {useToast} from "@/hooks/use-toast.ts";
-import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
 import {useSelector} from "react-redux";
-import {RootState, store} from "@/Store.ts";
 import {
-    findProductCategoryById,
+    createUomCategory,
+    findUomCategoryById,
     getLoading,
-    getMessage,
-    selectProductCategoryById,
-    createProductCategory, updateProductCategory
-} from "@/pages/inventory/product-category/ProductCategorySlice.ts";
+    selectUomCategoryById,
+    updateUomCategory
+} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
+import {RootState, store} from "@/Store.ts";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
+import {useForm} from "react-hook-form";
 import {FormModeType} from "@/shared/model/FormModeType.ts";
 import {z as Zod} from "zod";
-import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {ToastType} from "@/shared/constant/globalConstant.ts";
-import {cn} from "@/lib/utils.ts";
 import {unwrapResult} from "@reduxjs/toolkit";
+import {useToast} from "@/hooks/use-toast.ts";
 import {Toaster} from "@/components/ui/toaster.tsx";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {cn} from "@/lib/utils.ts";
 import FormCrudButton from "@/components/FormCrudButton.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Label} from "@/components/ui/label.tsx";
+import {ToastType} from "@/shared/constant/globalConstant.ts";
 
-const ProductCategoryForm = () => {
+
+const UomCategoryForm = () => {
 
     const {t} = useTranslation(['home']);
 
-    const {productCategoryId} = useParams();
+    const {uomCategoryId} = useParams();
 
     const {toast} = useToast();
 
-    const productCategory: ProductCategoryModel = useSelector((state:RootState) => selectProductCategoryById(state, productCategoryId));
+    const uomCategory: UomCategoryModel = useSelector((state:RootState) => selectUomCategoryById(state, uomCategoryId));
     const isLoading: boolean = useSelector(getLoading);
-    const message: string = useSelector(getMessage);
 
     const navigate = useNavigate();
-    const [mode, setMode] = useState<FormModeType>(productCategoryId? FormModeType.READ: FormModeType.CREATE);
+    const [mode, setMode] = useState<FormModeType>(uomCategoryId? FormModeType.READ: FormModeType.CREATE);
 
-    const ProductCategorySchema = Zod.object({
-        name: Zod.string().min(1, t('product_category_form_name_required_message')),
+    const UomCategorySchema = Zod.object({
+        name: Zod.string().min(1, {message: t('uom_category_form_name_required_message')}),
     });
-    const defaultValuesProductCategory: ProductCategoryModel = {
-        id: "",
-        name: "",
-        parentProductCategoryId: "",
-        active: true
+
+    const defaultValuesUomCategory: UomCategoryModel = {
+      id: "",
+      name: "",
+      parentUomCategoryId: "",
+      active: true
     };
-    const { register, handleSubmit, formState, reset, getValues } = useForm<ProductCategoryModel>({
-        defaultValues: productCategoryId? defaultValuesProductCategory: {...productCategory},
-        resolver: zodResolver(ProductCategorySchema)
+    const { register, handleSubmit, formState: {errors, isValid}, reset, getValues } = useForm<UomCategoryModel>({
+        defaultValues: defaultValuesUomCategory,
+        resolver: zodResolver(UomCategorySchema),
+        mode: "onTouched"
     });
-    const {errors, isValid } = formState;
 
     useEffect(() => {
-        if(!productCategory && productCategoryId) {
-            console.log(productCategoryId);
-            store.dispatch(findProductCategoryById(productCategoryId));
+        if(!uomCategory && uomCategoryId) {
+            store.dispatch(findUomCategoryById(uomCategoryId));
         }
-    }, [store.dispatch, productCategory]);
+    }, [store.dispatch, uomCategory]);
 
     useEffect(() => {
-        if(productCategory) {
-            reset(productCategory)
+        if(uomCategory) {
+            reset(uomCategory)
         }
-    }, [productCategory, reset]);
+    }, [uomCategory, reset]);
 
     const showToast = (variant: ToastType, message: string) => {
         toast({
@@ -79,28 +79,33 @@ const ProductCategoryForm = () => {
         });
     }
 
+
     const onSubmit = () => {
-        const productCategoryFormValue: ProductCategoryModel = getValues();
-        if (productCategoryFormValue.id) {
-            store.dispatch(updateProductCategory({productCategoryId: productCategoryFormValue.id, productCategory: productCategoryFormValue}))
-                .then(unwrapResult)
-                .then(() => {
-                    setMode(FormModeType.READ);
-                    showToast("info", message);
-                })
-                .catch((error) => {
-                    setMode(FormModeType.EDIT);
-                    showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
-                })
-        } else {
-            store.dispatch(createProductCategory(productCategoryFormValue))
+        const uomCategoryFormValue: UomCategoryModel = getValues();
+        if (uomCategoryFormValue.id) {
+            store.dispatch(updateUomCategory({uomCategoryId: uomCategoryFormValue.id, uomCategory: uomCategoryFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    showToast("success", message);
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
-                    navigate(`/inventory/product-categories/detail/${response.data.content.id}`);
+                    showToast("info", response.message);
+                })
+                .catch((error) => {
+                    setMode(FormModeType.EDIT);
+                   showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
+                })
+        } else {
+            store.dispatch(createUomCategory(uomCategoryFormValue))
+                .then(unwrapResult)
+                .then((response) => {
+                    setMode(FormModeType.READ);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    showToast("success", response.message);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
+                    navigate(`/inventory/uom-categories/details/${response.data.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);
@@ -114,8 +119,8 @@ const ProductCategoryForm = () => {
     }
 
     const onCancel = () => {
-        if(productCategory) {
-            reset(productCategory);
+        if(uomCategory) {
+            reset(uomCategory);
             setMode(FormModeType.READ);
         } else {
             reset();
@@ -123,20 +128,20 @@ const ProductCategoryForm = () => {
     }
 
     const onCreate = () => {
-        navigate('/inventory/product-categories/new');
+        navigate('/inventory/uom-categories/new');
         setMode(FormModeType.CREATE);
-        reset(defaultValuesProductCategory);
+        reset(defaultValuesUomCategory);
     }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Toaster/>
+            <Toaster />
             <Card className="">
                 <CardHeader>
                     <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
-                        <span onClick={() => navigate(`/inventory/product-categories`)}
+                        <span onClick={() => navigate(`/inventory/uom-categories`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                        <span
-                            className="text-2xl">{t(productCategoryId ? 'product_category_form_edit_title' : 'product_category_form_new_title')}</span>
+                        <span className="text-2xl">{t(uomCategoryId? 'uom_category_form_edit_title': 'uom_category_form_new_title')}</span>
                     </CardTitle>
                     <CardDescription>
                     <span className="flex flex-row w-full m-5">
@@ -158,7 +163,7 @@ const ProductCategoryForm = () => {
                         <Input id="name" type="hidden" {...register("id")} />
 
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="name">{t('product_category_form_name_label')}</Label>
+                            <Label htmlFor="name">{t('uom_category_form_name_label')}</Label>
                             <Input id="name" type="text" {...register("name")}
                                    disabled={mode === FormModeType.READ || isLoading}/>
                             <small className="text-red-500">{errors.name?.message}</small>
@@ -172,4 +177,4 @@ const ProductCategoryForm = () => {
     );
 };
 
-export default ProductCategoryForm;
+export default UomCategoryForm;
