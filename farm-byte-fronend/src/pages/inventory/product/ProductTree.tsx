@@ -1,35 +1,31 @@
 import {useNavigate} from "react-router-dom";
+import {ProductModel} from "@/pages/inventory/product/ProductModel.ts";
 import {useSelector} from "react-redux";
 import {
     getLoading,
     getPageSize,
-    getTotalElements,
-    getTotalPages, searchUoms,
-    selectUoms
-} from "@/pages/inventory/uom/UomSlice.ts";
+    getTotalElements, getTotalPages, searchProducts,
+    selectProducts
+} from "@/pages/inventory/product/ProductSlice.ts";
 import {useEffect, useState} from "react";
-import {
-    DEFAULT_DIRECTION_VALUE,
-    DEFAULT_PAGE_VALUE,
-    MAX_SIZE_VALUE
-} from "@/constants/page.constant.ts";
+import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE, MAX_SIZE_VALUE} from "@/constants/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
+import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {Direction} from "@/constants/directionConstant.ts";
 import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
-import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
 import {RootState, store} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
-import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {
-    findUomCategories,
-    selectUomCategoryById
-} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
+    findProductCategories,
+    selectProductCategoryById
+} from "@/pages/inventory/product-category/ProductCategorySlice.ts";
+import {findUoms, selectUomById} from "@/pages/inventory/uom/UomSlice.ts";
 
-const UomTree = () => {
+const ProductTree = () => {
 
-    const uoms: Array<UomModel> = useSelector(selectUoms);
+    const products: Array<ProductModel> = useSelector(selectProducts);
     const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
@@ -45,30 +41,41 @@ const UomTree = () => {
         page: DEFAULT_PAGE_VALUE,
         size: pageSize,
         attribute: "name",
-        direction: DEFAULT_DIRECTION_VALUE,
+        direction: Direction.ASC,
         keyword: keyword
     });
 
     const {t} = useTranslation(['home']);
 
-    const columns: ColumnDef<UomModel>[] = [
+    const columns: ColumnDef<ProductModel>[] = [
+        {
+            accessorKey: "reference",
+            header: () => (<div className="text-left">{t("product_tree_reference")}</div>),
+        },
         {
             accessorKey: "name",
-            header: () => (<div className="text-start">{t("uom_tree_name")}</div>),
+            header: () => (<div className="text-left">{t("product_tree_name")}</div>),
         },
         {
-            accessorKey: "uomType",
-            header: () => (<div className="text-start">{t("uom_tree_uom_type")}</div>),
-            cell: ({row}) => (<div className="text-start capitalize">{row.original.uomType.toLocaleLowerCase()}</div>),
+            accessorKey: "type",
+            header: () => (<div className="text-left">{t("product_tree_type")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{row.original.type.toLocaleLowerCase()}</div>
+            )
         },
         {
-            accessorKey: "ratio",
-            header: () => (<div className="text-left">{t("uom_tree_ratio")}</div>),
+            accessorKey: "categoryId",
+            header: () => (<div className="text-left">{t("product_tree_category_id")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{productCategoryByName(row.original.categoryId)}</div>
+            )
         },
         {
-            accessorKey: "uomCategoryId",
-            header: () => (<div className="text-left">{t("uom_tree_uom_category_id")}</div>),
-            cell: ({row}) => (<div className="text-start">{uomCategoryByName(row.original.uomCategoryId)}</div>),
+            accessorKey: "stockUomId",
+            header: () => (<div className="text-left">{t("product_tree_stock_uom_id")}</div>),
+            cell: ({row}) => (
+                <div className="text-left capitalize">{uomName(row.original.stockUomId)}</div>
+            )
         },
         {
             accessorKey: "action",
@@ -83,22 +90,36 @@ const UomTree = () => {
     ];
 
     useEffect(() => {
-        store.dispatch(findUomCategories({...searchParam, size: MAX_SIZE_VALUE}));
+        store.dispatch(findProductCategories({...searchParam, size: MAX_SIZE_VALUE}));
     }, [store.dispatch]);
 
     useEffect(() => {
-        store.dispatch(searchUoms({
+        store.dispatch(findUoms({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [store.dispatch]);
+
+    useEffect(() => {
+        store.dispatch(searchProducts({
             page: page,
             size: size,
             attribute: "name",
-            direction: Direction.ASC,
+            direction: DEFAULT_DIRECTION_VALUE,
             keyword: keyword
         }));
     }, [debounceKeyword, page, size]);
 
-    const uomCategoryByName = (uomCategoryId: string): string => {
-        const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
-        return uomCategory? uomCategory.name: '';
+    const productCategoryByName = (productCategoryId: string): string => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const productCategory =  useSelector((state: RootState) => selectProductCategoryById(state, productCategoryId));
+        return productCategory? productCategory.name: '';
+    }
+
+    const uomName = (uomId: string): string => {
+        if(uomId) {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const uom =  useSelector((state: RootState) => selectUomById(state, uomId));
+            return uom? uom.name : '';
+        }
+        return '';
     }
 
     const handlePageChange = (page: number) => {
@@ -119,12 +140,12 @@ const UomTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
-    const handleEdit = (row: UomModel) => {
-        navigate(`/inventory/uoms/detail/${row.id}`);
+    const handleEdit = (row: ProductModel) => {
+        navigate(`/inventory/products/details/${row.id}`);
     }
 
     const handleNew = () => {
-        navigate('/inventory/uoms/new');
+        navigate('/inventory/products/new');
     }
 
     const handleClear = () => {
@@ -134,8 +155,8 @@ const UomTree = () => {
     return (
         <div className="text-3xl text-amber-700 min-h-full">
             <DataTable
-                title={'uom_tree_title'}
-                columns={columns} data={uoms}
+                title={'product_tree_title'}
+                columns={columns} data={products}
                 totalElements={totalElements}
                 page={page}
                 size={size}
@@ -148,9 +169,8 @@ const UomTree = () => {
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
             />
-
         </div>
     );
 }
 
-export default UomTree;
+export default ProductTree;

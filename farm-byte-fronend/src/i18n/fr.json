@@ -83,6 +83,36 @@
 
   "product_category_form_new_title": "Nouvelle Category d'article",
   "product_category_form_edit_title": "Catégorie d'article",
-  "product_category_form_name_label": "Nom"
+  "product_category_form_name_label": "Nom",
+  "product_category_form_name_required_message": "Le nom est obligatoire",
+
+  "product_form_new_title": "Nouvel Article",
+  "product_form_edit_title": "Article",
+  "product_form_name_required_message": "Le nom de l'article est obligatoire",
+  "product_form_category_id_required_message": "La categorie d'article est obligatoire",
+  "product_form_type_required_message": "Le type d'article est obligatoire",
+  "product_form_type_label_consumable": "Consommable",
+  "product_form_type_label_service": "Service",
+  "product_form_type_label_stock": "Stockable",
+  "product_form_name_label": "Nom",
+  "product_form_category_id_label": "Catégorie",
+  "product_form_category_pop_over_not_found": "Pas de catégorie trouvée",
+  "product_form_category_pop_over_place_holder": "Selectionner une catégorie",
+  "product_form_reference_label": "Reference",
+  "product_form_type_label": "Type",
+  "product_form_type_pop_over_place_holder": "Selectionner un type d'article",
+  "product_form_type_pop_over_not_found": "Pas de type trouvé",
+  "product_form_stock_uom_id_label": "Unité de stock",
+  "product_form_stock_uom_id_pop_over_place_holder": "Selectionner une unité",
+  "product_form_stock_uom_id_pop_over_not_found": "Pas d'unité trouvé",
+  "product_form_purchase_uom_id_label": "Unité d'achat",
+  "product_form_purchase_uom_id_pop_over_place_holder": "Selectionner une unité",
+  "product_form_purchase_uom_id_pop_over_not_found": "Pas d'unité trouvé",
+  "product_form_sale_price_label": "Prix de vente",
+  "product_form_purchase_price_label": "Prix d'achat",
+  "product_form_reference_max_length_message": "La référence doit avoir 16 charactères au maximum",
+  "product_form_purchasable_label": "Acheter?",
+  "product_form_sellable_label": "Vendre?",
+  "product_form_active_label": "Actif"
 }
 

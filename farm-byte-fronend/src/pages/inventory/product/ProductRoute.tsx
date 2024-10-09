@@ -1,7 +1,6 @@
 import {Route, Routes} from "react-router-dom";
-import ProductTree from "@/pages/inventory/product/screen/ProductTree.tsx";
-import ProductNewForm from "@/pages/inventory/product/screen/ProductNewForm.tsx";
-import ProductDetailForm from "@/pages/inventory/product/screen/ProductDetailForm.tsx";
+import ProductTree from "@/pages/inventory/product/ProductTree.tsx";
+import ProductForm from "@/pages/inventory/product/ProductForm.tsx";
 import NotFound from "@/pages/not-found/screen/NotFound.tsx";
 
 const ProductRoute = () => {
@@ -9,8 +8,8 @@ const ProductRoute = () => {
         <Routes>
             <Route>
                 <Route index  element={<ProductTree/>}/>
-                <Route path="new"  element={<ProductNewForm/>}/>
-                <Route path="detail/:productId"  element={<ProductDetailForm/>}/>
+                <Route path="new"  element={<ProductForm/>}/>
+                <Route path="details/:productId"  element={<ProductForm/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>
