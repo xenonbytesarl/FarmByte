@@ -167,7 +167,7 @@ public abstract class ProductRepositoryTest {
             Product newProduct = Product.builder()
                     .id(oldProductId)
                     .name(Name.of(Text.of("New HP Pro")))
-                    .categoryId(new ProductCategoryId(UUID.randomUUID()))
+                    .categoryId(new ProductCategoryId(UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0")))
                     .type(ProductType.CONSUMABLE)
                     .reference(Reference.of(Text.of("64548968799")))
                     .purchasePrice(Money.of(BigDecimal.valueOf(175.47)))
@@ -175,6 +175,7 @@ public abstract class ProductRepositoryTest {
                     .sellable(Sellable.with(true))
                     .purchasable(Purchasable.with(true))
                     .active(Active.with(true))
+                    .imageName(Filename.of(Text.of("products/product.png")))
                     .build();
 
             //Act
