@@ -8,12 +8,15 @@ import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import jakarta.annotation.Nonnull;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 
 /**
  * @author bamk
@@ -38,5 +41,24 @@ public final class FileSystemStorageManager implements StorageManager {
         } catch (IOException exception) {
             throw new StorageBadException(new String[]{image.getName().getValue()});
         }
+    }
+
+    @Override
+    public String fileToBase64(@Nonnull String filename) throws IOException {
+        File file = new File(filename);
+        if(file.exists()) {
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] fileData = new byte[(int) file.length()];
+            inputStream.read(fileData);
+            inputStream.close();
+            return Base64.getEncoder().encodeToString(fileData);
+        } else {
+            throw new StorageNotFoundException(new String[]{filename});
+        }
+    }
+
+    @Override
+    public String mimeType(@Nonnull String filename) throws IOException {
+        return Paths.get(filename).toUri().toURL().openConnection().getContentType();
     }
 }
