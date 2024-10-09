@@ -271,7 +271,6 @@ components:
           format: uuid
         name:
           type: string
-          maxLength: 16
           x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
         reference:
           type: string

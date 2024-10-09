@@ -294,7 +294,7 @@ public class ProductRestApiIT {
         @Test
         void should_success_when_find_product_with_existing_id() {
             //Given
-            String productIdUUID = "0191bda4-65e4-73a8-8291-b2870753ad00";
+            String productIdUUID = "0191bda9-4b9f-7111-8bac-de8cc467715a";
             HttpEntity<Object> request = new HttpEntity<>(getJsonHttpHeaders());
 
             FindProductByIdViewResponse findProductByIdViewResponse = new FindProductByIdViewResponse()

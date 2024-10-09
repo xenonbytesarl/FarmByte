@@ -487,7 +487,7 @@ final class ProductDomainServiceApiAdapterTest {
     @Nested
     class FindProductDomainServiceApiAdapterTest {
         @Test
-        void should_success_when_find_product_by_existing_id() {
+        void should_success_when_find_product_by_existing_id() throws IOException {
             //Given
             UUID productIdUUID = UUID.randomUUID();
             UUID categoryIdUUID = UUID.randomUUID();
