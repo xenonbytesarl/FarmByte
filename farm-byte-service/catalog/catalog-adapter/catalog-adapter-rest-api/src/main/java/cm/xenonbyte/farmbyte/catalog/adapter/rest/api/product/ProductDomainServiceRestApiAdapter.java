@@ -63,15 +63,20 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
         CreateProductViewResponse createProductViewResponse = productViewMapper.toCreateProductViewResponse(
                 productService.createProduct(productViewMapper.toProduct(createProductViewRequest)));
         storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
+        createProductViewResponse.setEncodedFilename(storageManager.fileToBase64(createProductViewResponse.getFilename()));
+        createProductViewResponse.setMime(storageManager.mimeType(createProductViewResponse.getFilename()));
         return createProductViewResponse;
     }
 
     @Nonnull
     @Override
-    public FindProductByIdViewResponse findProductById(@Nonnull UUID productId) {
-        return productViewMapper.toFindProductByIdViewResponse(
+    public FindProductByIdViewResponse findProductById(@Nonnull UUID productId) throws IOException {
+        FindProductByIdViewResponse findProductByIdViewResponse = productViewMapper.toFindProductByIdViewResponse(
                 productService.findProductById(new ProductId(productId))
         );
+        findProductByIdViewResponse.setEncodedFilename(storageManager.fileToBase64(findProductByIdViewResponse.getFilename()));
+        findProductByIdViewResponse.setMime(storageManager.mimeType(findProductByIdViewResponse.getFilename()));
+        return findProductByIdViewResponse;
     }
 
     @Nonnull
@@ -96,8 +101,11 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
                                                    @Nonnull MultipartFile multipartFile) throws IOException {
         Image image = Image.with(Text.of(updateProductViewRequest.getFilename()), multipartFile.getInputStream());
         updateProductViewRequest.setFilename(image.getName().getValue());
-        UpdateProductViewResponse updateProductViewResponse = productViewMapper.toUpdateProductViewResponse(productService.updateProduct(new ProductId(productIdUUID), productViewMapper.toProduct(updateProductViewRequest)));
+        UpdateProductViewResponse updateProductViewResponse = productViewMapper.toUpdateProductViewResponse(
+                productService.updateProduct(new ProductId(productIdUUID), productViewMapper.toProduct(updateProductViewRequest)));
         storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
+        updateProductViewResponse.setEncodedFilename(storageManager.fileToBase64(updateProductViewResponse.getFilename()));
+        updateProductViewResponse.setMime(storageManager.mimeType(updateProductViewResponse.getFilename()));
         return updateProductViewResponse;
     }
 }

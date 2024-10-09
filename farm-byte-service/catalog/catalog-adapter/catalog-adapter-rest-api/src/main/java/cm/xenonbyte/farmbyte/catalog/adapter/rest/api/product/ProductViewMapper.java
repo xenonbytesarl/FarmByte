@@ -33,7 +33,7 @@ import java.util.List;
 public interface ProductViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "reference", expression = "java(createProductViewRequest.getReference() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Reference.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(createProductViewRequest.getReference())))")
+    @Mapping(target = "reference", expression = "java(createProductViewRequest.getReference() == null || createProductViewRequest.getReference().isEmpty()? null: cm.xenonbyte.farmbyte.common.domain.vo.Reference.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(createProductViewRequest.getReference())))")
     @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "imageName", expression = "java(createProductViewRequest.getFilename() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Filename.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(createProductViewRequest.getFilename())))")
     @Mapping(target = "purchasePrice", expression = "java(createProductViewRequest.getPurchasePrice() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Money.of(createProductViewRequest.getPurchasePrice()))")
@@ -138,7 +138,7 @@ public interface ProductViewMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id.value", source = "id")
-    @Mapping(target = "reference", expression = "java(updateProductViewRequest.getReference() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Reference.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(updateProductViewRequest.getReference())))")
+    @Mapping(target = "reference", expression = "java(updateProductViewRequest.getReference() == null || updateProductViewRequest.getReference().isEmpty()? null: cm.xenonbyte.farmbyte.common.domain.vo.Reference.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(updateProductViewRequest.getReference())))")
     @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "imageName", expression = "java(updateProductViewRequest.getFilename() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Filename.of(cm.xenonbyte.farmbyte.common.domain.vo.Text.of(updateProductViewRequest.getFilename())))")
     @Mapping(target = "purchasePrice", expression = "java(updateProductViewRequest.getPurchasePrice() == null? null: cm.xenonbyte.farmbyte.common.domain.vo.Money.of(updateProductViewRequest.getPurchasePrice()))")

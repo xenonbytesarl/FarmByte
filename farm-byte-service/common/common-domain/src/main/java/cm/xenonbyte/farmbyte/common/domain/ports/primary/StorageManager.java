@@ -5,6 +5,9 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Image;
 import cm.xenonbyte.farmbyte.common.domain.vo.StorageLocation;
 import jakarta.annotation.Nonnull;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 /**
  * @author bamk
  * @version 1.0
@@ -12,4 +15,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface StorageManager {
     Filename store(@Nonnull Image image, @Nonnull StorageLocation location);
+    String fileToBase64(@Nonnull String filename) throws IOException;
+    String mimeType(@Nonnull String filename) throws IOException;
 }
