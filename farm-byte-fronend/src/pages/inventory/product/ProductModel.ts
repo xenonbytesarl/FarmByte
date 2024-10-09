@@ -7,11 +7,13 @@ export interface ProductModel {
   salePrice: number;
   purchasePrice: number;
   filename: string;
-  type: ProductTypeEnum;
+  type: ProductTypeEnum | "";
   categoryId: string;
   stockUomId: string;
   purchaseUomId: string;
   purchasable: boolean;
   sellable: boolean;
   active: boolean;
+  encodedFilename: string;
+  mime: string;
 }

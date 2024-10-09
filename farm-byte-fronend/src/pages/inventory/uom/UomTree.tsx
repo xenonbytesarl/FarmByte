@@ -1,27 +1,34 @@
-import {ColumnDef} from "@tanstack/react-table";
-import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
+import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {
     getLoading,
     getPageSize,
-    getTotalElements, getTotalPages, searchUomCategories,
-    selectUomCategories
-} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
+    getTotalElements,
+    getTotalPages, searchUoms,
+    selectUoms
+} from "@/pages/inventory/uom/UomSlice.ts";
 import {useEffect, useState} from "react";
-import {DEFAULT_DIRECTION_VALUE, DEFAULT_PAGE_VALUE} from "@/constants/page.constant.ts";
-import {Direction} from "@/constants/directionConstant.ts";
-import DataTable from "@/components/DataTable.tsx";
-import {useTranslation} from "react-i18next";
-import {useNavigate} from "react-router-dom";
-import {store} from "@/Store.ts";
+import {
+    DEFAULT_DIRECTION_VALUE,
+    DEFAULT_PAGE_VALUE, MAX_SIZE_VALUE
+} from "@/constants/page.constant.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
+import {Direction} from "@/constants/directionConstant.ts";
+import {useTranslation} from "react-i18next";
+import {ColumnDef} from "@tanstack/react-table";
+import {UomModel} from "@/pages/inventory/uom/UomModel.ts";
+import {RootState, store} from "@/Store.ts";
+import DataTable from "@/components/DataTable.tsx";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {
+    findUomCategories,
+    selectUomCategoryById
+} from "@/pages/inventory/uom-category/UomCategorySlice.ts";
 
+const UomTree = () => {
 
-const UomCategoryTree = () => {
-
-    const uomCategories: Array<UomCategoryModel> = useSelector(selectUomCategories);
+    const uoms: Array<UomModel> = useSelector(selectUoms);
     const pageSize: number = useSelector(getPageSize);
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
@@ -37,16 +44,30 @@ const UomCategoryTree = () => {
         page: DEFAULT_PAGE_VALUE,
         size: pageSize,
         attribute: "name",
-        direction: Direction.ASC,
+        direction: DEFAULT_DIRECTION_VALUE,
         keyword: keyword
     });
 
     const {t} = useTranslation(['home']);
 
-    const columns: ColumnDef<UomCategoryModel>[] = [
+    const columns: ColumnDef<UomModel>[] = [
         {
             accessorKey: "name",
-            header: () => (<div className="text-left">{t("uom_category_tree_name")}</div>),
+            header: () => (<div className="text-start">{t("uom_tree_name")}</div>),
+        },
+        {
+            accessorKey: "uomType",
+            header: () => (<div className="text-start">{t("uom_tree_uom_type")}</div>),
+            cell: ({row}) => (<div className="text-start capitalize">{row.original.uomType.toLocaleLowerCase()}</div>),
+        },
+        {
+            accessorKey: "ratio",
+            header: () => (<div className="text-left">{t("uom_tree_ratio")}</div>),
+        },
+        {
+            accessorKey: "uomCategoryId",
+            header: () => (<div className="text-left">{t("uom_tree_uom_category_id")}</div>),
+            cell: ({row}) => (<div className="text-start">{uomCategoryByName(row.original.uomCategoryId)}</div>),
         },
         {
             accessorKey: "action",
@@ -60,16 +81,24 @@ const UomCategoryTree = () => {
         }
     ];
 
+    useEffect(() => {
+        store.dispatch(findUomCategories({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [store.dispatch]);
 
     useEffect(() => {
-        store.dispatch(searchUomCategories({
+        store.dispatch(searchUoms({
             page: page,
             size: size,
             attribute: "name",
-            direction: DEFAULT_DIRECTION_VALUE,
+            direction: Direction.ASC,
             keyword: keyword
         }));
     }, [debounceKeyword, page, size]);
+
+    const uomCategoryByName = (uomCategoryId: string): string => {
+        const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
+        return uomCategory? uomCategory.name: '';
+    }
 
     const handlePageChange = (page: number) => {
         setSearchParam({page: page, size: size, attribute: "name", direction: DEFAULT_DIRECTION_VALUE, keyword: keyword});
@@ -89,12 +118,12 @@ const UomCategoryTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
-    const handleEdit = (row: UomCategoryModel) => {
-        navigate(`/inventory/uom-categories/detail/${row.id}`);
+    const handleEdit = (row: UomModel) => {
+        navigate(`/inventory/uoms/details/${row.id}`);
     }
 
     const handleNew = () => {
-        navigate('/inventory/uom-categories/new');
+        navigate('/inventory/uoms/new');
     }
 
     const handleClear = () => {
@@ -104,8 +133,8 @@ const UomCategoryTree = () => {
     return (
         <div className="text-3xl text-amber-700 min-h-full">
             <DataTable
-                title={'uom_category_tree_title'}
-                columns={columns} data={uomCategories}
+                title={'uom_tree_title'}
+                columns={columns} data={uoms}
                 totalElements={totalElements}
                 page={page}
                 size={size}
@@ -123,4 +152,4 @@ const UomCategoryTree = () => {
     );
 }
 
-export default UomCategoryTree;
+export default UomTree;
