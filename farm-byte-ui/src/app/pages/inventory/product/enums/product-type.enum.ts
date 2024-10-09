@@ -1,3 +1,0 @@
-export enum ProductType {
-  STOCK='STOCK', CONSUMABLE='CONSUMABLE', SERVICE='SERVICE'
-}
