@@ -63,6 +63,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           script: mkdir -p ci_cd
+          overwrite: true
       - name: Copy docker compose file
         uses: appleboy/scp-action@v0.1.7
         with:
