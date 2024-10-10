@@ -32,6 +32,18 @@ services:
       - farmbyte-postgresql
     networks:
       - farmbyte-network
+  farmbyte-ui:
+    container_name: farmbyte-ui
+    image: xenonbytesarl/farm-byte-ui:latest
+    environment:
+      - UI_PORT=${UI_PORT}
+      - VITE_API_BACKEND_URL=${API_BACKEND_URL}
+    ports:
+      - '${UI_PORT}:80'
+    depends_on:
+      - farmbyte-api
+    networks:
+      - farmbyte-network
 networks:
   farmbyte-network:
     driver: bridge
