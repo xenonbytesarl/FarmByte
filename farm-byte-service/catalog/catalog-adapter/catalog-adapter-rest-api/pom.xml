@@ -83,7 +83,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.parent.basedir}/../../../openapi/catalog/uom.yaml</inputSpec>
+                            <inputSpec>${project.parent.basedir}/../../openapi/catalog/uom.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom</apiPackage>
@@ -109,7 +109,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.parent.basedir}/../../../openapi/catalog/uom-category.yaml</inputSpec>
+                            <inputSpec>${project.parent.basedir}/../../openapi/catalog/uom-category.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uomcategory</apiPackage>
@@ -135,7 +135,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.parent.basedir}/../../../openapi/catalog/product-category.yaml</inputSpec>
+                            <inputSpec>${project.parent.basedir}/../../openapi/catalog/product-category.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory</apiPackage>
@@ -161,7 +161,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.parent.basedir}/../../../openapi/catalog/product.yaml</inputSpec>
+                            <inputSpec>${project.parent.basedir}/../../openapi/catalog/product.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.product</apiPackage>
