@@ -103,7 +103,11 @@ export const createProduct = createAsyncThunk('product/createProduct', async ({p
 const productSlice = createSlice({
     name: "product",
     initialState: productInitialState,
-    reducers: {},
+    reducers: {
+        resetCurrentProduct: (state) => {
+            state.currentProduct = null;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createProduct.fulfilled, (state, action) => {
@@ -179,5 +183,7 @@ export const {
     selectById: selectProductById,
     selectEntities: selectProductEntities,
 } = productAdapter.getSelectors((state: RootState) => state.inventory.product);
+
+export const {resetCurrentProduct} = productSlice.actions;
 
 export default productSlice.reducer;
