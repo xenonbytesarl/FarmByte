@@ -18,7 +18,7 @@ jobs:
       - name: Extract project version
         id: extract_version
         run: |
-          cd farm-byte-fronend
+          cd farm-byte-ui
           echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
       - name: Login to Dockerhub
         uses: docker/login-action@v3
@@ -32,7 +32,7 @@ jobs:
       - name: Build image and push to docker registry
         uses: docker/build-push-action@v5
         with:
-          context: farm-byte-fronend
+          context: farm-byte-ui
           file: docker/ui/Dockerfile
           push: true
           platforms: linux/amd64
