@@ -175,6 +175,10 @@ const UomForm = () => {
         navigate('/inventory/uoms/new');
         setMode(FormModeType.CREATE);
         reset(defaultValuesUom);
+        setUomCategoryPopOverLabel('');
+        setUomTypePopOverLabel('');
+        setOpenUomCategoryPopOver(false);
+        setOpenUomTypePopOver(false);
     }
 
     return (
@@ -224,10 +228,10 @@ const UomForm = () => {
                                         className="justify-between"
                                         disabled={mode === FormModeType.READ || isLoading}
                                     >
-                                        {uomCategoryPopOverLabel
+                                        <span>{uomCategoryPopOverLabel
                                             ? uomCategories.find((uomCategory) => uomCategory.name === uomCategoryPopOverLabel)?.name
-                                            : uom? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name: t('uom_category_pop_over_place_holder')}
-                                        <span className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined" >unfold_more</span>
+                                            : uom? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name: t('uom_category_pop_over_place_holder')}</span>
+                                        <span className="opacity-50 material-symbols-outlined" >unfold_more</span>
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[--radix-popover-trigger-width]">
@@ -276,10 +280,10 @@ const UomForm = () => {
                                         className="justify-between"
                                         disabled={mode === FormModeType.READ || isLoading}
                                     >
-                                        {uomTypePopOverLabel
+                                        <span>{uomTypePopOverLabel
                                             ? t(uomTypes.find((uomType) => uomType.label === uomTypePopOverLabel)?.label)
-                                            : uom? t(uomTypes.find((uomTypeEdit) => uomTypeEdit.name === uom.uomType)?.label): t('uom_pop_over_place_holder')}
-                                        <span className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined" >unfold_more</span>
+                                            : uom? t(uomTypes.find((uomTypeEdit) => uomTypeEdit.name === uom.uomType)?.label): t('uom_pop_over_place_holder')}</span>
+                                        <span className="opacity-50 material-symbols-outlined" >unfold_more</span>
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[--radix-popover-trigger-width]">

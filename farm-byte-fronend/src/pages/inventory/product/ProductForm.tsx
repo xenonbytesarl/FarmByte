@@ -7,7 +7,7 @@ import {store} from "@/Store.ts";
 import {
     createProduct,
     findProductById, getCurrentProduct,
-    getLoading,
+    getLoading, resetCurrentProduct,
     updateProduct
 } from "@/pages/inventory/product/ProductSlice.ts";
 import {ProductCategoryModel} from "@/pages/inventory/product-category/ProductCategoryModel.ts";
@@ -48,11 +48,11 @@ const ProductForm = () => {
 
     const {t} = useTranslation(['home']);
 
-    const {productId} = useParams();
+    let {productId} = useParams();
 
     const {toast} = useToast();
 
-    const product: ProductModel = useSelector(getCurrentProduct);
+    let product: ProductModel = useSelector(getCurrentProduct);
     const categories: Array<ProductCategoryModel> = useSelector(selectProductCategories);
     const stockUoms: Array<UomModel> = useSelector(selectUoms);
     const purchaseUoms: Array<UomModel> = useSelector(selectUoms);
@@ -266,9 +266,22 @@ const ProductForm = () => {
     }
 
     const onCreate = () => {
-        navigate('/inventory/products/new');
         setMode(FormModeType.CREATE);
         reset(defaultValuesProduct);
+        resetPopOverLabel();
+        store.dispatch(resetCurrentProduct())
+        navigate('/inventory/products/new');
+    }
+
+    const resetPopOverLabel = () =>{
+        setCategoryPopOverLabel('');
+        setTypePopOverLabel('');
+        setPurchaseUomPopOverLabel('');
+        setStockUomPopOverLabel('');
+        setOpenCategoryPopOver(false);
+        setOpenTypePopOver(false);
+        setOpenPurchaseUomPopOver(false);
+        setOpenStockUomPopOver(false);
     }
 
 
@@ -279,7 +292,6 @@ const ProductForm = () => {
             setFileContent(content);
         }
     }
-
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Toaster/>
@@ -339,11 +351,10 @@ const ProductForm = () => {
                                                     className="justify-between"
                                                     disabled={mode === FormModeType.READ || isLoading}
                                                 >
-                                                    {typePopOverLabel
+                                                    <span>{typePopOverLabel
                                                         ? t(productTypes.find((type) => type.label === typePopOverLabel)?.label)
-                                                        : product ? t(productTypes.find((typeEdit) => typeEdit.name === product.type)?.label) : t('product_form_type_pop_over_place_holder')}
-                                                    <span
-                                                        className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined">unfold_more</span>
+                                                        : product ? t(productTypes.find((typeEdit) => typeEdit.name === product.type)?.label) : t('product_form_type_pop_over_place_holder')}</span>
+                                                    <span className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[--radix-popover-trigger-width]">
@@ -393,11 +404,11 @@ const ProductForm = () => {
                                                     className="justify-between"
                                                     disabled={mode === FormModeType.READ || isLoading}
                                                 >
-                                                    {categoryPopOverLabel
+                                                    <span>{categoryPopOverLabel
                                                         ? categories.find((category) => category.name === categoryPopOverLabel)?.name
-                                                        : product ? categories.find((category) => category.id === product.categoryId)?.name : t('product_form_category_pop_over_place_holder')}
+                                                        : product ? categories.find((category) => category.id === product.categoryId)?.name : t('product_form_category_pop_over_place_holder')}</span>
                                                     <span
-                                                        className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined">unfold_more</span>
+                                                        className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-[--radix-popover-trigger-width]">
@@ -444,11 +455,11 @@ const ProductForm = () => {
                                                 className="justify-between"
                                                 disabled={mode === FormModeType.READ || isLoading}
                                             >
-                                                {stockUomPopOverLabel
+                                                <span>{stockUomPopOverLabel
                                                     ? stockUoms.find((stockUom) => stockUom.name === stockUomPopOverLabel)?.name
-                                                    : product ? stockUoms.find((stockUom) => stockUom.id === product.stockUomId)?.name : t('product_form_stock_uom_id_pop_over_place_holder')}
+                                                    : product ? stockUoms.find((stockUom) => stockUom.id === product.stockUomId)?.name : t('product_form_stock_uom_id_pop_over_place_holder')}</span>
                                                 <span
-                                                    className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined">{product && product.type !== ProductTypeEnum.SERVICE ? 'unfold_more' : ''}</span>
+                                                    className="opacity-50 material-symbols-outlined">unfold_more</span>
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[--radix-popover-trigger-width]">
@@ -489,11 +500,11 @@ const ProductForm = () => {
                                                 className="justify-between"
                                                 disabled={mode === FormModeType.READ || isLoading}
                                             >
-                                                {purchaseUomPopOverLabel
+                                                <span>{purchaseUomPopOverLabel
                                                     ? purchaseUoms.find((purchaseUom) => purchaseUom.name === purchaseUomPopOverLabel)?.name
-                                                    : product ? purchaseUoms.find((purchaseUom) => purchaseUom.id === product.purchaseUomId)?.name : t('product_form_purchase_uom_id_pop_over_place_holder')}
+                                                    : product ? purchaseUoms.find((purchaseUom) => purchaseUom.id === product.purchaseUomId)?.name : t('product_form_purchase_uom_id_pop_over_place_holder')}</span>
                                                 <span
-                                                    className="ml-2 h-4 w-4 shrink-0 opacity-50 material-symbols-outlined">{product && product.type !== ProductTypeEnum.SERVICE ? 'unfold_more' : ''}</span>
+                                                    className="opacity-50 material-symbols-outlined">unfold_more</span>
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[--radix-popover-trigger-width]">
