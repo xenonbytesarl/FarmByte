@@ -308,7 +308,7 @@ components:
         - $ref: '#/components/schemas/ProductView'
         - type: object
           properties:
-            encodedFilename:
+            encodedFile:
               type: string
             mime:
               type: string

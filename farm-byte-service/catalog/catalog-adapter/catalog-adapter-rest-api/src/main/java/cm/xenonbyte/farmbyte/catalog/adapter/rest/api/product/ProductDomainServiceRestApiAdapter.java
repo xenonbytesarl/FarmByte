@@ -63,7 +63,7 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
         CreateProductViewResponse createProductViewResponse = productViewMapper.toCreateProductViewResponse(
                 productService.createProduct(productViewMapper.toProduct(createProductViewRequest)));
         storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
-        createProductViewResponse.setEncodedFilename(storageManager.fileToBase64(createProductViewResponse.getFilename()));
+        createProductViewResponse.setEncodedFile(storageManager.fileToBase64(createProductViewResponse.getFilename()));
         createProductViewResponse.setMime(storageManager.mimeType(createProductViewResponse.getFilename()));
         return createProductViewResponse;
     }
@@ -74,7 +74,7 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
         FindProductByIdViewResponse findProductByIdViewResponse = productViewMapper.toFindProductByIdViewResponse(
                 productService.findProductById(new ProductId(productId))
         );
-        findProductByIdViewResponse.setEncodedFilename(storageManager.fileToBase64(findProductByIdViewResponse.getFilename()));
+        findProductByIdViewResponse.setEncodedFile(storageManager.fileToBase64(findProductByIdViewResponse.getFilename()));
         findProductByIdViewResponse.setMime(storageManager.mimeType(findProductByIdViewResponse.getFilename()));
         return findProductByIdViewResponse;
     }
@@ -104,7 +104,7 @@ public class ProductDomainServiceRestApiAdapter implements ProductServiceRestApi
         UpdateProductViewResponse updateProductViewResponse = productViewMapper.toUpdateProductViewResponse(
                 productService.updateProduct(new ProductId(productIdUUID), productViewMapper.toProduct(updateProductViewRequest)));
         storageManager.store(image, StorageLocation.computeStoragePtah(rootPathStorageProducts));
-        updateProductViewResponse.setEncodedFilename(storageManager.fileToBase64(updateProductViewResponse.getFilename()));
+        updateProductViewResponse.setEncodedFile(storageManager.fileToBase64(updateProductViewResponse.getFilename()));
         updateProductViewResponse.setMime(storageManager.mimeType(updateProductViewResponse.getFilename()));
         return updateProductViewResponse;
     }

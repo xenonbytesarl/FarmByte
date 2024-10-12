@@ -75,6 +75,7 @@
   "uom_form_uom_type_label": "Type",
   "uom_form_uom_type_required_message": "Type is required.",
   "uom_form_ratio_label": "Ratio",
+  "uom_form_ratio_positive_message": "Ratio is required and should be positive",
   "uom_form_active_label": "Active",
   "uom_uom_type_label_reference": "Reference",
   "uom_uom_type_label_lower": "Lower",
@@ -110,9 +111,12 @@
   "product_form_purchase_uom_id_pop_over_place_holder": "Select an unit",
   "product_form_purchase_uom_id_pop_over_not_found": "No unit found",
   "product_form_sale_price_label": "Sale price",
+  "product_form_sale_price_positive_message": "Sale price should be positive or zero",
   "product_form_purchase_price_label": "Purchase price",
+  "product_form_purchase_price_positive_message": "Purchase price should be positive or zero",
   "product_form_reference_max_length_message": "Reference has a maximum of 16 characters",
   "product_form_purchasable_label": "Purchase?",
   "product_form_sellable_label": "Sell?",
-  "product_form_active_label": "Active"
+  "product_form_active_label": "Active",
+  "product_form_purchase_and_stock_uom_invalid_category_message": "Stock and purchase unit of measure should be in the same category"
 }

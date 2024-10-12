@@ -62,10 +62,11 @@ const UomForm = () => {
     const [mode, setMode] = useState<FormModeType>(uomId? FormModeType.READ: FormModeType.CREATE);
     const UomSchema = Zod.object({
         id: Zod.string().min(0),
-        name: Zod.string().min(1, t('uom_form_name_required_message')),
-        uomCategoryId: Zod.string().min(1, t('uom_form_uom_category_id_required_message')),
-        uomType: Zod.nativeEnum(UomTypeEnum, {message: t('uom_form_uom_type_required_message')}),
-        ratio: Zod.number(),
+        name: Zod.string().min(1, {message: t('uom_form_name_required_message')
+        }),
+        uomCategoryId: Zod.string().min(1, {message: t('uom_form_uom_category_id_required_message')}),
+        uomType: Zod.string().min(1, {message: t('uom_form_uom_type_required_message')}),
+        ratio: Zod.coerce.number().positive({message: t('uom_form_ratio_positive_message')}).or(Zod.string().min(0)),
         active: Zod.boolean()
     });
     const defaultValuesUom: UomModel = {
@@ -99,27 +100,6 @@ const UomForm = () => {
         }
     }, [uom, form.reset]);
 
-    useEffect(() => {
-        if(uomCategoryPopOverLabel) {
-
-            form.setValue(
-                'uomCategoryId',
-                // @ts-ignore
-                uomCategories.find(uomCategory => uomCategory.name === uomCategoryPopOverLabel)?.id,
-                {shouldTouch: true, shouldDirty: true, shouldValidate: true});
-        }
-    }, [uomCategoryPopOverLabel]);
-
-    useEffect(() => {
-        if(uomTypePopOverLabel) {
-            form.setValue(
-                'uomType',
-                // @ts-ignore
-                uomTypes.find(uomType => uomType.label === uomTypePopOverLabel).name,
-                {shouldTouch: true, shouldDirty: true, shouldValidate: true});
-        }
-    }, [uomTypePopOverLabel]);
-
     const showToast = (variant: ToastType, message: string) => {
         toast({
             className: cn(
@@ -132,13 +112,12 @@ const UomForm = () => {
     }
 
     const onSubmit = () => {
-        const uomFormValue: UomModel = form.getValues();
+        const uomFormValue: UomModel = form.getValues() as UomModel;
         if (uomFormValue.id) {
             store.dispatch(updateUom({uomId: uomFormValue.id, uom: uomFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("info", response.message);
                 })
@@ -152,10 +131,8 @@ const UomForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("success", response.message);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     navigate(`/inventory/uoms/details/${response.data.content.id}`);
                 })
@@ -252,53 +229,54 @@ const UomForm = () => {
                                     render={() => (
                                         <FormItem>
                                             <FormLabel>{t('uom_form_uom_category_id_label')}</FormLabel>
-                                            <FormControl>
-                                                <Popover open={openUomCategoryPopOver}
-                                                         onOpenChange={setOpenUomCategoryPopOver}>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant="outline"
-                                                            role="combobox"
-                                                            aria-expanded={openUomCategoryPopOver}
-                                                            className="w-full justify-between"
-                                                            disabled={mode === FormModeType.READ || isLoading}
-                                                        >
-                                                            <span>{uomCategoryPopOverLabel
-                                                                ? uomCategories.find((uomCategory) => uomCategory.name === uomCategoryPopOverLabel)?.name
-                                                                : uom ? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name : t('uom_category_pop_over_place_holder')}</span>
-                                                            <span
-                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                        <Command>
-                                                            <CommandInput id="uomCategoryId"
-                                                                          placeholder="Search framework..."/>
-                                                            <CommandList>
-                                                                <Command>{t('uom_category_pop_over_not_found')}</Command>
-                                                                <CommandGroup>
-                                                                    {uomCategories.map((uomCategory) => (
-                                                                        <CommandItem
-                                                                            key={uomCategory.id}
-                                                                            value={uomCategory.name}
-                                                                            onSelect={(currentValue) => {
-                                                                                console.log(currentValue)
-                                                                                setUomCategoryPopOverLabel(currentValue === uomCategoryPopOverLabel ? "" : currentValue)
-                                                                                setOpenUomCategoryPopOver(false)
-                                                                            }}
-                                                                        >
-                                                                            <span
-                                                                                className={`mr-2 h-4 w-4 material-symbols-outlined ${uomCategoryPopOverLabel === uomCategory.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                            >check</span>
-                                                                            {uomCategory.name}
-                                                                        </CommandItem>
-                                                                    ))}
-                                                                </CommandGroup>
-                                                            </CommandList>
-                                                        </Command>
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </FormControl>
+                                            <Popover open={openUomCategoryPopOver}
+                                                     onOpenChange={setOpenUomCategoryPopOver}>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-expanded={openUomCategoryPopOver}
+                                                        className="w-full justify-between"
+                                                        disabled={mode === FormModeType.READ || isLoading}
+                                                    >
+                                                        <span>{uomCategoryPopOverLabel
+                                                            ? uomCategories.find((uomCategory) => uomCategory.name === uomCategoryPopOverLabel)?.name
+                                                            : uom ? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name : t('uom_category_pop_over_place_holder')}</span>
+                                                        <span
+                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                    <Command>
+                                                        <CommandInput id="uomCategoryId"
+                                                                      placeholder="Search framework..."/>
+                                                        <CommandList>
+                                                            <Command>{t('uom_category_pop_over_not_found')}</Command>
+                                                            <CommandGroup>
+                                                                {uomCategories.map((uomCategory) => (
+                                                                    <CommandItem
+                                                                        key={uomCategory.id}
+                                                                        value={uomCategory.name}
+                                                                        onSelect={(currentValue) => {
+                                                                            setUomCategoryPopOverLabel(currentValue === uomCategoryPopOverLabel ? "" : currentValue);
+                                                                            setOpenUomCategoryPopOver(false);
+                                                                            form.setValue("uomCategoryId",
+                                                                                currentValue === uomCategoryPopOverLabel ? "" : uomCategory.id,
+                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <span
+                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${uomCategoryPopOverLabel === uomCategory.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                        >check</span>
+                                                                        {uomCategory.name}
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
                                             <FormMessage className="text-xs text-red-500"/>
                                         </FormItem>
                                     )}
@@ -359,7 +337,11 @@ const UomForm = () => {
                                                                             value={uomType.label}
                                                                             onSelect={(currentValue) => {
                                                                                 setUomTypePopOverLabel(currentValue === uomTypePopOverLabel ? "" : currentValue)
-                                                                                setOpenUomTypePopOver(false)
+                                                                                setOpenUomTypePopOver(false);
+                                                                                form.setValue("uomType",
+                                                                                    currentValue === uomTypePopOverLabel ? "": uomType.name,
+                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                );
                                                                             }}
                                                                         >
                                                                             <span

@@ -14,6 +14,6 @@ export interface ProductModel {
   purchasable: boolean;
   sellable: boolean;
   active: boolean;
-  encodedFilename: string;
+  encodedFile: string;
   mime: string;
 }
