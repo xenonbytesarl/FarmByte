@@ -22,7 +22,9 @@ import {Toaster} from "@/components/ui/toaster.tsx";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import FormCrudButton from "@/components/FormCrudButton.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {Label} from "@/components/ui/label.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {changeNullToEmptyString} from "@/utils/changeNullToEmptyString.ts";
 
 const ProductCategoryForm = () => {
 
@@ -40,7 +42,10 @@ const ProductCategoryForm = () => {
     const [mode, setMode] = useState<FormModeType>(productCategoryId? FormModeType.READ: FormModeType.CREATE);
 
     const ProductCategorySchema = Zod.object({
+        id: Zod.string().min(0),
         name: Zod.string().min(1, t('product_category_form_name_required_message')),
+        parentProductCategoryId: Zod.string().min(0),
+        active: Zod.boolean()
     });
     const defaultValuesProductCategory: ProductCategoryModel = {
         id: "",
@@ -48,7 +53,7 @@ const ProductCategoryForm = () => {
         parentProductCategoryId: "",
         active: true
     };
-    const { register, handleSubmit, formState: {errors, isValid }, reset, getValues } = useForm<ProductCategoryModel>({
+    const form = useForm<Zod.infer<typeof ProductCategorySchema>>({
         defaultValues: defaultValuesProductCategory,
         resolver: zodResolver(ProductCategorySchema),
         mode: "onTouched",
@@ -56,16 +61,15 @@ const ProductCategoryForm = () => {
 
     useEffect(() => {
         if(!productCategory && productCategoryId) {
-            console.log(productCategoryId);
             store.dispatch(findProductCategoryById(productCategoryId));
         }
     }, [store.dispatch, productCategory]);
 
     useEffect(() => {
         if(productCategory) {
-            reset(productCategory)
+            form.reset(changeNullToEmptyString(productCategory))
         }
-    }, [productCategory, reset]);
+    }, [productCategory, form.reset]);
 
     const showToast = (variant: ToastType, message: string) => {
         toast({
@@ -79,13 +83,12 @@ const ProductCategoryForm = () => {
     }
 
     const onSubmit = () => {
-        const productCategoryFormValue: ProductCategoryModel = getValues();
+        const productCategoryFormValue: ProductCategoryModel = form.getValues();
         if (productCategoryFormValue.id) {
             store.dispatch(updateProductCategory({productCategoryId: productCategoryFormValue.id, productCategory: productCategoryFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("info", response.message);
                 })
@@ -98,10 +101,8 @@ const ProductCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("success", response.message);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     navigate(`/inventory/product-categories/details/${response.data.content.id}`);
                 })
@@ -118,35 +119,36 @@ const ProductCategoryForm = () => {
 
     const onCancel = () => {
         if(productCategory) {
-            reset(productCategory);
+            form.reset(changeNullToEmptyString(productCategory));
             setMode(FormModeType.READ);
         } else {
-            reset();
+            form.reset();
         }
     }
 
     const onCreate = () => {
         navigate('/inventory/product-categories/new');
         setMode(FormModeType.CREATE);
-        reset(defaultValuesProductCategory);
+        form.reset(defaultValuesProductCategory);
     }
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Toaster/>
-            <Card className="">
-                <CardHeader>
-                    <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                <Toaster/>
+                <Card className="">
+                    <CardHeader>
+                        <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
                         <span onClick={() => navigate(`/inventory/product-categories`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                        <span
-                            className="text-2xl">{t(productCategoryId ? 'product_category_form_edit_title' : 'product_category_form_new_title')}</span>
-                    </CardTitle>
-                    <CardDescription>
+                            <span
+                                className="text-2xl">{t(productCategoryId ? 'product_category_form_edit_title' : 'product_category_form_new_title')}</span>
+                        </CardTitle>
+                        <CardDescription>
                     <span className="flex flex-row w-full m-5">
                         <FormCrudButton
                             mode={mode}
                             isLoading={isLoading}
-                            isValid={isValid}
+                            isValid={form.formState.isValid}
                             onEdit={onEdit}
                             onCancel={onCancel}
                             onCreate={onCreate}
@@ -154,24 +156,72 @@ const ProductCategoryForm = () => {
                         <span className="flex flex-row justify-end items-center gap-3 w-6/12">
                         </span>
                     </span>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid w-full items-center gap-4">
-                        <Input id="name" type="hidden" {...register("id")} />
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="name">{t('product_category_form_name_label')}</Label>
-                            <Input id="name" type="text" {...register("name")}
-                                   disabled={mode === FormModeType.READ || isLoading}/>
-                            <small className="text-red-500">{errors.name?.message}</small>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <FormField
+                            control={form.control}
+                            name="id"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input id="name" type="hidden" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="parentProductCategoryId"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input id="parentProductCategoryId" type="hidden" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <div className="grid w-full items-center gap-4">
+                            <div className="flex flex-col space-y-1.5">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>{t('product_category_form_name_label')}</FormLabel>
+                                            <FormControl>
+                                                <Input id="name" type="text" {...field}
+                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                            </FormControl>
+                                            <FormMessage className="text-xs text-red-500"/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1.5 mt-5">
+                                <FormField
+                                    control={form.control}
+                                    name="active"
+                                    render={({field}) => (
+                                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                            <FormControl>
+                                                <Checkbox id="active" checked={field.value}
+                                                          disabled={mode === FormModeType.READ || isLoading}
+                                                          onCheckedChange={field.onChange}/>
+                                            </FormControl>
+                                            <FormLabel
+                                                className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </CardContent>
-                <CardFooter className="flex justify-between py-5">
-                </CardFooter>
-            </Card>
-        </form>
+                    </CardContent>
+                    <CardFooter className="flex justify-between py-5">
+                    </CardFooter>
+                </Card>
+            </form>
+        </Form>
     );
 };
 

@@ -32,7 +32,6 @@ import {
     FormMessage
 } from "@/components/ui/form.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-// @ts-ignore
 import {changeNullToEmptyString} from "@/utils/changeNullToEmptyString.ts";
 
 
