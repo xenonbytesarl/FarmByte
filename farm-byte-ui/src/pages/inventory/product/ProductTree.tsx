@@ -22,6 +22,7 @@ import {
     selectProductCategoryById
 } from "@/pages/inventory/product-category/ProductCategorySlice.ts";
 import {findUoms, selectUomById} from "@/pages/inventory/uom/UomSlice.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 const ProductTree = () => {
 
@@ -48,6 +49,28 @@ const ProductTree = () => {
     const {t} = useTranslation(['home']);
 
     const columns: ColumnDef<ProductModel>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "reference",
             header: () => (<div className="text-left">{t("product_tree_reference")}</div>),
@@ -140,6 +163,10 @@ const ProductTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
+    const handleDelete = (rows: Array<ProductModel>) => {
+        console.log(rows); //TODO
+    }
+
     const handleEdit = (row: ProductModel) => {
         navigate(`/inventory/products/details/${row.id}`);
     }
@@ -168,6 +195,7 @@ const ProductTree = () => {
                 handleFilterChange={handleFilterChange}
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
+                handleDelete={handleDelete}
             />
         </div>
     );

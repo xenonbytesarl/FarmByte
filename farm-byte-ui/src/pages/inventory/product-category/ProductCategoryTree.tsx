@@ -18,6 +18,7 @@ import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
 import {store} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 const ProductCategoryTree = () => {
 
@@ -45,6 +46,28 @@ const ProductCategoryTree = () => {
     const {t} = useTranslation(['home']);
 
     const columns: ColumnDef<ProductCategoryModel>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "name",
             header: () => (<div className="text-left">{t("product_category_tree_name")}</div>),
@@ -90,6 +113,10 @@ const ProductCategoryTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
+    const handleDelete = (rows: Array<ProductCategoryModel>) => {
+        console.log(rows); //TODO
+    }
+
     const handleEdit = (row: ProductCategoryModel) => {
         navigate(`/inventory/product-categories/details/${row.id}`);
     }
@@ -118,6 +145,7 @@ const ProductCategoryTree = () => {
                 handleFilterChange={handleFilterChange}
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
+                handleDelete={handleDelete}
             />
 
         </div>

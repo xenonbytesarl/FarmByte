@@ -30,10 +30,11 @@ interface DataTableProps<TData, TValue> {
     handleNew: () => void,
     handleFilterChange: (keyword: string) => void,
     handleClear: () => void,
+    handleDelete: (data: TData[]) => void,
 }
 
 const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, page, size, title,
-            keyword, handlePageChange, isLoading, handleSizeChange, handleNew,  handleFilterChange, handleClear}: DataTableProps<TData, TValue>) => {
+            keyword, handlePageChange, isLoading, handleSizeChange, handleNew,  handleFilterChange, handleClear, handleDelete}: DataTableProps<TData, TValue>) => {
 
     const {t} = useTranslation(['home']);
 
@@ -65,11 +66,22 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                 <CardHeader>
                     <CardTitle className="flex flex-row justify-between items-center text-primary">
                         <p className="text-2xl">{t(title)}</p>
-                        <Button onClick={() => handleNew()} variant="default"
-                                className="flex flex-row justify-center items-center">
-                            <span className="material-symbols-outlined text-xl">add</span>
-                            <span>{t('tree_button_label_add')}</span>
-                        </Button>
+                        <div className="flex flex-row items-center justify-end gap-4">
+                            <Button onClick={() => handleNew()} variant="default"
+                                    className="flex flex-row justify-center items-center">
+                                <span className="material-symbols-outlined text-xl">add</span>
+                                <span>{t('tree_button_label_add')}</span>
+                            </Button>
+                            {
+                                table.getFilteredSelectedRowModel().rows.length > 0
+                                    &&
+                                <Button onClick={() => handleDelete(table.getFilteredSelectedRowModel().rows.map(row => row.original))}
+                                        variant="destructive" className="flex flex-row justify-center items-center">
+                                    <span className="material-symbols-outlined text-xl">delete</span>
+                                    <span>{t('tree_button_label_delete')}</span>
+                                </Button>
+                            }
+                        </div>
                     </CardTitle>
                     <CardDescription>
                         <span className="relative flex flex-row justify-end items-center py-4">

@@ -17,6 +17,7 @@ import {store} from "@/Store.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 
 const UomCategoryTree = () => {
@@ -44,6 +45,28 @@ const UomCategoryTree = () => {
     const {t} = useTranslation(['home']);
 
     const columns: ColumnDef<UomCategoryModel>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false
+        },
         {
             accessorKey: "name",
             header: () => (<div className="text-left">{t("uom_category_tree_name")}</div>),
@@ -89,6 +112,10 @@ const UomCategoryTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
+    const handleDelete = (rows: Array<UomCategoryModel>) => {
+        console.log(rows); //TODO
+    }
+
     const handleEdit = (row: UomCategoryModel) => {
         navigate(`/inventory/uom-categories/details/${row.id}`);
     }
@@ -117,6 +144,7 @@ const UomCategoryTree = () => {
                 handleFilterChange={handleFilterChange}
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
+                handleDelete={handleDelete}
             />
 
         </div>

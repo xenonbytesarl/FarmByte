@@ -25,6 +25,7 @@ import {
     findUomCategories,
     selectUomCategoryById
 } from "@/pages/inventory/uom-category/UomCategorySlice.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 const UomTree = () => {
 
@@ -51,6 +52,28 @@ const UomTree = () => {
     const {t} = useTranslation(['home']);
 
     const columns: ColumnDef<UomModel>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             accessorKey: "name",
             header: () => (<div className="text-start">{t("uom_tree_name")}</div>),
@@ -119,6 +142,10 @@ const UomTree = () => {
         setPage(DEFAULT_PAGE_VALUE);
     }
 
+    const handleDelete = (rows: Array<UomModel>) => {
+        console.log(rows); //TODO
+    }
+
     const handleEdit = (row: UomModel) => {
         navigate(`/inventory/uoms/details/${row.id}`);
     }
@@ -147,6 +174,7 @@ const UomTree = () => {
                 handleFilterChange={handleFilterChange}
                 handleSizeChange={handleSizeChange}
                 handleClear={handleClear}
+                handleDelete={handleDelete}
             />
 
         </div>
