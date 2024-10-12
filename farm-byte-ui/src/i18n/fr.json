@@ -62,6 +62,7 @@
   "uom_category_form_edit_title": "Catégorie d'unité de mesure",
   "uom_category_form_name_label": "Nom",
   "uom_category_form_name_required_message": "Le nom est obligatoire.",
+  "uom_category_form_active_label": "Actif",
   "uom_category_pop_over_not_found":  "Aucune catégorie trouvée",
   "uom_category_pop_over_place_holder":  "Selectionner une catégorie d'unité de mesure",
 
