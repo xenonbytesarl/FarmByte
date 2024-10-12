@@ -28,6 +28,7 @@
   "form_button_label_create": "Créer",
 
   "tree_button_label_add": "Créer",
+  "tree_button_label_delete": "Supprimer",
   "tree_search_place_holder": "Rechercher...",
 
   "uom_category_tree_title": "Catégorie d'unité de mesure",
