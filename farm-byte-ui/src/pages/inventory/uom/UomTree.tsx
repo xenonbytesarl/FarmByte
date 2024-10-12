@@ -96,6 +96,7 @@ const UomTree = () => {
     }, [debounceKeyword, page, size]);
 
     const uomCategoryByName = (uomCategoryId: string): string => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const uomCategory =  useSelector((state: RootState) => selectUomCategoryById(state, uomCategoryId));
         return uomCategory? uomCategory.name: '';
     }
