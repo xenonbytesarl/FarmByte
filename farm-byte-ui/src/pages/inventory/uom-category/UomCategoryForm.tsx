@@ -1,5 +1,4 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
@@ -24,6 +23,15 @@ import {Toaster} from "@/components/ui/toaster.tsx";
 import {cn} from "@/lib/utils.ts";
 import FormCrudButton from "@/components/FormCrudButton.tsx";
 import {ToastType} from "@/shared/constant/globalConstant.ts";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from "@/components/ui/form.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 
 
 const UomCategoryForm = () => {
@@ -34,6 +42,7 @@ const UomCategoryForm = () => {
 
     const {toast} = useToast();
 
+    // @ts-ignore
     const uomCategory: UomCategoryModel = useSelector((state:RootState) => selectUomCategoryById(state, uomCategoryId));
     const isLoading: boolean = useSelector(getLoading);
 
@@ -41,7 +50,10 @@ const UomCategoryForm = () => {
     const [mode, setMode] = useState<FormModeType>(uomCategoryId? FormModeType.READ: FormModeType.CREATE);
 
     const UomCategorySchema = Zod.object({
+        id: Zod.string().min(0),
         name: Zod.string().min(1, {message: t('uom_category_form_name_required_message')}),
+        parentUomCategoryId: Zod.string().min(0),
+        active: Zod.boolean()
     });
 
     const defaultValuesUomCategory: UomCategoryModel = {
@@ -50,7 +62,7 @@ const UomCategoryForm = () => {
       parentUomCategoryId: "",
       active: true
     };
-    const { register, handleSubmit, formState: {errors, isValid}, reset, getValues } = useForm<UomCategoryModel>({
+    const form = useForm<Zod.infer<typeof UomCategorySchema>>({
         defaultValues: defaultValuesUomCategory,
         resolver: zodResolver(UomCategorySchema),
         mode: "onTouched"
@@ -64,9 +76,10 @@ const UomCategoryForm = () => {
 
     useEffect(() => {
         if(uomCategory) {
-            reset(uomCategory)
+            // @ts-ignore
+            form.reset(JSON.parse(JSON.stringify(uomCategory), (key, value) => value === null ? '' : value));
         }
-    }, [uomCategory, reset]);
+    }, [uomCategory, form.reset]);
 
     const showToast = (variant: ToastType, message: string) => {
         toast({
@@ -81,13 +94,12 @@ const UomCategoryForm = () => {
 
 
     const onSubmit = () => {
-        const uomCategoryFormValue: UomCategoryModel = getValues();
+        const uomCategoryFormValue: UomCategoryModel = form.getValues();
         if (uomCategoryFormValue.id) {
             store.dispatch(updateUomCategory({uomCategoryId: uomCategoryFormValue.id, uomCategory: uomCategoryFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("info", response.message);
                 })
@@ -100,10 +112,8 @@ const UomCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     showToast("success", response.message);
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
                     navigate(`/inventory/uom-categories/details/${response.data.content.id}`);
                 })
@@ -120,35 +130,37 @@ const UomCategoryForm = () => {
 
     const onCancel = () => {
         if(uomCategory) {
-            reset(uomCategory);
+            form.reset(uomCategory);
             setMode(FormModeType.READ);
         } else {
-            reset();
+            form.reset();
         }
     }
 
     const onCreate = () => {
         navigate('/inventory/uom-categories/new');
         setMode(FormModeType.CREATE);
-        reset(defaultValuesUomCategory);
+        form.reset(defaultValuesUomCategory);
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Toaster />
-            <Card className="">
-                <CardHeader>
-                    <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                <Toaster/>
+                <Card className="">
+                    <CardHeader>
+                        <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
                         <span onClick={() => navigate(`/inventory/uom-categories`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                        <span className="text-2xl">{t(uomCategoryId? 'uom_category_form_edit_title': 'uom_category_form_new_title')}</span>
-                    </CardTitle>
-                    <CardDescription>
+                            <span
+                                className="text-2xl">{t(uomCategoryId ? 'uom_category_form_edit_title' : 'uom_category_form_new_title')}</span>
+                        </CardTitle>
+                        <CardDescription>
                     <span className="flex flex-row w-full m-5">
                         <FormCrudButton
                             mode={mode}
                             isLoading={isLoading}
-                            isValid={isValid}
+                            isValid={form.formState.isValid}
                             onEdit={onEdit}
                             onCancel={onCancel}
                             onCreate={onCreate}
@@ -156,24 +168,65 @@ const UomCategoryForm = () => {
                         <span className="flex flex-row justify-end items-center gap-3 w-6/12">
                         </span>
                     </span>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid w-full items-center gap-4">
-                        <Input id="name" type="hidden" {...register("id")} />
-
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="name">{t('uom_category_form_name_label')}</Label>
-                            <Input id="name" type="text" {...register("name")}
-                                   disabled={mode === FormModeType.READ || isLoading}/>
-                            <small className="text-red-500">{errors.name?.message}</small>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid w-full items-center gap-4">
+                            <FormField
+                                control={form.control}
+                                name="id"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="id" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="parentUomCategoryId"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="parentUomCategoryId" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>{t('uom_category_form_name_label')}</FormLabel>
+                                        <FormControl>
+                                            <Input id="name" type="text" {...field}
+                                                   disabled={mode === FormModeType.READ || isLoading}/>
+                                        </FormControl>
+                                        <FormMessage className="text-xs text-red-500"/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="active"
+                                render={({field}) => (
+                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                        <FormControl>
+                                            <Checkbox id="active" checked={field.value} onCheckedChange={field.onChange}/>
+                                        </FormControl>
+                                        <FormLabel className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
+                                    </FormItem>
+                                )}
+                            />
                         </div>
-                    </div>
-                </CardContent>
-                <CardFooter className="flex justify-between py-5">
-                </CardFooter>
-            </Card>
-        </form>
+                    </CardContent>
+                    <CardFooter className="flex justify-between py-5">
+                    </CardFooter>
+                </Card>
+            </form>
+        </Form>
     );
 };
 
