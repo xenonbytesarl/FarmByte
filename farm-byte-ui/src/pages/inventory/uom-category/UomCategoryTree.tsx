@@ -33,7 +33,7 @@ const UomCategoryTree = () => {
     const [keyword, setKeyword] = useState<string>('');
     const debounceKeyword = useDebounce(keyword, DEBOUNCE_TIMEOUT );
 
-    const [searchParam, setSearchParam] = useState<SearchParamModel>({
+    const [, setSearchParam] = useState<SearchParamModel>({
         page: DEFAULT_PAGE_VALUE,
         size: pageSize,
         attribute: "name",
@@ -54,7 +54,7 @@ const UomCategoryTree = () => {
             cell: ({row}) => (
                 <div  className="flex flex-row justify-end items-center gap-4 text-end ">
                     <span  onClick={() => handleEdit(row.original)} className="material-symbols-outlined text-primary text-xl cursor-pointer">edit</span>
-                    <span  onClick={() => handleEdit(row.original)} className="material-symbols-outlined text-red-500 text-xl cursor-pointer">delete</span>
+                    <span  onClick={() => handleEdit(row.original)} className="material-symbols-outlined text-destructive text-xl cursor-pointer">delete</span>
                 </div>
             )
         }
@@ -102,7 +102,7 @@ const UomCategoryTree = () => {
     }
 
     return (
-        <div className="text-3xl text-amber-700 min-h-full">
+        <div className="text-3xl text-primary min-h-full">
             <DataTable
                 title={'uom_category_tree_title'}
                 columns={columns} data={uomCategories}

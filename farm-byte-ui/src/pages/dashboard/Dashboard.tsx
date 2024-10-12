@@ -1,7 +1,7 @@
 
 const Dashboard = () => {
     return (
-        <div className="text-3xl text-amber-700">
+        <div className="text-3xl text-primary">
             DASHBOARD<br/>
             {import.meta.env.VITE_API_BACKEND_URL}
             <br/>

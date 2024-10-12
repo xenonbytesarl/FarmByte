@@ -10,7 +10,7 @@ import {selectIsOpenSidebarMenu} from "@/layouts/sidebar/SidebarMenuSlice.ts";
 const Layout = () => {
     const isOpen: boolean = useSelector(selectIsOpenSidebarMenu);
     return (
-        <div className="flex flex-row min-h-screen bg-gradient-to-r from-neutral-50 to-neutral-100 overflow-x-hidden">
+        <div className="flex flex-row min-h-screen overflow-x-hidden">
             <div className="hidden md:block">
                 <div className="flex flex-row w-screen">
                     <Sidebar/>

@@ -38,7 +38,7 @@ const NavBarProfile = () => {
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
+                className="flex flex-row justify-start items-center text-secondary-500 hover:text-primary cursor-pointer">
                 <span className="font-medium">
                     <img src={getImageUrl('/images/profile.png')} alt="..." className="size-8 object-cover rounded-full"/>
                 </span>
@@ -47,9 +47,9 @@ const NavBarProfile = () => {
             <div
                 className={`absolute top-full -right-0 mt-[1.65rem] w-32 bg-white shadow-2xl z-10 rounded-b-lg ${isOpenProfileMenu ? 'transition duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition duration-300 ease-out opacity-0 scale-75'}`}>
                 <div onClick={(event) => handleNavigateTo(event,'/user/profile')}
-                      className="block text-gray-500 p-2 text-sm hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300 ">My profile</div>
+                      className="block text-secondary-500 p-2 text-sm hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300 ">My profile</div>
                 <div onClick={(event) => handleNavigateTo(event, '/logout')}
-                      className="block text-gray-500 p-2 text-sm hover:text-white  rounded-b-lg hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400  hover:transition-all hover:ease-in-out hover:duration-300 ">Logout</div>
+                      className="block text-secondary-500 p-2 text-sm hover:text-primary-foreground  rounded-b-lg hover:bg-gradient-to-r hover:from-primary hover:to-primary  hover:transition-all hover:ease-in-out hover:duration-300 ">Logout</div>
             </div>
         </div>
     );

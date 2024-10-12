@@ -56,7 +56,7 @@ const ProductCategoryForm = () => {
     const form = useForm<Zod.infer<typeof ProductCategorySchema>>({
         defaultValues: defaultValuesProductCategory,
         resolver: zodResolver(ProductCategorySchema),
-        mode: "onTouched",
+        mode: "onBlur",
     });
 
     useEffect(() => {
@@ -193,7 +193,7 @@ const ProductCategoryForm = () => {
                                                 <Input id="name" type="text" {...field}
                                                        disabled={mode === FormModeType.READ || isLoading}/>
                                             </FormControl>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />
