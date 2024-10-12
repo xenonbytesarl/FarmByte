@@ -32,6 +32,8 @@ import {
     FormMessage
 } from "@/components/ui/form.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
+// @ts-ignore
+import {changeNullToEmptyString} from "@/utils/changeNullToEmptyString.ts";
 
 
 const UomCategoryForm = () => {
@@ -76,8 +78,7 @@ const UomCategoryForm = () => {
 
     useEffect(() => {
         if(uomCategory) {
-            // @ts-ignore
-            form.reset(JSON.parse(JSON.stringify(uomCategory), (key, value) => value === null ? '' : value));
+            form.reset(changeNullToEmptyString(uomCategory));
         }
     }, [uomCategory, form.reset]);
 
@@ -130,7 +131,7 @@ const UomCategoryForm = () => {
 
     const onCancel = () => {
         if(uomCategory) {
-            form.reset(uomCategory);
+            form.reset(changeNullToEmptyString(uomCategory));
             setMode(FormModeType.READ);
         } else {
             form.reset();
@@ -171,55 +172,62 @@ const UomCategoryForm = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
+                        <FormField
+                            control={form.control}
+                            name="id"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input id="id" type="hidden" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="parentUomCategoryId"
+                            render={({field}) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input id="parentUomCategoryId" type="hidden" {...field} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
                         <div className="grid w-full items-center gap-4">
-                            <FormField
-                                control={form.control}
-                                name="id"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input id="id" type="hidden" {...field} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="parentUomCategoryId"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input id="parentUomCategoryId" type="hidden" {...field} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>{t('uom_category_form_name_label')}</FormLabel>
-                                        <FormControl>
-                                            <Input id="name" type="text" {...field}
-                                                   disabled={mode === FormModeType.READ || isLoading}/>
-                                        </FormControl>
-                                        <FormMessage className="text-xs text-red-500"/>
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="active"
-                                render={({field}) => (
-                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                        <FormControl>
-                                            <Checkbox id="active" checked={field.value} onCheckedChange={field.onChange}/>
-                                        </FormControl>
-                                        <FormLabel className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="flex flex-col space-y-1.5">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>{t('uom_category_form_name_label')}</FormLabel>
+                                            <FormControl>
+                                                <Input id="name" type="text" {...field}
+                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                            </FormControl>
+                                            <FormMessage className="text-xs text-red-500"/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="flex flex-col space-y-1.5 mt-5">
+                                <FormField
+                                    control={form.control}
+                                    name="active"
+                                    render={({field}) => (
+                                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                            <FormControl>
+                                                <Checkbox id="active" checked={field.value}
+                                                          disabled={mode === FormModeType.READ || isLoading}
+                                                          onCheckedChange={field.onChange}/>
+                                            </FormControl>
+                                            <FormLabel
+                                                className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-between py-5">
