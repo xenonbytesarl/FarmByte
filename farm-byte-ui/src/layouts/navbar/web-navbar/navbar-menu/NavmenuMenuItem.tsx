@@ -25,7 +25,7 @@ const NavbarMenuItem = ({navbarMenuItem, isOpenSubMenu, lastNavMenuItem}: Props)
 
     return (
         <div  onClick={(event) => handleOnclick(event, navbarMenuItem)}
-              className={`block text-gray-500 p-2 text-sm rounded-b-lg ${navbarMenuItem.label !== lastNavMenuItem?.label? 'rounded-b-none': ''} hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300 `}>
+              className={`block text-secondary-500 p-2 text-sm rounded-b-lg ${navbarMenuItem.label !== lastNavMenuItem?.label? 'rounded-b-none': ''} hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300 `}>
             {t(navbarMenuItem.label)}
         </div>
     );

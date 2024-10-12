@@ -38,7 +38,7 @@ const NavBarMenu = ({navbarMenu}: Props) => {
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
+                className="flex flex-row justify-start items-center text-secondary-500 hover:text-primary cursor-pointer">
                 <span className="font-medium">{t(navbarMenu.label)}</span>
                 {
                     navbarMenu.items &&

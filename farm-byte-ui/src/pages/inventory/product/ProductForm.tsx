@@ -102,7 +102,6 @@ const ProductForm = () => {
         active: Zod.boolean(),
     }).superRefine((args, ctx) => {
         if(args.stockUomId !== '' && args.purchaseUomId !== '') {
-            console.log(isUomInSameCategory(args.purchaseUomId, args.stockUomId))
             if(!isUomInSameCategory(args.purchaseUomId, args.stockUomId)) {
                 ctx.addIssue({
                     code: Zod.ZodIssueCode.custom,
@@ -139,7 +138,7 @@ const ProductForm = () => {
     const form = useForm<Zod.infer<typeof ProductSchema>>({
         defaultValues: defaultValuesProduct,
         resolver: zodResolver(ProductSchema),
-        mode: "onChange",
+        mode: "onBlur",
     });
 
     useEffect(() => {
@@ -192,9 +191,6 @@ const ProductForm = () => {
                 })
         } else {
             const fileValues: File = fileContent;
-            productFormValue.active=true
-            productFormValue.sellable=true
-            productFormValue.purchasable=true
             if(fileValues === null || fileValues === undefined) {
                 pathToFile(DEFAULT_PRODUCT_IMAGE, 'image/png').then((response) => {
                     store.dispatch(createProduct({product: productFormValue, file: response}))
@@ -337,7 +333,7 @@ const ProductForm = () => {
                                                             <Input id="reference" type="text" {...field}
                                                                    disabled={mode === FormModeType.READ || isLoading}/>
                                                         </FormControl>
-                                                        <FormMessage className="text-xs text-red-500"/>
+                                                        <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
                                                 )}
                                             />
@@ -400,7 +396,7 @@ const ProductForm = () => {
                                                                 </PopoverContent>
                                                             </Popover>
                                                         </FormControl>
-                                                        <FormMessage className="text-xs text-red-500"/>
+                                                        <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
                                                 )}
                                             />
@@ -418,7 +414,7 @@ const ProductForm = () => {
                                                             <Input id="name" type="text" {...field}
                                                                    disabled={mode === FormModeType.READ || isLoading}/>
                                                         </FormControl>
-                                                        <FormMessage className="text-xs text-red-500"/>
+                                                        <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
                                                 )}
                                             />
@@ -480,7 +476,7 @@ const ProductForm = () => {
                                                                 </PopoverContent>
                                                             </Popover>
                                                         </FormControl>
-                                                        <FormMessage className="text-xs text-red-500"/>
+                                                        <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
                                                 )}
                                             />
@@ -547,7 +543,7 @@ const ProductForm = () => {
                                                             </PopoverContent>
                                                         </Popover>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-red-500"/>
+                                                    <FormMessage className="text-xs text-destructive"/>
                                                 </FormItem>
                                             )}
                                         />
@@ -609,7 +605,7 @@ const ProductForm = () => {
                                                             </PopoverContent>
                                                         </Popover>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-red-500"/>
+                                                    <FormMessage className="text-xs text-destructive"/>
                                                 </FormItem>
                                             )}
                                         />
@@ -627,7 +623,7 @@ const ProductForm = () => {
                                                         <Input id="purchasePrice" type="number" {...field}
                                                                disabled={mode === FormModeType.READ || isLoading}/>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-red-500"/>
+                                                    <FormMessage className="text-xs text-destructive"/>
                                                 </FormItem>
                                             )}
                                         />
@@ -643,7 +639,7 @@ const ProductForm = () => {
                                                         <Input id="salePrice" type="number" {...field}
                                                                disabled={mode === FormModeType.READ || isLoading}/>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-red-500"/>
+                                                    <FormMessage className="text-xs text-destructive"/>
                                                 </FormItem>
                                             )}
                                         />

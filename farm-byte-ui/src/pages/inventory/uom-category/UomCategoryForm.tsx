@@ -66,7 +66,7 @@ const UomCategoryForm = () => {
     const form = useForm<Zod.infer<typeof UomCategorySchema>>({
         defaultValues: defaultValuesUomCategory,
         resolver: zodResolver(UomCategorySchema),
-        mode: "onTouched"
+        mode: "onBlur"
     });
 
     useEffect(() => {
@@ -205,7 +205,7 @@ const UomCategoryForm = () => {
                                                 <Input id="name" type="text" {...field}
                                                        disabled={mode === FormModeType.READ || isLoading}/>
                                             </FormControl>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />

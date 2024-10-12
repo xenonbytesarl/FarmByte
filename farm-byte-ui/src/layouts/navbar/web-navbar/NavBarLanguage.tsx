@@ -46,7 +46,7 @@ const NavBarLanguage = () => {
             <div
                 ref={dropdownRef}
                 onClick={toggleDropDown}
-                className="flex flex-row justify-start items-center text-gray-500 hover:text-amber-700 cursor-pointer">
+                className="flex flex-row justify-start items-center text-secondary-500 hover:text-primary cursor-pointer">
                     <span className="font-medium">
                         <img src={`${language.name === 'fr' ? getImageUrl('/images/french.png') : getImageUrl('/images/english.png')}`} alt="..."
                              className="size-6 object-cover rounded-full"/>
@@ -55,12 +55,12 @@ const NavBarLanguage = () => {
             <div
                 className={`absolute top-full -right-0 mt-8 w-32 bg-white shadow-2xl z-10 rounded-b-lg ${isOpenLanguageMenu ? 'transition-all duration-300 ease-in opacity-100 transform scale-110 cursor-pointer' : 'cursor-auto transition-all duration-300 ease-out opacity-0 scale-75'}`}>
                 <div onClick={(event) => handleChangeLanguage(event, {name: 'en'})}
-                     className="flex flex-row justify-start items-center gap-2 text-gray-500 p-2 text-sm hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300 ">
+                     className="flex flex-row justify-start items-center gap-2 text-secondary-500 p-2 text-sm hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300 ">
                     <img src={getImageUrl('/images/english.png')} alt="..." className="size-6 object-cover rounded-full"/>
                     <span>English</span>
                 </div>
                 <div onClick={(event) => handleChangeLanguage(event, {name: 'fr'})}
-                     className="flex flex-row justify-start items-center gap-2 text-gray-500 p-2 text-sm  rounded-b-lg hover:text-white hover:bg-gradient-to-r hover:from-amber-800 hover:to-amber-400 hover:transition-all hover:ease-in-out hover:duration-300">
+                     className="flex flex-row justify-start items-center gap-2 text-secondary-500 p-2 text-sm  rounded-b-lg hover:text-primary-foreground hover:bg-gradient-to-r hover:from-primary hover:to-primary hover:transition-all hover:ease-in-out hover:duration-300">
                     <img src={getImageUrl('/images/french.png')} alt="..." className="size-6 object-cover rounded-full"/>
                     French
                 </div>

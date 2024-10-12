@@ -35,7 +35,7 @@ const SidebarMenu = ({sidebarMenu, isOpen}: Props) => {
 
     return (
         <div onClick={(event) => handleSelectSidebarMenu(event, sidebarMenu)}
-              className={`flex flex-row ${isOpen ? 'justify-start' : 'justify-center'} ${selectedSidebarMenu?.link === sidebarMenu.link? 'bg-gradient-to-r from-amber-900/50 to-amber-700/50 text-amber-400': 'text-white'} items-center gap-3 px-3 py-5 cursor-pointer w-full  hover:bg-amber-900/40 hover:text-amber-400 hover:transition hover:duration-300 hover:ease-in-out`}>
+              className={`flex flex-row ${isOpen ? 'justify-start' : 'justify-center'} ${selectedSidebarMenu?.link === sidebarMenu.link? 'bg-gradient-to-r from-primary-foreground/50 to-primary-foreground/50 text-primary': 'text-primary-foreground'} items-center gap-3 px-3 py-5 cursor-pointer w-full  hover:bg-gradient-to-r hover:from-primary-foreground/50 hover:to-primary-foreground/50 hover:text-primary hover:transition hover:duration-300 hover:ease-in-out`}>
             <span className="material-symbols-outlined">{sidebarMenu.icon}</span>
             <p className={`${isOpen ? 'transition-all ease-out duration-300 opacity-100' : 'hidden transition-all ease-in duration-300 opacity-0'}`}>{t(sidebarMenu.label)}</p>
         </div>

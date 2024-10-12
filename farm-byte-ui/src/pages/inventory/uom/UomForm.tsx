@@ -80,7 +80,7 @@ const UomForm = () => {
     const form = useForm<Zod.infer<typeof UomSchema>>({
         defaultValues: defaultValuesUom,
         resolver: zodResolver(UomSchema),
-        mode: "onTouched"
+        mode: "onBlur"
     });
 
     useEffect(() => {
@@ -217,7 +217,7 @@ const UomForm = () => {
                                                 <Input id="name" type="text" {...field}
                                                        disabled={mode === FormModeType.READ || isLoading}/>
                                             </FormControl>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />
@@ -277,7 +277,7 @@ const UomForm = () => {
                                                     </Command>
                                                 </PopoverContent>
                                             </Popover>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />
@@ -293,7 +293,7 @@ const UomForm = () => {
                                                 <Input id="ratio" type="number" {...field}
                                                        disabled={mode === FormModeType.READ || isLoading}/>
                                             </FormControl>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />
@@ -356,7 +356,7 @@ const UomForm = () => {
                                                     </PopoverContent>
                                                 </Popover>
                                             </FormControl>
-                                            <FormMessage className="text-xs text-red-500"/>
+                                            <FormMessage className="text-xs text-destructive"/>
                                         </FormItem>
                                     )}
                                 />

@@ -11,7 +11,7 @@ const NavBarModule = () => {
 
     return (
         <div className="flex flex-row justify-center items-center pl-5">
-            <p className="text-2xl font-medium text-amber-700">{selectedSidebarMenu?.label? t(selectedSidebarMenu?.label): ''}</p>
+            <p className="text-2xl font-medium text-primary">{selectedSidebarMenu?.label? t(selectedSidebarMenu?.label): ''}</p>
         </div>
     );
 }

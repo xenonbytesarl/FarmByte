@@ -18,7 +18,7 @@ import {DEFAULT_PAGE_SIZE_OPTIONS} from "@/constants/page.constant.ts";
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[],
-    totalElements?: number,
+    totalElements: number,
     totalPages: number,
     page: number,
     size: number,
@@ -63,7 +63,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
         <div>
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex flex-row justify-between items-center text-amber-700">
+                    <CardTitle className="flex flex-row justify-between items-center text-primary">
                         <p className="text-2xl">{t(title)}</p>
                         <Button onClick={() => handleNew()} variant="default"
                                 className="flex flex-row justify-center items-center">
@@ -121,7 +121,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                                                     /*onClick={() => handleEdit(row.original)}*/
                                                     key={row.id}
                                                     data-state={row.getIsSelected() && "selected"}
-                                                    className={row.getIsSelected() ? 'selected' : null}
+                                                    className={row.getIsSelected() ? 'selected' : ''}
                                                     onClick={row.getToggleSelectedHandler()}
                                                 >
                                                     {row.getVisibleCells().map((cell) => (
