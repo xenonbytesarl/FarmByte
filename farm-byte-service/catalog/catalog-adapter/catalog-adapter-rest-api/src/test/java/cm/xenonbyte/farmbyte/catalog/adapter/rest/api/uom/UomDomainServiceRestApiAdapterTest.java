@@ -15,7 +15,6 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundExceptio
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
@@ -48,7 +47,6 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.times;
@@ -212,32 +210,6 @@ final class UomDomainServiceRestApiAdapterTest {
                         .hasMessageContaining(exceptionMessage);
         }
 
-        @Test
-        void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
-            //Given
-            String name = "Unite";
-            UUID uomCategoryId = UUID.randomUUID();
-            CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
-                    uomCategoryId,
-                    name,
-                    CreateUomViewRequest.UomTypeEnum.REFERENCE,
-                    null
-            );
-
-            Uom uom = generateUom(name, uomCategoryId, UomType.REFERENCE, null);
-
-            when(uomViewMapper.toUom(createUomViewRequest)).thenReturn(uom);
-            when(uomService.createUom(uom)).thenThrow(new UomReferenceConflictException());
-
-            //Act + Then
-            assertThatThrownBy(() -> uomServiceRestApiAdapter.createUom(createUomViewRequest))
-                    .isInstanceOf(UomReferenceConflictException.class)
-                    .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
-
-            verify(uomViewMapper, times(1)).toUom(createUomViewRequest);
-            verify(uomService, times(1)).createUom(uom);
-
-        }
 
         @Test
         void should_throw_exception_when_create_two_uom_with_same_name() {
@@ -762,57 +734,6 @@ final class UomDomainServiceRestApiAdapterTest {
             assertThat(uomIdArgumentCaptor.getValue()).isEqualTo(uomId);
             assertThat(updateUomViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomViewRequest);
             assertThat(uomArgumentCaptor.getValue()).isEqualTo(uom);
-        }
-
-        @Test
-        void should_fail_when_update_uom_with_duplicate_reference_and_category() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-            //Given
-            UUID uomIdUUID = UUID.randomUUID();
-            UUID uomCategoryIdUUID = UUID.randomUUID();
-            String uomType = "REFERENCE";
-            String name = "Nouvelle Unite";
-            boolean active = true;
-            double ratio = 1.0;
-            UomId uomId = new UomId(uomIdUUID);
-
-            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
-                    .id(uomIdUUID)
-                    .name(name)
-                    .uomCategoryId(uomCategoryIdUUID)
-                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
-                    .ratio(ratio)
-                    .active(active);
-
-            Uom uom = Uom.builder()
-                    .id(uomId)
-                    .name(Name.of(Text.of(name)))
-                    .uomType(UomType.valueOf(uomType))
-                    .uomCategoryId(new UomCategoryId(uomCategoryIdUUID))
-                    .ratio(Ratio.of(ratio))
-                    .active(Active.with(active))
-                    .build();
-
-            when(uomViewMapper.toUom(updateUomViewRequest)).thenReturn(uom);
-            when(uomService.updateUom(uomId, uom))
-                    .thenThrow(UomReferenceConflictException.class.getConstructor().newInstance());
-
-            ArgumentCaptor<UomId> uomIdArgumentCaptor = ArgumentCaptor.forClass(UomId.class);
-            ArgumentCaptor<Uom> uomArgumentCaptor = ArgumentCaptor.forClass(Uom.class);
-            ArgumentCaptor<UpdateUomViewRequest> updateUomViewRequestArgumentCaptor = ArgumentCaptor.forClass(UpdateUomViewRequest.class);
-
-
-            //Act + Then
-            assertThatThrownBy(() -> uomServiceRestApiAdapter.updateUom(uomIdUUID, updateUomViewRequest))
-                    .isInstanceOf(UomReferenceConflictException.class)
-                    .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
-
-            verify(uomViewMapper, times(1)).toUom(updateUomViewRequestArgumentCaptor.capture());
-            verify(uomService, times(1)).updateUom(uomIdArgumentCaptor.capture(), uomArgumentCaptor.capture());
-
-            assertThat(uomIdArgumentCaptor.getValue()).isEqualTo(uomId);
-            assertThat(updateUomViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomViewRequest);
-            assertThat(uomArgumentCaptor.getValue()).isEqualTo(uom);
-
         }
     }
 

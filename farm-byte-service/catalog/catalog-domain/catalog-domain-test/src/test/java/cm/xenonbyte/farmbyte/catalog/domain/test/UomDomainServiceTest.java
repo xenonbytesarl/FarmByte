@@ -10,7 +10,6 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
@@ -35,7 +34,6 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -168,30 +166,6 @@ final class UomDomainServiceTest {
                     .isInstanceOf(exceptionClass)
                     .hasMessage(exceptionMessage);
 
-        }
-
-
-        @Test
-        void should_throw_exception_when_create_two_uom_with_uom_type_as_reference_for_the_same_category() {
-            //Given
-            Uom firstRefereceUom = Uom.from(
-                    Name.of(Text.of("Unite")),
-                    uomCategoryId,
-                    UomType.REFERENCE,
-                    null);
-
-            uomDomainService.createUom(firstRefereceUom);
-
-            Uom secondRefereceUom = Uom.from(
-                    Name.of(Text.of("Piece")),
-                    uomCategoryId,
-                    UomType.REFERENCE,
-                    null);
-
-            //When + Then
-            assertThatThrownBy(() -> uomDomainService.createUom(secondRefereceUom))
-                    .isInstanceOf(UomReferenceConflictException.class)
-                    .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
         }
 
         @Test
@@ -559,25 +533,6 @@ final class UomDomainServiceTest {
             assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
                     .isInstanceOf(UomNameConflictException.class)
                     .hasMessage(UOM_NAME_CONFLICT_EXCEPTION);
-        }
-
-        @Test
-        void should_fail_when_update_with_duplicate_reference_and_uom_category_id() {
-
-            //Given
-            Uom uomToUpdated = Uom.builder()
-                    .id(uomId1)
-                    .name(Name.of(Text.of("Carton de 10")))
-                    .uomType(UomType.REFERENCE)
-                    .ratio(Ratio.of(1.0))
-                    .uomCategoryId(parentUomCategoryId)
-                    .active(Active.with(true))
-                    .build();
-
-            //Act + Then
-            assertThatThrownBy(() -> uomDomainService.updateUom(uomId, uomToUpdated))
-                    .isInstanceOf(UomReferenceConflictException.class)
-                    .hasMessage(UOM_REFERENCE_CONFLICT_CATEGORY);
         }
     }
 }

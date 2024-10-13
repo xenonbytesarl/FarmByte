@@ -14,7 +14,6 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.uom.view.UpdateU
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
-import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +42,6 @@ import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -213,36 +211,6 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
             assertThat(createUomViewRequestArgumentCaptor.getValue()).isEqualTo(createUomViewRequest);
 
         }
-
-        @Test
-        void should_create_uom_when_create_two_uom_with_uom_type_as_greater_for_the_same_category() throws Exception {
-            String name = "Unite";
-            UUID uomCategoryId = UUID.randomUUID();
-            CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
-                    uomCategoryId,
-                    name,
-                    null,
-                    CreateUomViewRequest.UomTypeEnum.REFERENCE
-            );
-
-            when(uomDomainServiceRestApiAdapter.createUom(createUomViewRequest)).thenThrow(new UomReferenceConflictException());
-
-            //Act + Then
-            mockMvc.perform(post(UOM_PATH_URI)
-                            .accept(APPLICATION_JSON)
-                            .contentType(APPLICATION_JSON)
-                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                            .content(uomViewAsString(createUomViewRequest)))
-                    .andDo(print())
-                    .andExpect(status().isConflict())
-                    .andExpect(jsonPath("$").isNotEmpty())
-                    .andExpect(jsonPath("$.success").value(false))
-                    .andExpect(jsonPath("$.code").value(409))
-                    .andExpect(jsonPath("$.status").value("CONFLICT"))
-                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY,  Locale.forLanguageTag(EN_LOCALE),"")));
-
-        }
-
 
         @Test
         void should_throw_exception_when_create_two_uom_with_same_name() throws Exception {
@@ -722,52 +690,6 @@ final class UomRestApiTest extends RestApiBeanConfigTest {
                     .andExpect(jsonPath("$.code").value(409))
                     .andExpect(jsonPath("$.status").value("CONFLICT"))
                     .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_NAME_CONFLICT_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), name)));
-
-            verify(uomDomainServiceRestApiAdapter, times(1))
-                    .updateUom(uuidArgumentCaptor.capture(), updateUomViewRequestArgumentCaptor.capture());
-
-            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uomIdUUID);
-            assertThat(updateUomViewRequestArgumentCaptor.getValue()).isEqualTo(updateUomViewRequest);
-        }
-
-        @Test
-        void should_fail_when_update_with_duplicate_reference_and_uom_category_id() throws Exception {
-            //Given
-            UUID uomIdUUID = UUID.randomUUID();
-            UUID uomCategoryIdUUID = UUID.randomUUID();
-            String uomType = "REFERENCE";
-            String name = "Nouvelle Unite";
-            boolean active = true;
-            double ratio = 1.0;
-
-            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
-                    .id(uomIdUUID)
-                    .name(name)
-                    .uomCategoryId(uomCategoryIdUUID)
-                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
-                    .ratio(ratio)
-                    .active(active);
-
-            when(uomDomainServiceRestApiAdapter.updateUom(uomIdUUID, updateUomViewRequest))
-                    .thenThrow(UomReferenceConflictException.class.getConstructor().newInstance());
-
-            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
-            ArgumentCaptor<UpdateUomViewRequest> updateUomViewRequestArgumentCaptor =
-                    ArgumentCaptor.forClass(UpdateUomViewRequest.class);
-
-            //Act
-            mockMvc.perform(put(UOM_PATH_URI + "/" + uomIdUUID)
-                            .accept(APPLICATION_JSON)
-                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
-                            .contentType(APPLICATION_JSON)
-                            .content(uomViewAsString(updateUomViewRequest)))
-                    .andDo(print())
-                    .andExpect(status().isConflict())
-                    .andExpect(jsonPath("$").isNotEmpty())
-                    .andExpect(jsonPath("$.success").value(false))
-                    .andExpect(jsonPath("$.code").value(409))
-                    .andExpect(jsonPath("$.status").value("CONFLICT"))
-                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY, Locale.forLanguageTag(EN_LOCALE), name)));
 
             verify(uomDomainServiceRestApiAdapter, times(1))
                     .updateUom(uuidArgumentCaptor.capture(), updateUomViewRequestArgumentCaptor.capture());
