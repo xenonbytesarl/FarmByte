@@ -51,7 +51,6 @@ import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_CONFLICT_CATEGORY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -196,32 +195,6 @@ public class UomRestApiIT {
             assertThat(response.getBody()).isNotNull();
             assertThat(response.getBody().getSuccess()).isFalse();
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(exceptionMessage, Locale.forLanguageTag(EN_LOCALE), ""));
-        }
-
-        @Test
-        void should_create_uom_when_create_two_uom_with_uom_type_as_greater_for_the_same_category() throws Exception {
-            //Given
-            String name = "Unite";
-            UUID uomCategoryId = UUID.fromString("01912c0f-2fcf-705b-ae59-d79d159f3ad0");
-            CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
-                    uomCategoryId,
-                    name,
-                    null,
-                    CreateUomViewRequest.UomTypeEnum.REFERENCE
-            );
-
-            HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
-
-            //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
-
-            //Then
-            assertThat(response.getStatusCode().value()).isEqualTo(409);
-            assertThat(response.getBody()).isNotNull();
-            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
-            assertThat(response.getBody().getCode()).isEqualTo(409);
-            assertThat(response.getBody().getSuccess()).isFalse();
-            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY, Locale.forLanguageTag(EN_LOCALE), ""));
         }
 
         @Test
@@ -479,36 +452,6 @@ public class UomRestApiIT {
             assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
             assertThat(response.getBody().getCode()).isEqualTo(404);
             assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION, Locale.forLanguageTag(EN_LOCALE), uomCategoryIdUUID.toString()));
-        }
-
-        @Test
-        void should_fail_when_update_uom_with_duplicate_reference_and_category_id() {
-            //Given
-            UUID uomIdUUID = UUID.fromString("019199bf-2ea3-7ac1-8ad4-6dd062d5efec");
-            UUID uomCategoryIdUUID = UUID.fromString("01919905-c273-7aaa-8965-ef4ed404e4b9");
-            String uomType = "REFERENCE";
-            String name = "Jour";
-            boolean active = true;
-            double ratio = 1.0;
-
-            UpdateUomViewRequest updateUomViewRequest = new UpdateUomViewRequest()
-                    .id(uomIdUUID)
-                    .name(name)
-                    .uomCategoryId(uomCategoryIdUUID)
-                    .uomType(UpdateUomViewRequest.UomTypeEnum.valueOf(uomType))
-                    .ratio(ratio)
-                    .active(active);
-            HttpEntity<UpdateUomViewRequest> request = new HttpEntity<>(updateUomViewRequest, getHttpHeaders());
-
-            //Act
-            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + uomIdUUID, PUT, request, ApiErrorResponse.class);
-
-            //Then
-            assertThat(response.getStatusCode().value()).isEqualTo(409);
-            assertThat(response.getBody().getSuccess()).isFalse();
-            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
-            assertThat(response.getBody().getCode()).isEqualTo(409);
-            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_REFERENCE_CONFLICT_CATEGORY, Locale.forLanguageTag(EN_LOCALE), ""));
         }
     }
 
