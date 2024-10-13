@@ -102,6 +102,11 @@
         <artifactId>inventory-adapter-data-access-inmemory</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>inventory-adapter-data-access-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

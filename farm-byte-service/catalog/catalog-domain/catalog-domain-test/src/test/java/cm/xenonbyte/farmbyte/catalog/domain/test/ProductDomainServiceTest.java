@@ -25,6 +25,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomCategoryId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomRepository;
+import cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
@@ -45,10 +46,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_CONFLICT_EXCEPTION;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
@@ -56,8 +55,8 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_AND_PURCHASE_UOM_BAD_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_UOM_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException.NOT_NULL_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -192,8 +191,8 @@ public final class ProductDomainServiceTest {
                             null,
                             null,
                             null,
-                            IllegalArgumentException.class,
-                            PRODUCT_NAME_IS_REQUIRED
+                            InvalidFieldBadException.class,
+                            NOT_NULL_VALUE
                     ),
                     Arguments.of(
                             Name.of(Text.of("Chair")),
@@ -203,8 +202,8 @@ public final class ProductDomainServiceTest {
                             null,
                             null,
                             null,
-                            IllegalArgumentException.class,
-                            PRODUCT_CATEGORY_IS_REQUIRED
+                            InvalidFieldBadException.class,
+                            NOT_NULL_VALUE
                     ),
                     Arguments.of(
                             Name.of(Text.of("Chair")),
@@ -214,8 +213,8 @@ public final class ProductDomainServiceTest {
                             null,
                             null,
                             null,
-                            IllegalArgumentException.class,
-                            PRODUCT_TYPE_IS_REQUIRED
+                            InvalidFieldBadException.class,
+                            NOT_NULL_VALUE
                     ),
                     Arguments.of(
                             Name.of(Text.of("Chair")),
@@ -779,8 +778,8 @@ public final class ProductDomainServiceTest {
                 .type(ProductType.CONSUMABLE)
                 .categoryId(new ProductCategoryId(UUID.randomUUID()))
                 .build();
-        product.validate();
-        product.initiate();
+        product.validateMandatoryFields();
+        product.initializeWithDefaults();
         productRepository.save(product);
     }
 }

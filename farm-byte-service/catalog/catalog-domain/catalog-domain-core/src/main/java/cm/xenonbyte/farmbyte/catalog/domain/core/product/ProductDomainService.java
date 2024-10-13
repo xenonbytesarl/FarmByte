@@ -38,9 +38,9 @@ public final class ProductDomainService implements ProductService {
     @Nonnull
     @Override
     public Product createProduct(@Nonnull Product product) {
+        product.validateMandatoryFields();
         verify(product);
-        product.validate();
-        product.initiate();
+        product.initializeWithDefaults();
         return productRepository.save(product);
     }
 
@@ -66,6 +66,7 @@ public final class ProductDomainService implements ProductService {
     @Nonnull
     @Override
     public Product updateProduct(@Nonnull ProductId productId, @Nonnull Product productToUpdate) {
+        productToUpdate.validateMandatoryFields();
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if(optionalProduct.isPresent()) {
             Product oldProduct = optionalProduct.get();

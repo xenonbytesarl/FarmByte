@@ -47,5 +47,12 @@ public final class Assert {
             }
             return null;
         }
+
+        public ObjectAssert notEmpty() {
+            if(((String) target).isEmpty()) {
+                throw InvalidFieldBadException.forEmptyValue(field);
+            }
+            return null;
+        }
     }
 }

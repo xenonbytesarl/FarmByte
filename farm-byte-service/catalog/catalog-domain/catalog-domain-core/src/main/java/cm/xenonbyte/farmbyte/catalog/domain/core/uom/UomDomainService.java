@@ -31,11 +31,11 @@ public final class UomDomainService implements UomService {
 
     @Override
     public @Nonnull Uom createUom(@Nonnull Uom uom) {
+        uom.validateMandatoryFields();
         verifyUomCategory(uom);
         verifyReferenceUom(uom);
         validateUom(uom);
-        uom.initiate();
-        uom.validate();
+        uom.initializeWithDefaults();
         return uomRepository.save(uom);
     }
 
@@ -61,9 +61,9 @@ public final class UomDomainService implements UomService {
     @Nonnull
     @Override
     public Uom updateUom(@Nonnull UomId uomId, @Nonnull Uom uomToUpdated) {
+        uomToUpdated.validateMandatoryFields();
         Optional<Uom> oldUom = uomRepository.findById(uomId);
         if(oldUom.isPresent()) {
-            uomToUpdated.validate();
             verifyUomCategory(uomToUpdated);
             validateUom(uomToUpdated);
             return uomRepository.update(oldUom.get(), uomToUpdated);

@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.Ratio;
@@ -10,7 +11,6 @@ import jakarta.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_RATIO_MUST_BE_LOWER_THANT_ONE_WHEN_UOM_TYPE_IS_LOWER;
 
@@ -67,7 +67,7 @@ public final class Uom extends BaseEntity<UomId> {
         return new Builder();
     }
 
-    public void initiate() {
+    public void initializeWithDefaults() {
         if(uomType.equals(UomType.REFERENCE)) {
             ratio = Ratio.of(Ratio.REFERENCE);
         }
@@ -75,10 +75,21 @@ public final class Uom extends BaseEntity<UomId> {
         active = Active.with(true);
     }
 
-    public void validate() {
-        if(ratio == null) {
-            throw new IllegalArgumentException(UOM_RATIO_IS_REQUIRED_WHEN_TYPE_IS_REFERENCE);
+    public void validateMandatoryFields() {
+        Assert.field("Name", name)
+                .notNull();
+
+        Assert.field("UomCategoryId", uomCategoryId)
+                .notNull();
+
+        Assert.field("UomType", uomType)
+                .notNull();
+
+        if(!uomType.equals(UomType.REFERENCE)) {
+            Assert.field("Ratio", ratio)
+                    .notNull();
         }
+
         if(uomType.equals(UomType.GREATER) && ratio.isEqualOrLowerThanReference()) {
             throw new IllegalArgumentException(UOM_RATIO_MUST_BE_GREATER_THANT_ONE_WHEN_UOM_TYPE_IS_GREATER);
         }

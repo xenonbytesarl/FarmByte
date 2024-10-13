@@ -76,7 +76,7 @@ public abstract class ProductCategoryRepositoryTest {
             //Given
             Name volumeCategory = Name.of(Text.of("Raw Material"));
             ProductCategory productCategory = ProductCategory.of(volumeCategory);
-            productCategory.initiate();
+            productCategory.initializeWithDefaults();
 
             //Act
             ProductCategory createdProductCategory = productCategoryRepository.save(productCategory);

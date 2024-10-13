@@ -1,15 +1,13 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 import java.util.UUID;
-
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_NAME_IS_REQUIRED;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -39,19 +37,16 @@ public final class ProductCategory extends BaseEntity<ProductCategoryId> {
     }
 
     public static ProductCategory of(Name name) {
-        if (name == null) {
-            throw new IllegalArgumentException(PRODUCT_CATEGORY_NAME_IS_REQUIRED);
-        }
+        Assert.field("Name", name)
+                .notNull();
         return new ProductCategory(name);
     }
 
     public static ProductCategory of(Name name, ProductCategoryId parentProductCategoryId) {
-        if (name == null) {
-            throw new IllegalArgumentException(PRODUCT_CATEGORY_NAME_IS_REQUIRED);
-        }
-        if (parentProductCategoryId == null) {
-            throw new IllegalArgumentException(PRODUCT_CATEGORY_PARENT_ID_IS_REQUIRED);
-        }
+        Assert.field("Name", name)
+                .notNull();
+        Assert.field("Parent category", parentProductCategoryId)
+                .notNull();
         return new ProductCategory(name, parentProductCategoryId);
     }
 
@@ -67,13 +62,18 @@ public final class ProductCategory extends BaseEntity<ProductCategoryId> {
         return name;
     }
 
-    public void initiate() {
+    public void initializeWithDefaults() {
         setId(new ProductCategoryId(UUID.randomUUID()));
         this.active = Active.with(true);
     }
 
     public ProductCategoryId getParentProductCategoryId() {
         return parentProductCategoryId;
+    }
+
+    public void validateMandatoryFields() {
+        Assert.field("Name", name)
+                .notNull();
     }
 
 

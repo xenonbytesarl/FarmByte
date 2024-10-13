@@ -23,7 +23,7 @@ public final class ProductCategoryInMemoryRepositoryAdapterTest extends ProductC
 
         name = Name.of(Text.of("Raw Material"));
         ProductCategory productCategory = ProductCategory.of(name);
-        productCategory.initiate();
+        productCategory.initializeWithDefaults();
         productCategoryRepository.save(productCategory);
 
         parentProductCategoryId = productCategory.getId();

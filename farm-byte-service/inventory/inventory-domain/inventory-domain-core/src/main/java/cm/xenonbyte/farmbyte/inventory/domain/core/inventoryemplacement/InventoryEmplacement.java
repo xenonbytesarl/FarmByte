@@ -36,7 +36,7 @@ public final class InventoryEmplacement extends BaseEntity<InventoryEmplacementI
         return new Builder();
     }
 
-    public void initializeWithDefaultValue() {
+    public void initializeWithDefaults() {
         setId(new InventoryEmplacementId(UUID.randomUUID()));
         this.active = Active.with(true);
     }
@@ -57,7 +57,7 @@ public final class InventoryEmplacement extends BaseEntity<InventoryEmplacementI
         return parentId;
     }
 
-    public void validate() {
+    public void validateMandatoryFields() {
 
         Assert.field("name", name)
                 .notNull()

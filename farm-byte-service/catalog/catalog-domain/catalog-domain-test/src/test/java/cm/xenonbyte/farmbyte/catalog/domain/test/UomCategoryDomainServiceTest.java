@@ -54,7 +54,7 @@ final class UomCategoryDomainServiceTest {
         @BeforeEach
         void setUp() {
             parentUomCategory = UomCategory.of(new Name(Text.of("Temps")));
-            parentUomCategory.initiate();
+            parentUomCategory.initializeWithDefaults();
             uomCategoryRepository.save(parentUomCategory);
         }
 

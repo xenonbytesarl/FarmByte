@@ -782,7 +782,7 @@ final class UomDomainServiceRestApiAdapterTest {
                 UomType.valueOf(uomType.name()),
                 Ratio.of(ratioResponse)
         );
-        uom.initiate();
+        uom.initializeWithDefaults();
         return uom;
     }
 }

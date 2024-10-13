@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.REFERENCE_VALUE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -21,9 +20,10 @@ public final class Reference {
     }
     
     public static Reference of(@Nonnull Text value) {
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException(REFERENCE_VALUE_IS_REQUIRED);
-        }
+        Assert.field("Reference", value)
+                .notNull()
+                .notNull(value.getValue())
+                .notEmpty();
         return new Reference(value);
     }
 

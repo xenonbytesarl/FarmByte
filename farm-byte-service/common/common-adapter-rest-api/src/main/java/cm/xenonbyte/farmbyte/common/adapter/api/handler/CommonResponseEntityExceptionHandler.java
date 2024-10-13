@@ -4,6 +4,7 @@ import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainBadException;
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainConflictException;
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainNotFoundException;
+import cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -71,7 +72,7 @@ public abstract class CommonResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MissingRequestHeaderException.class})
+    @ExceptionHandler({IllegalArgumentException.class, InvalidFieldBadException.class, MissingRequestHeaderException.class})
     protected ResponseEntity<ApiErrorResponse> handleIllegalArgumentException
             (RuntimeException exception, WebRequest request, Locale locale) {
         log.error("", exception);

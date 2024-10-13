@@ -48,7 +48,7 @@ public final class ProductCategoryDomainServiceTest {
         productCategoryService = new ProductCategoryDomainService(productCategoryRepository);
 
         parentProductCategory = ProductCategory.of(new Name(Text.of("Raw Material")));
-        parentProductCategory.initiate();
+        parentProductCategory.initializeWithDefaults();
         productCategoryRepository.save(parentProductCategory);
     }
 

@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.io.InputStream;
@@ -8,8 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.EMPTY;
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.IMAGE_CONTENT_IS_REQUIRED;
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.IMAGE_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.PLUS;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.POINT;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.SLASH;
@@ -33,13 +32,13 @@ public final class Image {
     }
 
     public static Image with(@Nonnull Text name, InputStream content) {
-        if(name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(IMAGE_NAME_IS_REQUIRED);
-        }
+        Assert.field("Image filename", name)
+                .notNull()
+                .notNull(name.getValue())
+                .notEmpty();
 
-        if (content == null) {
-            throw new IllegalArgumentException(IMAGE_CONTENT_IS_REQUIRED);
-        }
+        Assert.field("Image content", content)
+                .notNull();
         return new Image(name, content);
     }
 

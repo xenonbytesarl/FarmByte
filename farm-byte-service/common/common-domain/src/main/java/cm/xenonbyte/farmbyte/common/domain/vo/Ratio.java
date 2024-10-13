@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.RATION_CAN_NOT_BE_NULL;
 
 /**
  * @author bamk
@@ -23,9 +22,8 @@ public class Ratio {
 
     @Nonnull
     public static Ratio of(Double value) {
-        if (value == null) {
-            throw new IllegalArgumentException(RATION_CAN_NOT_BE_NULL);
-        }
+        Assert.field("ratio", value)
+            .notNull();
         return new Ratio(value);
     }
 

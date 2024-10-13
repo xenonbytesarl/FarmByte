@@ -27,8 +27,9 @@ public final class ProductCategoryDomainService implements ProductCategoryServic
     @Nonnull
     @Override
     public ProductCategory createProductCategory(@Nonnull ProductCategory productCategory) {
+        productCategory.validateMandatoryFields();
         validateUomCategory(productCategory);
-        productCategory.initiate();
+        productCategory.initializeWithDefaults();
         return productCategoryRepository.save(productCategory);
     }
 
@@ -54,6 +55,7 @@ public final class ProductCategoryDomainService implements ProductCategoryServic
     @Nonnull
     @Override
     public ProductCategory updateProductCategory(@Nonnull ProductCategoryId productCategoryId, @Nonnull ProductCategory productCategoryToUpdate) {
+        productCategoryToUpdate.validateMandatoryFields();
         Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(productCategoryId);
         if (optionalProductCategory.isPresent()) {
             validateUomCategory(productCategoryToUpdate);

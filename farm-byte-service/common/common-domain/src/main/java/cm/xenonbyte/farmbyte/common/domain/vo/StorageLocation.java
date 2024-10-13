@@ -1,10 +1,10 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
 
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.FILE_UPLOAD_DIRECTORY_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.ROOT_STORAGE_PATH;
 import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.SLASH;
 
@@ -22,9 +22,10 @@ public final class StorageLocation {
     }
 
     public static StorageLocation of(@Nonnull Text location) {
-        if(location == null || location.isEmpty()) {
-            throw new IllegalArgumentException(FILE_UPLOAD_DIRECTORY_IS_REQUIRED);
-        }
+        Assert.field("Storage location", location)
+                .notNull()
+                .notNull(location.getValue())
+                .notEmpty();
         return new StorageLocation(location);
     }
 

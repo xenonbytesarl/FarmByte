@@ -1,38 +1,33 @@
-package cm.xenonbyte.farmbyte.inventory.adapter.data.access;
+package cm.xenonbyte.farmbyte.inventory.adapter.data.access.jpa;
 
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementRepository;
 import jakarta.annotation.Nonnull;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * @author bamk
  * @version 1.0
  * @since 13/10/2024
  */
-public final class InMemoryInventoryEmplacementRepository implements InventoryEmplacementRepository {
-
-    private final Map<InventoryEmplacementId, InventoryEmplacement> inventoryEmplacements = new LinkedHashMap<>();
-
-
+@Slf4j
+@Service
+public final class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplacementRepository {
     @Override
     public boolean existsByParentId(@Nonnull InventoryEmplacementId parentId) {
-        return inventoryEmplacements.containsKey(parentId);
+        return false;
     }
 
     @Override
     public InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement) {
-        inventoryEmplacements.put(inventoryEmplacement.getId(), inventoryEmplacement);
-        return inventoryEmplacement;
+        return null;
     }
 
     @Override
     public boolean existsByName(@Nonnull Name name) {
-        return inventoryEmplacements.values().stream()
-                .anyMatch(emplacement -> emplacement.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()));
+        return false;
     }
 }
