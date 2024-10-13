@@ -80,7 +80,7 @@ const UomForm = () => {
     const form = useForm<Zod.infer<typeof UomSchema>>({
         defaultValues: defaultValuesUom,
         resolver: zodResolver(UomSchema),
-        mode: "onBlur"
+        mode: "onChange"
     });
 
     useEffect(() => {
@@ -118,7 +118,6 @@ const UomForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("info", response.message);
                 })
                 .catch((error) => {
@@ -131,10 +130,8 @@ const UomForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("success", response.message);
-                    // @ts-expect-error
-                    navigate(`/inventory/uoms/details/${response.data.content.id}`);
+                    navigate(`/inventory/uoms/details/${response.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);

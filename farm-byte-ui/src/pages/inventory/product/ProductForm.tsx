@@ -138,7 +138,7 @@ const ProductForm = () => {
     const form = useForm<Zod.infer<typeof ProductSchema>>({
         defaultValues: defaultValuesProduct,
         resolver: zodResolver(ProductSchema),
-        mode: "onBlur",
+        mode: "onChange",
     });
 
     useEffect(() => {
@@ -182,7 +182,6 @@ const ProductForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-ignore
                     showToast("info", response.message);
                 })
                 .catch((error) => {
@@ -197,10 +196,8 @@ const ProductForm = () => {
                         .then(unwrapResult)
                         .then((response) => {
                             setMode(FormModeType.READ);
-                            //@ts-ignore
                             showToast("success", response.message);
-                            //@ts-ignore
-                            navigate(`/inventory/products/details/${response.data.content.id}`);
+                            navigate(`/inventory/products/details/${response.content.id}`);
                         })
                         .catch((error) => {
                             setMode(FormModeType.CREATE);

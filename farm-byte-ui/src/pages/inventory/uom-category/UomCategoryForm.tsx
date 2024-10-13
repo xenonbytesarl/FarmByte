@@ -66,7 +66,7 @@ const UomCategoryForm = () => {
     const form = useForm<Zod.infer<typeof UomCategorySchema>>({
         defaultValues: defaultValuesUomCategory,
         resolver: zodResolver(UomCategorySchema),
-        mode: "onBlur"
+        mode: "onChange"
     });
 
     useEffect(() => {
@@ -100,7 +100,6 @@ const UomCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("info", response.message);
                 })
                 .catch((error) => {
@@ -112,10 +111,8 @@ const UomCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("success", response.message);
-                    // @ts-expect-error
-                    navigate(`/inventory/uom-categories/details/${response.data.content.id}`);
+                    navigate(`/inventory/uom-categories/details/${response.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);

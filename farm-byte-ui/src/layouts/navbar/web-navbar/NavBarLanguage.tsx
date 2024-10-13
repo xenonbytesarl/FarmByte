@@ -17,7 +17,6 @@ const NavBarLanguage = () => {
     const [isOpenLanguageMenu, setIsOpenLanguageMenu] = useState(false);
 
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         const closeDropDown = (event) => {
             if(dropdownRef.current && !dropdownRef.current.contains(event.target)) {

@@ -56,7 +56,7 @@ const ProductCategoryForm = () => {
     const form = useForm<Zod.infer<typeof ProductCategorySchema>>({
         defaultValues: defaultValuesProductCategory,
         resolver: zodResolver(ProductCategorySchema),
-        mode: "onBlur",
+        mode: "onChange",
     });
 
     useEffect(() => {
@@ -89,7 +89,6 @@ const ProductCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("info", response.message);
                 })
                 .catch((error) => {
@@ -101,10 +100,8 @@ const ProductCategoryForm = () => {
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
-                    // @ts-expect-error
                     showToast("success", response.message);
-                    // @ts-expect-error
-                    navigate(`/inventory/product-categories/details/${response.data.content.id}`);
+                    navigate(`/inventory/product-categories/details/${response.content.id}`);
                 })
                 .catch((error) => {
                     setMode(FormModeType.CREATE);
