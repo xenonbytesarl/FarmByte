@@ -14,6 +14,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-resource</artifactId>
@@ -26,6 +27,7 @@
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>common-adapter-file-storage</artifactId>
         </dependency>
+
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-domain-core</artifactId>
@@ -38,6 +40,12 @@
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>catalog-adapter-rest-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>inventory-domain-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -48,6 +56,7 @@
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
             <version>${springdoc-openapi-starter-webmvc-api.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>

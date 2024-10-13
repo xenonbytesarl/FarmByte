@@ -3,12 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>catalog-domain</artifactId>
+        <artifactId>inventory-domain</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>catalog-domain-core</artifactId>
+    <artifactId>inventory-domain-core</artifactId>
     <packaging>jar</packaging>
+
 
     <dependencies>
         <dependency>
@@ -21,8 +22,4 @@
             <version>${jakarta.annotation-api.version}</version>
         </dependency>
     </dependencies>
-
-
-
-
 </project>
