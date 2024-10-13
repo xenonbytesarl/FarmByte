@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>inventory-adapter-data-access-inmemory</module>
+        <module>inventory-adapter-data-access-jpa</module>
     </modules>
 
 </project>

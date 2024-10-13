@@ -27,8 +27,9 @@ public final class UomCategoryDomainService implements UomCategoryService {
     @Nonnull
     @Override
     public UomCategory createUomCategory(@Nonnull UomCategory uomCategory) {
+        uomCategory.validateMandatoryField();
         validateUomCategory(uomCategory);
-        uomCategory.initiate();
+        uomCategory.initializeWithDefaults();
         return uomCategoryRepository.save(uomCategory);
     }
 
@@ -51,6 +52,7 @@ public final class UomCategoryDomainService implements UomCategoryService {
     @Nonnull
     @Override
     public UomCategory updateUomCategory(@Nonnull UomCategoryId uomCategoryId, @Nonnull UomCategory uomCategoryToUpdate) {
+        uomCategoryToUpdate.validateMandatoryField();
         Optional<UomCategory> optionalUomCategory = uomCategoryRepository.findById(uomCategoryId);
         if (optionalUomCategory.isPresent()) {
             validateUomCategory(uomCategoryToUpdate);

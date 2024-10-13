@@ -71,8 +71,8 @@ public abstract class ProductRepositoryTest {
                     .type(ProductType.SERVICE)
                     .imageName(imageName)
                     .build();
-            product.validate();
-            product.initiate();
+            product.validateMandatoryFields();
+            product.initializeWithDefaults();
 
             //Act
             Product result = productRepository.save(product);

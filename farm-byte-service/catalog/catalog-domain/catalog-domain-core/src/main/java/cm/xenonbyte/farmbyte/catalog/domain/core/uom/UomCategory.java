@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.catalog.domain.core.uom;
 
 import cm.xenonbyte.farmbyte.common.domain.entity.BaseEntity;
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
@@ -9,7 +10,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_ID_IS_REQUIRED;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NAME_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -39,19 +39,16 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
     }
 
     public static UomCategory of(@Nonnull Name name) {
-        if (name == null) {
-            throw new IllegalArgumentException(UOM_CATEGORY_NAME_IS_REQUIRED);
-        }
+        Assert.field("Name", name)
+                .notNull();
         return new UomCategory(name);
     }
 
     public static UomCategory of(@Nonnull Name name, @Nonnull UomCategoryId parentUomCategoryId) {
-        if (name == null) {
-            throw new IllegalArgumentException(UOM_CATEGORY_NAME_IS_REQUIRED);
-        }
-        if (parentUomCategoryId == null) {
-            throw new IllegalArgumentException(UOM_CATEGORY_ID_IS_REQUIRED);
-        }
+        Assert.field("Name", name)
+                .notNull();
+        Assert.field("Parent category", parentUomCategoryId)
+                .notNull();
         return new UomCategory(name, parentUomCategoryId);
     }
 
@@ -64,7 +61,7 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
         return name;
     }
 
-    public void initiate() {
+    public void initializeWithDefaults() {
         setId(new UomCategoryId(UUID.randomUUID()));
         this.active = Active.with(true);
     }
@@ -75,6 +72,11 @@ public final class UomCategory  extends BaseEntity<UomCategoryId> {
 
     public UomCategoryId getParentUomCategoryId() {
         return parentUomCategoryId;
+    }
+
+    public void validateMandatoryField() {
+        Assert.field("Name", name)
+                .notNull();
     }
 
 

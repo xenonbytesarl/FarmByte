@@ -22,7 +22,7 @@ public final class UomCategoryInMemoryRepositoryAdapterTest extends UomCategoryR
 
        name = Name.of(Text.of("Unite"));
        UomCategory uomCategory = UomCategory.of(name);
-       uomCategory.initiate();
+       uomCategory.initializeWithDefaults();
        uomCategoryRepository.save(uomCategory);
        parentUomCategoryId = uomCategory.getId();
 

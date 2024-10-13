@@ -55,6 +55,7 @@ import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCo
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
+import static cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException.NOT_NULL_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -151,7 +152,7 @@ public class UomRestApiIT {
                             "Unite",
                             null,
                             CreateUomViewRequest.UomTypeEnum.GREATER,
-                            "Uom.1",
+                            NOT_NULL_VALUE,
                             400
                     ),
                     Arguments.of(
@@ -182,7 +183,7 @@ public class UomRestApiIT {
                 CreateUomViewRequest.UomTypeEnum uomTypeEnumRequest,
                 String exceptionMessage,
                 int code
-        ) throws Exception {
+        ) {
 
             //Given
             CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(uomCategoryId, name, ratioRequest, uomTypeEnumRequest);

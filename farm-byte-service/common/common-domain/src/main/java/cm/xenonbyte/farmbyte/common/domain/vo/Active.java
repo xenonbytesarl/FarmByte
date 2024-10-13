@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.ACTIVE_VALUE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -22,9 +21,8 @@ public final class Active {
 
     @Nonnull
     public static Active with(Boolean value) {
-        if(value == null) {
-            throw new IllegalArgumentException(ACTIVE_VALUE_IS_REQUIRED);
-        }
+        Assert.field("Active", value)
+                .notNull();
         return new Active(value);
     }
 

@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.NAME_VALUE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -20,9 +19,8 @@ public final class Keyword {
 
     @Nonnull
     public static Keyword of(Text text) {
-        if (text == null) {
-            throw new IllegalArgumentException(NAME_VALUE_IS_REQUIRED);
-        }
+        Assert.field("Search keyword", text)
+                .notNull();
         return new Keyword(text);
     }
 

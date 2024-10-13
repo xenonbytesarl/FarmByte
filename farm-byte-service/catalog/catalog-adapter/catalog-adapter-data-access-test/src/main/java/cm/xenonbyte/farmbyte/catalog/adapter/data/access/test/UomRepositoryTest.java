@@ -256,7 +256,7 @@ public abstract class UomRepositoryTest {
                 uomType,
                 ratio
         );
-        uom.initiate();
+        uom.initializeWithDefaults();
         return uom;
     }
 }

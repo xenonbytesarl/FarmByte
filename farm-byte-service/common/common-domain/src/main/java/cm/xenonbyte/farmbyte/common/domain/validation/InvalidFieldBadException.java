@@ -13,6 +13,7 @@ public final class InvalidFieldBadException extends BaseDomainBadException {
 
     public static final String NOT_NULL_VALUE = "InvalidFieldBadException.1";
     public static final String IS_ONE_OF_VALUE = "InvalidFieldBadException.2";
+    public static final String NOT_EMPTY_VALUE = "InvalidFieldBadException.3";
 
     public InvalidFieldBadException(String message, Serializable... args) {
         super(message, args);
@@ -24,5 +25,9 @@ public final class InvalidFieldBadException extends BaseDomainBadException {
 
     public static InvalidFieldBadException forIsOneOfValue(Serializable... args) {
         return new InvalidFieldBadException(IS_ONE_OF_VALUE, args);
+    }
+
+    public static InvalidFieldBadException forEmptyValue(Serializable... args) {
+        return new InvalidFieldBadException(NOT_EMPTY_VALUE, args);
     }
 }

@@ -22,10 +22,10 @@ public final class InventoryEmplacementDomainService implements InventoryEmplace
     @Nonnull
     @Override
     public InventoryEmplacement createInventoryEmplacement(@Nonnull InventoryEmplacement inventoryEmplacement) {
-        inventoryEmplacement.validate();
+        inventoryEmplacement.validateMandatoryFields();
         verifyParent(inventoryEmplacement.getParentId());
         verifyName(inventoryEmplacement);
-        inventoryEmplacement.initializeWithDefaultValue();
+        inventoryEmplacement.initializeWithDefaults();
         return inventoryEmplacementRepository.save(inventoryEmplacement);
     }
 

@@ -2,6 +2,7 @@ package cm.xenonbyte.farmbyte.catalog.domain.core.product;
 
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.common.domain.entity.AggregateRoot;
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
 import cm.xenonbyte.farmbyte.common.domain.vo.Filename;
 import cm.xenonbyte.farmbyte.common.domain.vo.Money;
@@ -10,13 +11,10 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Reference;
 
 import java.util.UUID;
 
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_CATEGORY_IS_REQUIRED;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_NAME_IS_REQUIRED;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_PURCHASE_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_SALE_PRICE_SHOULD_BE_GREATER_THAN_ZERO;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK;
-import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.PRODUCT_TYPE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -55,18 +53,16 @@ public final class Product extends AggregateRoot<ProductId> {
         purchasable = builder.purchasable;
     }
 
-    public void validate() {
-        if(name == null) {
-            throw new IllegalArgumentException(PRODUCT_NAME_IS_REQUIRED);
-        }
+    public void validateMandatoryFields() {
 
-        if(categoryId == null) {
-            throw new IllegalArgumentException(PRODUCT_CATEGORY_IS_REQUIRED);
-        }
+        Assert.field("Name", name)
+                .notNull();
 
-        if(type == null) {
-            throw new IllegalArgumentException(PRODUCT_TYPE_IS_REQUIRED);
-        }
+        Assert.field("Product Category", categoryId)
+                .notNull();
+
+        Assert.field("Product Type", type)
+                .notNull();
 
         if(type.equals(ProductType.STOCK) && stockUomId == null) {
             throw new IllegalArgumentException(PRODUCT_STOCK_UOM_IS_REQUIRED_WHEN_TYPE_IS_STOCK);
@@ -93,7 +89,7 @@ public final class Product extends AggregateRoot<ProductId> {
         return new Builder();
     }
 
-    public void initiate() {
+    public void initializeWithDefaults() {
         setId(new ProductId(UUID.randomUUID()));
         this.active = Active.with(true);
 

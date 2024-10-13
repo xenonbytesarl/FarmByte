@@ -77,7 +77,7 @@ public abstract class UomCategoryRepositoryTest {
             //Given
             Name volumeCategory = Name.of(Text.of("Volume"));
             UomCategory uomCategory = UomCategory.of(volumeCategory);
-            uomCategory.initiate();
+            uomCategory.initializeWithDefaults();
 
             //Act
             UomCategory createdUomCategory = uomCategoryRepository.save(uomCategory);

@@ -1,11 +1,10 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.MONEY_AMOUNT_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -22,9 +21,8 @@ public final class Money {
     }
 
     public static Money of(@Nonnull BigDecimal amount) {
-        if(amount == null) {
-            throw new IllegalArgumentException(MONEY_AMOUNT_IS_REQUIRED);
-        }
+        Assert.field("Money amount", amount)
+                .notNull();
         return new Money(amount);
     }
 

@@ -1,10 +1,9 @@
 package cm.xenonbyte.farmbyte.common.domain.vo;
 
+import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
-
-import static cm.xenonbyte.farmbyte.common.domain.constant.CommonDomainConstant.NAME_VALUE_IS_REQUIRED;
 
 /**
  * @author bamk
@@ -21,9 +20,10 @@ public final class Name {
 
     @Nonnull
     public static Name of(Text value) {
-        if (value.isEmpty()) {
-            throw new IllegalArgumentException(NAME_VALUE_IS_REQUIRED);
-        }
+        Assert.field("Name", value)
+                .notNull()
+                .notNull(value.getValue())
+                .notEmpty();
         return new Name(value);
     }
 
