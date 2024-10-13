@@ -13,6 +13,5 @@ public final class UomParentCategoryNotFoundException extends BaseDomainNotFound
 
     public UomParentCategoryNotFoundException(Object[] args) {
         super(UOM_PARENT_CATEGORY_NOT_FOUND_EXCEPTION, args);
-
     }
 }

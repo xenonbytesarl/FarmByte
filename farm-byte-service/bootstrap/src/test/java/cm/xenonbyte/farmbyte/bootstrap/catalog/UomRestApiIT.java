@@ -51,6 +51,7 @@ import static cm.xenonbyte.farmbyte.catalog.adapter.rest.api.uom.UomRestApi.UOM_
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_IN_CATEGORY_NOT_FOUND;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.BODY;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.VALIDATION_ERROR_OCCURRED_WHEN_PROCESSING_REQUEST;
@@ -247,6 +248,31 @@ public class UomRestApiIT {
             assertThat(response.getBody().getError()).isNotEmpty();
             assertThat(response.getBody().getError().getFirst().getField()).isNotEmpty();
             assertThat(response.getBody().getError().getFirst().getMessage()).isNotEmpty();
+        }
+
+        @Test
+        void should_throw_exception_when_create_uom_with_non_existing_reference_uom() throws Exception {
+            //Given
+            UUID uomCategoryId = UUID.fromString("019285c7-7c30-7d3b-a0f6-d37f04b48d6a");
+            CreateUomViewRequest createUomViewRequest = generateCreateUomViewRequest(
+                    uomCategoryId,
+                    "Fake Uom",
+                    4.0,
+                    CreateUomViewRequest.UomTypeEnum.GREATER
+            );
+
+            HttpEntity<CreateUomViewRequest> request = new HttpEntity<>(createUomViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL, POST, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody()).isNotNull();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getCode()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(UOM_REFERENCE_IN_CATEGORY_NOT_FOUND, Locale.forLanguageTag(EN_LOCALE), ""));
         }
     }
 

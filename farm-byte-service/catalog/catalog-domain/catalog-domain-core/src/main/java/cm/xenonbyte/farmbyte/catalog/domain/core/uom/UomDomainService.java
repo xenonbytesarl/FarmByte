@@ -32,6 +32,7 @@ public final class UomDomainService implements UomService {
     @Override
     public @Nonnull Uom createUom(@Nonnull Uom uom) {
         verifyUomCategory(uom);
+        verifyReferenceUom(uom);
         validateUom(uom);
         uom.initiate();
         uom.validate();
@@ -76,12 +77,19 @@ public final class UomDomainService implements UomService {
         }
     }
 
+    private void verifyReferenceUom(Uom uom) {
+        if(uom.getUomCategoryId() != null && !uom.getUomType().equals(UomType.REFERENCE) &&
+                !uomRepository.existsByCategoryIdAndUomTypeAndActive(uom.getUomCategoryId(), UomType.REFERENCE)) {
+            throw new UomReferenceInCategoryNotFoundException(new String[]{});
+        }
+    }
+
     private void validateUom(Uom uom) {
-        //Check unique name on create
+        //Check the unique name on create
         if(uom.getId() == null && uomRepository.existsByNameAndCategoryAndActive(uom.getName(), uom.getUomCategoryId())) {
             throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
         }
-        //Check unique name on update
+        //Check the unique name on update
         Optional<Uom> existingUomByName =  uomRepository.findByName(uom.getName());
         if(existingUomByName.isPresent() && uom.getId() != null && !existingUomByName.get().getId().equals(uom.getId())) {
             throw  new UomNameConflictException(new Object[]{uom.getName().getText().getValue()});
