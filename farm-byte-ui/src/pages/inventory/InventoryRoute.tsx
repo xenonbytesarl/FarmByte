@@ -1,4 +1,3 @@
-import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
 import UomCategoryRoute from "@/pages/inventory/uom-category/UomCategoryRoute.tsx";
 import NotFound from "@/pages/not-found/NotFound.tsx";
