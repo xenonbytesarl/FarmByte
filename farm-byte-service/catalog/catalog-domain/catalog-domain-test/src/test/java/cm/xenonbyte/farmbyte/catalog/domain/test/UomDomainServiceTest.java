@@ -10,6 +10,7 @@ import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomDomainService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomId;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNameConflictException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomNotFoundException;
+import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomReferenceInCategoryNotFoundException;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.UomType;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.primary.UomService;
 import cm.xenonbyte.farmbyte.catalog.domain.core.uom.ports.secondary.UomCategoryRepository;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_CATEGORY_NOT_FOUND_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NAME_CONFLICT_EXCEPTION;
 import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_NOT_FOUND_EXCEPTION;
+import static cm.xenonbyte.farmbyte.catalog.domain.core.constant.CatalogDomainCoreConstant.UOM_REFERENCE_IN_CATEGORY_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -66,6 +68,33 @@ final class UomDomainServiceTest {
 
     @Nested
     class CreateUomDomainServiceTest {
+
+        UomCategory uomCategory2;
+        UomCategoryId uomCategoryId2;
+
+        @BeforeEach
+        void setUp() {
+
+            uomCategoryId2 = new UomCategoryId(UUID.randomUUID());
+            uomCategory2 = UomCategory.builder()
+                    .id(uomCategoryId2)
+                    .name(Name.of(Text.of("UomCategory2")))
+                    .build();
+
+            uomCategoryRepository.save(uomCategory2);
+
+            uomRepository.save(
+                Uom.builder()
+                    .id(new UomId(UUID.randomUUID()))
+                    .uomType(UomType.REFERENCE)
+                    .ratio(Ratio.of(1.0))
+                    .uomCategoryId(uomCategoryId)
+                    .name(Name.of(Text.of("Fake uom")))
+                    .active(Active.with(true))
+                    .build()
+            );
+        }
+
         static Stream<Arguments> createUomMethodSourceArgs() {
             return Stream.of(
                     Arguments.of(
@@ -228,6 +257,23 @@ final class UomDomainServiceTest {
             assertThatThrownBy(() -> uomDomainService.createUom(uom))
                     .isInstanceOf(UomCategoryNotFoundException.class)
                     .hasMessage(UOM_CATEGORY_NOT_FOUND_EXCEPTION);
+        }
+
+        @Test
+        void should_fail_when_created_uom_in_category_with_type_greater_or_lower_and_no_reference_type() {
+            //Given
+
+            Uom uom1 = Uom.builder()
+                    .id(new UomId(UUID.randomUUID()))
+                    .uomType(UomType.GREATER)
+                    .ratio(Ratio.of(2.5))
+                    .uomCategoryId(uomCategoryId2)
+                    .name(Name.of(Text.of("Another Fake Uom")))
+                    .build();
+            //Act + Then
+            assertThatThrownBy(() -> uomDomainService.createUom(uom1))
+                    .isInstanceOf(UomReferenceInCategoryNotFoundException.class)
+                    .hasMessage(UOM_REFERENCE_IN_CATEGORY_NOT_FOUND);
         }
     }
 

@@ -18,6 +18,7 @@ public final class CatalogDomainCoreConstant {
     public static final String UOM_CATEGORY_NOT_FOUND_EXCEPTION = "UomCategoryNotFoundException.1";
     public static final String UOM_CATEGORY_NAME_IS_REQUIRED = "UomCategory.1";
     public static final String UOM_CATEGORY_ID_IS_REQUIRED = "UomCategory.2";
+    public static final String UOM_REFERENCE_IN_CATEGORY_NOT_FOUND = "UomReferenceInCategoryNotFoundException.1";
 
     public static final String PRODUCT_CATEGORY_NAME_CONFLICT_EXCEPTION = "ProductCategoryNameConflictException.1";
     public static final String PRODUCT_PARENT_CATEGORY_NOT_FOUND_EXCEPTION = "ProductParentCategoryNotFoundException.1";
