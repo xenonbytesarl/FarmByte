@@ -34,6 +34,8 @@
     <module>common</module>
     <module>catalog</module>
     <module>bootstrap</module>
+    <module>inventory</module>
+    <module>inventory/inventory-adapter</module>
   </modules>
 
   <dependencyManagement>
@@ -87,6 +89,17 @@
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
         <artifactId>catalog-adapter-rest-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>inventory-domain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>inventory-adapter-data-access-inmemory</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

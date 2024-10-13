@@ -3,26 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>catalog-domain</artifactId>
+        <artifactId>inventory-adapter</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>catalog-domain-core</artifactId>
+    <artifactId>inventory-adapter-data-access-inmemory</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>common-domain</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-            <version>${jakarta.annotation-api.version}</version>
+            <artifactId>inventory-domain-core</artifactId>
         </dependency>
     </dependencies>
-
-
-
-
 </project>
