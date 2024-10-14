@@ -13,20 +13,21 @@ const Layout = () => {
         <div className="flex flex-row min-h-screen overflow-x-hidden">
             <div className="hidden md:block">
                 <div className="flex flex-row w-screen">
-                    <Sidebar/>
+                    <div className="hidden md:block">
+                        <Sidebar/>
+                    </div>
                     <div className="flex flex-col w-full">
-                        <WebNavbar/>
+                        <div className="hidden md:block fixed w-full z-10">
+                            <WebNavbar/>
+                        </div>
+                        <div className="md:hidden">
+                            <MobileNavbar/>
+                        </div>
                         <div
-                            className={`min-h-full flex-1 p-10 ${isOpen ? 'ml-72 transition-all ease-linear duration-300' : 'ml-24 transition-all ease-linear duration-300'}`}>
+                            className={`min-h-full flex-1 p-10 mt-32 ${isOpen ? 'ml-72 transition-all ease-linear duration-300' : 'ml-24 transition-all ease-linear duration-300'}`}>
                             <Outlet/>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="md:hidden">
-                <MobileNavbar/>
-                <div className="container mx-auto flex-1 py-10">
-                    <Outlet/>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import {ColumnDef} from "@tanstack/react-table";
 import {UomCategoryModel} from "@/pages/inventory/uom-category/UomCategoryModel.ts";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {
     getLoading,
     getPageSize,
@@ -13,7 +13,7 @@ import {Direction} from "@/constants/directionConstant.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
-import {store} from "@/Store.ts";
+import {RootDispatch} from "@/Store.ts";
 import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
@@ -33,6 +33,7 @@ const UomCategoryTree = () => {
     const [size, setSize] = useState<number>(pageSize);
     const [keyword, setKeyword] = useState<string>('');
     const debounceKeyword = useDebounce(keyword, DEBOUNCE_TIMEOUT );
+    const dispatch = useDispatch<RootDispatch>();
 
     const [, setSearchParam] = useState<SearchParamModel>({
         page: DEFAULT_PAGE_VALUE,
@@ -85,7 +86,7 @@ const UomCategoryTree = () => {
 
 
     useEffect(() => {
-        store.dispatch(searchUomCategories({
+        dispatch(searchUomCategories({
             page: page,
             size: size,
             attribute: "name",
