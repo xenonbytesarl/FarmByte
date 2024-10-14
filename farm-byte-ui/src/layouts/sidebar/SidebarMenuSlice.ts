@@ -3,7 +3,6 @@ import {SidebarMenuModel} from "@/layouts/model/SidebarMenuModel.ts";
 import {sidebarMenus} from "@/layouts/data/sidebarMenuData.ts";
 import {RootState} from "@/Store.ts";
 
-
 interface SidebarState {
     sidebarMenus: SidebarMenuModel[];
     selectedSidebarMenu?: SidebarMenuModel;
@@ -12,7 +11,6 @@ interface SidebarState {
 
 const initialState: SidebarState = {
     sidebarMenus: sidebarMenus,
-    selectedSidebarMenu: sidebarMenus[0],
     isOpenSidebarMenu: true
 };
 
@@ -20,8 +18,8 @@ const sidebarSlice = createSlice({
     name: "sidebarMenu",
     initialState,
     reducers: {
-        selectSidebarMenu: (state, action: PayloadAction<SidebarMenuModel>) => {
-            state.selectedSidebarMenu = action.payload;
+        selectSidebarMenu: (state, action: PayloadAction<string>) => {
+            state.selectedSidebarMenu = sidebarMenus.find(sidebarMenu => sidebarMenu.link === action.payload);
         },
         openSidebarMenu: (state, action: PayloadAction<boolean>) => {
             state.isOpenSidebarMenu = !action.payload;

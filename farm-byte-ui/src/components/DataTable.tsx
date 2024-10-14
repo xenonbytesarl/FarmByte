@@ -89,7 +89,7 @@ const  DataTable = <TData, TValue>({columns, data, totalElements, totalPages, pa
                                 placeholder={t('tree_search_place_holder')}
                                 value={keyword}
                                 onChange={(event) => handleFilterChange(event.target.value)}
-                                className="max-w-sm"
+                                className="max-w-lg rounded-full"
                             />
                             <span onClick={() => handleClear()}
                                   className={`material-symbols-outlined absolute mr-2 cursor-pointer text-2xl}`}>{keyword.length > 0 ? 'close' : 'search'}</span>

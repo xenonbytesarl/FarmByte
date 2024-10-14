@@ -1,15 +1,38 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {useLocation} from "react-router-dom";
 import SidebarMenu from "@/layouts/sidebar/SidebarMenu.tsx";
 import {SidebarMenuModel} from "@/layouts/model/SidebarMenuModel.ts";
 import {RootDispatch} from "@/Store.ts";
-import {openSidebarMenu, selectIsOpenSidebarMenu, selectSidebarMenus} from "@/layouts/sidebar/SidebarMenuSlice.ts";
+import {
+    openSidebarMenu,
+    selectIsOpenSidebarMenu, selectSelectedSidebarMenu,
+    selectSidebarMenu,
+    selectSidebarMenus
+} from "@/layouts/sidebar/SidebarMenuSlice.ts";
+import {updateNavbarMenus} from "@/layouts/navbar/NavbarMenuSlice.ts";
 
 const Sidebar = () => {
 
+    const location = useLocation();
+
     const sidebarMenus: SidebarMenuModel[] = useSelector(selectSidebarMenus);
+    const selectedSidebarMenu: SidebarMenuModel | undefined = useSelector(selectSelectedSidebarMenu);
     const isOpen: boolean = useSelector(selectIsOpenSidebarMenu);
     const dispatch = useDispatch<RootDispatch>();
+
+    useEffect(() => {
+        console.log(location.pathname);
+        dispatch(selectSidebarMenu("/" + location.pathname.split("/")[1]));
+    }, [location])
+
+    useEffect(() => {
+        if(selectedSidebarMenu?.navbarMenu) {
+            dispatch(updateNavbarMenus(selectedSidebarMenu.navbarMenu));
+        } else {
+            dispatch(updateNavbarMenus([]));
+        }
+    }, [selectedSidebarMenu]);
 
 
     const toggleSidebar =  (event: React.MouseEvent<HTMLDivElement>) => {
