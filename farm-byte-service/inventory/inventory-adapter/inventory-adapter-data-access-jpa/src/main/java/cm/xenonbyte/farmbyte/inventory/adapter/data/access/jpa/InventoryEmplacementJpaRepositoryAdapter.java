@@ -8,6 +8,8 @@ import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 /**
  * @author bamk
  * @version 1.0
@@ -15,19 +17,37 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public final class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplacementRepository {
+public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplacementRepository {
+
+
+    private final InventoryEmplacementRepositoryJpa inventoryEmplacementRepositoryJpa;
+    private final InventoryEmplacementJpaMapper inventoryEmplacementJpaMapper;
+
+    public InventoryEmplacementJpaRepositoryAdapter(
+            final @Nonnull InventoryEmplacementRepositoryJpa inventoryEmplacementRepositoryJpa,
+            final @Nonnull InventoryEmplacementJpaMapper inventoryEmplacementJpaMapper) {
+        this.inventoryEmplacementRepositoryJpa = Objects.requireNonNull(inventoryEmplacementRepositoryJpa);
+        this.inventoryEmplacementJpaMapper = Objects.requireNonNull(inventoryEmplacementJpaMapper);
+    }
+
+
     @Override
     public boolean existsByParentId(@Nonnull InventoryEmplacementId parentId) {
-        return false;
+        return inventoryEmplacementRepositoryJpa.existsByParentJpa(
+                InventoryEmplacementJpa.builder().id(parentId.getValue()).build());
     }
 
     @Override
     public InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement) {
-        return null;
+        return inventoryEmplacementJpaMapper.toInventoryEmplacement(
+                inventoryEmplacementRepositoryJpa.save(
+                        inventoryEmplacementJpaMapper.toInventoryEmplacementJpa(inventoryEmplacement)
+                )
+        );
     }
 
     @Override
     public boolean existsByName(@Nonnull Name name) {
-        return false;
+        return inventoryEmplacementRepositoryJpa.existsByName(name.getText().getValue());
     }
 }
