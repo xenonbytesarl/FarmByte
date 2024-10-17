@@ -9,9 +9,9 @@ import jakarta.annotation.Nonnull;
  * @since 13/10/2024
  */
 public interface InventoryEmplacementRepository {
-    boolean existsByParentId(@Nonnull InventoryEmplacementId parentId);
+    boolean existsById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
 
     InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement);
 
-    boolean existsByName(@Nonnull Name name);
+    boolean existsByNameIgnoreCase(@Nonnull Name name);
 }

@@ -30,13 +30,13 @@ public final class InventoryEmplacementDomainService implements InventoryEmplace
     }
 
     private void verifyName(@Nonnull InventoryEmplacement inventoryEmplacement) {
-        if(inventoryEmplacement.getId() == null && inventoryEmplacementRepository.existsByName(inventoryEmplacement.getName())) {
+        if(inventoryEmplacement.getId() == null && inventoryEmplacementRepository.existsByNameIgnoreCase(inventoryEmplacement.getName())) {
             throw new InventoryEmplacementNameConflictException(new String[]{inventoryEmplacement.getName().getText().getValue()});
         }
     }
 
     private void verifyParent(@Nonnull InventoryEmplacementId parentId) {
-        if(parentId != null && !inventoryEmplacementRepository.existsByParentId(parentId)) {
+        if(parentId != null && !inventoryEmplacementRepository.existsById(parentId)) {
             throw new InventoryEmplacementParentIdNotFoundException(new String[] {parentId.getValue().toString()});
         }
     }
