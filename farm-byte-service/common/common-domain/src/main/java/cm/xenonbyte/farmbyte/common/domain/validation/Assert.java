@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.common.domain.validation;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author bamk
@@ -43,7 +44,7 @@ public final class Assert {
 
         public ObjectAssert isOneOf(List<Object> values) {
             if(values.stream().noneMatch(val -> val.equals(target))) {
-                throw InvalidFieldBadException.forIsOneOfValue(field, (String)target);
+                throw InvalidFieldBadException.forIsOneOfValue(field, values.stream().map(String.class::cast).collect(Collectors.joining(",")));
             }
             return null;
         }

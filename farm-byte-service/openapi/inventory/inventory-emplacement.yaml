@@ -1,0 +1,125 @@
+openapi: 3.1.0
+info:
+  title: Inventory Emplacement API
+  description: |
+    REST API endpoints for Inventory Emplacement
+  version: 1.0.0
+servers:
+  - url: http://localhost:8085/api/v1/inventory
+    description: Development Server
+  - url: http://localhost:8080/api/v1/inventory
+    description: Production server
+tags:
+  - name: InventoryEmplacement
+    description: "The Inventory Emplacement API"
+
+
+paths:
+  /inventory-emplacements:
+    post:
+      tags:
+        - InventoryEmplacement
+      summary: create an inventory emplacement
+      operationId: createInventoryEmplacement
+      security:
+        - oAuth:
+            - create:inventory:emplacement
+      requestBody:
+        required: true
+        description: inventory emplacement object to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventoryEmplacementViewRequest'
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateInventoryEmplacementApiViewResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+components:
+  schemas:
+    ApiErrorResponse:
+      $ref: '../common/schemas/api-error-response.yaml#/ApiErrorResponse'
+    CreateInventoryEmplacementViewRequest:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+        type:
+          type: string
+          enum:
+            - INTERNAL
+            - CUSTOMER
+            - SUPPLIER
+            - INVENTORY
+            - VIEW
+            - TRANSIT
+        parentId:
+          type: string
+          format: uuid
+    InventoryEmplacementView:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - active
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+        parentId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+            - INTERNAL
+            - CUSTOMER
+            - SUPPLIER
+            - INVENTORY
+            - VIEW
+            - TRANSIT
+        active:
+          type: boolean
+    CreateInventoryEmplacementViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/InventoryEmplacementView'
+    CreateInventoryEmplacementApiViewResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateInventoryEmplacementViewResponse'

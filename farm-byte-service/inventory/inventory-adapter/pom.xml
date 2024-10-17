@@ -14,6 +14,7 @@
         <module>inventory-adapter-data-access-inmemory</module>
         <module>inventory-adapter-data-access-jpa</module>
         <module>inventory-adapter-data-access-test</module>
+        <module>inventory-adapter-rest-api</module>
     </modules>
 
 </project>

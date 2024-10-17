@@ -10,7 +10,6 @@ import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewRequest;
 import cm.xenonbyte.farmbyte.catalog.adapter.rest.api.generated.productcategory.view.UpdateProductCategoryViewResponse;
 import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategory;
-import cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
@@ -21,7 +20,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author bamk
@@ -38,14 +36,6 @@ public interface ProductCategoryViewMapper {
     @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "parentProductCategoryId", expression = "java(createProductCategoryViewRequest.getParentProductCategoryId() == null? null: new cm.xenonbyte.farmbyte.catalog.domain.core.product.ProductCategoryId(createProductCategoryViewRequest.getParentProductCategoryId()))")
     @Nonnull ProductCategory toProductCategory(@Nonnull CreateProductCategoryViewRequest createProductCategoryViewRequest);
-
-    @Named("getParentCategoryIdDomain")
-    default ProductCategoryId getParentCategoryIdDomain(UUID parentProductCategoryId) {
-        if(parentProductCategoryId == null) {
-            return null;
-        }
-        return new ProductCategoryId(parentProductCategoryId);
-    }
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")

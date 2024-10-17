@@ -109,6 +109,11 @@
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>inventory-adapter-rest-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
         <artifactId>inventory-adapter-data-access-test</artifactId>
         <version>${project.version}</version>
       </dependency>
