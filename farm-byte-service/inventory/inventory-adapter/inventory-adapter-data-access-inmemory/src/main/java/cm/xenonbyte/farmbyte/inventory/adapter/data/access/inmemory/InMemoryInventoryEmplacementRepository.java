@@ -20,7 +20,7 @@ public final class InMemoryInventoryEmplacementRepository implements InventoryEm
 
 
     @Override
-    public boolean existsByParentId(@Nonnull InventoryEmplacementId parentId) {
+    public boolean existsById(@Nonnull InventoryEmplacementId parentId) {
         return inventoryEmplacements.containsKey(parentId);
     }
 
@@ -31,7 +31,7 @@ public final class InMemoryInventoryEmplacementRepository implements InventoryEm
     }
 
     @Override
-    public boolean existsByName(@Nonnull Name name) {
+    public boolean existsByNameIgnoreCase(@Nonnull Name name) {
         return inventoryEmplacements.values().stream()
                 .anyMatch(emplacement -> emplacement.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()));
     }

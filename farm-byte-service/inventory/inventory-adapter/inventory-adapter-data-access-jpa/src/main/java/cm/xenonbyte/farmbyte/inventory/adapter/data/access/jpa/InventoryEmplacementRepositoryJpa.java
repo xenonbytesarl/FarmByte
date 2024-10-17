@@ -14,5 +14,5 @@ import java.util.UUID;
 public interface InventoryEmplacementRepositoryJpa extends JpaRepository<InventoryEmplacementJpa, UUID> {
     Boolean existsByParentJpa(InventoryEmplacementJpa parentJpa);
 
-    Boolean existsByName(String name);
+    Boolean existsByNameIgnoreCase(String name);
 }

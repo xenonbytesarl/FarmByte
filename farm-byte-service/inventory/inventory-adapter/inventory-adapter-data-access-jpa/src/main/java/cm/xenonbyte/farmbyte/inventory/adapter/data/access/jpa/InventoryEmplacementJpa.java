@@ -3,6 +3,8 @@ package cm.xenonbyte.farmbyte.inventory.adapter.data.access.jpa;
 import cm.xenonbyte.farmbyte.adapter.data.access.jpa.entity.BaseEntityJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -27,6 +29,9 @@ import lombok.experimental.SuperBuilder;
 public final class InventoryEmplacementJpa extends BaseEntityJpa {
     @Column(name = "c_name", nullable = false, unique = true, length = 64)
     private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "c_type", length = 64, nullable = false)
+    private InventoryEmplacementTypeJpa type;
     @Column(name = "c_active", nullable = false)
     private Boolean active;
     @ManyToOne

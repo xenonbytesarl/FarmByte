@@ -34,9 +34,8 @@ public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplac
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByParentId(@Nonnull InventoryEmplacementId parentId) {
-        return inventoryEmplacementRepositoryJpa.existsByParentJpa(
-                InventoryEmplacementJpa.builder().id(parentId.getValue()).build());
+    public boolean existsById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
+        return inventoryEmplacementRepositoryJpa.existsById(inventoryEmplacementId.getValue());
     }
 
     @Override
@@ -51,7 +50,7 @@ public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplac
 
     @Override
     @Transactional(readOnly = true)
-    public boolean existsByName(@Nonnull Name name) {
-        return inventoryEmplacementRepositoryJpa.existsByName(name.getText().getValue());
+    public boolean existsByNameIgnoreCase(@Nonnull Name name) {
+        return inventoryEmplacementRepositoryJpa.existsByNameIgnoreCase(name.getText().getValue());
     }
 }

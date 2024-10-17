@@ -30,7 +30,7 @@ public abstract class InventoryEmplacementRepositoryTest {
         void should_return_false_when_find_inventory_emplacement_with_non_existing_name() {
 
             //Given + Act
-            Boolean result = inventoryEmplacementRepository.existsByName(Name.of(Text.of("Fake Emplacement Name 1")));
+            Boolean result = inventoryEmplacementRepository.existsByNameIgnoreCase(Name.of(Text.of("Fake Emplacement Name 1")));
             //Then
             assertThat(result).isFalse();
         }
@@ -38,7 +38,7 @@ public abstract class InventoryEmplacementRepositoryTest {
         @Test
         void should_return_true_when_find_inventory_emplacement_with_existing_emplacement() {
             //Given + Act
-            Boolean result = inventoryEmplacementRepository.existsByName(name);
+            Boolean result = inventoryEmplacementRepository.existsByNameIgnoreCase(name);
             //Then
             assertThat(result).isTrue();
         }
@@ -48,7 +48,7 @@ public abstract class InventoryEmplacementRepositoryTest {
             //Given
             InventoryEmplacementId fakeInventoryEmplacementId = new InventoryEmplacementId(UUID.fromString("019296a1-9551-7ae3-9fce-25503bc7b5ab"));
             //Act
-            Boolean result = inventoryEmplacementRepository.existsByParentId(fakeInventoryEmplacementId);
+            Boolean result = inventoryEmplacementRepository.existsById(fakeInventoryEmplacementId);
             //Then
             assertThat(result).isFalse();
         }
@@ -56,7 +56,7 @@ public abstract class InventoryEmplacementRepositoryTest {
         @Test
         void should_return_true_when_find_inventory_emplacement_with_existing_parent_id() {
             //Given + Act
-            Boolean result = inventoryEmplacementRepository.existsByParentId(parentId);
+            Boolean result = inventoryEmplacementRepository.existsById(parentId);
             //Then
             assertThat(result).isTrue();
         }

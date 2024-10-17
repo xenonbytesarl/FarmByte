@@ -49,6 +49,10 @@
             <groupId>cm.xenonbyte.farmbyte</groupId>
             <artifactId>inventory-adapter-data-access-jpa</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cm.xenonbyte.farmbyte</groupId>
+            <artifactId>inventory-adapter-rest-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springdoc</groupId>
