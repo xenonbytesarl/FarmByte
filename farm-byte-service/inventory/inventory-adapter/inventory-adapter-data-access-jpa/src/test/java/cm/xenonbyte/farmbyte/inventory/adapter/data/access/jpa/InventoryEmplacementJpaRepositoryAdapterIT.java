@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import cm.xenonbyte.farmbyte.inventory.adapter.access.test.InventoryEmplacementRepositoryTest;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
+import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class InventoryEmplacementJpaRepositoryAdapterIT extends InventoryEmplace
         inventoryEmplacement = InventoryEmplacement.builder()
                 .id(new InventoryEmplacementId(UUID.fromString("01929708-609d-7d64-ae29-1940b7e5f6f1")))
                 .name(Name.of(Text.of("Internal Emplacement 2")))
+                .type(InventoryEmplacementType.INTERNAL)
                 .parentId(parentId)
                 .active(Active.with(true))
                 .build();
