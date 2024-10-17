@@ -6,6 +6,7 @@ import cm.xenonbyte.farmbyte.inventory.adapter.access.test.InventoryEmplacementR
 import cm.xenonbyte.farmbyte.inventory.adapter.data.access.inmemory.InMemoryInventoryEmplacementRepository;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
+import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementType;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;
@@ -28,6 +29,7 @@ public final class InventoryEmplacementInMemoryRepositoryAdapterTest extends Inv
         inventoryEmplacement = inventoryEmplacementRepository.save(
                 InventoryEmplacement.builder()
                         .id(parentId)
+                        .type(InventoryEmplacementType.INTERNAL)
                         .name(name)
                         .build());
 
@@ -35,6 +37,7 @@ public final class InventoryEmplacementInMemoryRepositoryAdapterTest extends Inv
                 InventoryEmplacement.builder()
                     .id(new InventoryEmplacementId(UUID.fromString("019296b2-1138-7fcd-b732-aa676eb469fd")))
                     .name(Name.of(Text.of("Child internal Emplacement")))
+                    .type(InventoryEmplacementType.INTERNAL)
                     .parentId(parentId)
                     .build());
 
