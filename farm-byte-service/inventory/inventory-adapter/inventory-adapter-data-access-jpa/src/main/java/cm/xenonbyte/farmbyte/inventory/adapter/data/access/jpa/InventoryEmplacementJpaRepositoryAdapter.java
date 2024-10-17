@@ -7,6 +7,7 @@ import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.Inventor
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -32,12 +33,14 @@ public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplac
 
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByParentId(@Nonnull InventoryEmplacementId parentId) {
         return inventoryEmplacementRepositoryJpa.existsByParentJpa(
                 InventoryEmplacementJpa.builder().id(parentId.getValue()).build());
     }
 
     @Override
+    @Transactional
     public InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement) {
         return inventoryEmplacementJpaMapper.toInventoryEmplacement(
                 inventoryEmplacementRepositoryJpa.save(
@@ -47,6 +50,7 @@ public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplac
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByName(@Nonnull Name name) {
         return inventoryEmplacementRepositoryJpa.existsByName(name.getText().getValue());
     }
