@@ -8,6 +8,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -34,5 +35,12 @@ public final class InMemoryInventoryEmplacementRepository implements InventoryEm
     public boolean existsByNameIgnoreCase(@Nonnull Name name) {
         return inventoryEmplacements.values().stream()
                 .anyMatch(emplacement -> emplacement.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()));
+    }
+
+    @Nonnull
+    @Override
+    public Optional<InventoryEmplacement> findById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
+        InventoryEmplacement inventoryEmplacement = inventoryEmplacements.get(inventoryEmplacementId);
+        return inventoryEmplacement != null ? Optional.of(inventoryEmplacement) : Optional.empty();
     }
 }

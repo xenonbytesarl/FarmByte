@@ -9,4 +9,6 @@ import jakarta.annotation.Nonnull;
  */
 public interface InventoryEmplacementService {
     @Nonnull InventoryEmplacement createInventoryEmplacement(@Nonnull InventoryEmplacement inventoryEmplacement);
+
+    @Nonnull InventoryEmplacement findById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
 }
