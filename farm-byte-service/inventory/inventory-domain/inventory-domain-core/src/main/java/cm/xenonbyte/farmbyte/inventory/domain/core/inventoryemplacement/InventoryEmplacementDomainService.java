@@ -29,6 +29,14 @@ public final class InventoryEmplacementDomainService implements InventoryEmplace
         return inventoryEmplacementRepository.save(inventoryEmplacement);
     }
 
+    @Nonnull
+    @Override
+    public InventoryEmplacement findById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
+        return inventoryEmplacementRepository.findById(inventoryEmplacementId).orElseThrow(
+                () -> new InventoryEmplacementNotFoundException(new String[]{inventoryEmplacementId.getValue().toString()})
+        );
+    }
+
     private void verifyName(@Nonnull InventoryEmplacement inventoryEmplacement) {
         if(inventoryEmplacement.getId() == null && inventoryEmplacementRepository.existsByNameIgnoreCase(inventoryEmplacement.getName())) {
             throw new InventoryEmplacementNameConflictException(new String[]{inventoryEmplacement.getName().getText().getValue()});

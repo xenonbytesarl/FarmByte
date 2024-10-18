@@ -9,6 +9,7 @@ import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.Inventor
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementDomainService;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException;
+import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementRepository;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementService;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException.NOT_NULL_VALUE;
 import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException.INVENTORY_EMPLACEMENT_NAME_CONFLICT;
+import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException.INVENTORY_EMPLACEMENT_ID_NOT_FOUND;
 import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException.INVENTORY_EMPLACEMENT_PARENT_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,11 +40,12 @@ public final class InventoryEmplacementTest {
 
     private InventoryEmplacementService inventoryEmplacementService;
     private InventoryEmplacementId parentId;
+    InventoryEmplacementRepository inventoryEmplacementRepository;
     Name name;
 
     @BeforeEach
     void setUp() {
-        InventoryEmplacementRepository inventoryEmplacementRepository = new InMemoryInventoryEmplacementRepository();
+        inventoryEmplacementRepository = new InMemoryInventoryEmplacementRepository();
         inventoryEmplacementService = new InventoryEmplacementDomainService(inventoryEmplacementRepository);
         parentId = new InventoryEmplacementId(UUID.fromString("01928612-317e-7736-8ef4-3f259caa732a"));
         name = Name.of(Text.of("RootInventoryEmplacement"));
@@ -58,7 +61,7 @@ public final class InventoryEmplacementTest {
     }
 
     @Nested
-    class CreateInventoryEmplacementTest {
+    class CreateInventoryEmplacementDomainTest {
 
 
         @Test
@@ -156,4 +159,41 @@ public final class InventoryEmplacementTest {
                     .hasMessage(expectedMessage);
         }
     }
+
+    @Nested
+    class FindInventoryEmplacementByIdDomainTest {
+        InventoryEmplacement inventoryEmplacement;
+        InventoryEmplacementId inventoryEmplacementId;
+
+        @BeforeEach
+        void setUp() {
+            inventoryEmplacementId = new InventoryEmplacementId(UUID.fromString("0192a1bd-5bec-7764-b49e-cc99bebb26e7"));
+            inventoryEmplacement = InventoryEmplacement.builder()
+                    .id(inventoryEmplacementId)
+                    .name(Name.of(Text.of("InventoryEmplacementName.1")))
+                    .type(InventoryEmplacementType.INTERNAL)
+                    .build();
+
+            inventoryEmplacementRepository.save(inventoryEmplacement);
+        }
+
+        @Test
+        void should_success_when_find_inventory_emplacement_with_existing_id() {
+            //Given + Act
+            InventoryEmplacement result = inventoryEmplacementService.findById(inventoryEmplacementId);
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(inventoryEmplacement);
+        }
+
+        @Test
+        void should_fail_when_find_inventory_emplacement_with_non_existing_id() {
+            //Given + Act + Then
+            assertThatThrownBy(() -> inventoryEmplacementService.findById(new InventoryEmplacementId(UUID.randomUUID())))
+                    .isInstanceOf(InventoryEmplacementNotFoundException.class)
+                    .hasMessage(INVENTORY_EMPLACEMENT_ID_NOT_FOUND);
+        }
+    }
+
 }

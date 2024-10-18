@@ -3,6 +3,8 @@ package cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 
+import java.util.Optional;
+
 /**
  * @author bamk
  * @version 1.0
@@ -11,7 +13,10 @@ import jakarta.annotation.Nonnull;
 public interface InventoryEmplacementRepository {
     boolean existsById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
 
-    InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement);
+    @Nonnull InventoryEmplacement save(@Nonnull InventoryEmplacement inventoryEmplacement);
 
     boolean existsByNameIgnoreCase(@Nonnull Name name);
+
+    @Nonnull
+    Optional<InventoryEmplacement> findById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
 }
