@@ -1,5 +1,7 @@
 package cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement;
 
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -11,4 +13,6 @@ public interface InventoryEmplacementService {
     @Nonnull InventoryEmplacement createInventoryEmplacement(@Nonnull InventoryEmplacement inventoryEmplacement);
 
     @Nonnull InventoryEmplacement findById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
+
+    PageInfo<InventoryEmplacement> findInventoryEmplacements(Integer page, Integer size, String sortAttribute, Direction direction);
 }

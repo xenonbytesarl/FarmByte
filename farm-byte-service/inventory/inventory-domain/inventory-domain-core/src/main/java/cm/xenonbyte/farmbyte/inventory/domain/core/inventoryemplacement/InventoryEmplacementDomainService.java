@@ -1,6 +1,8 @@
 package cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement;
 
 import cm.xenonbyte.farmbyte.common.domain.annotation.DomainService;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import static java.util.Objects.requireNonNull;
@@ -35,6 +37,11 @@ public final class InventoryEmplacementDomainService implements InventoryEmplace
         return inventoryEmplacementRepository.findById(inventoryEmplacementId).orElseThrow(
                 () -> new InventoryEmplacementNotFoundException(new String[]{inventoryEmplacementId.getValue().toString()})
         );
+    }
+
+    @Override
+    public PageInfo<InventoryEmplacement> findInventoryEmplacements(Integer page, Integer size, String sortAttribute, Direction direction) {
+        return inventoryEmplacementRepository.findAll(page, size, sortAttribute, direction);
     }
 
     private void verifyName(@Nonnull InventoryEmplacement inventoryEmplacement) {

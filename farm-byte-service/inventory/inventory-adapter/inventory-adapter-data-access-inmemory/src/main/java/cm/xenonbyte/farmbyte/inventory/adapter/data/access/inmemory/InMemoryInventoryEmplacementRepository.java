@@ -1,11 +1,14 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.data.access.inmemory;
 
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementRepository;
 import jakarta.annotation.Nonnull;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,5 +45,18 @@ public final class InMemoryInventoryEmplacementRepository implements InventoryEm
     public Optional<InventoryEmplacement> findById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
         InventoryEmplacement inventoryEmplacement = inventoryEmplacements.get(inventoryEmplacementId);
         return inventoryEmplacement != null ? Optional.of(inventoryEmplacement) : Optional.empty();
+    }
+
+    @Override
+    public PageInfo<InventoryEmplacement> findAll(Integer page, Integer size, String sortAttribute, Direction direction) {
+        PageInfo<InventoryEmplacement> inventoryEmplacementPageInfo = new PageInfo<>();
+        Comparator<InventoryEmplacement> comparing = Comparator.comparing((InventoryEmplacement a) -> a.getName().getText().getValue());
+        return inventoryEmplacementPageInfo.with(
+                page,
+                size,
+                inventoryEmplacements.values().stream()
+                        .sorted(Direction.ASC.equals(direction) ? comparing : comparing.reversed())
+                        .toList()
+        );
     }
 }
