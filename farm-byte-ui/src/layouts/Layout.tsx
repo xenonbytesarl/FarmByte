@@ -24,7 +24,7 @@ const Layout = () => {
                             <MobileNavbar/>
                         </div>
                         <div
-                            className={`min-h-full flex-1 p-10 mt-32 ${isOpen ? 'ml-72 transition-all ease-linear duration-300' : 'ml-24 transition-all ease-linear duration-300'}`}>
+                            className={`min-h-full flex-1 mt-32 ${isOpen ? 'ml-72 transition-all ease-linear duration-300' : 'ml-24 transition-all ease-linear duration-300'}`}>
                             <Outlet/>
                         </div>
                     </div>

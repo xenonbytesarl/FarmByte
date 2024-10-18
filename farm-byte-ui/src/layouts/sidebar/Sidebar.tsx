@@ -42,10 +42,10 @@ const Sidebar = () => {
 
     return (
         <div
-            className={`fixed flex flex-col bg-gradient-to-r from-primary/80 to-primary/60  h-screen py-3 text-primary-foreground z-30 ${isOpen ? 'w-72 transition-all ease-linear duration-300' : 'w-24 transition-all ease-linear duration-300'}`}>
-            <div className="relative flex flex-row justify-between items-center px-5 pt-4 mb-12 w-full">
+            className={`fixed flex flex-col bg-gradient-to-r from-primary/100 to-primary/100  h-screen py-2 text-primary-foreground z-30 ${isOpen ? 'w-72 transition-all ease-linear duration-300' : 'w-24 transition-all ease-linear duration-300'}`}>
+            <div className="relative flex flex-row justify-between items-center p-5 mb-12 w-full shadow-lg">
                 <div className={`flex flex-row justify-between items-center w-[95%]`}>
-                    <p className={` text-center ${isOpen ? 'block text-2xl font-medium' : 'text-xl'}`}>{isOpen ? 'FarmByte.cm' : 'FB.cm'}</p>
+                    <p className={` text-center ${isOpen ? 'block text-2xl font-medium' : 'text-2xl'}`}>{isOpen ? 'FarmByte.cm' : 'FB.cm'}</p>
                 </div>
                 <p
                     className={`absolute -right-3.5 top-[3.2rem] material-symbols-outlined text-primary-foreground cursor-pointer p-1 bg-white rounded-full z-30 ${isOpen ? '' : ''}`}>&nbsp;</p>

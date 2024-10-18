@@ -264,18 +264,19 @@ const ProductForm = () => {
         }
     }
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-                <Toaster/>
-                <Card className="">
-                    <CardHeader>
-                        <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
+        <div className="p-10">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                    <Toaster/>
+                    <Card className="">
+                        <CardHeader>
+                            <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
                         <span onClick={() => navigate(`/inventory/products`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                            <span
-                                className="text-2xl">{t(productId ? 'product_form_edit_title' : 'product_form_new_title')}</span>
-                        </CardTitle>
-                        <CardDescription>
+                                <span
+                                    className="text-2xl">{t(productId ? 'product_form_edit_title' : 'product_form_new_title')}</span>
+                            </CardTitle>
+                            <CardDescription>
                     <span className="flex flex-row w-full m-5">
                         <FormCrudButton
                             mode={mode}
@@ -288,103 +289,312 @@ const ProductForm = () => {
                         <span className="flex flex-row justify-end items-center gap-3 w-6/12">
                         </span>
                     </span>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <FormField
-                            control={form.control}
-                            name="id"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input id="id" type="hidden" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <div className="flex flex-col justify-center items-center gap-5">
-                            <div className="flex flex-col lg:flex-row justify-start items-center w-full">
-                                <div className="relative flex flex-col justify-center items-center w-72">
-                                    <img alt="..." className={`size-48 bg-white object-cover
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <FormField
+                                control={form.control}
+                                name="id"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="id" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="flex flex-col justify-center items-center gap-5">
+                                <div className="flex flex-col lg:flex-row justify-start items-center w-full">
+                                    <div className="relative flex flex-col justify-center items-center w-72">
+                                        <img alt="..." className={`size-48 bg-white object-cover
                                     flex flex-col items-center justify-center rounded-lg shadow-gray-200 shadow-lg
                                     gap-4 transition-all duration-1000 hover:text-primary`}
-                                        //@ts-ignore
-                                         src={filePreview ? filePreview : product ? fileToBase64(product?.encodedFile, product?.mime) : getImageUrl(DEFAULT_PRODUCT_IMAGE)}/>
-                                    <input
-                                        className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
-                                        accept="image/x-png, image/jpeg" type="file"
-                                        disabled={mode === FormModeType.READ || isLoading}
-                                        onChange={handleFileChange}/>
+                                            //@ts-ignore
+                                             src={filePreview ? filePreview : product ? fileToBase64(product?.encodedFile, product?.mime) : getImageUrl(DEFAULT_PRODUCT_IMAGE)}/>
+                                        <input
+                                            className={`absolute top-0 size-48 opacity-0 ${mode === FormModeType.READ || isLoading ? 'cursor-auto' : 'cursor-pointer'}`}
+                                            accept="image/x-png, image/jpeg" type="file"
+                                            disabled={mode === FormModeType.READ || isLoading}
+                                            onChange={handleFileChange}/>
 
-                                </div>
-                                <div className="flex flex-col lg:flex-row w-full gap-4">
-                                    <div className="lg:w-6/12 mb-4">
-                                        <div className="flex flex-col space-y-1.5 mb-5">
-                                            <FormField
-                                                control={form.control}
-                                                name="reference"
-                                                render={({field}) => (
-                                                    <FormItem>
-                                                        <FormLabel>{t('product_form_reference_label')}</FormLabel>
-                                                        <FormControl>
-                                                            <Input id="reference" type="text" {...field}
-                                                                   disabled={mode === FormModeType.READ || isLoading}/>
-                                                        </FormControl>
-                                                        <FormMessage className="text-xs text-destructive"/>
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-                                        <div className="flex flex-col space-y-1.5 mb-5">
-                                            <FormField
-                                                control={form.control}
-                                                name="type"
-                                                render={() => (
-                                                    <FormItem>
-                                                        <FormLabel>{t('product_form_type_label')}</FormLabel>
-                                                        <FormControl>
-                                                            <Popover open={openTypePopOver} onOpenChange={setOpenTypePopOver}>
-                                                                <PopoverTrigger asChild>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        role="combobox"
-                                                                        aria-expanded={openTypePopOver}
-                                                                        className="w-full justify-between"
-                                                                        disabled={mode === FormModeType.READ || isLoading}
-                                                                    >
+                                    </div>
+                                    <div className="flex flex-col lg:flex-row w-full gap-4">
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="reference"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('product_form_reference_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="reference" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="type"
+                                                    render={() => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('product_form_type_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Popover open={openTypePopOver} onOpenChange={setOpenTypePopOver}>
+                                                                    <PopoverTrigger asChild>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            role="combobox"
+                                                                            aria-expanded={openTypePopOver}
+                                                                            className="w-full justify-between"
+                                                                            disabled={mode === FormModeType.READ || isLoading}
+                                                                        >
                                                                         <span>{typePopOverLabel
                                                                             //@ts-ignore
                                                                             ? t(productTypes.find((type) => type.label === typePopOverLabel)?.label)
                                                                             //@ts-ignore
                                                                             : product ? t(productTypes.find((typeEdit) => typeEdit.name === product.type)?.label) : t('product_form_type_pop_over_place_holder')}</span>
+                                                                            <span
+                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                        <Command>
+                                                                            <CommandInput id="type" placeholder={t('product_form_type_pop_over_place_holder')} />
+                                                                            <CommandList>
+                                                                                <Command>{t('product_form_pop_type_over_not_found')}</Command>
+                                                                                <CommandGroup>
+                                                                                    {productTypes.map((type) => (
+                                                                                        <CommandItem
+                                                                                            key={type.label}
+                                                                                            value={type.label}
+                                                                                            onSelect={(currentValue) => {
+                                                                                                setTypePopOverLabel(currentValue === typePopOverLabel ? "" : currentValue);
+                                                                                                setOpenTypePopOver(false);
+                                                                                                form.setValue(
+                                                                                                    "type",
+                                                                                                    currentValue === typePopOverLabel ? "" : type.name,
+                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                                );
+                                                                                            }}
+                                                                                        >
+                                                                                        <span
+                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${typePopOverLabel === type.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                                        >check</span>
+                                                                                            {t(type.label)}
+                                                                                        </CommandItem>
+                                                                                    ))}
+                                                                                </CommandGroup>
+                                                                            </CommandList>
+                                                                        </Command>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-6/12 mb-4">
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="name"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('product_form_name_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Input id="name" type="text" {...field}
+                                                                       disabled={mode === FormModeType.READ || isLoading}/>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1.5 mb-5">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="categoryId"
+                                                    render={() => (
+                                                        <FormItem>
+                                                            <FormLabel>{t('product_form_category_id_label')}</FormLabel>
+                                                            <FormControl>
+                                                                <Popover open={openCategoryPopOver} onOpenChange={setOpenCategoryPopOver}>
+                                                                    <PopoverTrigger asChild>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            role="combobox"
+                                                                            aria-expanded={openCategoryPopOver}
+                                                                            className="w-full justify-between"
+                                                                            disabled={mode === FormModeType.READ || isLoading}
+                                                                        >
+                                                                        <span>{categoryPopOverLabel
+                                                                            ? categories.find((category) => category.name === categoryPopOverLabel)?.name
+                                                                            //@ts-ignore
+                                                                            : product ? categories.find((category) => category.id === product.categoryId)?.name : t('product_form_category_pop_over_place_holder')}</span>
+                                                                            <span
+                                                                                className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+                                                                    <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                        <Command>
+                                                                            <CommandInput id="categoryId" placeholder={t('product_form_category_pop_over_place_holder')} />
+                                                                            <CommandList>
+                                                                                <Command>{t('product_form_category_pop_over_not_found')}</Command>
+                                                                                <CommandGroup>
+                                                                                    {categories.map((category) => (
+                                                                                        <CommandItem
+                                                                                            key={category.id}
+                                                                                            value={category.name}
+                                                                                            onSelect={(currentValue) => {
+                                                                                                setCategoryPopOverLabel(currentValue === categoryPopOverLabel ? "" : currentValue);
+                                                                                                setOpenCategoryPopOver(false);
+                                                                                                form.setValue(
+                                                                                                    "categoryId",
+                                                                                                    currentValue === categoryPopOverLabel ? "" : category.id,
+                                                                                                    {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                                );
+                                                                                            }}
+                                                                                        >
+                                                                                        <span
+                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${categoryPopOverLabel === category.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                                        >check</span>
+                                                                                            {category.name}
+                                                                                        </CommandItem>
+                                                                                    ))}
+                                                                                </CommandGroup>
+                                                                            </CommandList>
+                                                                        </Command>
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                            </FormControl>
+                                                            <FormMessage className="text-xs text-destructive"/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col lg:flex-row w-full gap-4 mt-4">
+                                    <div className="lg:w-6/12 mb-4">
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="stockUomId"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('product_form_stock_uom_id_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Popover open={openStockUomPopOver} onOpenChange={setOpenStockUomPopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openStockUomPopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading  || form.getValues('type') !== ProductTypeEnum.STOCK.valueOf()}
+                                                                    >
+                                                                    <span>{stockUomPopOverLabel
+                                                                        ? stockUoms.find((stockUom) => stockUom.name === stockUomPopOverLabel)?.name
+                                                                        //@ts-ignore
+                                                                        : product ? stockUoms.find((stockUom) => stockUom.id === product.stockUomId)?.name : t('product_form_stock_uom_id_pop_over_place_holder')}</span>
                                                                         <span
                                                                             className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-[--radix-popover-trigger-width]">
                                                                     <Command>
-                                                                        <CommandInput id="type" placeholder={t('product_form_type_pop_over_place_holder')} />
+                                                                        <CommandInput id="stockUomId" placeholder={t('product_form_stock_uom_id_pop_over_place_holder')}/>
                                                                         <CommandList>
-                                                                            <Command>{t('product_form_pop_type_over_not_found')}</Command>
+                                                                            <Command>{t('product_form_stock_uom_id_pop_over_not_found')}</Command>
                                                                             <CommandGroup>
-                                                                                {productTypes.map((type) => (
+                                                                                {stockUoms.map((stockUom) => (
                                                                                     <CommandItem
-                                                                                        key={type.label}
-                                                                                        value={type.label}
+                                                                                        key={stockUom.id}
+                                                                                        value={stockUom.name}
                                                                                         onSelect={(currentValue) => {
-                                                                                            setTypePopOverLabel(currentValue === typePopOverLabel ? "" : currentValue);
-                                                                                            setOpenTypePopOver(false);
+                                                                                            setStockUomPopOverLabel(currentValue === stockUomPopOverLabel ? "" : currentValue);
+                                                                                            setOpenStockUomPopOver(false);
                                                                                             form.setValue(
-                                                                                                "type",
-                                                                                                currentValue === typePopOverLabel ? "" : type.name,
-                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                                "stockUomId",
+                                                                                                currentValue === stockUomPopOverLabel ? "" : stockUom.id,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: currentValue !== stockUomPopOverLabel}
                                                                                             );
                                                                                         }}
                                                                                     >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${typePopOverLabel === type.label ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                        {t(type.label)}
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${stockUomPopOverLabel === stockUom.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {stockUom.name}
+                                                                                    </CommandItem>
+                                                                                ))}
+                                                                            </CommandGroup>
+                                                                        </CommandList>
+                                                                    </Command>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                        </FormControl>
+                                                        <FormMessage className="text-xs text-destructive"/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col space-y-1.5 mb-5">
+                                            <FormField
+                                                control={form.control}
+                                                name="purchaseUomId"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('product_form_purchase_uom_id_label')}</FormLabel>
+                                                        <FormControl>
+                                                            <Popover open={openPurchaseUomPopOver} onOpenChange={setOpenPurchaseUomPopOver}>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        role="combobox"
+                                                                        aria-expanded={openPurchaseUomPopOver}
+                                                                        className="w-full justify-between"
+                                                                        disabled={mode === FormModeType.READ || isLoading  || form.getValues('type') !== ProductTypeEnum.STOCK.valueOf()}
+                                                                    >
+                                                                    <span>{purchaseUomPopOverLabel
+                                                                        ? purchaseUoms.find((purchaseUom) => purchaseUom.name === purchaseUomPopOverLabel)?.name
+                                                                        //@ts-ignore
+                                                                        : product ? purchaseUoms.find((purchaseUom) => purchaseUom.id === product.purchaseUomId)?.name : t('product_form_purchase_uom_id_pop_over_place_holder')}</span>
+                                                                        <span
+                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                                    <Command>
+                                                                        <CommandInput id="purchaseUomId" placeholder={t('product_form_purchase_uom_id_pop_over_place_holder')}/>
+                                                                        <CommandList>
+                                                                            <Command>{t('product_form_purchase_uom_id_pop_over_not_found')}</Command>
+                                                                            <CommandGroup>
+                                                                                {purchaseUoms.map((purchaseUom) => (
+                                                                                    <CommandItem
+                                                                                        key={purchaseUom.id}
+                                                                                        value={purchaseUom.name}
+                                                                                        onSelect={(currentValue) => {
+                                                                                            setPurchaseUomPopOverLabel(currentValue === purchaseUomPopOverLabel ? "" : currentValue);
+                                                                                            setOpenPurchaseUomPopOver(false);
+                                                                                            form.setValue(
+                                                                                                "purchaseUomId",
+                                                                                                currentValue === purchaseUomPopOverLabel ? "" : purchaseUom.id,
+                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: currentValue !== purchaseUomPopOverLabel}
+                                                                                            );
+                                                                                        }}
+                                                                                    >
+                                                                                    <span
+                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${purchaseUomPopOverLabel === purchaseUom.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                                    >check</span>
+                                                                                        {purchaseUom.name}
                                                                                     </CommandItem>
                                                                                 ))}
                                                                             </CommandGroup>
@@ -403,12 +613,12 @@ const ProductForm = () => {
                                         <div className="flex flex-col space-y-1.5 mb-5">
                                             <FormField
                                                 control={form.control}
-                                                name="name"
+                                                name="purchasePrice"
                                                 render={({field}) => (
                                                     <FormItem>
-                                                        <FormLabel>{t('product_form_name_label')}</FormLabel>
+                                                        <FormLabel>{t('product_form_purchase_price_label')}</FormLabel>
                                                         <FormControl>
-                                                            <Input id="name" type="text" {...field}
+                                                            <Input id="purchasePrice" type="number" {...field}
                                                                    disabled={mode === FormModeType.READ || isLoading}/>
                                                         </FormControl>
                                                         <FormMessage className="text-xs text-destructive"/>
@@ -419,59 +629,13 @@ const ProductForm = () => {
                                         <div className="flex flex-col space-y-1.5 mb-5">
                                             <FormField
                                                 control={form.control}
-                                                name="categoryId"
-                                                render={() => (
+                                                name="salePrice"
+                                                render={({field}) => (
                                                     <FormItem>
-                                                        <FormLabel>{t('product_form_category_id_label')}</FormLabel>
+                                                        <FormLabel>{t('product_form_sale_price_label')}</FormLabel>
                                                         <FormControl>
-                                                            <Popover open={openCategoryPopOver} onOpenChange={setOpenCategoryPopOver}>
-                                                                <PopoverTrigger asChild>
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        role="combobox"
-                                                                        aria-expanded={openCategoryPopOver}
-                                                                        className="w-full justify-between"
-                                                                        disabled={mode === FormModeType.READ || isLoading}
-                                                                    >
-                                                                        <span>{categoryPopOverLabel
-                                                                            ? categories.find((category) => category.name === categoryPopOverLabel)?.name
-                                                                            //@ts-ignore
-                                                                            : product ? categories.find((category) => category.id === product.categoryId)?.name : t('product_form_category_pop_over_place_holder')}</span>
-                                                                        <span
-                                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                    </Button>
-                                                                </PopoverTrigger>
-                                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                    <Command>
-                                                                        <CommandInput id="categoryId" placeholder={t('product_form_category_pop_over_place_holder')} />
-                                                                        <CommandList>
-                                                                            <Command>{t('product_form_category_pop_over_not_found')}</Command>
-                                                                            <CommandGroup>
-                                                                                {categories.map((category) => (
-                                                                                    <CommandItem
-                                                                                        key={category.id}
-                                                                                        value={category.name}
-                                                                                        onSelect={(currentValue) => {
-                                                                                            setCategoryPopOverLabel(currentValue === categoryPopOverLabel ? "" : currentValue);
-                                                                                            setOpenCategoryPopOver(false);
-                                                                                            form.setValue(
-                                                                                                "categoryId",
-                                                                                                currentValue === categoryPopOverLabel ? "" : category.id,
-                                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                                            );
-                                                                                        }}
-                                                                                    >
-                                                                                        <span
-                                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${categoryPopOverLabel === category.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                                        >check</span>
-                                                                                        {category.name}
-                                                                                    </CommandItem>
-                                                                                ))}
-                                                                            </CommandGroup>
-                                                                        </CommandList>
-                                                                    </Command>
-                                                                </PopoverContent>
-                                                            </Popover>
+                                                            <Input id="salePrice" type="number" {...field}
+                                                                   disabled={mode === FormModeType.READ || isLoading}/>
                                                         </FormControl>
                                                         <FormMessage className="text-xs text-destructive"/>
                                                     </FormItem>
@@ -480,227 +644,65 @@ const ProductForm = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-col lg:flex-row w-full gap-4 mt-4">
-                                <div className="lg:w-6/12 mb-4">
-                                    <div className="flex flex-col space-y-1.5 mb-5">
+                                <div className="flex flex-row gap-4 mt-4 w-full">
+                                    <div className="flex flex-row justify-start items-center space-x-1.5 w-4/12 gap-4">
                                         <FormField
                                             control={form.control}
-                                            name="stockUomId"
-                                            render={() => (
-                                                <FormItem>
-                                                    <FormLabel>{t('product_form_stock_uom_id_label')}</FormLabel>
-                                                    <FormControl>
-                                                        <Popover open={openStockUomPopOver} onOpenChange={setOpenStockUomPopOver}>
-                                                            <PopoverTrigger asChild>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    role="combobox"
-                                                                    aria-expanded={openStockUomPopOver}
-                                                                    className="w-full justify-between"
-                                                                    disabled={mode === FormModeType.READ || isLoading  || form.getValues('type') !== ProductTypeEnum.STOCK.valueOf()}
-                                                                >
-                                                                    <span>{stockUomPopOverLabel
-                                                                        ? stockUoms.find((stockUom) => stockUom.name === stockUomPopOverLabel)?.name
-                                                                        //@ts-ignore
-                                                                        : product ? stockUoms.find((stockUom) => stockUom.id === product.stockUomId)?.name : t('product_form_stock_uom_id_pop_over_place_holder')}</span>
-                                                                    <span
-                                                                        className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                <Command>
-                                                                    <CommandInput id="stockUomId" placeholder={t('product_form_stock_uom_id_pop_over_place_holder')}/>
-                                                                    <CommandList>
-                                                                        <Command>{t('product_form_stock_uom_id_pop_over_not_found')}</Command>
-                                                                        <CommandGroup>
-                                                                            {stockUoms.map((stockUom) => (
-                                                                                <CommandItem
-                                                                                    key={stockUom.id}
-                                                                                    value={stockUom.name}
-                                                                                    onSelect={(currentValue) => {
-                                                                                        setStockUomPopOverLabel(currentValue === stockUomPopOverLabel ? "" : currentValue);
-                                                                                        setOpenStockUomPopOver(false);
-                                                                                        form.setValue(
-                                                                                            "stockUomId",
-                                                                                            currentValue === stockUomPopOverLabel ? "" : stockUom.id,
-                                                                                            {shouldTouch: true, shouldDirty: true, shouldValidate: currentValue !== stockUomPopOverLabel}
-                                                                                        );
-                                                                                    }}
-                                                                                >
-                                                                                    <span
-                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${stockUomPopOverLabel === stockUom.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                                    >check</span>
-                                                                                    {stockUom.name}
-                                                                                </CommandItem>
-                                                                            ))}
-                                                                        </CommandGroup>
-                                                                    </CommandList>
-                                                                </Command>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </FormControl>
-                                                    <FormMessage className="text-xs text-destructive"/>
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1.5 mb-5">
-                                        <FormField
-                                            control={form.control}
-                                            name="purchaseUomId"
-                                            render={() => (
-                                                <FormItem>
-                                                    <FormLabel>{t('product_form_purchase_uom_id_label')}</FormLabel>
-                                                    <FormControl>
-                                                        <Popover open={openPurchaseUomPopOver} onOpenChange={setOpenPurchaseUomPopOver}>
-                                                            <PopoverTrigger asChild>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    role="combobox"
-                                                                    aria-expanded={openPurchaseUomPopOver}
-                                                                    className="w-full justify-between"
-                                                                    disabled={mode === FormModeType.READ || isLoading  || form.getValues('type') !== ProductTypeEnum.STOCK.valueOf()}
-                                                                >
-                                                                    <span>{purchaseUomPopOverLabel
-                                                                        ? purchaseUoms.find((purchaseUom) => purchaseUom.name === purchaseUomPopOverLabel)?.name
-                                                                        //@ts-ignore
-                                                                        : product ? purchaseUoms.find((purchaseUom) => purchaseUom.id === product.purchaseUomId)?.name : t('product_form_purchase_uom_id_pop_over_place_holder')}</span>
-                                                                    <span
-                                                                        className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                                <Command>
-                                                                    <CommandInput id="purchaseUomId" placeholder={t('product_form_purchase_uom_id_pop_over_place_holder')}/>
-                                                                    <CommandList>
-                                                                        <Command>{t('product_form_purchase_uom_id_pop_over_not_found')}</Command>
-                                                                        <CommandGroup>
-                                                                            {purchaseUoms.map((purchaseUom) => (
-                                                                                <CommandItem
-                                                                                    key={purchaseUom.id}
-                                                                                    value={purchaseUom.name}
-                                                                                    onSelect={(currentValue) => {
-                                                                                        setPurchaseUomPopOverLabel(currentValue === purchaseUomPopOverLabel ? "" : currentValue);
-                                                                                        setOpenPurchaseUomPopOver(false);
-                                                                                        form.setValue(
-                                                                                            "purchaseUomId",
-                                                                                            currentValue === purchaseUomPopOverLabel ? "" : purchaseUom.id,
-                                                                                            {shouldTouch: true, shouldDirty: true, shouldValidate: currentValue !== purchaseUomPopOverLabel}
-                                                                                        );
-                                                                                    }}
-                                                                                >
-                                                                                    <span
-                                                                                        className={`mr-2 h-4 w-4 material-symbols-outlined ${purchaseUomPopOverLabel === purchaseUom.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                                    >check</span>
-                                                                                    {purchaseUom.name}
-                                                                                </CommandItem>
-                                                                            ))}
-                                                                        </CommandGroup>
-                                                                    </CommandList>
-                                                                </Command>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </FormControl>
-                                                    <FormMessage className="text-xs text-destructive"/>
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="lg:w-6/12 mb-4">
-                                    <div className="flex flex-col space-y-1.5 mb-5">
-                                        <FormField
-                                            control={form.control}
-                                            name="purchasePrice"
+                                            name="purchasable"
                                             render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>{t('product_form_purchase_price_label')}</FormLabel>
+                                                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                                                     <FormControl>
-                                                        <Input id="purchasePrice" type="number" {...field}
-                                                               disabled={mode === FormModeType.READ || isLoading}/>
+                                                        <Checkbox id="purchasable" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
+                                                                  onCheckedChange={field.onChange}/>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-destructive"/>
+                                                    <FormLabel
+                                                        className="font-normal">{t('product_form_purchasable_label')}</FormLabel>
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
-                                    <div className="flex flex-col space-y-1.5 mb-5">
+                                    <div className="flex flex-row justify-start items-center space-x-1.5 w-4/12 gap-4">
                                         <FormField
                                             control={form.control}
-                                            name="salePrice"
+                                            name="sellable"
                                             render={({field}) => (
-                                                <FormItem>
-                                                    <FormLabel>{t('product_form_sale_price_label')}</FormLabel>
+                                                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                                                     <FormControl>
-                                                        <Input id="salePrice" type="number" {...field}
-                                                               disabled={mode === FormModeType.READ || isLoading}/>
+                                                        <Checkbox id="sellable" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
+                                                                  onCheckedChange={field.onChange}/>
                                                     </FormControl>
-                                                    <FormMessage className="text-xs text-destructive"/>
+                                                    <FormLabel
+                                                        className="font-normal">{t('product_form_sellable_label')}</FormLabel>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex flex-row justify-start items-center space-y-1.5 w-4/12 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="active"
+                                            render={({field}) => (
+                                                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                        <Checkbox id="active" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
+                                                                  onCheckedChange={field.onChange}/>
+                                                    </FormControl>
+                                                    <FormLabel
+                                                        className="font-normal">{t('product_form_active_label')}</FormLabel>
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-row gap-4 mt-4 w-full">
-                                <div className="flex flex-row justify-start items-center space-x-1.5 w-4/12 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="purchasable"
-                                        render={({field}) => (
-                                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                                <FormControl>
-                                                    <Checkbox id="purchasable" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
-                                                              onCheckedChange={field.onChange}/>
-                                                </FormControl>
-                                                <FormLabel
-                                                    className="font-normal">{t('product_form_purchasable_label')}</FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="flex flex-row justify-start items-center space-x-1.5 w-4/12 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="sellable"
-                                        render={({field}) => (
-                                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                                <FormControl>
-                                                    <Checkbox id="sellable" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
-                                                              onCheckedChange={field.onChange}/>
-                                                </FormControl>
-                                                <FormLabel
-                                                    className="font-normal">{t('product_form_sellable_label')}</FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="flex flex-row justify-start items-center space-y-1.5 w-4/12 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="active"
-                                        render={({field}) => (
-                                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                                <FormControl>
-                                                    <Checkbox id="active" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
-                                                              onCheckedChange={field.onChange}/>
-                                                </FormControl>
-                                                <FormLabel
-                                                    className="font-normal">{t('product_form_active_label')}</FormLabel>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between py-5">
+                        </CardContent>
+                        <CardFooter className="flex justify-between py-5">
 
-                    </CardFooter>
-                </Card>
-            </form>
-        </Form>
+                        </CardFooter>
+                    </Card>
+                </form>
+            </Form>
+        </div>
     );
 };
 
