@@ -49,7 +49,7 @@ const FormCrudButton = ({mode, isLoading, isValid, onEdit, onCancel, onCreate}: 
     const renderSaveButton = () => {
         return (mode === FormModeType.CREATE || mode === FormModeType.EDIT) && (
             <Button variant="default" disabled={!isValid} type="submit" className="flex flex-row justify-center items-center">
-                <span className="material-symbols-outlined text-xl">{isLoading? '': 'check'}</span>
+                <span className={`material-symbols-outlined text-xl ${isLoading? 'animate-spin': ''}`}>{isLoading? 'progress_activity': 'check'}</span>
                 <span>{t('form_button_label_save')} {isLoading? ' ...': ''}</span>
             </Button>
         )

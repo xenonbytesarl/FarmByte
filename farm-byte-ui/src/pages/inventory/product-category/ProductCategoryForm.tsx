@@ -129,18 +129,19 @@ const ProductCategoryForm = () => {
         form.reset(defaultValuesProductCategory);
     }
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-                <Toaster/>
-                <Card className="">
-                    <CardHeader>
-                        <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
+        <div className="p-10">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                    <Toaster/>
+                    <Card className="">
+                        <CardHeader>
+                            <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
                         <span onClick={() => navigate(`/inventory/product-categories`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                            <span
-                                className="text-2xl">{t(productCategoryId ? 'product_category_form_edit_title' : 'product_category_form_new_title')}</span>
-                        </CardTitle>
-                        <CardDescription>
+                                <span
+                                    className="text-2xl">{t(productCategoryId ? 'product_category_form_edit_title' : 'product_category_form_new_title')}</span>
+                            </CardTitle>
+                            <CardDescription>
                     <span className="flex flex-row w-full m-5">
                         <FormCrudButton
                             mode={mode}
@@ -153,72 +154,73 @@ const ProductCategoryForm = () => {
                         <span className="flex flex-row justify-end items-center gap-3 w-6/12">
                         </span>
                     </span>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <FormField
-                            control={form.control}
-                            name="id"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input id="name" type="hidden" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="parentProductCategoryId"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input id="parentProductCategoryId" type="hidden" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <div className="grid w-full items-center gap-4">
-                            <div className="flex flex-col space-y-1.5">
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>{t('product_category_form_name_label')}</FormLabel>
-                                            <FormControl>
-                                                <Input id="name" type="text" {...field}
-                                                       disabled={mode === FormModeType.READ || isLoading}/>
-                                            </FormControl>
-                                            <FormMessage className="text-xs text-destructive"/>
-                                        </FormItem>
-                                    )}
-                                />
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <FormField
+                                control={form.control}
+                                name="id"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="name" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="parentProductCategoryId"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="parentProductCategoryId" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid w-full items-center gap-4">
+                                <div className="flex flex-col space-y-1.5">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>{t('product_category_form_name_label')}</FormLabel>
+                                                <FormControl>
+                                                    <Input id="name" type="text" {...field}
+                                                           disabled={mode === FormModeType.READ || isLoading}/>
+                                                </FormControl>
+                                                <FormMessage className="text-xs text-destructive"/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5 mt-5">
+                                    <FormField
+                                        control={form.control}
+                                        name="active"
+                                        render={({field}) => (
+                                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                                <FormControl>
+                                                    <Checkbox id="active" checked={field.value}
+                                                              disabled={mode === FormModeType.READ || isLoading}
+                                                              onCheckedChange={field.onChange}/>
+                                                </FormControl>
+                                                <FormLabel
+                                                    className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
                             </div>
-                            <div className="flex flex-col space-y-1.5 mt-5">
-                                <FormField
-                                    control={form.control}
-                                    name="active"
-                                    render={({field}) => (
-                                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                            <FormControl>
-                                                <Checkbox id="active" checked={field.value}
-                                                          disabled={mode === FormModeType.READ || isLoading}
-                                                          onCheckedChange={field.onChange}/>
-                                            </FormControl>
-                                            <FormLabel
-                                                className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between py-5">
-                    </CardFooter>
-                </Card>
-            </form>
-        </Form>
+                        </CardContent>
+                        <CardFooter className="flex justify-between py-5">
+                        </CardFooter>
+                    </Card>
+                </form>
+            </Form>
+        </div>
     );
 };
 

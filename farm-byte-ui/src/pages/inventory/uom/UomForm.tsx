@@ -164,18 +164,19 @@ const UomForm = () => {
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-                <Toaster/>
-                <Card className="">
-                    <CardHeader>
-                        <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
+        <div className="p-10">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                    <Toaster/>
+                    <Card className="">
+                        <CardHeader>
+                            <CardTitle className="flex flex-row justify-start items-center text-primary gap-5">
                         <span onClick={() => navigate(`/inventory/uoms`)}
                               className="material-symbols-outlined text-3xl cursor-pointer">arrow_back</span>
-                            <span
-                                className="text-2xl">{t(uomId ? 'uom_form_edit_title' : 'uom_form_new_title')}</span>
-                        </CardTitle>
-                        <CardDescription>
+                                <span
+                                    className="text-2xl">{t(uomId ? 'uom_form_edit_title' : 'uom_form_new_title')}</span>
+                            </CardTitle>
+                            <CardDescription>
                     <span className="flex flex-row w-full m-5">
                         <FormCrudButton
                             mode={mode}
@@ -188,163 +189,85 @@ const UomForm = () => {
                         <span className="flex flex-row justify-end items-center gap-3 w-6/12">
                         </span>
                     </span>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <FormField
-                            control={form.control}
-                            name="id"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input id="id" type="hidden" {...field} />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <div className="grid md:grid-cols-2 w-full items-center gap-4">
-                            <div className="flex flex-col space-y-1.5">
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>{t('uom_category_form_name_label')}</FormLabel>
-                                            <FormControl>
-                                                <Input id="name" type="text" {...field}
-                                                       disabled={mode === FormModeType.READ || isLoading}/>
-                                            </FormControl>
-                                            <FormMessage className="text-xs text-destructive"/>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <FormField
-                                    control={form.control}
-                                    name="uomCategoryId"
-                                    render={() => (
-                                        <FormItem>
-                                            <FormLabel>{t('uom_form_uom_category_id_label')}</FormLabel>
-                                            <Popover open={openUomCategoryPopOver}
-                                                     onOpenChange={setOpenUomCategoryPopOver}>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        aria-expanded={openUomCategoryPopOver}
-                                                        className="w-full justify-between"
-                                                        disabled={mode === FormModeType.READ || isLoading}
-                                                    >
-                                                        <span>{uomCategoryPopOverLabel
-                                                            ? uomCategories.find((uomCategory) => uomCategory.name === uomCategoryPopOverLabel)?.name
-                                                            : uom ? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name : t('uom_category_pop_over_place_holder')}</span>
-                                                        <span
-                                                            className="opacity-50 material-symbols-outlined">unfold_more</span>
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-[--radix-popover-trigger-width]">
-                                                    <Command>
-                                                        <CommandInput id="uomCategoryId"
-                                                                      placeholder="Search framework..."/>
-                                                        <CommandList>
-                                                            <Command>{t('uom_category_pop_over_not_found')}</Command>
-                                                            <CommandGroup>
-                                                                {uomCategories.map((uomCategory) => (
-                                                                    <CommandItem
-                                                                        key={uomCategory.id}
-                                                                        value={uomCategory.name}
-                                                                        onSelect={(currentValue) => {
-                                                                            setUomCategoryPopOverLabel(currentValue === uomCategoryPopOverLabel ? "" : currentValue);
-                                                                            setOpenUomCategoryPopOver(false);
-                                                                            form.setValue("uomCategoryId",
-                                                                                currentValue === uomCategoryPopOverLabel ? "" : uomCategory.id,
-                                                                                {shouldTouch: true, shouldDirty: true, shouldValidate: true}
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <span
-                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${uomCategoryPopOverLabel === uomCategory.name ? 'opacity-100' : 'opacity-0'}`}
-                                                                        >check</span>
-                                                                        {uomCategory.name}
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        </CommandList>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage className="text-xs text-destructive"/>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <FormField
-                                    control={form.control}
-                                    name="ratio"
-                                    render={({field}) => (
-                                        <FormItem>
-                                            <FormLabel>{t('uom_form_ratio_label')}</FormLabel>
-                                            <FormControl>
-                                                <Input id="ratio" type="number" {...field}
-                                                       disabled={mode === FormModeType.READ || isLoading}/>
-                                            </FormControl>
-                                            <FormMessage className="text-xs text-destructive"/>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <FormField
-                                    control={form.control}
-                                    name="uomType"
-                                    render={() => (
-                                        <FormItem>
-                                            <FormLabel>{t('uom_form_uom_type_label')}</FormLabel>
-                                            <FormControl>
-                                                <Popover open={openUomTypePopOver} onOpenChange={setOpenUomTypePopOver}>
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <FormField
+                                control={form.control}
+                                name="id"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input id="id" type="hidden" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid md:grid-cols-2 w-full items-center gap-4">
+                                <div className="flex flex-col space-y-1.5">
+                                    <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>{t('uom_category_form_name_label')}</FormLabel>
+                                                <FormControl>
+                                                    <Input id="name" type="text" {...field}
+                                                           disabled={mode === FormModeType.READ || isLoading}/>
+                                                </FormControl>
+                                                <FormMessage className="text-xs text-destructive"/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                    <FormField
+                                        control={form.control}
+                                        name="uomCategoryId"
+                                        render={() => (
+                                            <FormItem>
+                                                <FormLabel>{t('uom_form_uom_category_id_label')}</FormLabel>
+                                                <Popover open={openUomCategoryPopOver}
+                                                         onOpenChange={setOpenUomCategoryPopOver}>
                                                     <PopoverTrigger asChild>
                                                         <Button
                                                             variant="outline"
                                                             role="combobox"
-                                                            aria-expanded={openUomTypePopOver}
+                                                            aria-expanded={openUomCategoryPopOver}
                                                             className="w-full justify-between"
                                                             disabled={mode === FormModeType.READ || isLoading}
                                                         >
-                                                            <span>{uomTypePopOverLabel
-                                                                // @ts-ignore
-                                                                ? t(uomTypes.find((uomType) => uomType.label === uomTypePopOverLabel)?.label)
-                                                                // @ts-ignore
-                                                                : uom ? t(uomTypes.find((uomTypeEdit) => uomTypeEdit.name === uom.uomType)?.label) : t('uom_pop_over_place_holder')}</span>
+                                                        <span>{uomCategoryPopOverLabel
+                                                            ? uomCategories.find((uomCategory) => uomCategory.name === uomCategoryPopOverLabel)?.name
+                                                            : uom ? uomCategories.find((uomCategory) => uom.uomCategoryId === uomCategory.id)?.name : t('uom_category_pop_over_place_holder')}</span>
                                                             <span
                                                                 className="opacity-50 material-symbols-outlined">unfold_more</span>
                                                         </Button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-[--radix-popover-trigger-width]">
                                                         <Command>
-                                                            <CommandInput id="uomType"
-                                                                          placeholder="Search framework..." />
+                                                            <CommandInput id="uomCategoryId"
+                                                                          placeholder="Search framework..."/>
                                                             <CommandList>
-                                                                <Command>{t('uom_pop_over_not_found')}</Command>
+                                                                <Command>{t('uom_category_pop_over_not_found')}</Command>
                                                                 <CommandGroup>
-                                                                    {uomTypes.map((uomType) => (
+                                                                    {uomCategories.map((uomCategory) => (
                                                                         <CommandItem
-                                                                            key={uomType.label}
-                                                                            value={uomType.label}
+                                                                            key={uomCategory.id}
+                                                                            value={uomCategory.name}
                                                                             onSelect={(currentValue) => {
-                                                                                setUomTypePopOverLabel(currentValue === uomTypePopOverLabel ? "" : currentValue)
-                                                                                setOpenUomTypePopOver(false);
-                                                                                form.setValue("uomType",
-                                                                                    currentValue === uomTypePopOverLabel ? "": uomType.name,
+                                                                                setUomCategoryPopOverLabel(currentValue === uomCategoryPopOverLabel ? "" : currentValue);
+                                                                                setOpenUomCategoryPopOver(false);
+                                                                                form.setValue("uomCategoryId",
+                                                                                    currentValue === uomCategoryPopOverLabel ? "" : uomCategory.id,
                                                                                     {shouldTouch: true, shouldDirty: true, shouldValidate: true}
                                                                                 );
                                                                             }}
                                                                         >
-                                                                            <span
-                                                                                className={`mr-2 h-4 w-4 material-symbols-outlined ${uomTypePopOverLabel === uomType.label ? 'opacity-100' : 'opacity-0'}`}
-                                                                            >check</span>
-                                                                            {t(uomType.label)}
+                                                                        <span
+                                                                            className={`mr-2 h-4 w-4 material-symbols-outlined ${uomCategoryPopOverLabel === uomCategory.name ? 'opacity-100' : 'opacity-0'}`}
+                                                                        >check</span>
+                                                                            {uomCategory.name}
                                                                         </CommandItem>
                                                                     ))}
                                                                 </CommandGroup>
@@ -352,38 +275,117 @@ const UomForm = () => {
                                                         </Command>
                                                     </PopoverContent>
                                                 </Popover>
-                                            </FormControl>
-                                            <FormMessage className="text-xs text-destructive"/>
-                                        </FormItem>
-                                    )}
-                                />
+                                                <FormMessage className="text-xs text-destructive"/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                    <FormField
+                                        control={form.control}
+                                        name="ratio"
+                                        render={({field}) => (
+                                            <FormItem>
+                                                <FormLabel>{t('uom_form_ratio_label')}</FormLabel>
+                                                <FormControl>
+                                                    <Input id="ratio" type="number" {...field}
+                                                           disabled={mode === FormModeType.READ || isLoading}/>
+                                                </FormControl>
+                                                <FormMessage className="text-xs text-destructive"/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                    <FormField
+                                        control={form.control}
+                                        name="uomType"
+                                        render={() => (
+                                            <FormItem>
+                                                <FormLabel>{t('uom_form_uom_type_label')}</FormLabel>
+                                                <FormControl>
+                                                    <Popover open={openUomTypePopOver} onOpenChange={setOpenUomTypePopOver}>
+                                                        <PopoverTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                role="combobox"
+                                                                aria-expanded={openUomTypePopOver}
+                                                                className="w-full justify-between"
+                                                                disabled={mode === FormModeType.READ || isLoading}
+                                                            >
+                                                            <span>{uomTypePopOverLabel
+                                                                // @ts-ignore
+                                                                ? t(uomTypes.find((uomType) => uomType.label === uomTypePopOverLabel)?.label)
+                                                                // @ts-ignore
+                                                                : uom ? t(uomTypes.find((uomTypeEdit) => uomTypeEdit.name === uom.uomType)?.label) : t('uom_pop_over_place_holder')}</span>
+                                                                <span
+                                                                    className="opacity-50 material-symbols-outlined">unfold_more</span>
+                                                            </Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-[--radix-popover-trigger-width]">
+                                                            <Command>
+                                                                <CommandInput id="uomType"
+                                                                              placeholder="Search framework..." />
+                                                                <CommandList>
+                                                                    <Command>{t('uom_pop_over_not_found')}</Command>
+                                                                    <CommandGroup>
+                                                                        {uomTypes.map((uomType) => (
+                                                                            <CommandItem
+                                                                                key={uomType.label}
+                                                                                value={uomType.label}
+                                                                                onSelect={(currentValue) => {
+                                                                                    setUomTypePopOverLabel(currentValue === uomTypePopOverLabel ? "" : currentValue)
+                                                                                    setOpenUomTypePopOver(false);
+                                                                                    form.setValue("uomType",
+                                                                                        currentValue === uomTypePopOverLabel ? "": uomType.name,
+                                                                                        {shouldTouch: true, shouldDirty: true, shouldValidate: true}
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                            <span
+                                                                                className={`mr-2 h-4 w-4 material-symbols-outlined ${uomTypePopOverLabel === uomType.label ? 'opacity-100' : 'opacity-0'}`}
+                                                                            >check</span>
+                                                                                {t(uomType.label)}
+                                                                            </CommandItem>
+                                                                        ))}
+                                                                    </CommandGroup>
+                                                                </CommandList>
+                                                            </Command>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </FormControl>
+                                                <FormMessage className="text-xs text-destructive"/>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5 mt-5">
+                                    <FormField
+                                        control={form.control}
+                                        name="active"
+                                        render={({field}) => (
+                                            <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                                                <FormControl>
+                                                    <Checkbox id="active" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
+                                                              onCheckedChange={field.onChange}/>
+                                                </FormControl>
+                                                <FormLabel
+                                                    className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="flex flex-col space-y-1.5">
+                                </div>
                             </div>
-                            <div className="flex flex-col space-y-1.5 mt-5">
-                                <FormField
-                                    control={form.control}
-                                    name="active"
-                                    render={({field}) => (
-                                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                            <FormControl>
-                                                <Checkbox id="active" checked={field.value} disabled={mode === FormModeType.READ || isLoading}
-                                                          onCheckedChange={field.onChange}/>
-                                            </FormControl>
-                                            <FormLabel
-                                                className="font-normal">{t('uom_category_form_active_label')}</FormLabel>
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                            </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between py-5">
+                        </CardContent>
+                        <CardFooter className="flex justify-between py-5">
 
-                    </CardFooter>
-                </Card>
-            </form>
-        </Form>
+                        </CardFooter>
+                    </Card>
+                </form>
+            </Form>
+        </div>
     );
 };
 
