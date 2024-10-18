@@ -209,7 +209,7 @@ final class UomCategoryDomainServiceTest {
             assertThat(result.getTotalElements()).isEqualTo(totalElements);
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
-            assertThat(result.getElements().size()).isEqualTo(contentSize);
+            assertThat(result.getElements()).hasSize(contentSize);
         }
 
     }

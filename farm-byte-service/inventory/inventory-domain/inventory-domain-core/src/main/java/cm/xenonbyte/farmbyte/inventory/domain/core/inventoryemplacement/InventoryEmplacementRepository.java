@@ -1,6 +1,8 @@
 package cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement;
 
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
@@ -19,4 +21,6 @@ public interface InventoryEmplacementRepository {
 
     @Nonnull
     Optional<InventoryEmplacement> findById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
+
+    PageInfo<InventoryEmplacement> findAll(Integer page, Integer size, String sortAttribute, Direction direction);
 }

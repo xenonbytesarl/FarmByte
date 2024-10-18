@@ -2,7 +2,9 @@ package cm.xenonbyte.farmbyte.inventory.domain.core;
 
 import cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException;
 import cm.xenonbyte.farmbyte.common.domain.vo.Active;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import cm.xenonbyte.farmbyte.inventory.adapter.data.access.inmemory.InMemoryInventoryEmplacementRepository;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
@@ -193,6 +195,81 @@ public final class InventoryEmplacementTest {
             assertThatThrownBy(() -> inventoryEmplacementService.findById(new InventoryEmplacementId(UUID.randomUUID())))
                     .isInstanceOf(InventoryEmplacementNotFoundException.class)
                     .hasMessage(INVENTORY_EMPLACEMENT_ID_NOT_FOUND);
+        }
+    }
+
+    @Nested
+    class FindInventoryEmplacementsDomainTest {
+        @BeforeEach
+        void setUp() {
+
+            inventoryEmplacementRepository.save(
+                InventoryEmplacement.builder()
+                    .id(new InventoryEmplacementId(UUID.fromString("0192a1cf-1850-7a51-ad51-f76c625aeec0")))
+                    .name(Name.of(Text.of("InventoryEmplacementName.1")))
+                    .type(InventoryEmplacementType.INTERNAL)
+                    .build()
+            );
+
+            inventoryEmplacementRepository.save(
+                    InventoryEmplacement.builder()
+                            .id(new InventoryEmplacementId(UUID.fromString("0192a1cf-fbcb-7241-af27-62d110c3cedb")))
+                            .name(Name.of(Text.of("InventoryEmplacementName.2")))
+                            .type(InventoryEmplacementType.INTERNAL)
+                            .build()
+            );
+
+            inventoryEmplacementRepository.save(
+                    InventoryEmplacement.builder()
+                            .id(new InventoryEmplacementId(UUID.fromString("0192a1d0-32e8-7c06-9924-36bd0e3149fd")))
+                            .name(Name.of(Text.of("InventoryEmplacementName.3")))
+                            .type(InventoryEmplacementType.CUSTOMER)
+                            .build()
+            );
+
+            inventoryEmplacementRepository.save(
+                    InventoryEmplacement.builder()
+                            .id(new InventoryEmplacementId(UUID.fromString("0192a1d0-a26a-78c1-8e11-e3d8578bfeaf")))
+                            .name(Name.of(Text.of("InventoryEmplacementName.4")))
+                            .type(InventoryEmplacementType.SUPPLIER)
+                            .build()
+            );
+
+            inventoryEmplacementRepository.save(
+                    InventoryEmplacement.builder()
+                            .id(new InventoryEmplacementId(UUID.fromString("0192a1d0-f7b1-75cd-8361-99a9e5a1c21f")))
+                            .name(Name.of(Text.of("InventoryEmplacementName.5")))
+                            .type(InventoryEmplacementType.TRANSIT)
+                            .build()
+            );
+        }
+
+        static Stream<Arguments> findInventoryEmplacementsMethodSource() {
+            return Stream.of(
+                    Arguments.of(2, 2, "name", Direction.ASC, 3, 6l, 2,2),
+                    Arguments.of(1, 2, "name", Direction.DSC, 3, 6l, 2,2)
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("findInventoryEmplacementsMethodSource")
+        void should_success_when_find_all_inventory_emplacements(
+                Integer page,
+                Integer size,
+                String sortAttribute,
+                Direction direction,
+                Integer totalPages,
+                Long totalElements,
+                Integer pageSize,
+                Integer contentSize
+        ) {
+            //Then
+            PageInfo<InventoryEmplacement> result = inventoryEmplacementService.findInventoryEmplacements(page, size, sortAttribute, direction);
+
+            assertThat(result.getTotalElements()).isEqualTo(totalElements);
+            assertThat(result.getTotalPages()).isEqualTo(totalPages);
+            assertThat(result.getPageSize()).isEqualTo(pageSize);
+            assertThat(result.getElements()).hasSize(contentSize);
         }
     }
 
