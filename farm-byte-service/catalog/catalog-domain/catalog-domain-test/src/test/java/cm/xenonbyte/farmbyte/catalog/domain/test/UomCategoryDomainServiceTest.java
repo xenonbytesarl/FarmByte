@@ -215,7 +215,7 @@ final class UomCategoryDomainServiceTest {
     }
 
     @Nested
-    class FindUomCategoryByKeyword {
+    class SearchUomCategoryByKeyword {
 
         @BeforeEach
         void setUp() {

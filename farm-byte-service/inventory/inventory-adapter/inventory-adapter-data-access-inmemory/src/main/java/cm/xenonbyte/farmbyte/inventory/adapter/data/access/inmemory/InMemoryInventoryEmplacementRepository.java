@@ -1,6 +1,7 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.data.access.inmemory;
 
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
@@ -12,6 +13,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * @author bamk
@@ -56,6 +58,21 @@ public final class InMemoryInventoryEmplacementRepository implements InventoryEm
                 size,
                 inventoryEmplacements.values().stream()
                         .sorted(Direction.ASC.equals(direction) ? comparing : comparing.reversed())
+                        .toList()
+        );
+    }
+
+    @Override
+    public PageInfo<InventoryEmplacement> search(Integer page, Integer size, String sortAttribute, Direction direction, Keyword keyword) {
+        Predicate<InventoryEmplacement> inventoryEmplacementNammePredicate = inventoryEmplacement -> inventoryEmplacement.getName().getText().getValue().toLowerCase().contains(keyword.getText().getValue().toLowerCase());
+        Comparator<InventoryEmplacement> comparing = Comparator.comparing((InventoryEmplacement a) -> a.getName().getText().getValue());
+        PageInfo<InventoryEmplacement> inventoryEmplacementPageInfo = new PageInfo<>();
+        return inventoryEmplacementPageInfo.with(
+                page,
+                size,
+                inventoryEmplacements.values().stream()
+                        .filter(inventoryEmplacementNammePredicate)
+                        .sorted(Direction.ASC.equals(direction) ? comparing: comparing.reversed())
                         .toList()
         );
     }

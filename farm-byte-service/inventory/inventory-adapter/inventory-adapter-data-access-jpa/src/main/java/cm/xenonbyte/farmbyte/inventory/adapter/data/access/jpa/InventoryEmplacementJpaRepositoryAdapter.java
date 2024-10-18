@@ -1,6 +1,9 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.data.access.jpa;
 
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementRepository;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -52,5 +56,21 @@ public class InventoryEmplacementJpaRepositoryAdapter implements InventoryEmplac
     @Transactional(readOnly = true)
     public boolean existsByNameIgnoreCase(@Nonnull Name name) {
         return inventoryEmplacementRepositoryJpa.existsByNameIgnoreCase(name.getText().getValue());
+    }
+
+    @Nonnull
+    @Override
+    public Optional<InventoryEmplacement> findById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public PageInfo<InventoryEmplacement> findAll(Integer page, Integer size, String sortAttribute, Direction direction) {
+        return null;
+    }
+
+    @Override
+    public PageInfo<InventoryEmplacement> search(Integer page, Integer size, String sortAttribute, Direction direction, Keyword keyword) {
+        return null;
     }
 }
