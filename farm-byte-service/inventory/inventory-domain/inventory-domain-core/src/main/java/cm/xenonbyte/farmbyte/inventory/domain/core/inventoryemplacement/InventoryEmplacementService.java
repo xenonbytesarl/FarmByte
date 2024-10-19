@@ -13,7 +13,7 @@ import jakarta.annotation.Nonnull;
 public interface InventoryEmplacementService {
     @Nonnull InventoryEmplacement createInventoryEmplacement(@Nonnull InventoryEmplacement inventoryEmplacement);
 
-    @Nonnull InventoryEmplacement findById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
+    @Nonnull InventoryEmplacement findInventoryEmplacementById(@Nonnull InventoryEmplacementId inventoryEmplacementId);
 
     PageInfo<InventoryEmplacement> findInventoryEmplacements(Integer page, Integer size, String sortAttribute, Direction direction);
 

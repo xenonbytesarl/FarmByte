@@ -58,7 +58,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - InventoryEmplacement
+      summary: find all inventory emplacement
+      operationId: findInventoryEmplacements
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindInventoryEmplacementsViewApiResponse'
+  /inventory-emplacements/{inventoryEmplacementId}:
+    get:
+      tags:
+        - InventoryEmplacement
+      summary: find inventory emplacement by id
+      operationId: findInventoryEmplacementById
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/inventoryEmplacementId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindInventoryEmplacementByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /inventory-emplacements/search:
+    get:
+      tags:
+        - InventoryEmplacement
+      summary: search inventory emplacement
+      operationId: searchInventoryEmplacements
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
+        - $ref: '../common/parameters/keyword.yaml#/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchInventoryEmplacementsViewApiResponse'
 components:
+  parameters:
+    inventoryEmplacementId:
+      in: path
+      name: inventoryEmplacementId
+      required: true
+      schema:
+        type: string
+        format: uuid
   schemas:
     ApiErrorResponse:
       $ref: '../common/schemas/api-error-response.yaml#/ApiErrorResponse'
@@ -123,3 +200,57 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/CreateInventoryEmplacementViewResponse'
+    FindInventoryEmplacementByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/InventoryEmplacementView'
+    FindInventoryEmplacementByIdViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindInventoryEmplacementByIdViewResponse'
+    FindInventoryEmplacementsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/InventoryEmplacementView'
+    FindInventoryEmplacementsPageInfoViewResponse:
+      allOf:
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            elements:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindInventoryEmplacementsViewResponse'
+    FindInventoryEmplacementsViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindInventoryEmplacementsPageInfoViewResponse'
+    SearchInventoryEmplacementsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/InventoryEmplacementView'
+    SearchInventoryEmplacementsPageInfoViewResponse:
+      allOf:
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            elements:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchInventoryEmplacementsViewResponse'
+    SearchInventoryEmplacementsViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SearchInventoryEmplacementsPageInfoViewResponse'

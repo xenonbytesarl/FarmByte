@@ -3,7 +3,13 @@ package cm.xenonbyte.farmbyte.inventory.adapter.rest.api;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewRequest;
 import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsViewResponse;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException;
+import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Nested;
@@ -19,20 +25,25 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.ACCEPT_LANGUAGE;
 import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRestApi.EN_LOCALE;
+import static cm.xenonbyte.farmbyte.inventory.adapter.rest.api.InventoryEmplacementRestApi.INVENTORY_EMPLACEMENTS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.inventory.adapter.rest.api.InventoryEmplacementRestApi.INVENTORY_EMPLACEMENT_CREATED_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.inventory.adapter.rest.api.InventoryEmplacementRestApi.INVENTORY_EMPLACEMENT_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException.INVENTORY_EMPLACEMENT_NAME_CONFLICT;
+import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException.INVENTORY_EMPLACEMENT_ID_NOT_FOUND;
 import static cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException.INVENTORY_EMPLACEMENT_PARENT_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -195,6 +206,238 @@ public final class InventoryEmplacementRestApiTest extends RestApiBeanConfigTest
             );
 
             assertThat(createInventoryEmplacementViewRequestArgumentCaptor.getValue()).isEqualTo(createInventoryEmplacementViewRequest);
+
+        }
+    }
+
+    @Nested
+    class FindInventoryEmplacementByIdRestApiTest {
+        @Test
+        void should_success_when_find_uom_by_existing_uom_id() throws Exception {
+            //Given
+            UUID inventoryEmplacementUUID = UUID.fromString("0192a6b0-fd7e-753a-81bf-98a2a1ce9ab5");
+            FindInventoryEmplacementByIdViewResponse findInventoryEmplacementByIdViewResponse =
+                    new FindInventoryEmplacementByIdViewResponse()
+                            .id(inventoryEmplacementUUID)
+                            .name("Internal Inventory Emplacement")
+                            .type(FindInventoryEmplacementByIdViewResponse.TypeEnum.INTERNAL)
+                            .active(true);
+
+            when(inventoryEmplacementDomainRestApiAdapter.findInventoryEmplacementById(inventoryEmplacementUUID))
+                    .thenReturn(findInventoryEmplacementByIdViewResponse);
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+            //Act
+            mockMvc.perform(get(String.format(INVENTORY_EMPLACEMENT_PATH_URI + "/%s", inventoryEmplacementUUID))
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(INVENTORY_EMPLACEMENT_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isMap())
+                    .andExpect(jsonPath("$.data.content").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.id").value(findInventoryEmplacementByIdViewResponse.getId().toString()))
+                    .andExpect(jsonPath("$.data.content.name").value(findInventoryEmplacementByIdViewResponse.getName()))
+                    .andExpect(jsonPath("$.data.content.type").value(findInventoryEmplacementByIdViewResponse.getType().toString()))
+                    .andExpect(jsonPath("$.data.content.active").value(findInventoryEmplacementByIdViewResponse.getActive()));
+
+            //Then
+            verify(inventoryEmplacementDomainRestApiAdapter, times(1))
+                    .findInventoryEmplacementById(uuidArgumentCaptor.capture());
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementUUID);
+        }
+
+        @Test
+        void should_fail_when_find_uom_by_existing_uom_id() throws Exception {
+            //Given
+            UUID inventoryEmplacementUUID = UUID.fromString("0192a71d-fcff-76e5-89c6-03197f99c981");
+
+            when(inventoryEmplacementDomainRestApiAdapter.findInventoryEmplacementById(inventoryEmplacementUUID))
+                    .thenThrow(InventoryEmplacementNotFoundException.class.getConstructor(Object[].class)
+                            .newInstance(new Object[]{new String[]{inventoryEmplacementUUID.toString()}}));
+            ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+            //Act
+            mockMvc.perform(get(String.format(INVENTORY_EMPLACEMENT_PATH_URI + "/%s", inventoryEmplacementUUID))
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(false))
+                    .andExpect(jsonPath("$.code").value(404))
+                    .andExpect(jsonPath("$.status").value("NOT_FOUND"))
+                    .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(INVENTORY_EMPLACEMENT_ID_NOT_FOUND, Locale.forLanguageTag(EN_LOCALE), inventoryEmplacementUUID.toString())));
+
+            //Then
+            verify(inventoryEmplacementDomainRestApiAdapter, times(1))
+                    .findInventoryEmplacementById(uuidArgumentCaptor.capture());
+            assertThat(uuidArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementUUID);
+        }
+    }
+
+    @Nested
+    class FindInventoryEmplacementsRestApiTest {
+        @Test
+        void should_success_when_find_when_find_inventory_emplacements() throws Exception {
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            String direction = "ASC";
+            FindInventoryEmplacementsPageInfoViewResponse inventoryEmplacementsPageInfoViewResponse =
+                    new FindInventoryEmplacementsPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(3)
+                    .elements(
+                            List.of(
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 2")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Customer Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.CUSTOMER)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Supplier Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.SUPPLIER)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Transit Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.TRANSIT)
+                                            .id(UUID.randomUUID())
+                            )
+                    );
+
+            when(inventoryEmplacementDomainRestApiAdapter.findInventoryEmplacements(page, size, attribute, direction))
+                    .thenReturn(inventoryEmplacementsPageInfoViewResponse);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+
+            //Act + Then
+            mockMvc.perform(get(INVENTORY_EMPLACEMENT_PATH_URI)
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .param("page", String.valueOf(page))
+                            .param("size", String.valueOf(size))
+                            .param("attribute", attribute)
+                            .param("direction", direction)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(INVENTORY_EMPLACEMENTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
+
+            //Then
+            verify(inventoryEmplacementDomainRestApiAdapter, times(1))
+                    .findInventoryEmplacements(
+                            integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                                stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(stringArgumentCaptor.getAllValues().get(1)).isEqualTo(direction);
+
+        }
+    }
+
+    @Nested
+    class SearchInventoryEmplacementsRestApiTest {
+        @Test
+        void should_success_when_search_when_find_inventory_emplacements() throws Exception {
+            //Given
+            int page = 0;
+            int size = 2;
+            String attribute = "name";
+            String direction = "ASC";
+            String keyword = "int";
+
+            SearchInventoryEmplacementsPageInfoViewResponse inventoryEmplacementsPageInfoViewResponse =
+                    new SearchInventoryEmplacementsPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(3)
+                    .elements(
+                            List.of(
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 2")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Customer Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.CUSTOMER)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Supplier Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.SUPPLIER)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Transit Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.TRANSIT)
+                                            .id(UUID.randomUUID())
+                            )
+                    );
+
+            when(inventoryEmplacementDomainRestApiAdapter.searchInventoryEmplacements(page, size, attribute, direction, keyword))
+                    .thenReturn(inventoryEmplacementsPageInfoViewResponse);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+
+            //Act + Then
+            mockMvc.perform(get(INVENTORY_EMPLACEMENT_PATH_URI + "/search")
+                            .accept(APPLICATION_JSON)
+                            .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                            .param("page", String.valueOf(page))
+                            .param("size", String.valueOf(size))
+                            .param("attribute", attribute)
+                            .param("direction", direction)
+                            .param("keyword", keyword)
+                            .contentType(APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.status").value("OK"))
+                    .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(INVENTORY_EMPLACEMENTS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                    .andExpect(jsonPath("$.data").isNotEmpty())
+                    .andExpect(jsonPath("$.data.content.elements").isArray());
+
+            //Then
+            verify(inventoryEmplacementDomainRestApiAdapter, times(1))
+                    .searchInventoryEmplacements(
+                            integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                            stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(size);
+            assertThat(stringArgumentCaptor.getAllValues().get(0)).isEqualTo(attribute);
+            assertThat(stringArgumentCaptor.getAllValues().get(1)).isEqualTo(direction);
+            assertThat(stringArgumentCaptor.getAllValues().get(2)).isEqualTo(keyword);
 
         }
     }
