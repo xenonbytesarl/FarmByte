@@ -46,9 +46,11 @@ public class InventoryEmplacementJpaRepositoryAdapterIT extends InventoryEmplace
 
         parentId = new InventoryEmplacementId(UUID.fromString("019296f7-1e4b-7739-8f09-cf650590f0d7"));
 
+        inventoryEmplacementId = new InventoryEmplacementId(UUID.fromString("0192a686-3f49-7f2d-b7eb-ebe08814b82a"));
+
         inventoryEmplacement = InventoryEmplacement.builder()
                 .id(new InventoryEmplacementId(UUID.fromString("01929708-609d-7d64-ae29-1940b7e5f6f1")))
-                .name(Name.of(Text.of("Internal Emplacement 2")))
+                .name(Name.of(Text.of("Internal Emplacement 4")))
                 .type(InventoryEmplacementType.INTERNAL)
                 .parentId(parentId)
                 .active(Active.with(true))
