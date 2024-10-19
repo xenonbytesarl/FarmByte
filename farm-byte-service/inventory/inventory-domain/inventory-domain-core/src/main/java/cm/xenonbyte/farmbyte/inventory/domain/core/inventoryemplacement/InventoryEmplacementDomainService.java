@@ -34,7 +34,7 @@ public final class InventoryEmplacementDomainService implements InventoryEmplace
 
     @Nonnull
     @Override
-    public InventoryEmplacement findById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
+    public InventoryEmplacement findInventoryEmplacementById(@Nonnull InventoryEmplacementId inventoryEmplacementId) {
         return inventoryEmplacementRepository.findById(inventoryEmplacementId).orElseThrow(
                 () -> new InventoryEmplacementNotFoundException(new String[]{inventoryEmplacementId.getValue().toString()})
         );

@@ -1,12 +1,22 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.rest.api;
 
+import cm.xenonbyte.farmbyte.common.domain.vo.Active;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewRequest;
 import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsViewResponse;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementId;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException;
+import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementService;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementType;
@@ -23,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -223,4 +234,291 @@ public final class InventoryEmplacementDomainRestApiAdapterTest {
             assertThat(inventoryEmplacementArgumentCaptor.getAllValues().getFirst()).isEqualTo(createInventoryEmplacementRequest);
         }
     }
+    
+    @Nested
+    class FindInventoryEmplacementByIdDomainServiceRestApiAdapterTest {
+
+        @Test
+        void should_success_when_find_inventory_emplacement_by_id() {
+            //Given
+            UUID inventoryEmplacementUUID = UUID.fromString("0192a6b0-fd7e-753a-81bf-98a2a1ce9ab5");
+            String name = "Internal Inventory Emplacement";
+
+            InventoryEmplacementId inventoryEmplacementId = new InventoryEmplacementId(inventoryEmplacementUUID);
+            InventoryEmplacement inventoryEmplacement = InventoryEmplacement.builder()
+                    .id(inventoryEmplacementId)
+                    .name(Name.of(Text.of(name)))
+                    .type(InventoryEmplacementType.INTERNAL)
+                    .active(Active.with(true))
+                    .build();
+
+            FindInventoryEmplacementByIdViewResponse findInventoryEmplacementByIdViewResponse =
+                    new FindInventoryEmplacementByIdViewResponse()
+                        .id(inventoryEmplacementUUID)
+                        .name(name)
+                        .type(FindInventoryEmplacementByIdViewResponse.TypeEnum.INTERNAL)
+                        .active(true);
+
+            when(inventoryEmplacementService.findInventoryEmplacementById(inventoryEmplacementId))
+                    .thenReturn(inventoryEmplacement);
+            when(inventoryEmplacementViewMapper.toFindInventoryEmplacementByIdViewResponse(inventoryEmplacement))
+                    .thenReturn(findInventoryEmplacementByIdViewResponse);
+
+            ArgumentCaptor<InventoryEmplacement> inventoryEmplacementArgumentCaptor =
+                    ArgumentCaptor.forClass(InventoryEmplacement.class);
+
+            ArgumentCaptor<InventoryEmplacementId> inventoryEmplacementIdArgumentCaptor =
+                    ArgumentCaptor.forClass(InventoryEmplacementId.class);
+
+            //Act
+            FindInventoryEmplacementByIdViewResponse result = inventoryEmplacementServiceRestApiAdapter.findInventoryEmplacementById(inventoryEmplacementUUID);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(findInventoryEmplacementByIdViewResponse);
+
+            verify(inventoryEmplacementService, times(1))
+                    .findInventoryEmplacementById(inventoryEmplacementIdArgumentCaptor.capture());
+            verify(inventoryEmplacementViewMapper, times(1))
+                    .toFindInventoryEmplacementByIdViewResponse(inventoryEmplacementArgumentCaptor.capture());
+
+            assertThat(inventoryEmplacementArgumentCaptor.getValue()).isEqualTo(inventoryEmplacement);
+            assertThat(inventoryEmplacementIdArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementId);
+
+        }
+
+        @Test
+        void should_fail_when_find_inventory_emplacement_with_non_existing_id() {
+            //Given
+            UUID inventoryEmplacementIdUUID = UUID.randomUUID();
+            InventoryEmplacementId inventoryEmplacementId = new InventoryEmplacementId(inventoryEmplacementIdUUID);
+
+            when(inventoryEmplacementService.findInventoryEmplacementById(inventoryEmplacementId)).thenThrow(InventoryEmplacementNotFoundException.class);
+            ArgumentCaptor<InventoryEmplacementId> inventoryEmplacementIdArgumentCaptor = ArgumentCaptor.forClass(InventoryEmplacementId.class);
+
+            //Act + Then
+            assertThatThrownBy(() -> inventoryEmplacementServiceRestApiAdapter.findInventoryEmplacementById(inventoryEmplacementIdUUID))
+                    .isInstanceOf(InventoryEmplacementNotFoundException.class);
+
+            verify(inventoryEmplacementService, times(1)).findInventoryEmplacementById(inventoryEmplacementIdArgumentCaptor.capture());
+
+            assertThat(inventoryEmplacementIdArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementId);
+        }
+    }
+
+    @Nested
+    class FindInventoryEmplacementsDomainServiceRestApiAdapterTest {
+
+        @Test
+        void should_success_when_find_inventory_emplacements() {
+            //Given
+
+            int page = 1;
+            int pageSize = 2;
+            String attribute = "name";
+
+            PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo =  new PageInfo<InventoryEmplacement>().with(
+                    page, pageSize,
+                    List.of(
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Internal Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.INTERNAL)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Internal Emplacement 2")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.INTERNAL)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Customer Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.CUSTOMER)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Supplier Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.SUPPLIER)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Transit Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.TRANSIT)
+                                    .build()
+                    )
+            );
+
+            FindInventoryEmplacementsPageInfoViewResponse inventoryEmplacementsPageInfoViewResponse = new FindInventoryEmplacementsPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(3)
+                    .elements(
+                            List.of(
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 2")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Customer Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.CUSTOMER)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Supplier Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.SUPPLIER)
+                                            .id(UUID.randomUUID()),
+                                    new FindInventoryEmplacementsViewResponse()
+                                            .name("Transit Emplacement 1")
+                                            .type(FindInventoryEmplacementsViewResponse.TypeEnum.TRANSIT)
+                                            .id(UUID.randomUUID())
+                            )
+                    );
+
+
+            when(inventoryEmplacementService.findInventoryEmplacements(page, pageSize, "name", Direction.ASC)).thenReturn(inventoryEmplacementsPageInfo);
+            when(inventoryEmplacementViewMapper.toFindInventoryEmplacementsPageInfoViewResponse(inventoryEmplacementsPageInfo)).thenReturn(inventoryEmplacementsPageInfoViewResponse);
+
+            ArgumentCaptor<PageInfo> pageInfoArgumentCaptor = ArgumentCaptor.forClass(PageInfo.class);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Direction> directionArgumentCaptor = ArgumentCaptor.forClass(Direction.class);
+
+            //Act
+            FindInventoryEmplacementsPageInfoViewResponse result =
+                    inventoryEmplacementServiceRestApiAdapter.findInventoryEmplacements(page, pageSize, attribute, "ASC");
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(inventoryEmplacementsPageInfoViewResponse);
+
+            verify(inventoryEmplacementService, times(1))
+                    .findInventoryEmplacements(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                            stringArgumentCaptor.capture(), directionArgumentCaptor.capture());
+
+            verify(inventoryEmplacementViewMapper, times(1))
+                    .toFindInventoryEmplacementsPageInfoViewResponse(pageInfoArgumentCaptor.capture());
+
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
+            assertThat(stringArgumentCaptor.getAllValues().getFirst()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().getFirst()).isEqualTo(Direction.ASC);
+            assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementsPageInfo);
+        }
+    }
+
+
+    @Nested
+    class SearchInventoryEmplacementsDomainServiceRestApiAdapterTest {
+
+        @Test
+        void should_success_when_search_inventory_emplacement_with_existing_keyword() {
+            //Given
+            int page = 1;
+            int pageSize = 2;
+            String attribute = "name";
+            String keyword = "int";
+
+            PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo =  new PageInfo<InventoryEmplacement>().with(
+                    page, pageSize,
+                    List.of(
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Internal Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.INTERNAL)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Internal Emplacement 2")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.INTERNAL)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Customer Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.CUSTOMER)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Supplier Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.SUPPLIER)
+                                    .build(),
+                            InventoryEmplacement.builder()
+                                    .name(Name.of(Text.of("Transit Emplacement 1")))
+                                    .id(new InventoryEmplacementId(UUID.randomUUID()))
+                                    .type(InventoryEmplacementType.TRANSIT)
+                                    .build()
+                    )
+            );
+
+            SearchInventoryEmplacementsPageInfoViewResponse inventoryEmplacementsPageInfoViewResponse = new SearchInventoryEmplacementsPageInfoViewResponse()
+                    .first(true)
+                    .last(false)
+                    .pageSize(2)
+                    .totalElements(5L)
+                    .totalPages(1)
+                    .elements(
+                            List.of(
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Internal Emplacement 2")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.INTERNAL)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Customer Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.CUSTOMER)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Supplier Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.SUPPLIER)
+                                            .id(UUID.randomUUID()),
+                                    new SearchInventoryEmplacementsViewResponse()
+                                            .name("Transit Emplacement 1")
+                                            .type(SearchInventoryEmplacementsViewResponse.TypeEnum.TRANSIT)
+                                            .id(UUID.randomUUID())
+                            )
+                    );
+
+
+            when(inventoryEmplacementService.searchInventoryEmplacements(page, pageSize, "name", Direction.ASC, Keyword.of(Text.of(keyword)))).thenReturn(inventoryEmplacementsPageInfo);
+            when(inventoryEmplacementViewMapper.toSearchInventoryEmplacementsPageInfoViewResponse(inventoryEmplacementsPageInfo)).thenReturn(inventoryEmplacementsPageInfoViewResponse);
+
+            ArgumentCaptor<PageInfo> pageInfoArgumentCaptor = ArgumentCaptor.forClass(PageInfo.class);
+            ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+            ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+            ArgumentCaptor<Direction> directionArgumentCaptor = ArgumentCaptor.forClass(Direction.class);
+            ArgumentCaptor<Keyword> keywordArgumentCaptor = ArgumentCaptor.forClass(Keyword.class);
+
+            //Act
+            SearchInventoryEmplacementsPageInfoViewResponse result =
+                    inventoryEmplacementServiceRestApiAdapter.searchInventoryEmplacements(page, pageSize, attribute, "ASC", keyword);
+
+            //Then
+            assertThat(result)
+                    .isNotNull()
+                    .isEqualTo(inventoryEmplacementsPageInfoViewResponse);
+
+            verify(inventoryEmplacementService, times(1))
+                    .searchInventoryEmplacements(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(),
+                            stringArgumentCaptor.capture(), directionArgumentCaptor.capture(), keywordArgumentCaptor.capture());
+
+            verify(inventoryEmplacementViewMapper, times(1))
+                    .toSearchInventoryEmplacementsPageInfoViewResponse(pageInfoArgumentCaptor.capture());
+
+            assertThat(integerArgumentCaptor.getAllValues().get(0)).isEqualTo(page);
+            assertThat(integerArgumentCaptor.getAllValues().get(1)).isEqualTo(pageSize);
+            assertThat(stringArgumentCaptor.getAllValues().getFirst()).isEqualTo(attribute);
+            assertThat(directionArgumentCaptor.getAllValues().getFirst()).isEqualTo(Direction.ASC);
+            assertThat(keywordArgumentCaptor.getValue().getText().getValue()).isEqualTo(keyword);
+            assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(inventoryEmplacementsPageInfo);
+        }
+    }
+
+
 }

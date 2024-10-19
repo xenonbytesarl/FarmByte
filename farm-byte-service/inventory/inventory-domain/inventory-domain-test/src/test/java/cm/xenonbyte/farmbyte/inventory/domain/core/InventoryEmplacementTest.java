@@ -183,7 +183,7 @@ public final class InventoryEmplacementTest {
         @Test
         void should_success_when_find_inventory_emplacement_with_existing_id() {
             //Given + Act
-            InventoryEmplacement result = inventoryEmplacementService.findById(inventoryEmplacementId);
+            InventoryEmplacement result = inventoryEmplacementService.findInventoryEmplacementById(inventoryEmplacementId);
             //Then
             assertThat(result)
                     .isNotNull()
@@ -193,7 +193,7 @@ public final class InventoryEmplacementTest {
         @Test
         void should_fail_when_find_inventory_emplacement_with_non_existing_id() {
             //Given + Act + Then
-            assertThatThrownBy(() -> inventoryEmplacementService.findById(new InventoryEmplacementId(UUID.randomUUID())))
+            assertThatThrownBy(() -> inventoryEmplacementService.findInventoryEmplacementById(new InventoryEmplacementId(UUID.randomUUID())))
                     .isInstanceOf(InventoryEmplacementNotFoundException.class)
                     .hasMessage(INVENTORY_EMPLACEMENT_ID_NOT_FOUND);
         }
