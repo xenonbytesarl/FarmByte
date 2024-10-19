@@ -36,10 +36,28 @@ public final class InventoryEmplacementInMemoryRepositoryAdapterTest extends Inv
         inventoryEmplacementRepository.save(
                 InventoryEmplacement.builder()
                     .id(new InventoryEmplacementId(UUID.fromString("019296b2-1138-7fcd-b732-aa676eb469fd")))
-                    .name(Name.of(Text.of("Child internal Emplacement")))
+                    .name(Name.of(Text.of("First internal Emplacement")))
                     .type(InventoryEmplacementType.INTERNAL)
                     .parentId(parentId)
                     .build());
+
+        inventoryEmplacementId = new InventoryEmplacementId(UUID.fromString("0192a671-0151-712b-a583-8fab7cf9490d"));
+
+        inventoryEmplacementRepository.save(
+                InventoryEmplacement.builder()
+                    .id(inventoryEmplacementId)
+                    .name(Name.of(Text.of("Second internal Emplacement")))
+                    .type(InventoryEmplacementType.INTERNAL)
+                    .parentId(parentId)
+                    .build());
+
+        inventoryEmplacementRepository.save(
+                InventoryEmplacement.builder()
+                        .id(new InventoryEmplacementId(UUID.fromString("0192a672-046b-7598-a4c7-43e05f81ffc2")))
+                        .name(Name.of(Text.of("Third internal Emplacement")))
+                        .type(InventoryEmplacementType.INTERNAL)
+                        .parentId(parentId)
+                        .build());
 
 
     }
