@@ -1,7 +1,7 @@
--- Insert t_inventory_emplacement
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('019296f7-1e4b-7739-8f09-cf650590f0d7', current_timestamp, null, 'Root Emplacement View', 'VIEW', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('019296f7-8b01-74bb-be63-035025f53c1f', current_timestamp, null, 'Internal Emplacement 1', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('0192a685-b4f7-7560-918c-c002404cacd1', current_timestamp, null, 'Internal Emplacement 2', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a685-f566-7a82-b755-473b84ccb91b', current_timestamp, null, 'Customer Emplacement 1', 'CUSTOMER', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a686-3f49-7f2d-b7eb-ebe08814b82a', current_timestamp, null, 'Supplier Emplacement 1', 'SUPPLIER', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a686-669f-7735-9e4b-eaed505bb8b8', current_timestamp, null, 'Transit Emplacement 1', 'TRANSIT', true);
+-- Insert t_stock_location
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('019296f7-1e4b-7739-8f09-cf650590f0d7', current_timestamp, null, 'Root Location View', 'VIEW', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('019296f7-8b01-74bb-be63-035025f53c1f', current_timestamp, null, 'Internal Location 1', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('0192a685-b4f7-7560-918c-c002404cacd1', current_timestamp, null, 'Internal Location 2', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a685-f566-7a82-b755-473b84ccb91b', current_timestamp, null, 'Customer Location 1', 'CUSTOMER', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a686-3f49-7f2d-b7eb-ebe08814b82a', current_timestamp, null, 'Supplier Location 1', 'SUPPLIER', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('0192a686-669f-7735-9e4b-eaed505bb8b8', current_timestamp, null, 'Transit Location 1', 'TRANSIT', true);
