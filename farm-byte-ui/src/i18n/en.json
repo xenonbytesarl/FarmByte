@@ -119,5 +119,29 @@
   "product_form_purchasable_label": "Purchase?",
   "product_form_sellable_label": "Sell?",
   "product_form_active_label": "Active",
-  "product_form_purchase_and_stock_uom_invalid_category_message": "Stock and purchase unit of measure should be in the same category"
+  "product_form_purchase_and_stock_uom_invalid_category_message": "Stock and purchase unit of measure should be in the same category",
+
+  "stock_tree_title": "Locations",
+  "stock_tree_name": "Name",
+  "stock_tree_type": "Type",
+  "stock_tree_parent_id": "Parent location",
+  "stock_location_form_name_required_message": "Name is required",
+  "stock_location_form_type_required_message": "Type is required",
+  "stock_location_form_edit_title": "Location",
+  "stock_location_form_new_title": "New Location",
+  "stock_location_form_name_label": "Name",
+  "stock_location_form_parent_id_label": "Parent location",
+  "stock_location_parent_id_pop_over_place_holder": "Select parent location",
+  "stock_location_parent_id_pop_over_not_found": "Parent location not found",
+  "stock_location_form_type_label": "Type",
+  "stock_location_type_pop_over_place_holder": "Select type of location",
+  "stock_location_type_pop_over_not_found": "Type of location not found",
+  "stock_location_form_active_label": "Active",
+  "stock_location_type_label_internal": "Internal",
+  "stock_location_type_label_customer": "Customer",
+  "stock_location_type_label_supplier": "Supplier",
+  "stock_location_type_label_inventory": "Inventory",
+  "stock_location_type_label_view": "View",
+  "stock_location_type_label_transit": "Transit"
+
 }

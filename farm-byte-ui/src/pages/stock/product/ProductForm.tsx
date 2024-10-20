@@ -157,7 +157,7 @@ const ProductForm = () => {
         if(product) {
             form.reset(changeNullToEmptyString(product))
         }
-    }, [product, form.reset]);
+    }, [product]);
 
 
     const showToast = (variant: ToastType, message: string) => {
@@ -231,24 +231,33 @@ const ProductForm = () => {
         if(product) {
             form.reset(changeNullToEmptyString(product));
             setMode(FormModeType.READ);
+            resetPopOverLabel(product);
         } else {
             form.reset();
+            resetPopOverLabel(undefined);
         }
     }
 
     const onCreate = () => {
         setMode(FormModeType.CREATE);
         form.reset(defaultValuesProduct);
-        resetPopOverLabel();
+        resetPopOverLabel(undefined);
         store.dispatch(resetCurrentProduct())
         navigate('/stock/products/new');
     }
 
-    const resetPopOverLabel = () =>{
-        setCategoryPopOverLabel('');
-        setTypePopOverLabel('');
-        setPurchaseUomPopOverLabel('');
-        setStockUomPopOverLabel('');
+    const resetPopOverLabel = (product: ProductModel | undefined) =>{
+        if(product) {
+            setCategoryPopOverLabel(categories.find(category => category.id === product.categoryId)?.name as string);
+            setPurchaseUomPopOverLabel(product.purchaseUomId? purchaseUoms.find(purchaseUom => purchaseUom.id === product.purchaseUomId)?.name as string: '');
+            setStockUomPopOverLabel(product.stockUomId? stockUoms.find(stockUom => stockUom.id === product.stockUomId)?.name as string: '');
+            setTypePopOverLabel(productTypes.find(type => product.type === type.name)?.label as string);
+        } else {
+            setCategoryPopOverLabel('');
+            setTypePopOverLabel('');
+            setPurchaseUomPopOverLabel('');
+            setStockUomPopOverLabel('');
+        }
         setOpenCategoryPopOver(false);
         setOpenTypePopOver(false);
         setOpenPurchaseUomPopOver(false);

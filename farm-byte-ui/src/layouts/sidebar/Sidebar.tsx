@@ -22,7 +22,6 @@ const Sidebar = () => {
     const dispatch = useDispatch<RootDispatch>();
 
     useEffect(() => {
-        console.log(location.pathname);
         dispatch(selectSidebarMenu("/" + location.pathname.split("/")[1]));
     }, [location])
 
