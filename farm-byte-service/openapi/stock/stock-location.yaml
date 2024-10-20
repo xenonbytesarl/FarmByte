@@ -1,0 +1,256 @@
+openapi: 3.1.0
+info:
+  title: Stock Location API
+  description: |
+    REST API endpoints for Stock Location
+  version: 1.0.0
+servers:
+  - url: http://localhost:8085/api/v1/stock
+    description: Development Server
+  - url: http://localhost:8080/api/v1/stock
+    description: Production server
+tags:
+  - name: StockLocation
+    description: "The Stock Location API"
+
+
+paths:
+  /stock-locations:
+    post:
+      tags:
+        - StockLocation
+      summary: create an inventory emplacement
+      operationId: createStockLocation
+      security:
+        - oAuth:
+            - create:inventory:emplacement
+      requestBody:
+        required: true
+        description: inventory emplacement object to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStockLocationViewRequest'
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStockLocationApiViewResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    get:
+      tags:
+        - StockLocation
+      summary: find all inventory emplacement
+      operationId: findStockLocations
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindStockLocationsViewApiResponse'
+  /stock-locations/{stockLocationId}:
+    get:
+      tags:
+        - StockLocation
+      summary: find inventory emplacement by id
+      operationId: findStockLocationById
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/stockLocationId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindStockLocationByIdViewApiResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /stock-locations/search:
+    get:
+      tags:
+        - StockLocation
+      summary: search inventory emplacement
+      operationId: searchStockLocations
+      security:
+        - oAuth:
+            - read:inventory:emplacement
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '../common/parameters/page.yaml#/page'
+        - $ref: '../common/parameters/size.yaml#/size'
+        - $ref: '../common/parameters/attribute.yaml#/attribute'
+        - $ref: '../common/parameters/direction.yaml#/direction'
+        - $ref: '../common/parameters/keyword.yaml#/keyword'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchStockLocationsViewApiResponse'
+components:
+  parameters:
+    stockLocationId:
+      in: path
+      name: stockLocationId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ApiErrorResponse:
+      $ref: '../common/schemas/api-error-response.yaml#/ApiErrorResponse'
+    CreateStockLocationViewRequest:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+        type:
+          type: string
+          enum:
+            - INTERNAL
+            - CUSTOMER
+            - SUPPLIER
+            - INVENTORY
+            - VIEW
+            - TRANSIT
+        parentId:
+          type: string
+          format: uuid
+    StockLocationView:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - active
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          x-field-extra-annotation: "@jakarta.validation.constraints.NotBlank"
+        parentId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+            - INTERNAL
+            - CUSTOMER
+            - SUPPLIER
+            - INVENTORY
+            - VIEW
+            - TRANSIT
+        active:
+          type: boolean
+    CreateStockLocationViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    CreateStockLocationApiViewResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/CreateStockLocationViewResponse'
+    FindStockLocationByIdViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    FindStockLocationByIdViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindStockLocationByIdViewResponse'
+    FindStockLocationsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    FindStockLocationsPageInfoViewResponse:
+      allOf:
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            elements:
+              type: array
+              items:
+                $ref: '#/components/schemas/FindStockLocationsViewResponse'
+    FindStockLocationsViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/FindStockLocationsPageInfoViewResponse'
+    SearchStockLocationsViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    SearchStockLocationsPageInfoViewResponse:
+      allOf:
+        - $ref: '../common/schemas/page-info-view-response.yaml#/PageInfoViewResponse'
+        - type: object
+          properties:
+            elements:
+              type: array
+              items:
+                $ref: '#/components/schemas/SearchStockLocationsViewResponse'
+    SearchStockLocationsViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/SearchStockLocationsPageInfoViewResponse'

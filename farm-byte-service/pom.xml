@@ -34,8 +34,7 @@
     <module>common</module>
     <module>catalog</module>
     <module>bootstrap</module>
-    <module>inventory</module>
-    <module>inventory/inventory-adapter</module>
+    <module>stock</module>
   </modules>
 
   <dependencyManagement>
@@ -94,27 +93,27 @@
 
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>inventory-domain-core</artifactId>
+        <artifactId>stock-domain-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>inventory-adapter-data-access-inmemory</artifactId>
+        <artifactId>stock-adapter-data-access-inmemory</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>inventory-adapter-data-access-jpa</artifactId>
+        <artifactId>stock-adapter-data-access-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>inventory-adapter-rest-api</artifactId>
+        <artifactId>stock-adapter-rest-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
-        <artifactId>inventory-adapter-data-access-test</artifactId>
+        <artifactId>stock-adapter-data-access-test</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

@@ -43,15 +43,15 @@
 
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>inventory-domain-core</artifactId>
+            <artifactId>stock-domain-core</artifactId>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>inventory-adapter-data-access-jpa</artifactId>
+            <artifactId>stock-adapter-data-access-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>cm.xenonbyte.farmbyte</groupId>
-            <artifactId>inventory-adapter-rest-api</artifactId>
+            <artifactId>stock-adapter-rest-api</artifactId>
         </dependency>
 
         <dependency>

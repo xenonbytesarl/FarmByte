@@ -1,3 +1,3 @@
--- Insert t_inventory_emplacement
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('019296f7-1e4b-7739-8f09-cf650590f0d7', current_timestamp, null, 'Root Emplacement View', 'VIEW', true);
-INSERT INTO t_inventory_emplacement (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('019296f7-8b01-74bb-be63-035025f53c1f', current_timestamp, null, 'Internal Emplacement 1', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
+-- Insert t_stock_location
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_active) VALUES ('019296f7-1e4b-7739-8f09-cf650590f0d7', current_timestamp, null, 'Root Location View', 'VIEW', true);
+INSERT INTO t_stock_location (c_id, c_created_at, c_updated_at, c_name, c_type, c_parent_id, c_active) VALUES ('019296f7-8b01-74bb-be63-035025f53c1f', current_timestamp, null, 'Internal Location 1', 'INTERNAL', '019296f7-1e4b-7739-8f09-cf650590f0d7', true);
