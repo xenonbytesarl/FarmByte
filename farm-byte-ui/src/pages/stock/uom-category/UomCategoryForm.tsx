@@ -1,7 +1,7 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {
     createUomCategory,
     findUomCategoryById,
@@ -9,7 +9,7 @@ import {
     selectUomCategoryById,
     updateUomCategory
 } from "@/pages/stock/uom-category/UomCategorySlice.ts";
-import {RootState, store} from "@/Store.ts";
+import {RootDispatch, RootState} from "@/Store.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {UomCategoryModel} from "@/pages/stock/uom-category/UomCategoryModel.ts";
@@ -46,6 +46,7 @@ const UomCategoryForm = () => {
     // @ts-ignore
     const uomCategory: UomCategoryModel = useSelector((state:RootState) => selectUomCategoryById(state, uomCategoryId));
     const isLoading: boolean = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<FormModeType>(uomCategoryId? FormModeType.READ: FormModeType.CREATE);
@@ -71,9 +72,9 @@ const UomCategoryForm = () => {
 
     useEffect(() => {
         if(!uomCategory && uomCategoryId) {
-            store.dispatch(findUomCategoryById(uomCategoryId));
+            dispatch(findUomCategoryById(uomCategoryId));
         }
-    }, [store.dispatch, uomCategory]);
+    }, [dispatch, uomCategory]);
 
     useEffect(() => {
         if(uomCategory) {
@@ -96,7 +97,7 @@ const UomCategoryForm = () => {
     const onSubmit = () => {
         const uomCategoryFormValue: UomCategoryModel = form.getValues();
         if (uomCategoryFormValue.id) {
-            store.dispatch(updateUomCategory({uomCategoryId: uomCategoryFormValue.id, uomCategory: uomCategoryFormValue}))
+            dispatch(updateUomCategory({uomCategoryId: uomCategoryFormValue.id, uomCategory: uomCategoryFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
@@ -107,7 +108,7 @@ const UomCategoryForm = () => {
                    showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 })
         } else {
-            store.dispatch(createUomCategory(uomCategoryFormValue))
+            dispatch(createUomCategory(uomCategoryFormValue))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);

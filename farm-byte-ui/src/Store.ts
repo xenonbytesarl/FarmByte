@@ -1,6 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import sidebarSlice from "@/layouts/sidebar/SidebarMenuSlice.ts";
 import navbarSlice from "@/layouts/navbar/NavbarMenuSlice.ts";
+// @ts-ignore
 import {stockSlice} from "@/pages/stock/stockSlice.ts";
 
 export const store = configureStore({

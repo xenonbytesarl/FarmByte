@@ -22,13 +22,13 @@
   "navbarMenu_language_fr": "Français",
   "navbarMenu_language_en": "Anglais",
 
-  "form_button_label_save": "Enregistrer",
-  "form_button_label_edit": "Modifier",
-  "form_button_label_cancel": "Annuler",
-  "form_button_label_create": "Créer",
+  "form_button_label_save": "ENREGISTRER",
+  "form_button_label_edit": "MODIFIER",
+  "form_button_label_cancel": "ANNULER",
+  "form_button_label_create": "CREER",
 
-  "tree_button_label_add": "Créer",
-  "tree_button_label_delete": "Supprimer",
+  "tree_button_label_add": "NOUVEAU",
+  "tree_button_label_delete": "SUPPRIMER",
   "tree_search_place_holder": "Rechercher...",
 
   "uom_category_tree_title": "Catégorie d'unité de mesure",

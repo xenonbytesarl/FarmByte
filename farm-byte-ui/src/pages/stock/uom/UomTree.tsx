@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {
     getLoading,
     getPageSize,
@@ -18,7 +18,7 @@ import {Direction} from "@/constants/directionConstant.ts";
 import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
 import {UomModel} from "@/pages/stock/uom/UomModel.ts";
-import {RootState, store} from "@/Store.ts";
+import {RootDispatch, RootState} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {
@@ -34,6 +34,8 @@ const UomTree = () => {
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
     const isLoading = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
+
     const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(DEFAULT_PAGE_VALUE);
@@ -105,11 +107,11 @@ const UomTree = () => {
     ];
 
     useEffect(() => {
-        store.dispatch(findUomCategories({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findUomCategories({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
-        store.dispatch(searchUoms({
+        dispatch(searchUoms({
             page: page,
             size: size,
             attribute: "name",

@@ -2,8 +2,8 @@ import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from "react-router-dom";
 import {useToast} from "@/hooks/use-toast.ts";
 import {ProductCategoryModel} from "@/pages/stock/product-category/ProductCategoryModel.ts";
-import {useSelector} from "react-redux";
-import {RootState, store} from "@/Store.ts";
+import {useSelector, useDispatch} from "react-redux";
+import {RootDispatch, RootState} from "@/Store.ts";
 import {
     findProductCategoryById,
     getLoading,
@@ -37,6 +37,7 @@ const ProductCategoryForm = () => {
     // @ts-ignore
     const productCategory: ProductCategoryModel = useSelector((state:RootState) => selectProductCategoryById(state, productCategoryId));
     const isLoading: boolean = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<FormModeType>(productCategoryId? FormModeType.READ: FormModeType.CREATE);
@@ -61,9 +62,9 @@ const ProductCategoryForm = () => {
 
     useEffect(() => {
         if(!productCategory && productCategoryId) {
-            store.dispatch(findProductCategoryById(productCategoryId));
+            dispatch(findProductCategoryById(productCategoryId));
         }
-    }, [store.dispatch, productCategory]);
+    }, [dispatch, productCategory]);
 
     useEffect(() => {
         if(productCategory) {
@@ -85,7 +86,7 @@ const ProductCategoryForm = () => {
     const onSubmit = () => {
         const productCategoryFormValue: ProductCategoryModel = form.getValues();
         if (productCategoryFormValue.id) {
-            store.dispatch(updateProductCategory({productCategoryId: productCategoryFormValue.id, productCategory: productCategoryFormValue}))
+            dispatch(updateProductCategory({productCategoryId: productCategoryFormValue.id, productCategory: productCategoryFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
@@ -96,7 +97,7 @@ const ProductCategoryForm = () => {
                     showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 })
         } else {
-            store.dispatch(createProductCategory(productCategoryFormValue))
+            dispatch(createProductCategory(productCategoryFormValue))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
