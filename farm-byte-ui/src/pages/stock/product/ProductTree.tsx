@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {ProductModel} from "@/pages/stock/product/ProductModel.ts";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {
     getLoading,
     getPageSize,
@@ -15,7 +15,7 @@ import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {Direction} from "@/constants/directionConstant.ts";
 import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
-import {RootState, store} from "@/Store.ts";
+import {RootDispatch, RootState} from "@/Store.ts";
 import DataTable from "@/components/DataTable.tsx";
 import {
     findProductCategories,
@@ -31,6 +31,8 @@ const ProductTree = () => {
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
     const isLoading = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
+    
     const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(DEFAULT_PAGE_VALUE);
@@ -113,15 +115,15 @@ const ProductTree = () => {
     ];
 
     useEffect(() => {
-        store.dispatch(findProductCategories({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findProductCategories({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
-        store.dispatch(findUoms({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findUoms({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
-        store.dispatch(searchProducts({
+        dispatch(searchProducts({
             page: page,
             size: size,
             attribute: "name",

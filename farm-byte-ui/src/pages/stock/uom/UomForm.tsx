@@ -1,8 +1,8 @@
 import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from "react-router-dom";
 import {useToast} from "@/hooks/use-toast.ts";
-import {useSelector} from "react-redux";
-import {RootState, store} from "@/Store.ts";
+import {useSelector, useDispatch} from "react-redux";
+import {RootDispatch, RootState} from "@/Store.ts";
 import {useEffect, useState} from "react";
 import {FormModeType} from "@/shared/model/FormModeType.ts";
 import {z as Zod} from "zod";
@@ -52,6 +52,7 @@ const UomForm = () => {
     const uom: UomModel = useSelector((state:RootState) => selectUomById(state, uomId));
     const uomCategories: Array<UomCategoryModel> = useSelector(selectUomCategories);
     const isLoading: boolean = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
 
     const [openUomCategoryPopOver, setOpenUomCategoryPopOver] = useState(false);
     const [uomCategoryPopOverLabel, setUomCategoryPopOverLabel] = useState("");
@@ -84,14 +85,14 @@ const UomForm = () => {
     });
 
     useEffect(() => {
-        store.dispatch(findUomCategories({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findUomCategories({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
         if(!uom && uomId) {
-            store.dispatch(findUomById(uomId));
+            dispatch(findUomById(uomId));
         }
-    }, [store.dispatch, uom]);
+    }, [dispatch, uom]);
 
     useEffect(() => {
         if(uom) {
@@ -114,7 +115,7 @@ const UomForm = () => {
     const onSubmit = () => {
         const uomFormValue: UomModel = form.getValues() as UomModel;
         if (uomFormValue.id) {
-            store.dispatch(updateUom({uomId: uomFormValue.id, uom: uomFormValue}))
+            dispatch(updateUom({uomId: uomFormValue.id, uom: uomFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
@@ -126,7 +127,7 @@ const UomForm = () => {
                     showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 })
         } else {
-            store.dispatch(createUom(uomFormValue))
+            dispatch(createUom(uomFormValue))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);

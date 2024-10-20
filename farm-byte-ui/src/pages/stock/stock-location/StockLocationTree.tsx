@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {ColumnDef} from "@tanstack/react-table";
@@ -18,7 +18,7 @@ import useDebounce from "@/hooks/useDebounce.tsx";
 import {DEBOUNCE_TIMEOUT} from "@/constants/app.constant.ts";
 import {SearchParamModel} from "@/shared/model/searchParamModel.ts";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import {RootState, store} from "@/Store.ts";
+import {RootDispatch, RootState} from "@/Store.ts";
 import {Direction} from "@/constants/directionConstant.ts";
 import DataTable from "@/components/DataTable.tsx";
 
@@ -28,6 +28,8 @@ const StockLocationTree = () => {
     const totalElements = useSelector(getTotalElements);
     const totalPages = useSelector(getTotalPages);
     const isLoading = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
+
     const navigate = useNavigate();
 
     const [page, setPage] = useState<number>(DEFAULT_PAGE_VALUE);
@@ -95,11 +97,11 @@ const StockLocationTree = () => {
     ];
 
     useEffect(() => {
-        store.dispatch(findStockLocations({...searchParam, size: MAX_SIZE_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findStockLocations({...searchParam, size: MAX_SIZE_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
-        store.dispatch(searchStockLocations({
+        dispatch(searchStockLocations({
             page: page,
             size: size,
             attribute: "name",

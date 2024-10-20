@@ -1,8 +1,8 @@
 import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from "react-router-dom";
 import {useToast} from "@/hooks/use-toast.ts";
-import {useSelector} from "react-redux";
-import {RootState, store} from "@/Store.ts";
+import {useSelector, useDispatch} from "react-redux";
+import {RootDispatch, RootState} from "@/Store.ts";
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {FormModeType} from "@/shared/model/FormModeType.ts";
@@ -54,6 +54,7 @@ const StockLocationForm = () => {
     const stockLocation: StockLocationModel = useSelector((state:RootState) => selectStockLocationById(state, stockLocationId));
     const stockLocations: Array<StockLocationModel> = useSelector(selectStockLocations);
     const isLoading: boolean = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
 
     const [openParentIdPopOver, setOpenParentIdPopOver] = useState(false);
     const [parentIdPopOverLabel, setParentIdPopOverLabel] = useState("");
@@ -83,14 +84,14 @@ const StockLocationForm = () => {
     });
 
     useEffect(() => {
-        store.dispatch(findStockLocations({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
-    }, [store.dispatch]);
+        dispatch(findStockLocations({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
+    }, [dispatch]);
 
     useEffect(() => {
         if(!stockLocation && stockLocationId) {
-            store.dispatch(findStockLocationById(stockLocationId));
+            dispatch(findStockLocationById(stockLocationId));
         }
-    }, [store.dispatch, stockLocation]);
+    }, [dispatch, stockLocation]);
 
     useEffect(() => {
         if(stockLocation) {
@@ -113,7 +114,7 @@ const StockLocationForm = () => {
     const onSubmit = () => {
         const stockLocationFormValue: StockLocationModel = form.getValues() as StockLocationModel;
         if (stockLocationFormValue.id) {
-            store.dispatch(updateStockLocation({stockLocationId: stockLocationFormValue.id, stockLocation: stockLocationFormValue}))
+            dispatch(updateStockLocation({stockLocationId: stockLocationFormValue.id, stockLocation: stockLocationFormValue}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
@@ -125,7 +126,7 @@ const StockLocationForm = () => {
                     showToast("danger", error !== null && error.reason !== null? t(error.reason) : t(error));
                 })
         } else {
-            store.dispatch(createStockLocation(stockLocationFormValue))
+            dispatch(createStockLocation(stockLocationFormValue))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);

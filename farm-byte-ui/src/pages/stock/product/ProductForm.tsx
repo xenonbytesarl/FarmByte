@@ -2,8 +2,8 @@ import {useTranslation} from "react-i18next";
 import {useNavigate, useParams} from "react-router-dom";
 import {useToast} from "@/hooks/use-toast.ts";
 import {ProductModel} from "@/pages/stock/product/ProductModel.ts";
-import {useSelector} from "react-redux";
-import {store} from "@/Store.ts";
+import {useSelector, useDispatch} from "react-redux";
+import {RootDispatch} from "@/Store.ts";
 import {
     createProduct,
     findProductById, getCurrentProduct,
@@ -58,6 +58,7 @@ const ProductForm = () => {
     const stockUoms: Array<UomModel> = useSelector(selectUoms);
     const purchaseUoms: Array<UomModel> = useSelector(selectUoms);
     const isLoading: boolean = useSelector(getLoading);
+    const dispatch = useDispatch<RootDispatch>();
 
     const [openCategoryPopOver, setOpenCategoryPopOver] = useState(false);
     const [categoryPopOverLabel, setCategoryPopOverLabel] = useState("");
@@ -142,16 +143,16 @@ const ProductForm = () => {
     });
 
     useEffect(() => {
-        store.dispatch(findProductCategories({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
-        store.dispatch(findUoms({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
+        dispatch(findProductCategories({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
+        dispatch(findUoms({page: 0, size: MAX_SIZE_VALUE, attribute: "name", direction: DEFAULT_DIRECTION_VALUE}));
     }, []);
 
     useEffect(() => {
         // @ts-ignore
         if((!product && productId) || (product && !product.encodedFilename && productId)) {
-            store.dispatch(findProductById(productId));
+            dispatch(findProductById(productId));
         }
-    }, [store.dispatch]);
+    }, [dispatch]);
 
     useEffect(() => {
         if(product) {
@@ -178,7 +179,7 @@ const ProductForm = () => {
                 ?
                 fileFromBase64(productFormValue.encodedFile, productFormValue.filename, productFormValue.mime)
                 : fileContent;
-            store.dispatch(updateProduct({productId: productFormValue.id, product: productFormValue, file: fileValues}))
+            dispatch(updateProduct({productId: productFormValue.id, product: productFormValue, file: fileValues}))
                 .then(unwrapResult)
                 .then((response) => {
                     setMode(FormModeType.READ);
@@ -192,7 +193,7 @@ const ProductForm = () => {
             const fileValues: File = fileContent;
             if(fileValues === null || fileValues === undefined) {
                 pathToFile(DEFAULT_PRODUCT_IMAGE, 'image/png').then((response) => {
-                    store.dispatch(createProduct({product: productFormValue, file: response}))
+                    dispatch(createProduct({product: productFormValue, file: response}))
                         .then(unwrapResult)
                         .then((response) => {
                             setMode(FormModeType.READ);
@@ -205,7 +206,7 @@ const ProductForm = () => {
                         });
                 })
             } else {
-                store.dispatch(createProduct({product: productFormValue, file: fileValues}))
+                dispatch(createProduct({product: productFormValue, file: fileValues}))
                     .then(unwrapResult)
                     .then((response) => {
                         setMode(FormModeType.READ);
@@ -242,7 +243,7 @@ const ProductForm = () => {
         setMode(FormModeType.CREATE);
         form.reset(defaultValuesProduct);
         resetPopOverLabel(undefined);
-        store.dispatch(resetCurrentProduct())
+        dispatch(resetCurrentProduct())
         navigate('/stock/products/new');
     }
 

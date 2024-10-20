@@ -22,13 +22,13 @@
   "navbarMenu_language_fr": "French",
   "navbarMenu_language_en": "English",
 
-  "form_button_label_save": "Save",
-  "form_button_label_edit": "Edit",
-  "form_button_label_cancel": "Cancel",
-  "form_button_label_create": "Create",
+  "form_button_label_save": "SAVE",
+  "form_button_label_edit": "EDIT",
+  "form_button_label_cancel": "CANCEL",
+  "form_button_label_create": "CREATE",
 
-  "tree_button_label_add": "New",
-  "tree_button_label_delete": "Delete",
+  "tree_button_label_add": "NEW",
+  "tree_button_label_delete": "DELETE",
   "tree_search_place_holder": "Search...",
 
   "uom_category_tree_title": "Category unit of measure",
