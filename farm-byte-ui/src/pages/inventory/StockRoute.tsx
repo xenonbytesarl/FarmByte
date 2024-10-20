@@ -4,8 +4,9 @@ import NotFound from "@/pages/not-found/NotFound.tsx";
 import UomRoute from "@/pages/inventory/uom/UomRoute.tsx";
 import ProductCategoryRoute from "@/pages/inventory/product-category/ProductCategoryRoute.tsx";
 import ProductRoute from "@/pages/inventory/product/ProductRoute.tsx";
+import StockLocationRoute from "@/pages/inventory/inventory-emplacement/StockLocationRoute.tsx";
 
-const InventoryRoute = () => {
+const StockRoute = () => {
     return (
         <Routes>
             <Route>
@@ -14,10 +15,11 @@ const InventoryRoute = () => {
                 <Route path="product-categories/*" element={<ProductCategoryRoute/>}/>
                 <Route path="uom-categories/*" element={<UomCategoryRoute/>}/>
                 <Route path="uoms/*" element={<UomRoute/>}/>
+                <Route path="stock-locations/*" element={<StockLocationRoute/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>
     );
 }
 
-export default InventoryRoute;
+export default StockRoute;
