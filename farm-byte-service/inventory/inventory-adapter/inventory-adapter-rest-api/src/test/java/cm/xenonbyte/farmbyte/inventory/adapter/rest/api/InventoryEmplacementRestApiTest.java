@@ -1,13 +1,13 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.rest.api;
 
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewRequest;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewRequest;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementByIdViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsViewResponse;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNameConflictException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementNotFoundException;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacementParentIdNotFoundException;

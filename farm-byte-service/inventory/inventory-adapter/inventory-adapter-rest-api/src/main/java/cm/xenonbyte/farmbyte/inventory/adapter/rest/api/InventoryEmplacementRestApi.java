@@ -1,16 +1,16 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.rest.api;
 
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.InventoryEmplacementsApi;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementApiViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewRequest;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewApiResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsViewApiResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsViewApiResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.InventoryEmplacementsApi;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementApiViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewRequest;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementByIdViewApiResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementByIdViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsViewApiResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsViewApiResponse;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
