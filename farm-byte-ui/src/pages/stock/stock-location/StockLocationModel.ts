@@ -3,7 +3,7 @@ import {StockLocationTypeEnum} from "@/pages/stock/stock-location/StockLocationT
 export interface StockLocationModel {
     id: string;
     name: string;
-    type: StockLocationTypeEnum;
+    type: StockLocationTypeEnum | "";
     parentId: string;
     active: true
 }

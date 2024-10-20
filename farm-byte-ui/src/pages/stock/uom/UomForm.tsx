@@ -98,7 +98,7 @@ const UomForm = () => {
             // @ts-ignore
             form.reset(changeNullToEmptyString(uom));
         }
-    }, [uom, form.reset]);
+    }, [uom]);
 
     const showToast = (variant: ToastType, message: string) => {
         toast({
@@ -148,8 +148,10 @@ const UomForm = () => {
         if(uom) {
             form.reset(changeNullToEmptyString(uom));
             setMode(FormModeType.READ);
+            resetPopOverLabel(uom);
         } else {
             form.reset();
+            resetPopOverLabel(undefined);
         }
     }
 
@@ -157,8 +159,17 @@ const UomForm = () => {
         navigate('/stock/uoms/new');
         setMode(FormModeType.CREATE);
         form.reset(defaultValuesUom);
-        setUomCategoryPopOverLabel('');
-        setUomTypePopOverLabel('');
+       resetPopOverLabel(undefined);
+    }
+
+    const resetPopOverLabel = (uom: UomModel | undefined) => {
+        if(uom) {
+            setUomCategoryPopOverLabel(uomCategories.find(uomCategory => uomCategory.id === uom.uomCategoryId)?.name as string);
+            setUomTypePopOverLabel(uomTypes.find(type => uom.uomType === type.name)?.label as string);
+        } else {
+            setUomCategoryPopOverLabel('');
+            setUomTypePopOverLabel('');
+        }
         setOpenUomCategoryPopOver(false);
         setOpenUomTypePopOver(false);
     }

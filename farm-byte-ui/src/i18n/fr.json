@@ -119,6 +119,29 @@
   "product_form_purchasable_label": "Acheter?",
   "product_form_sellable_label": "Vendre?",
   "product_form_active_label": "Actif",
-  "product_form_purchase_and_stock_uom_invalid_category_message": "L'unité de mesure de stock et d'achat doivent être dans la même catégorie"
+  "product_form_purchase_and_stock_uom_invalid_category_message": "L'unité de mesure de stock et d'achat doivent être dans la même catégorie",
+
+  "stock_tree_title": "Emplacements",
+  "stock_tree_name": "Nom",
+  "stock_tree_type": "Type",
+  "stock_tree_parent_id": "Emplacement parent",
+  "stock_location_form_name_required_message": "Le nom est obligatoire",
+  "stock_location_form_type_required_message": "Le type est obligatoire",
+  "stock_location_form_edit_title": "Emplacement",
+  "stock_location_form_new_title": "Nouvel Emplacement",
+  "stock_location_form_name_label": "Nom",
+  "stock_location_form_parent_id_label": "Emplacement parent",
+  "stock_location_parent_id_pop_over_place_holder": "Selectionner un emplacement parent",
+  "stock_location_parent_id_pop_over_not_found": "L'emplacement parent n'existe pas",
+  "stock_location_form_type_label": "Type",
+  "stock_location_type_pop_over_place_holder": "Selectionner le type d'emplacement",
+  "stock_location_type_pop_over_not_found": "Le type d'emplacement n'existe pas",
+  "stock_location_form_active_label": "Actif",
+  "stock_location_type_label_internal": "Interne",
+  "stock_location_type_label_customer": "Client",
+  "stock_location_type_label_supplier": "Fournisseur",
+  "stock_location_type_label_inventory": "Inventaire",
+  "stock_location_type_label_view": "Vue",
+  "stock_location_type_label_transit": "Transit"
 }
 
