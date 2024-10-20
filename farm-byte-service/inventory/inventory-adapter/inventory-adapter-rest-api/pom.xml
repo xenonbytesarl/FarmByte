@@ -84,8 +84,8 @@
                             <inputSpec>${project.parent.basedir}/../../openapi/inventory/inventory-emplacement.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
-                            <apiPackage>cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom</apiPackage>
-                            <modelPackage>cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view</modelPackage>
+                            <apiPackage>cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement</apiPackage>
+                            <modelPackage>cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view</modelPackage>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                             <configOptions>
                                 <delegatePattern>false</delegatePattern>

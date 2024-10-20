@@ -1,13 +1,13 @@
 package cm.xenonbyte.farmbyte.inventory.adapter.rest.api;
 
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewRequest;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.CreateInventoryEmplacementViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementByIdViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.FindInventoryEmplacementsViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsPageInfoViewResponse;
-import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.uom.view.SearchInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewRequest;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.CreateInventoryEmplacementViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementByIdViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.FindInventoryEmplacementsViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.inventory.adapter.rest.api.generated.inventoryemplacement.view.SearchInventoryEmplacementsViewResponse;
 import cm.xenonbyte.farmbyte.inventory.domain.core.inventoryemplacement.InventoryEmplacement;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
@@ -43,7 +43,8 @@ public interface InventoryEmplacementViewMapper {
     @Mapping(expression = "java(CreateInventoryEmplacementViewResponse.TypeEnum.valueOf(inventoryEmplacement.getType().name()))", target = "type")
     @Mapping(expression = "java(inventoryEmplacement.getParentId() == null? null : inventoryEmplacement.getParentId().getValue())", target = "parentId")
     @Mapping(source = "active.value", target = "active")
-    @Nonnull @Valid CreateInventoryEmplacementViewResponse toCreateInventoryEmplacementViewResponse(InventoryEmplacement inventoryEmplacement);
+    @Nonnull @Valid
+    CreateInventoryEmplacementViewResponse toCreateInventoryEmplacementViewResponse(InventoryEmplacement inventoryEmplacement);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id.value", target = "id")
@@ -51,7 +52,8 @@ public interface InventoryEmplacementViewMapper {
     @Mapping(expression = "java(FindInventoryEmplacementByIdViewResponse.TypeEnum.valueOf(inventoryEmplacement.getType().name()))", target = "type")
     @Mapping(expression = "java(inventoryEmplacement.getParentId() == null? null : inventoryEmplacement.getParentId().getValue())", target = "parentId")
     @Mapping(source = "active.value", target = "active")
-    @Nonnull @Valid FindInventoryEmplacementByIdViewResponse toFindInventoryEmplacementByIdViewResponse(@Nonnull InventoryEmplacement inventoryEmplacement);
+    @Nonnull @Valid
+    FindInventoryEmplacementByIdViewResponse toFindInventoryEmplacementByIdViewResponse(@Nonnull InventoryEmplacement inventoryEmplacement);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "first", target = "first")
@@ -60,7 +62,8 @@ public interface InventoryEmplacementViewMapper {
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
     @Mapping(source = "elements", qualifiedByName = "toFindInventoryEmplacementsViewResponses", target = "elements")
-    @Nonnull @Valid FindInventoryEmplacementsPageInfoViewResponse toFindInventoryEmplacementsPageInfoViewResponse(@Nonnull PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo);
+    @Nonnull @Valid
+    FindInventoryEmplacementsPageInfoViewResponse toFindInventoryEmplacementsPageInfoViewResponse(@Nonnull PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo);
 
     @Named("toFindInventoryEmplacementsViewResponses")
     @Nonnull @Valid List<FindInventoryEmplacementsViewResponse> toFindInventoryEmplacementsViewResponses(@Nonnull List<InventoryEmplacement> inventoryEmplacements);
@@ -80,7 +83,8 @@ public interface InventoryEmplacementViewMapper {
     @Mapping(source = "totalPages", target = "totalPages")
     @Mapping(source = "totalElements", target = "totalElements")
     @Mapping(source = "elements", qualifiedByName = "toSearchInventoryEmplacementsViewResponses", target = "elements")
-    @Nonnull @Valid SearchInventoryEmplacementsPageInfoViewResponse toSearchInventoryEmplacementsPageInfoViewResponse(@Nonnull PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo);
+    @Nonnull @Valid
+    SearchInventoryEmplacementsPageInfoViewResponse toSearchInventoryEmplacementsPageInfoViewResponse(@Nonnull PageInfo<InventoryEmplacement> inventoryEmplacementsPageInfo);
 
     @Named("toSearchInventoryEmplacementsViewResponses")
     @Nonnull @Valid List<SearchInventoryEmplacementsViewResponse> toSearchInventoryEmplacementsViewResponses(@Nonnull List<InventoryEmplacement> inventoryEmplacements);
