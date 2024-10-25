@@ -8,6 +8,8 @@ import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsViewResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationNameConflictException;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationNotFoundException;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationParentIdNotFoundException;
@@ -35,6 +37,7 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATIONS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_FIND_SUCCESSFULLY;
+import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_ID_NOT_FOUND;
 import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_NAME_CONFLICT;
 import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_PARENT_ID_NOT_FOUND;
@@ -45,6 +48,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -440,5 +444,140 @@ public final class StockLocationRestApiTest extends RestApiBeanConfigTest {
             assertThat(stringArgumentCaptor.getAllValues().get(2)).isEqualTo(keyword);
 
         }
+    }
+
+    @Test
+    void should_update_stock_location_by_id() throws Exception {
+        //Given
+        UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+        String name = "Internal Location Update";
+
+        UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                .id(stockLocationUUID)
+                .name(name)
+                .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                .active(true);
+
+        UpdateStockLocationViewResponse updateStockLocationViewResponse = new UpdateStockLocationViewResponse()
+                .id(stockLocationUUID)
+                .name(name)
+                .type(UpdateStockLocationViewResponse.TypeEnum.INTERNAL)
+                .active(true);
+
+        when(stockLocationDomainRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest))
+                .thenReturn(updateStockLocationViewResponse);
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+        ArgumentCaptor<UpdateStockLocationViewRequest> updateStockLocationViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(UpdateStockLocationViewRequest.class);
+
+        //Act + Then
+        mockMvc.perform(put(INVENTORY_EMPLACEMENT_PATH_URI + "/" + stockLocationUUID)
+                        .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                        .contentType(APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateStockLocationViewRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value(MessageUtil.getMessage(STOCK_LOCATION_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), "")))
+                .andExpect(jsonPath("$.data").isNotEmpty())
+                .andExpect(jsonPath("$.data.content.name").value(updateStockLocationViewResponse.getName()))
+                .andExpect(jsonPath("$.data.content.id").value(updateStockLocationViewResponse.getId().toString()))
+                .andExpect(jsonPath("$.data.content.active").value(updateStockLocationViewResponse.getActive()));
+
+        verify(stockLocationDomainRestApiAdapter, times(1))
+                .updateStockLocation(uuidArgumentCaptor.capture(), updateStockLocationViewRequestArgumentCaptor.capture());
+
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(stockLocationUUID);
+        assertThat(updateStockLocationViewRequestArgumentCaptor.getValue()).isEqualTo(updateStockLocationViewRequest);
+    }
+
+    @Test
+    void should_fail_when_update_stock_location_with_existing_name() throws Exception {
+        //Given
+        UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+        String name = "Internal Location Update";
+
+        UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                .id(stockLocationUUID)
+                .name(name)
+                .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                .active(true);
+        when(stockLocationDomainRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest))
+                .thenThrow(StockLocationNameConflictException.class.getConstructor(Object[].class).newInstance(new Object[]{new String[]{name}}));
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+        ArgumentCaptor<UpdateStockLocationViewRequest> updateStockLocationViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(UpdateStockLocationViewRequest.class);
+
+
+        //Act + Then
+        mockMvc.perform(put(INVENTORY_EMPLACEMENT_PATH_URI + "/" + stockLocationUUID)
+                        .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                        .contentType(APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateStockLocationViewRequest)))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.code").value(409))
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(STOCK_LOCATION_NAME_CONFLICT, Locale.forLanguageTag(EN_LOCALE), name)));
+
+        verify(stockLocationDomainRestApiAdapter, times(1))
+                .updateStockLocation(uuidArgumentCaptor.capture(), updateStockLocationViewRequestArgumentCaptor.capture());
+
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(stockLocationUUID);
+        assertThat(updateStockLocationViewRequestArgumentCaptor.getValue()).isEqualTo(updateStockLocationViewRequest);
+
+    }
+
+    @Test
+    void should_fail_when_update_stock_location_with_non_existing_parent_id() throws Exception {
+        //Given
+        UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+        UUID parentUUID = UUID.fromString("0192c567-690a-7130-88e4-5e6bd55956b1");
+        String name = "Internal Location Update";
+
+        UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                .id(stockLocationUUID)
+                .name(name)
+                .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                .parentId(parentUUID)
+                .active(true);
+        when(stockLocationDomainRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest))
+                .thenThrow(StockLocationParentIdNotFoundException.class.getConstructor(Object[].class)
+                        .newInstance(new Object[]{new String[]{parentUUID.toString()}}));
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+
+        ArgumentCaptor<UpdateStockLocationViewRequest> updateStockLocationViewRequestArgumentCaptor =
+                ArgumentCaptor.forClass(UpdateStockLocationViewRequest.class);
+
+
+        //Act + Then
+        mockMvc.perform(put(INVENTORY_EMPLACEMENT_PATH_URI + "/" + stockLocationUUID)
+                        .accept(APPLICATION_JSON)
+                        .header(ACCEPT_LANGUAGE, EN_LOCALE)
+                        .contentType(APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateStockLocationViewRequest)))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.reason").value(MessageUtil.getMessage(STOCK_LOCATION_PARENT_ID_NOT_FOUND, Locale.forLanguageTag(EN_LOCALE), parentUUID.toString())));
+
+        verify(stockLocationDomainRestApiAdapter, times(1))
+                .updateStockLocation(uuidArgumentCaptor.capture(), updateStockLocationViewRequestArgumentCaptor.capture());
+
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(stockLocationUUID);
+        assertThat(updateStockLocationViewRequestArgumentCaptor.getValue()).isEqualTo(updateStockLocationViewRequest);
+
     }
 }

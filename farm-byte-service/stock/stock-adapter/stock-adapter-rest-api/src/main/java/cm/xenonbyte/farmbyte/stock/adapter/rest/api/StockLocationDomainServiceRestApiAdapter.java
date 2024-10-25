@@ -8,6 +8,8 @@ import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationByIdViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationId;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationService;
 import jakarta.annotation.Nonnull;
@@ -70,6 +72,17 @@ public class StockLocationDomainServiceRestApiAdapter implements StockLocationSe
     public SearchStockLocationsPageInfoViewResponse searchStockLocations(int page, int size, String attribute, String direction, String keyword) {
         return stockLocationViewMapper.toSearchStockLocationsPageInfoViewResponse(
                 stockLocationService.searchStockLocations(page, size, attribute, Direction.valueOf(direction), Keyword.of(Text.of(keyword)))
+        );
+    }
+
+    @Nonnull
+    @Override
+    public UpdateStockLocationViewResponse updateStockLocation(@Nonnull UUID stockLocationId, @Nonnull UpdateStockLocationViewRequest updateStockLocationViewRequest) {
+        return stockLocationViewMapper.toUpdateStockLocationViewResponse(
+            stockLocationService.updateStockLocation(
+                new StockLocationId(stockLocationId),
+                stockLocationViewMapper.toStockLocation(updateStockLocationViewRequest)
+            )
         );
     }
 }

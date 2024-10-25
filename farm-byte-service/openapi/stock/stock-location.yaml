@@ -104,6 +104,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      tags:
+        - StockLocation
+      summary: update stock location by id
+      operationId: updateStockLocationById
+      security:
+        - oAuth:
+            - update:stock:location
+      parameters:
+        - $ref: '../common/parameters/accept-language.yaml#/accept-language'
+        - $ref: '#/components/parameters/stockLocationId'
+      requestBody:
+        required: true
+        description: stock location object to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStockLocationViewRequest'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateStockLocationViewApiResponse'
+        400:
+          description: bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        404:
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        409:
+          description: conflict operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /stock-locations/search:
     get:
       tags:
@@ -254,3 +297,18 @@ components:
               type: object
               additionalProperties:
                 $ref: '#/components/schemas/SearchStockLocationsPageInfoViewResponse'
+    UpdateStockLocationViewRequest:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    UpdateStockLocationViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StockLocationView'
+    UpdateStockLocationViewApiResponse:
+      allOf:
+        - $ref: '../common/schemas/api-success-response.yaml#/ApiSuccessResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/UpdateStockLocationViewResponse'

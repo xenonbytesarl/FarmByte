@@ -11,6 +11,9 @@ import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsViewApiResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsViewApiResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewApiResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +39,7 @@ public class StockLocationRestApi implements StockLocationsApi {
     public static final String STOCK_LOCATION_CREATED_SUCCESSFULLY = "StockLocationRestApi.1";
     public static final String STOCK_LOCATION_FIND_SUCCESSFULLY = "StockLocationRestApi.2";
     public static final String STOCK_LOCATIONS_FIND_SUCCESSFULLY = "StockLocationRestApi.3";
+    public static final String STOCK_LOCATION_UPDATED_SUCCESSFULLY = "StockLocationRestApi.4";
 
     private final StockLocationServiceRestApiAdapter stockLocationServiceRestApiAdapter;
 
@@ -98,5 +102,19 @@ public class StockLocationRestApi implements StockLocationsApi {
                         .timestamp(ZonedDateTime.now().toString())
                         .message(MessageUtil.getMessage(STOCK_LOCATIONS_FIND_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
                         .data(of(BODY, searchStockLocationsPageInfoViewResponse)));
+    }
+
+    @Override
+    public ResponseEntity<UpdateStockLocationViewApiResponse> updateStockLocationById(String acceptLanguage, UUID stockLocationId, UpdateStockLocationViewRequest updateStockLocationViewRequest) {
+        UpdateStockLocationViewResponse updateStockLocationViewResponse =
+                stockLocationServiceRestApiAdapter.updateStockLocation(stockLocationId, updateStockLocationViewRequest);
+        return ResponseEntity.status(OK).body(
+                new UpdateStockLocationViewApiResponse()
+                        .code(OK.value())
+                        .status(OK.name())
+                        .success(true)
+                        .timestamp(ZonedDateTime.now().toString())
+                        .message(MessageUtil.getMessage(STOCK_LOCATION_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(acceptLanguage), ""))
+                        .data(of(BODY, updateStockLocationViewResponse)));
     }
 }
