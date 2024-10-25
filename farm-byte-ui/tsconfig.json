@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "useUnknownInCatchVariables": false
   },
   "files": [],
   "references": [

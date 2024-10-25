@@ -2,6 +2,15 @@ name: CIPipelineFarmByteUI
 on:
   workflow_dispatch:
     inputs:
+      Environment:
+        default: "int"
+        description: Choose target environment
+        type: choice
+        options:
+          - int
+          - rct
+          - prod
+        required: true
       Build:
         default: false
         description: Build docker image
