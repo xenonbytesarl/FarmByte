@@ -33,6 +33,13 @@ public final class StockLocationInMemoryRepositoryAdapterTest extends StockLocat
                         .name(name)
                         .build());
 
+        stockLocationToUpdate = StockLocation.builder()
+                .id(stockLocationId)
+                .name(Name.of(Text.of("First internal Location Update")))
+                .type(StockLocationType.INTERNAL)
+                .parentId(parentId)
+                .build();
+
         stockLocationRepository.save(
                 StockLocation.builder()
                     .id(new StockLocationId(UUID.fromString("019296b2-1138-7fcd-b732-aa676eb469fd")))

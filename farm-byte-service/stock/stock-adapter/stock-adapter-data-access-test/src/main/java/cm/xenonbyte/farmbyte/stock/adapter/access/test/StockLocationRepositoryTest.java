@@ -27,6 +27,7 @@ public abstract class StockLocationRepositoryTest {
     protected Name name;
     protected StockLocationId parentId;
     protected StockLocation stockLocation;
+    protected StockLocation stockLocationToUpdate;
     protected StockLocationId stockLocationId;
 
     @Nested
@@ -161,6 +162,34 @@ public abstract class StockLocationRepositoryTest {
             assertThat(result.getTotalPages()).isEqualTo(0);
             assertThat(result.getElements().size()).isEqualTo(0);
             assertThat(result.getTotalPages()).isEqualTo(0);
+        }
+    }
+
+    @Nested
+    class UpdateStockLocationRepositoryTest {
+        @Test
+        void should_true_when_find_stock_location_by_name() {
+            //Given + Act
+            Optional<StockLocation> result = stockLocationRepository.findByName(name);
+            //Then
+            assertThat(result.isPresent()).isTrue();
+        }
+
+        @Test
+        void should_false_when_find_stock_location_by_name() {
+            //Given + Act
+            Optional<StockLocation> result = stockLocationRepository.findByName(Name.of(Text.of("Fake Stock Location Name")));
+            //Then
+            assertThat(result.isPresent()).isFalse();
+        }
+
+        @Test
+        void should_update_stock_location() {
+            //Given +  Act
+            StockLocation result = stockLocationRepository.update(stockLocation, stockLocationToUpdate);
+
+            //Act
+            assertThat(result).isNotNull().isEqualTo(stockLocationToUpdate);
         }
     }
 }
