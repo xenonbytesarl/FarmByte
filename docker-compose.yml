@@ -9,7 +9,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - PGPORT=${DB_PORT}
     volumes:
-      - ./farmbyte_postgresql:/data/postgres
+      - ./farmbyte_postgresql/data:/var/lib/postgresql/data
     ports:
       - '${DB_PORT}:${DB_PORT}'
     networks:

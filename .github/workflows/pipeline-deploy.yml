@@ -1,60 +1,30 @@
-name: CDPipelineFarmByteService
+name: CDPipelineFarmByte
 on:
   workflow_dispatch:
     inputs:
       Environment:
         default: ""
-        description: Env. [Possibles values are(int, rct, prod)]
+        description: Choose target environment
+        type: choice
+        options:
+          - int
+          - rct
+          - prod
+        required: true
+      Image:
+        default: ""
+        description: Image name
+        type: string
+        required: false
+      Tag:
+        default: ""
+        description: Version of image
+        type: string
+        required: false
 jobs:
-  build-image:
-    runs-on: self-hosted
-    name: Build docker image
-    steps:
-      - name: Build the Project
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'corretto'
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v5
-        with:
-          maven-version: 3.9.8
-      - name: Build project
-        run: |
-          cd farm-byte-service
-          mvn clean package -DskipTests=true
-      - name: Extract project version
-        id: extract_version
-        run: |
-          cd farm-byte-service
-          echo "VERSION=$(mvn -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
-      - name: Login to Dockerhub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Get current date in number
-        id: current_date
-        run: |
-          echo "CURRENT_DATE=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-      - name: Build image and push to docker registry
-        uses: docker/build-push-action@v5
-        with:
-          context: farm-byte-service
-          file: docker/service/Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:${{ steps.extract_version.outputs.VERSION }}.${{ steps.current_date.outputs.CURRENT_DATE }}, ${{ secrets.DOCKERHUB_USERNAME }}/farm-byte-service:latest
-          build-args: |
-            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
   deploy-service:
-    name: Deploy FarmByte Service
+    name: Deploy FarmByte UI
     runs-on: self-hosted
-    needs: [build-image]
     steps:
       - name: Create deployment folder
         uses: appleboy/ssh-action@v1.0.3
@@ -88,18 +58,24 @@ jobs:
               export DB_PORT=${{ secrets.DB_PORT_RCT }}
               export APP_PORT=${{ secrets.APP_PORT_RCT }}
               export DB_NAME=${{ secrets.DB_NAME_RCT }}
+              export VITE_API_BACKEND_URL=${{ secrets.VITE_API_BACKEND_URL_RCT }}
+              export UI_PORT=${{ secrets.UI_PORT_RCT }}
             elif [ ${{github.event.inputs.Environment}} == 'prod' ]; then
               export DB_USER=${{ secrets.DB_USER_PROD }}
               export DB_PASSWORD=${{ secrets.DB_PASSWORD_PROD }}
               export DB_PORT=${{ secrets.DB_PORT_PROD }}
               export APP_PORT=${{ secrets.APP_PORT_PROD }}
               export DB_NAME=${{ secrets.DB_NAME_PROD }}
+              export VITE_API_BACKEND_URL=${{ secrets.VITE_API_BACKEND_URL_PROD }}
+              export UI_PORT=${{ secrets.UI_PORT_PROD }}
             else 
               export DB_USER=${{ secrets.DB_USER_INT }}
               export DB_PASSWORD=${{ secrets.DB_PASSWORD_INT }}
               export DB_PORT=${{ secrets.DB_PORT_INT }}
               export APP_PORT=${{ secrets.APP_PORT_INT }}
               export DB_NAME=${{ secrets.DB_NAME_INT }}
+              export VITE_API_BACKEND_URL=${{ secrets.VITE_API_BACKEND_URL_INT }}
+              export UI_PORT=${{ secrets.UI_PORT_INT }}
             fi
             cd ci_cd
             docker compose -f docker-compose.yml pull -q
