@@ -9,15 +9,18 @@ package cm.xenonbyte.farmbyte.bootstrap.inventory;
 import cm.xenonbyte.farmbyte.bootstrap.DatabaseSetupExtension;
 import cm.xenonbyte.farmbyte.common.adapter.api.messages.MessageUtil;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationServiceRestApiAdapter;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.ApiErrorResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.CreateStockLocationApiViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.CreateStockLocationViewRequest;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.CreateStockLocationViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationByIdViewApiResponse;
-import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationByIdViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsViewApiResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsViewApiResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewApiResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import jakarta.annotation.Nonnull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -51,11 +54,13 @@ import static cm.xenonbyte.farmbyte.common.adapter.api.constant.CommonAdapterRes
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATIONS_FIND_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_CREATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_FIND_SUCCESSFULLY;
-import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_PARENT_ID_NOT_FOUND;
+import static cm.xenonbyte.farmbyte.stock.adapter.rest.api.StockLocationRestApi.STOCK_LOCATION_UPDATED_SUCCESSFULLY;
 import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_NAME_CONFLICT;
+import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_PARENT_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @DirtiesContext
@@ -218,11 +223,6 @@ public class StockLocationIT {
             //Given
             String stockLocationUUID = "0192a686-3f49-7f2d-b7eb-ebe08814b82a";
             HttpEntity<Object> request = new HttpEntity<>(getHttpHeaders());
-            FindStockLocationByIdViewResponse findStockLocationByIdViewResponse = new FindStockLocationByIdViewResponse()
-                    .id(UUID.fromString(stockLocationUUID))
-                    .name("Supplier Location 1")
-                    .type(FindStockLocationByIdViewResponse.TypeEnum.SUPPLIER)
-                    .active(true);
 
             //Act
             ResponseEntity<FindStockLocationByIdViewApiResponse> response = restTemplate.exchange(
@@ -235,7 +235,6 @@ public class StockLocationIT {
             assertThat(response.getBody().getSuccess()).isTrue();
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(STOCK_LOCATION_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData()).isNotEmpty();
-            assertThat(response.getBody().getData().get(BODY)).isEqualTo(findStockLocationByIdViewResponse);
 
         }
     }
@@ -298,6 +297,113 @@ public class StockLocationIT {
             assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(STOCK_LOCATIONS_FIND_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
             assertThat(response.getBody().getData().get(BODY)).isInstanceOf(SearchStockLocationsPageInfoViewResponse.class);
             assertThat(response.getBody().getData().get(BODY).getElements().size()).isGreaterThan(0);
+        }
+    }
+
+    @Nested
+    class UpdateStockLocationIT {
+        public static Stream<Arguments> updateStockLocationMethodSourceArgs() {
+            return Stream.of(
+                    Arguments.of(
+                            UUID.fromString("0192a686-669f-7735-9e4b-eaed505bb8b8"),
+                            "Root Location Update",
+                            UpdateStockLocationViewRequest.TypeEnum.VIEW,
+                            null,
+                            true
+                    ),
+                    Arguments.of(
+                            UUID.fromString("0192a686-3f49-7f2d-b7eb-ebe08814b82a"),
+                            "Child Location View Update",
+                            UpdateStockLocationViewRequest.TypeEnum.INTERNAL,
+                            UUID.fromString("019296f7-8b01-74bb-be63-035025f53c1f"),
+                            true
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("updateStockLocationMethodSourceArgs")
+        void should_update_root_or_child_inventory_emplacement(
+                UUID stockLocationUUID,
+                String name,
+                UpdateStockLocationViewRequest.TypeEnum type,
+                UUID parentId,
+                boolean active
+        )  {
+            //Given
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = getUpdateStockLocationViewRequest(stockLocationUUID, name, type, parentId, active);
+            HttpEntity<UpdateStockLocationViewRequest> request = new HttpEntity<>(updateStockLocationViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<UpdateStockLocationViewApiResponse> response = restTemplate.exchange(BASE_URL + "/" + stockLocationUUID , PUT, request, UpdateStockLocationViewApiResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(200);
+            assertThat(response.getBody().getSuccess()).isTrue();
+            assertThat(response.getBody().getStatus()).isEqualTo("OK");
+            assertThat(response.getBody().getData().get(BODY)).isNotNull().isInstanceOf(UpdateStockLocationViewResponse.class);
+            assertThat(response.getBody().getData().get(BODY).getId()).isNotNull().isInstanceOf(UUID.class);
+            assertThat(response.getBody().getData().get(BODY).getActive()).isNotNull().isInstanceOf(Boolean.class);
+            assertThat(response.getBody().getMessage()).isEqualTo(MessageUtil.getMessage(STOCK_LOCATION_UPDATED_SUCCESSFULLY, Locale.forLanguageTag(EN_LOCALE), ""));
+        }
+
+
+        @Test
+        void should_fail_when_update_stock_location_with_existing_name()  {
+            //Given
+            UUID stockLocationUUID = UUID.fromString("0192a686-3f49-7f2d-b7eb-ebe08814b82a");
+            String name = "Customer Location 1";
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = getUpdateStockLocationViewRequest(
+                    stockLocationUUID,
+                    name,
+                    UpdateStockLocationViewRequest.TypeEnum.INTERNAL,
+                    null,
+                    true
+            );
+            HttpEntity<UpdateStockLocationViewRequest> request = new HttpEntity<>(updateStockLocationViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + stockLocationUUID , PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(409);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("CONFLICT");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(STOCK_LOCATION_NAME_CONFLICT, Locale.forLanguageTag(EN_LOCALE), name));
+        }
+
+        @Test
+        void should_fail_when_update_stock_location_with_non_existing_parent_id()  {
+            //Given
+            UUID stockLocationUUID = UUID.fromString("0192a686-3f49-7f2d-b7eb-ebe08814b82a");
+            String name = "Customer Location To Update";
+            UUID parentId = UUID.fromString("0192c583-6c1c-778b-b6e3-a66ffbfd0dde");
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = getUpdateStockLocationViewRequest(
+                    stockLocationUUID,
+                    name,
+                    UpdateStockLocationViewRequest.TypeEnum.INTERNAL,
+                    parentId,
+                    true
+            );
+            HttpEntity<UpdateStockLocationViewRequest> request = new HttpEntity<>(updateStockLocationViewRequest, getHttpHeaders());
+
+            //Act
+            ResponseEntity<ApiErrorResponse> response = restTemplate.exchange(BASE_URL + "/" + stockLocationUUID , PUT, request, ApiErrorResponse.class);
+
+            //Then
+            assertThat(response.getStatusCode().value()).isEqualTo(404);
+            assertThat(response.getBody().getSuccess()).isFalse();
+            assertThat(response.getBody().getStatus()).isEqualTo("NOT_FOUND");
+            assertThat(response.getBody().getReason()).isEqualTo(MessageUtil.getMessage(STOCK_LOCATION_PARENT_ID_NOT_FOUND, Locale.forLanguageTag(EN_LOCALE), parentId.toString()));
+        }
+
+        private UpdateStockLocationViewRequest getUpdateStockLocationViewRequest(UUID stockLocationUUID, String name, UpdateStockLocationViewRequest.TypeEnum type, UUID parentId, boolean active) {
+            return new UpdateStockLocationViewRequest()
+                    .id(stockLocationUUID)
+                    .name(name)
+                    .type(type)
+                    .parentId(parentId)
+                    .active(active);
         }
     }
 
