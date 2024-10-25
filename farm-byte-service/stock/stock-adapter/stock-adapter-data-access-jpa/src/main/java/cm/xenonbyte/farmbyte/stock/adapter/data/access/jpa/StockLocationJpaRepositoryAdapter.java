@@ -28,13 +28,13 @@ import java.util.Optional;
 public class StockLocationJpaRepositoryAdapter implements StockLocationRepository {
 
 
-    private final StockLocationRepositoryJpa stockLocationRepositoryJpa;
+    private final StockLocationJpaRepository stockLocationJpaRepository;
     private final StockLocationJpaMapper stockLocationJpaMapper;
 
     public StockLocationJpaRepositoryAdapter(
-            final @Nonnull StockLocationRepositoryJpa stockLocationRepositoryJpa,
+            final @Nonnull StockLocationJpaRepository stockLocationJpaRepository,
             final @Nonnull StockLocationJpaMapper stockLocationJpaMapper) {
-        this.stockLocationRepositoryJpa = Objects.requireNonNull(stockLocationRepositoryJpa);
+        this.stockLocationJpaRepository = Objects.requireNonNull(stockLocationJpaRepository);
         this.stockLocationJpaMapper = Objects.requireNonNull(stockLocationJpaMapper);
     }
 
@@ -42,14 +42,14 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
     @Override
     @Transactional(readOnly = true)
     public boolean existsById(@Nonnull StockLocationId stockLocationId) {
-        return stockLocationRepositoryJpa.existsById(stockLocationId.getValue());
+        return stockLocationJpaRepository.existsById(stockLocationId.getValue());
     }
 
     @Override
     @Transactional
     public StockLocation save(@Nonnull StockLocation stockLocation) {
         return stockLocationJpaMapper.toStockLocation(
-                stockLocationRepositoryJpa.save(
+                stockLocationJpaRepository.save(
                         stockLocationJpaMapper.toStockLocationJpa(stockLocation)
                 )
         );
@@ -58,13 +58,13 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
     @Override
     @Transactional(readOnly = true)
     public boolean existsByNameIgnoreCase(@Nonnull Name name) {
-        return stockLocationRepositoryJpa.existsByNameIgnoreCase(name.getText().getValue());
+        return stockLocationJpaRepository.existsByNameIgnoreCase(name.getText().getValue());
     }
 
     @Nonnull
     @Override
     public Optional<StockLocation> findById(@Nonnull StockLocationId stockLocationId) {
-        return stockLocationRepositoryJpa.findById(stockLocationId.getValue())
+        return stockLocationJpaRepository.findById(stockLocationId.getValue())
                 .map(stockLocationJpaMapper::toStockLocation);
     }
 
@@ -72,7 +72,7 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
     public PageInfo<StockLocation> findAll(Integer page, Integer size, String sortAttribute, Direction direction) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<StockLocationJpa> stockLocationJpaPage =
-                stockLocationRepositoryJpa.findAll(PageRequest.of(page, size, sortDirection, sortAttribute));
+                stockLocationJpaRepository.findAll(PageRequest.of(page, size, sortDirection, sortAttribute));
         return new PageInfo<>(
                 stockLocationJpaPage.isFirst(),
                 stockLocationJpaPage.isLast(),
@@ -87,7 +87,7 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
     public PageInfo<StockLocation> search(Integer page, Integer size, String sortAttribute, Direction direction, Keyword keyword) {
         Sort.Direction sortDirection = Direction.ASC.equals(direction) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Page<StockLocationJpa> stockLocationJpaPage =
-                stockLocationRepositoryJpa.search(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());
+                stockLocationJpaRepository.search(PageRequest.of(page, size, sortDirection, sortAttribute), keyword.getText().getValue());
         return new PageInfo<>(
                 stockLocationJpaPage.isFirst(),
                 stockLocationJpaPage.isLast(),
@@ -101,11 +101,15 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
     @Nonnull
     @Override
     public StockLocation update(@Nonnull StockLocation oldStockLocation, @Nonnull StockLocation newStockLocation) {
-        return null;
+        StockLocationJpa oldStockLocationJpa = stockLocationJpaMapper.toStockLocationJpa(oldStockLocation);
+        StockLocationJpa newStockLocationJpa = stockLocationJpaMapper.toStockLocationJpa(newStockLocation);
+        stockLocationJpaMapper.copyNewToOldStockLocation(newStockLocationJpa, oldStockLocationJpa);
+        return stockLocationJpaMapper.toStockLocation(stockLocationJpaRepository.save(oldStockLocationJpa));
     }
 
     @Override
     public Optional<StockLocation> findByName(@Nonnull Name name) {
-        return Optional.empty();
+        return stockLocationJpaRepository.findByName(name.getText().getValue())
+                .map(stockLocationJpaMapper::toStockLocation);
     }
 }

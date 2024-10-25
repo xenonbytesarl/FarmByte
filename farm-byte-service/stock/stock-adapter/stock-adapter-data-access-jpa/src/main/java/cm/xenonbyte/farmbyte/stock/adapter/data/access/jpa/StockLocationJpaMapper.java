@@ -6,6 +6,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 /**
  * @author bamk
@@ -34,4 +35,6 @@ public interface StockLocationJpaMapper {
     @Mapping(target = "active.value", source = "active")
     @Nonnull
     StockLocation toStockLocation(@Nonnull StockLocationJpa stockLocationJpa);
+
+    void copyNewToOldStockLocation(@Nonnull StockLocationJpa newStockLocationJpa, @Nonnull @MappingTarget StockLocationJpa oldStockLocationJpa);
 }

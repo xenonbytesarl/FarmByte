@@ -28,19 +28,19 @@ import java.util.UUID;
 @ExtendWith(DatabaseSetupExtension.class)
 @Import(JpaRepositoryAdapterTest.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = {StockLocationRepositoryJpa.class, StockLocationJpaMapper.class})
+@ContextConfiguration(classes = {StockLocationJpaRepository.class, StockLocationJpaMapper.class})
 public class StockLocationJpaRepositoryAdapterIT extends StockLocationRepositoryTest {
 
     @Autowired
     private StockLocationJpaMapper stockLocationJpaMapper;
 
     @Autowired
-    private StockLocationRepositoryJpa stockLocationRepositoryJpa;
+    private StockLocationJpaRepository stockLocationJpaRepository;
 
     @BeforeEach
     void setUp() {
         stockLocationRepository = new StockLocationJpaRepositoryAdapter(
-                stockLocationRepositoryJpa, stockLocationJpaMapper);
+                stockLocationJpaRepository, stockLocationJpaMapper);
 
         name = Name.of(Text.of("Internal Location 1"));
 
@@ -51,6 +51,14 @@ public class StockLocationJpaRepositoryAdapterIT extends StockLocationRepository
         stockLocation = StockLocation.builder()
                 .id(new StockLocationId(UUID.fromString("01929708-609d-7d64-ae29-1940b7e5f6f1")))
                 .name(Name.of(Text.of("Internal Location 4")))
+                .type(StockLocationType.INTERNAL)
+                .parentId(parentId)
+                .active(Active.with(true))
+                .build();
+
+        stockLocationToUpdate = StockLocation.builder()
+                .id(stockLocationId)
+                .name(Name.of(Text.of("Internal Location Update")))
                 .type(StockLocationType.INTERNAL)
                 .parentId(parentId)
                 .active(Active.with(true))
