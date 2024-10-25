@@ -9,6 +9,8 @@ import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsViewResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocation;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
@@ -99,4 +101,19 @@ public interface StockLocationViewMapper {
     @Mapping(expression = "java(stockLocation.getParentId() == null? null : stockLocation.getParentId().getValue())", target = "parentId")
     @Mapping(source = "active.value", target = "active")
     @Nonnull @Valid SearchStockLocationsViewResponse toSearchStockLocationsViewResponse(@Nonnull StockLocation stockLocation);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "name.text.value", source = "name")
+    @Mapping(target = "type", expression = "java(cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationType.valueOf(updateStockLocationViewRequest.getType().name()))")
+    @Mapping(target = "parentId", expression = "java(updateStockLocationViewRequest.getParentId() == null? null: new cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationId(updateStockLocationViewRequest.getParentId()))")
+    @Mapping(target = "active.value", source = "active")
+    @Nonnull StockLocation toStockLocation(@Nonnull @Valid UpdateStockLocationViewRequest updateStockLocationViewRequest);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id.value", target = "id")
+    @Mapping(source = "name.text.value", target = "name")
+    @Mapping(expression = "java(UpdateStockLocationViewResponse.TypeEnum.valueOf(stockLocation.getType().name()))", target = "type")
+    @Mapping(expression = "java(stockLocation.getParentId() == null? null : stockLocation.getParentId().getValue())", target = "parentId")
+    @Mapping(source = "active.value", target = "active")
+    @Nonnull @Valid UpdateStockLocationViewResponse toUpdateStockLocationViewResponse(@Nonnull StockLocation stockLocation);
 }

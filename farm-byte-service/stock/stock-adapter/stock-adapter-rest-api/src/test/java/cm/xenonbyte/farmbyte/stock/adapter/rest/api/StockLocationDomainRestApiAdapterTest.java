@@ -13,6 +13,8 @@ import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.FindStockLocationsViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsPageInfoViewResponse;
 import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.SearchStockLocationsViewResponse;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewRequest;
+import cm.xenonbyte.farmbyte.stock.adapter.rest.api.generated.stocklocation.view.UpdateStockLocationViewResponse;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocation;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationId;
 import cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationNameConflictException;
@@ -517,6 +519,140 @@ public final class StockLocationDomainRestApiAdapterTest {
             assertThat(directionArgumentCaptor.getAllValues().getFirst()).isEqualTo(Direction.ASC);
             assertThat(keywordArgumentCaptor.getValue().getText().getValue()).isEqualTo(keyword);
             assertThat(pageInfoArgumentCaptor.getValue()).isEqualTo(stockLocationsPageInfo);
+        }
+    }
+
+    @Nested
+    class UpdateStockLocationDomainServiceRestApiAdapterTest {
+        @Test
+        void should_success_when_update_stock_location_by_id() {
+            //Given
+            UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+            StockLocationId stockLocationId = new StockLocationId(stockLocationUUID);
+            String name = "Internal Location Update";
+
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                    .id(stockLocationUUID)
+                    .name(name)
+                    .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                    .active(true);
+
+            StockLocation stockLocation = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(Name.of(Text.of(name)))
+                    .type(StockLocationType.valueOf(updateStockLocationViewRequest.getType().name()))
+                    .active(Active.with(true))
+                    .build();
+
+            UpdateStockLocationViewResponse updateStockLocationViewResponse = new UpdateStockLocationViewResponse()
+                    .id(stockLocationUUID)
+                    .name(name)
+                    .type(UpdateStockLocationViewResponse.TypeEnum.INTERNAL)
+                    .active(true);
+
+            when(stockLocationViewMapper.toStockLocation(updateStockLocationViewRequest)).thenReturn(stockLocation);
+            when(stockLocationService.updateStockLocation(stockLocationId, stockLocation)).thenReturn(stockLocation);
+            when(stockLocationViewMapper.toUpdateStockLocationViewResponse(stockLocation)).thenReturn(updateStockLocationViewResponse);
+
+            ArgumentCaptor<StockLocationId> stockLocationIdArgumentCaptor =
+                    ArgumentCaptor.forClass(StockLocationId.class);
+
+            ArgumentCaptor<UpdateStockLocationViewRequest> updateStockLocationViewRequestArgumentCaptor =
+                    ArgumentCaptor.forClass(UpdateStockLocationViewRequest.class);
+
+            ArgumentCaptor<StockLocation> stockLocationArgumentCaptor = ArgumentCaptor.forClass(StockLocation.class);
+
+            //Act
+            UpdateStockLocationViewResponse result =
+                    stockLocationServiceRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest);
+
+            //Then
+            assertThat(result).isNotNull()
+                    .isEqualTo(updateStockLocationViewResponse);
+
+            verify(stockLocationViewMapper, times(1))
+                    .toStockLocation(updateStockLocationViewRequestArgumentCaptor.capture());
+
+            verify(stockLocationService, times(1))
+                    .updateStockLocation(stockLocationIdArgumentCaptor.capture(), stockLocationArgumentCaptor.capture());
+
+            verify(stockLocationViewMapper, times(1))
+                    .toUpdateStockLocationViewResponse(stockLocationArgumentCaptor.capture());
+
+
+            assertThat(updateStockLocationViewRequestArgumentCaptor.getValue()).isEqualTo(updateStockLocationViewRequest);
+            assertThat(stockLocationIdArgumentCaptor.getValue()).isEqualTo(stockLocationId);
+            assertThat(stockLocationArgumentCaptor.getAllValues().getFirst()).isEqualTo(stockLocation);
+            assertThat(stockLocationArgumentCaptor.getAllValues().getLast()).isEqualTo(stockLocation);
+
+        }
+
+        @Test
+        void should_fail_when_update_stock_location_name_with_existing_name()
+                throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+            StockLocationId stockLocationId = new StockLocationId(stockLocationUUID);
+            String name = "Internal Location Update";
+
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                    .id(stockLocationUUID)
+                    .name(name)
+                    .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                    .active(true);
+
+            StockLocation stockLocation = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(Name.of(Text.of(name)))
+                    .type(StockLocationType.valueOf(updateStockLocationViewRequest.getType().name()))
+                    .active(Active.with(true))
+                    .build();
+
+            when(stockLocationViewMapper.toStockLocation(updateStockLocationViewRequest)).thenReturn(stockLocation);
+            when(stockLocationService.updateStockLocation(stockLocationId, stockLocation)).thenThrow(
+                    StockLocationNameConflictException.class.getConstructor(Object[].class).newInstance(
+                            new Object[]{new String[]{name}}
+                    )
+            );
+
+            assertThatThrownBy(() -> stockLocationServiceRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest))
+                    .isInstanceOf(StockLocationNameConflictException.class)
+                    .hasMessage(STOCK_LOCATION_NAME_CONFLICT);
+        }
+
+        @Test
+        void should_fail_when_update_stock_location_name_with_non_existing_parent_id()
+                throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+            //Given
+            UUID stockLocationUUID = UUID.fromString("0192c540-3469-7da3-89e6-c8e65c701697");
+            StockLocationId stockLocationId = new StockLocationId(stockLocationUUID);
+            String name = "Internal Location Update";
+            UUID parentUUID = UUID.fromString("0192c555-aa14-7113-a3be-579e47351102");
+
+            UpdateStockLocationViewRequest updateStockLocationViewRequest = new UpdateStockLocationViewRequest()
+                    .id(stockLocationUUID)
+                    .name(name)
+                    .parentId(parentUUID)
+                    .type(UpdateStockLocationViewRequest.TypeEnum.INTERNAL)
+                    .active(true);
+
+            StockLocation stockLocation = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(Name.of(Text.of(name)))
+                    .type(StockLocationType.valueOf(updateStockLocationViewRequest.getType().name()))
+                    .active(Active.with(true))
+                    .build();
+
+            when(stockLocationViewMapper.toStockLocation(updateStockLocationViewRequest)).thenReturn(stockLocation);
+            when(stockLocationService.updateStockLocation(stockLocationId, stockLocation)).thenThrow(
+                    StockLocationParentIdNotFoundException.class.getConstructor(Object[].class).newInstance(
+                            new Object[]{new String[]{parentUUID.toString()}}
+                    )
+            );
+
+            assertThatThrownBy(() -> stockLocationServiceRestApiAdapter.updateStockLocation(stockLocationUUID, updateStockLocationViewRequest))
+                    .isInstanceOf(StockLocationParentIdNotFoundException.class)
+                    .hasMessage(STOCK_LOCATION_PARENT_ID_NOT_FOUND);
         }
     }
 
