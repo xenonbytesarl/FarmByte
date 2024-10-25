@@ -103,6 +103,7 @@ public interface StockLocationViewMapper {
     @Nonnull @Valid SearchStockLocationsViewResponse toSearchStockLocationsViewResponse(@Nonnull StockLocation stockLocation);
 
     @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id.value", source = "id")
     @Mapping(target = "name.text.value", source = "name")
     @Mapping(target = "type", expression = "java(cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationType.valueOf(updateStockLocationViewRequest.getType().name()))")
     @Mapping(target = "parentId", expression = "java(updateStockLocationViewRequest.getParentId() == null? null: new cm.xenonbyte.farmbyte.stock.domain.core.stocklocation.StockLocationId(updateStockLocationViewRequest.getParentId()))")
