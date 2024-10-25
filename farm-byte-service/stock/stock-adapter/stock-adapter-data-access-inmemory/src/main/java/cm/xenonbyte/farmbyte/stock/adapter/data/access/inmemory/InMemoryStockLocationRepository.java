@@ -76,4 +76,18 @@ public final class InMemoryStockLocationRepository implements StockLocationRepos
                         .toList()
         );
     }
+
+    @Nonnull
+    @Override
+    public StockLocation update(@Nonnull StockLocation oldStockLocation, @Nonnull StockLocation newStockLocation) {
+        stockLocations.replace(oldStockLocation.getId(), newStockLocation);
+        return newStockLocation;
+    }
+
+    @Override
+    public Optional<StockLocation> findByName(@Nonnull Name name) {
+        return stockLocations.values().stream()
+                .filter(stockLocation -> stockLocation.getName().getText().getValue().equalsIgnoreCase(name.getText().getValue()))
+                .findFirst();
+    }
 }

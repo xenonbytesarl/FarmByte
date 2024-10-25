@@ -20,4 +20,6 @@ public interface StockLocationService {
     PageInfo<StockLocation> findStockLocations(Integer page, Integer size, String sortAttribute, Direction direction);
 
     PageInfo<StockLocation> searchStockLocations(Integer page, Integer size, String sortAttribute, Direction direction, Keyword keyword);
+
+    @Nonnull StockLocation updateStockLocation(StockLocationId stockLocationId, @Nonnull StockLocation stockLocation);
 }

@@ -6,6 +6,8 @@ import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,10 +52,37 @@ public final class StockLocationDomainService implements StockLocationService {
         return stockLocationRepository.search(page, size, sortAttribute, direction, keyword);
     }
 
+    @Nonnull
+    @Override
+    public StockLocation updateStockLocation(StockLocationId stockLocationId, @Nonnull StockLocation stockLocationToUpdate) {
+        stockLocationToUpdate.validateMandatoryFields();
+        Optional<StockLocation> optionalStockLocation = stockLocationRepository.findById(stockLocationId);
+        if(optionalStockLocation.isPresent()) {
+            verifyParent(stockLocationToUpdate.getParentId());
+            verifyName(stockLocationToUpdate);
+            return stockLocationRepository.update(optionalStockLocation.get(), stockLocationToUpdate);
+        }
+       throw new StockLocationNotFoundException(new String[]{stockLocationId.getValue().toString()});
+    }
+
     private void verifyName(@Nonnull StockLocation stockLocation) {
-        if(stockLocation.getId() == null && stockLocationRepository.existsByNameIgnoreCase(stockLocation.getName())) {
+        if(isStockLocationExistByNameWhenCreate(stockLocation)) {
             throw new StockLocationNameConflictException(new String[]{stockLocation.getName().getText().getValue()});
         }
+        
+        Optional<StockLocation> optionalStockLocation = stockLocationRepository.findByName(stockLocation.getName());
+        
+        if(isStockLocationExistsByNameWhenUpdate(stockLocation, optionalStockLocation)) {
+            throw new StockLocationNameConflictException(new String[]{stockLocation.getName().getText().getValue()});
+        }
+    }
+
+    private static boolean isStockLocationExistsByNameWhenUpdate(StockLocation stockLocation, Optional<StockLocation> optionalStockLocation) {
+        return stockLocation.getId() != null && optionalStockLocation.isPresent() && !optionalStockLocation.get().getId().equals(stockLocation.getId());
+    }
+
+    private boolean isStockLocationExistByNameWhenCreate(StockLocation stockLocation) {
+        return stockLocation.getId() == null && stockLocationRepository.existsByNameIgnoreCase(stockLocation.getName());
     }
 
     private void verifyParent(@Nonnull StockLocationId parentId) {

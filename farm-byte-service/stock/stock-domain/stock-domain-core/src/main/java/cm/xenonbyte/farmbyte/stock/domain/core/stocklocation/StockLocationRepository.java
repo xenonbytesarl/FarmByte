@@ -27,4 +27,8 @@ public interface StockLocationRepository {
     PageInfo<StockLocation> findAll(Integer page, Integer size, String sortAttribute, Direction direction);
 
     PageInfo<StockLocation> search(Integer page, Integer size, String sortAttribute, Direction direction, Keyword keyword);
+
+    @Nonnull StockLocation update(@Nonnull StockLocation oldStockLocation, @Nonnull StockLocation newStockLocation);
+
+    Optional<StockLocation> findByName(@Nonnull Name name);
 }

@@ -29,6 +29,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.common.domain.validation.InvalidFieldBadException.NOT_NULL_VALUE;
+import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_NAME_CONFLICT;
+import static cm.xenonbyte.farmbyte.stock.domain.core.constant.StockDomainConstant.STOCK_LOCATION_PARENT_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -117,7 +119,7 @@ public final class StockLocationTest {
             //Act + Then
             assertThatThrownBy(() -> stockLocationService.createStockLocation(stockLocation))
                     .isInstanceOf(StockLocationNameConflictException.class)
-                    .hasMessage(StockDomainConstant.STOCK_LOCATION_NAME_CONFLICT);
+                    .hasMessage(STOCK_LOCATION_NAME_CONFLICT);
         }
 
         @Test
@@ -346,6 +348,113 @@ public final class StockLocationTest {
             assertThat(result.getTotalPages()).isEqualTo(totalPages);
             assertThat(result.getPageSize()).isEqualTo(pageSize);
             assertThat(result.getElements()).hasSize(contentSize);
+        }
+    }
+
+    @Nested
+    class UpdateStockLocationDomainTest {
+        StockLocationId stockLocationId;
+        StockLocation stockLocation;
+
+        @BeforeEach
+        void setUp() {
+            stockLocationId = new StockLocationId(UUID.fromString("0192c50c-edd9-79b5-a618-2868d51e6016"));
+            stockLocation = stockLocationRepository.save(
+                StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(Name.of(Text.of("Internal Emplacement")))
+                    .type(StockLocationType.INTERNAL)
+                    .build()
+            );
+        }
+
+        @Test
+        void should_success_when_update_stock_location() {
+            //Given
+            StockLocation stockLocationToUpdate = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(Name.of(Text.of("Internal Emplacement To Update")))
+                    .type(StockLocationType.INTERNAL)
+                    .build();
+
+            //Act
+            StockLocation result = stockLocationService.updateStockLocation(stockLocationId, stockLocationToUpdate);
+
+            //Then
+            assertThat(result).isNotNull().isEqualTo(stockLocationToUpdate);
+        }
+
+        @Test
+        void should_fail_when_update_stock_location_with_duplicate_name() {
+            //Given
+            StockLocation stockLocationToUpdate = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(name)
+                    .type(StockLocationType.INTERNAL)
+                    .build();
+
+            assertThatThrownBy(() -> stockLocationService.updateStockLocation(stockLocationId, stockLocationToUpdate))
+                    .isInstanceOf(StockLocationNameConflictException.class)
+                    .hasMessage(STOCK_LOCATION_NAME_CONFLICT);
+        }
+
+        @Test
+        void should_fail_when_update_stock_location_with_non_existing_parent_id() {
+            //Given
+            StockLocation stockLocationToUpdate = StockLocation.builder()
+                .id(stockLocationId)
+                .name(name)
+                .type(StockLocationType.INTERNAL)
+                .parentId(new StockLocationId(UUID.fromString("0192c521-babf-7974-b0da-0d4f7d484f72")))
+                .build();
+
+            assertThatThrownBy(() -> stockLocationService.updateStockLocation(stockLocationId, stockLocationToUpdate))
+                .isInstanceOf(StockLocationParentIdNotFoundException.class)
+                .hasMessage(STOCK_LOCATION_PARENT_ID_NOT_FOUND);
+        }
+
+        static Stream<Arguments> updateStockLocationInvalidAttribute() {
+            return Stream.of(
+                    Arguments.of(
+                            new StockLocationId(UUID.fromString("0192c56a-fcb6-773e-bba4-76a253b987cf")),
+                            null,
+                            StockLocationType.INTERNAL,
+                            Active.with(true),
+                            InvalidFieldBadException.class,
+                            NOT_NULL_VALUE),
+                    Arguments.of(
+                            new StockLocationId(UUID.fromString("0192c56b-18a8-79b6-a927-b0c88b33b101")),
+                            Name.of(Text.of("StockLocationName.4")),
+                            null,
+                            Active.with(true),
+                            InvalidFieldBadException.class, NOT_NULL_VALUE
+                    )
+
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("updateStockLocationInvalidAttribute")
+        void should_fail_when_create_inventory_emplacement_with_a_least_of_one_invalid_attribute(
+                StockLocationId stockLocationId,
+                Name name,
+                StockLocationType type,
+                Active active,
+                Class<? extends RuntimeException> excepectedClass,
+                String expectedMessage
+        ) {
+            //Given
+            StockLocation stockLocation = StockLocation.builder()
+                    .id(stockLocationId)
+                    .name(name)
+                    .type(type)
+                    .active(active)
+                    .build();
+
+            //Act + Then
+            assertThatThrownBy(() -> stockLocationService.createStockLocation(stockLocation))
+                    .isInstanceOf(excepectedClass)
+                    .hasMessage(expectedMessage);
         }
     }
 

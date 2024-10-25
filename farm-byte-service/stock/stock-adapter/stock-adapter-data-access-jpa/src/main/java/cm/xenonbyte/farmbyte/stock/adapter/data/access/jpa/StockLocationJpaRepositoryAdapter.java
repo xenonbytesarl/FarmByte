@@ -97,4 +97,15 @@ public class StockLocationJpaRepositoryAdapter implements StockLocationRepositor
                 stockLocationJpaPage.getContent().stream().map(stockLocationJpaMapper::toStockLocation).toList()
         );
     }
+
+    @Nonnull
+    @Override
+    public StockLocation update(@Nonnull StockLocation oldStockLocation, @Nonnull StockLocation newStockLocation) {
+        return null;
+    }
+
+    @Override
+    public Optional<StockLocation> findByName(@Nonnull Name name) {
+        return Optional.empty();
+    }
 }
