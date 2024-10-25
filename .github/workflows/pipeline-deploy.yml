@@ -32,7 +32,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: mkdir -p ci_cd
+          script: mkdir -p farmbyte
           overwrite: true
       - name: Copy docker compose file
         uses: appleboy/scp-action@v0.1.7
@@ -42,7 +42,7 @@ jobs:
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           overwrite: true
           source: docker-compose.yml
-          target: ci_cd
+          target: farmbyte
       - name: Set environment variables and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -77,7 +77,7 @@ jobs:
               export VITE_API_BACKEND_URL=${{ secrets.VITE_API_BACKEND_URL_INT }}
               export UI_PORT=${{ secrets.UI_PORT_INT }}
             fi
-            cd ci_cd
+            cd farmbyte
             docker compose -f docker-compose.yml pull -q
             docker compose down
             docker compose -f docker-compose.yml up -d
