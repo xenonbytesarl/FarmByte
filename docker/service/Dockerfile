@@ -1,6 +1,7 @@
 #Build stage
 FROM maven:3.9.8-amazoncorretto-21 AS build
 
+VOLUME /root/farmbyte
 WORKDIR /build
 COPY . .
 RUN mvn dependency:go-offline

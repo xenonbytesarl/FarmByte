@@ -26,6 +26,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - APP_PORT=${APP_PORT}
+    volumes:
+      - ./farmbyte_images/data:/root/farmbyte
     ports:
       - '${APP_PORT}:${APP_PORT}'
     depends_on:
@@ -47,7 +49,3 @@ services:
 networks:
   farmbyte-network:
     driver: bridge
-
-volumes:
-  farmbyte_postgresql:
-    driver: local
