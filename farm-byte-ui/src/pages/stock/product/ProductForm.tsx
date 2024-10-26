@@ -209,8 +209,8 @@ const ProductForm = () => {
                 dispatch(createProduct({product: productFormValue, file: fileValues}))
                     .then(unwrapResult)
                     .then((response) => {
+                        setMode(FormModeType.READ);
                         showToast("success", response.message);
-                        //@ts-ignore
                         navigate(`/stock/products/details/${response.content.id}`);
                     })
                     .catch((error) => {
