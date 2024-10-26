@@ -124,12 +124,14 @@ const productSlice = createSlice({
                 state.loading = false;
                 state.totalElements = state.totalElements + 1;
                 state.message = message;
+                state.currentProduct = content;
                 productAdapter.addOne(state, content);
             })
             .addCase(updateProduct.fulfilled, (state, action) => {
                 const {content, message} = action.payload;
                 state.loading = false;
                 state.message = message;
+                state.currentProduct = content;
                 productAdapter.updateOne(state, {id: content.id, changes: content});
             })
             .addCase(findProductById.fulfilled, (state, action) => {
