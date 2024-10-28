@@ -1,6 +1,5 @@
 package cm.xenonbyte.farmbyte.admin.domain.core;
 
-import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;

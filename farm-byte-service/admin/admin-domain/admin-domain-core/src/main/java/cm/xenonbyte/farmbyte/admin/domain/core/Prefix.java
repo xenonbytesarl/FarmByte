@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.admin.domain.core.vo;
+package cm.xenonbyte.farmbyte.admin.domain.core;
 
 import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
@@ -11,27 +11,26 @@ import java.util.Objects;
  * @version 1.0
  * @since 28/10/2024
  */
-public record Suffix(Text text) {
-
-    public Suffix(@Nonnull Text text) {
+public record Prefix(Text text) {
+    public Prefix(@Nonnull Text text) {
         this.text = Objects.requireNonNull(text);
     }
 
     @Nonnull
-    public static Suffix of(Text value) {
-        Assert.field("Suffix", value)
+    public static Prefix of(Text value) {
+        Assert.field("Prefix", value)
                 .notNull()
                 .notNull(value.getValue())
                 .notEmpty();
-        return new Suffix(value);
+        return new Prefix(value);
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Suffix suffix = (Suffix) object;
-        return Objects.equals(text, suffix.text);
+        Prefix prefix = (Prefix) object;
+        return Objects.equals(text, prefix.text);
     }
 
     @Override
