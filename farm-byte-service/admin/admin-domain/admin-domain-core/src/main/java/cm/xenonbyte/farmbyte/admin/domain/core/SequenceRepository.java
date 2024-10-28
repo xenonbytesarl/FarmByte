@@ -1,7 +1,10 @@
 package cm.xenonbyte.farmbyte.admin.domain.core;
 
 import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
 import java.util.Optional;
@@ -21,4 +24,8 @@ public interface SequenceRepository {
     Optional<Sequence> findByCode(@Nonnull Code code);
 
     Optional<Sequence> findById(@Nonnull SequenceId sequenceId);
+
+    PageInfo<Sequence> findAll(Integer page, Integer size, String attribute, @Nonnull Direction direction);
+
+    PageInfo<Sequence> search(Integer page, Integer size, String attribute, @Nonnull Direction direction, Keyword keyword);
 }
