@@ -9,6 +9,7 @@ import jakarta.annotation.Nonnull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author bamk
@@ -38,5 +39,17 @@ public final class SequenceInMemoryInRepository implements SequenceRepository {
         return sequences.values().stream()
                 .anyMatch(sequence ->
                         sequence.getCode().text().getValue().equalsIgnoreCase(code.text().getValue()));
+    }
+
+    @Override
+    public Optional<Sequence> findByCode(@Nonnull Code code) {
+        return sequences.values().stream()
+                .filter(sequence -> sequence.getCode().text().getValue().equalsIgnoreCase(code.text().getValue()))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Sequence> findById(@Nonnull SequenceId sequenceId) {
+        return sequences.get(sequenceId) == null ? Optional.empty() : Optional.of(sequences.get(sequenceId));
     }
 }

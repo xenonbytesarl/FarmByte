@@ -4,6 +4,8 @@ import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
 import jakarta.annotation.Nonnull;
 
+import java.util.Optional;
+
 /**
  * @author bamk
  * @version 1.0
@@ -15,4 +17,8 @@ public interface SequenceRepository {
     Boolean existsByName(@Nonnull Name name);
 
     Boolean existsByCode(@Nonnull Code code);
+
+    Optional<Sequence> findByCode(@Nonnull Code code);
+
+    Optional<Sequence> findById(@Nonnull SequenceId sequenceId);
 }
