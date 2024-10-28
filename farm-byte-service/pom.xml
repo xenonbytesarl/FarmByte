@@ -31,10 +31,12 @@
   </properties>
 
   <modules>
-    <module>common</module>
-    <module>catalog</module>
+    <module>admin</module>
     <module>bootstrap</module>
+    <module>catalog</module>
+    <module>common</module>
     <module>stock</module>
+    <module>admin/admin-adapter/admin-adapter-data-access-inmemory</module>
   </modules>
 
   <dependencyManagement>
@@ -114,6 +116,27 @@
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
         <artifactId>stock-adapter-data-access-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>admin-domain-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>admin-domain-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>admin-adapter-data-access-inmemory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>admin-adapter-data-access-test</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
