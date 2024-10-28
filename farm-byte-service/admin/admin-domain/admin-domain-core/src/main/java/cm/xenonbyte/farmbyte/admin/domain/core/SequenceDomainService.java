@@ -1,5 +1,6 @@
 package cm.xenonbyte.farmbyte.admin.domain.core;
 
+import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
 import jakarta.annotation.Nonnull;
 
 import java.util.Objects;
@@ -22,6 +23,21 @@ public final class SequenceDomainService implements SequenceService {
         verifySequence(sequence);
         sequence.initializeWithDefaults();
         return sequenceRepository.save(sequence);
+    }
+
+    @Override
+    public Sequence findSequenceByCode(@Nonnull Code code) {
+        return sequenceRepository.findByCode(code).orElseThrow(
+                () -> new SequenceCodeNotFoundException(new String[]{code.text().getValue()})
+        );
+    }
+
+    @Nonnull
+    @Override
+    public Sequence findSequenceById(@Nonnull SequenceId sequenceId) {
+        return sequenceRepository.findById(sequenceId).orElseThrow(
+                () -> new SequenceNotFoundException(new String[]{sequenceId.getValue().toString()})
+        );
     }
 
     private void verifySequence(Sequence sequence) {

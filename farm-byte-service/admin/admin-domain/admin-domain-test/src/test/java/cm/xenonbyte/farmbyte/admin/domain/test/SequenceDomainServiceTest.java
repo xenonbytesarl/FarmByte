@@ -3,8 +3,11 @@ package cm.xenonbyte.farmbyte.admin.domain.test;
 import cm.xenonbyte.farmbyte.admin.adapter.data.access.inmemory.SequenceInMemoryInRepository;
 import cm.xenonbyte.farmbyte.admin.domain.core.Sequence;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceCodeConflictException;
+import cm.xenonbyte.farmbyte.admin.domain.core.SequenceCodeNotFoundException;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceDomainService;
+import cm.xenonbyte.farmbyte.admin.domain.core.SequenceId;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceNameConflictException;
+import cm.xenonbyte.farmbyte.admin.domain.core.SequenceNotFoundException;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceRepository;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceService;
 import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
@@ -19,12 +22,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static cm.xenonbyte.farmbyte.admin.domain.core.Sequence.PATTERN_MONTH;
 import static cm.xenonbyte.farmbyte.admin.domain.core.Sequence.PATTERN_YEAR_WITH_CENTURY;
 import static cm.xenonbyte.farmbyte.admin.domain.core.SequenceCodeConflictException.SEQUENCE_CODE_CONFLICT;
+import static cm.xenonbyte.farmbyte.admin.domain.core.SequenceCodeNotFoundException.SEQUENCE_CODE_NOT_FOUND;
 import static cm.xenonbyte.farmbyte.admin.domain.core.SequenceNameConflictException.SEQUENCE_NAME_CONFLICT;
+import static cm.xenonbyte.farmbyte.admin.domain.core.SequenceNotFoundException.SEQUENCE_ID_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -36,16 +42,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public final class SequenceDomainServiceTest {
 
     private SequenceService sequenceService;
-    private SequenceRepository sequenceRepository;
     private Sequence sequence;
+    private SequenceId sequenceId;
 
     @BeforeEach
     void setUp() {
-        sequenceRepository = new SequenceInMemoryInRepository();
+        SequenceRepository sequenceRepository = new SequenceInMemoryInRepository();
         sequenceService = new SequenceDomainService(sequenceRepository);
-
-        sequenceRepository.save(
+        sequenceId = new SequenceId(UUID.fromString("0192d529-d95e-7291-8ad6-efe6884bcae0"));
+        sequence = sequenceRepository.save(
                 Sequence.builder()
+                        .id(sequenceId)
                         .name(Name.of(Text.of("Sequence Transfer Delivery")))
                         .code(Code.of(Text.of("TRANSFER_DELIVERY")))
                         .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
@@ -112,5 +119,50 @@ public final class SequenceDomainServiceTest {
                     .hasMessage(exceptionMessage);
         }
 
+    }
+
+    @Nested
+    class FindSequenceByCodeDomainServiceTest {
+
+        @Test
+        void should_success_when_find_sequence_by_code() {
+            //Given
+            Code code = Code.of(Text.of("TRANSFER_DELIVERY"));
+            //Act
+            Sequence result = sequenceService.findSequenceByCode(code);
+            //Then
+            assertThat(result).isNotNull().isEqualTo(sequence);
+        }
+
+        @Test
+        void should_fail_when_find_sequence_by_code() {
+            //Given
+            Code code = Code.of(Text.of("FAKE_TRANSFER_DELIVERY"));
+            //Act + Then
+            assertThatThrownBy(() -> sequenceService.findSequenceByCode(code))
+                .isInstanceOf(SequenceCodeNotFoundException.class)
+                .hasMessage(SEQUENCE_CODE_NOT_FOUND);
+        }
+    }
+
+    @Nested
+    class FindSequenceByIdDomainServiceTest {
+
+        @Test
+        void should_success_when_find_sequence_by_id() {
+            //Given Act
+            Sequence result = sequenceService.findSequenceById(sequenceId);
+            //Then
+            assertThat(result).isNotNull();
+        }
+
+        @Test
+        void should_fail_when_find_sequence_by_code() {
+            //Given
+            SequenceId fakeSequenceId = new SequenceId(UUID.fromString("0192d536-e486-7efb-b384-8aaa8e2e838e"));//Act + Then
+            assertThatThrownBy(() -> sequenceService.findSequenceById(fakeSequenceId))
+                    .isInstanceOf(SequenceNotFoundException.class)
+                    .hasMessage(SEQUENCE_ID_NOT_FOUND);
+        }
     }
 }
