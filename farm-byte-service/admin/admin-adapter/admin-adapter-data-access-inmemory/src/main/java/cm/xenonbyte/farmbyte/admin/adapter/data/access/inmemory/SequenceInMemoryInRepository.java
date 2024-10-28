@@ -4,9 +4,13 @@ import cm.xenonbyte.farmbyte.admin.domain.core.Sequence;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceId;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceRepository;
 import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import jakarta.annotation.Nonnull;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,5 +55,32 @@ public final class SequenceInMemoryInRepository implements SequenceRepository {
     @Override
     public Optional<Sequence> findById(@Nonnull SequenceId sequenceId) {
         return sequences.get(sequenceId) == null ? Optional.empty() : Optional.of(sequences.get(sequenceId));
+    }
+
+    @Override
+    public PageInfo<Sequence> findAll(Integer page, Integer size, String attribute, Direction direction) {
+        PageInfo<Sequence> sequencePageInfo = new PageInfo<>();
+        Comparator<Sequence> comparing = Comparator.comparing((Sequence sequence) -> sequence.getName().getText().getValue());
+        return sequencePageInfo.with(
+                page,
+                size,
+                sequences.values().stream()
+                    .sorted(Direction.ASC.equals(direction)? comparing: comparing.reversed())
+                    .toList()
+        );
+    }
+
+    @Override
+    public PageInfo<Sequence> search(Integer page, Integer size, String attribute, @Nonnull Direction direction, Keyword keyword) {
+        PageInfo<Sequence> sequencePageInfo = new PageInfo<>();
+        Comparator<Sequence> comparing = Comparator.comparing((Sequence sequence) -> sequence.getName().getText().getValue());
+        return sequencePageInfo.with(
+                page,
+                size,
+                sequences.values().stream()
+                        .filter(sequence -> sequence.getName().getText().getValue().toLowerCase().contains(keyword.getText().getValue().toLowerCase()))
+                        .sorted(Direction.ASC.equals(direction)? comparing: comparing.reversed())
+                        .toList()
+        );
     }
 }

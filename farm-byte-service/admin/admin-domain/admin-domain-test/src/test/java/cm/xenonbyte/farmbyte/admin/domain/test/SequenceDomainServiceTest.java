@@ -13,7 +13,10 @@ import cm.xenonbyte.farmbyte.admin.domain.core.SequenceService;
 import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
 import cm.xenonbyte.farmbyte.admin.domain.core.vo.Prefix;
 import cm.xenonbyte.farmbyte.common.domain.exception.BaseDomainConflictException;
+import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
+import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
+import cm.xenonbyte.farmbyte.common.domain.vo.PageInfo;
 import cm.xenonbyte.farmbyte.common.domain.vo.Text;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -42,12 +45,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public final class SequenceDomainServiceTest {
 
     private SequenceService sequenceService;
+    SequenceRepository sequenceRepository;
     private Sequence sequence;
     private SequenceId sequenceId;
 
     @BeforeEach
     void setUp() {
-        SequenceRepository sequenceRepository = new SequenceInMemoryInRepository();
+        sequenceRepository = new SequenceInMemoryInRepository();
         sequenceService = new SequenceDomainService(sequenceRepository);
         sequenceId = new SequenceId(UUID.fromString("0192d529-d95e-7291-8ad6-efe6884bcae0"));
         sequence = sequenceRepository.save(
@@ -163,6 +167,127 @@ public final class SequenceDomainServiceTest {
             assertThatThrownBy(() -> sequenceService.findSequenceById(fakeSequenceId))
                     .isInstanceOf(SequenceNotFoundException.class)
                     .hasMessage(SEQUENCE_ID_NOT_FOUND);
+        }
+    }
+
+    @Nested
+    class FindSequencesDomainServiceTest {
+        @BeforeEach
+        void setUp() {
+            sequenceRepository.save(
+                Sequence.builder()
+                    .id(new SequenceId(UUID.fromString("0192d553-e5c2-766c-8c6e-9bd9f94facdb")))
+                    .name(Name.of(Text.of("Sequence Transfer Receipt")))
+                    .code(Code.of(Text.of("TRANSFER_RECEIPT")))
+                    .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                    .build()
+            );
+            sequenceRepository.save(
+                Sequence.builder()
+                    .id(new SequenceId(UUID.fromString("0192d554-0766-78a7-ae07-426c20a1ef7d")))
+                    .name(Name.of(Text.of("Sequence Transfer Internal")))
+                    .code(Code.of(Text.of("TRANSFER_INTERNAL")))
+                    .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                    .build()
+            );
+            sequenceRepository.save(
+                Sequence.builder()
+                    .id(new SequenceId(UUID.fromString("0192d554-da0b-7562-adf7-33837b77d5e6")))
+                    .name(Name.of(Text.of("Sequence Inventory")))
+                    .code(Code.of(Text.of("INVENTORY")))
+                    .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                    .build()
+            );
+        }
+
+        @Test
+        void should_success_when_find_sequences() {
+            //Given
+            Integer page = 0;
+            Integer size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+
+            //Act
+            PageInfo<Sequence> result = sequenceService.findSequences(page, size, attribute, direction);
+
+            //Then
+            assertThat(result).isNotNull();
+            assertThat(result.getPageSize()).isPositive();
+            assertThat(result.getElements().size()).isPositive();
+            assertThat(result.getTotalElements()).isPositive();
+            assertThat(result.getTotalPages()).isPositive();
+        }
+    }
+
+    @Nested
+    class SearchSequencesDomainServiceTest {
+        @BeforeEach
+        void setUp() {
+            sequenceRepository.save(
+                    Sequence.builder()
+                            .id(new SequenceId(UUID.fromString("0192d553-e5c2-766c-8c6e-9bd9f94facdb")))
+                            .name(Name.of(Text.of("Sequence Transfer Receipt")))
+                            .code(Code.of(Text.of("TRANSFER_RECEIPT")))
+                            .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                            .build()
+            );
+            sequenceRepository.save(
+                    Sequence.builder()
+                            .id(new SequenceId(UUID.fromString("0192d554-0766-78a7-ae07-426c20a1ef7d")))
+                            .name(Name.of(Text.of("Sequence Transfer Internal")))
+                            .code(Code.of(Text.of("TRANSFER_INTERNAL")))
+                            .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                            .build()
+            );
+            sequenceRepository.save(
+                    Sequence.builder()
+                            .id(new SequenceId(UUID.fromString("0192d554-da0b-7562-adf7-33837b77d5e6")))
+                            .name(Name.of(Text.of("Sequence Inventory")))
+                            .code(Code.of(Text.of("INVENTORY")))
+                            .prefix(Prefix.of(Text.of(String.format("%s.%s.%s", "IN", PATTERN_YEAR_WITH_CENTURY, PATTERN_MONTH))))
+                            .build()
+            );
+        }
+
+        @Test
+        void should_success_when_search_sequences_good_keyword() {
+            //Given
+            Integer page = 0;
+            Integer size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+            Keyword keyword = Keyword.of(Text.of("In"));
+
+            //Act
+            PageInfo<Sequence> result = sequenceService.searchSequences(page, size, attribute, direction, keyword);
+
+            //Then
+            assertThat(result).isNotNull();
+            assertThat(result.getPageSize()).isPositive();
+            assertThat(result.getElements().size()).isPositive();
+            assertThat(result.getTotalElements()).isPositive();
+            assertThat(result.getTotalPages()).isPositive();
+        }
+
+        @Test
+        void should_empty_when_search_sequences_with_bad_keyword() {
+            //Given
+            Integer page = 0;
+            Integer size = 2;
+            String attribute = "name";
+            Direction direction = Direction.ASC;
+            Keyword keyword = Keyword.of(Text.of("Indcdcsdcds"));
+
+            //Act
+            PageInfo<Sequence> result = sequenceService.searchSequences(page, size, attribute, direction, keyword);
+
+            //Then
+            assertThat(result).isNotNull();
+            assertThat(result.getPageSize()).isZero();
+            assertThat(result.getElements().size()).isZero();
+            assertThat(result.getTotalElements()).isZero();
+            assertThat(result.getTotalPages()).isZero();
         }
     }
 }
