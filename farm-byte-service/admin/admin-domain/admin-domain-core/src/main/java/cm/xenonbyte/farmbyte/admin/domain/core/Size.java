@@ -1,4 +1,4 @@
-package cm.xenonbyte.farmbyte.admin.domain.core.vo;
+package cm.xenonbyte.farmbyte.admin.domain.core;
 
 import cm.xenonbyte.farmbyte.common.domain.validation.Assert;
 import jakarta.annotation.Nonnull;

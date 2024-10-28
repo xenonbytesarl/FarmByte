@@ -3,7 +3,7 @@ package cm.xenonbyte.farmbyte.admin.adapter.data.access.inmemory;
 import cm.xenonbyte.farmbyte.admin.domain.core.Sequence;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceId;
 import cm.xenonbyte.farmbyte.admin.domain.core.SequenceRepository;
-import cm.xenonbyte.farmbyte.admin.domain.core.vo.Code;
+import cm.xenonbyte.farmbyte.admin.domain.core.Code;
 import cm.xenonbyte.farmbyte.common.domain.vo.Direction;
 import cm.xenonbyte.farmbyte.common.domain.vo.Keyword;
 import cm.xenonbyte.farmbyte.common.domain.vo.Name;
