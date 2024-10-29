@@ -1,0 +1,4 @@
+-- Insert t_sequence
+INSERT INTO t_sequence (c_id, c_created_at, c_updated_at, c_name, c_code, c_step, c_next, c_size, c_prefix, c_active) VALUES ('0192d9c2-ffee-76bc-ad58-e9a4a5806b6b', current_timestamp, null, 'Receipt Sequence', 'TRANSFER_RECEIPT', 1, 1, 5, 'IN\%(year)s%(month)s\', true);
+INSERT INTO t_sequence (c_id, c_created_at, c_updated_at, c_name, c_code, c_step, c_next, c_size, c_prefix, c_active) VALUES ('0192d9c6-51b2-71e6-a8e0-ad28484fb6f0', current_timestamp, null, 'Delivery Sequence', 'TRANSFER_DELIVERY', 1, 1, 5, 'OUT\%(year)s%(month)s\', true);
+INSERT INTO t_sequence (c_id, c_created_at, c_updated_at, c_name, c_code, c_step, c_next, c_size, c_prefix, c_active) VALUES ('0192d9c6-779b-7469-8bf2-9ac052e55a85', current_timestamp, null, 'Internal Sequence', 'TRANSFER_INTERNAL', 1, 1, 5, 'INT\%(year)s%(month)s\', true);

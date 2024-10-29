@@ -1,4 +1,4 @@
--- Create table t_inventory_emplacement
+-- Create table t_stock_location
 create table if not exists t_stock_location (
     c_id UUID not null ,
     c_created_at timestamp with time zone not null ,
