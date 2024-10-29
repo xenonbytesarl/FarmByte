@@ -95,6 +95,13 @@ public final class Sequence extends BaseEntity<SequenceId> {
         return code;
     }
 
+    public Prefix getPrefix() {
+        return prefix;
+    }
+
+    public Suffix getSuffix() {
+        return suffix;
+    }
 
     public static final class Builder {
         private SequenceId id;

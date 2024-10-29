@@ -1,0 +1,8 @@
+spring:
+  flyway:
+    locations: classpath:db/migrations/common,classpath:db/migrations/test
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.flywaydb.core: DEBUG
+    org.flywaydb.database.postgresql: DEBUG

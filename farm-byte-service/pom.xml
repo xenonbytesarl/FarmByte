@@ -36,7 +36,6 @@
     <module>catalog</module>
     <module>common</module>
     <module>stock</module>
-    <module>admin/admin-adapter/admin-adapter-data-access-inmemory</module>
   </modules>
 
   <dependencyManagement>
@@ -132,6 +131,11 @@
       <dependency>
         <groupId>cm.xenonbyte.farmbyte</groupId>
         <artifactId>admin-adapter-data-access-inmemory</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cm.xenonbyte.farmbyte</groupId>
+        <artifactId>admin-adapter-data-access-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
